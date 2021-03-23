@@ -19,19 +19,19 @@ export default function RadioButtonsGroup() {
             <tr>
               <td>
                 <div className="radio">
-                  <label><input type="radio" id='regular' name="optradio" />TIKI</label>
+                  <label><input type="radio" id='regular' name="optradio" /></label>
                 </div>
               </td>
               <td>
                 <div className="radiotext">
-                  <label for='regular'>Regular Shipping</label>
+                  <label for='regular'>Regular ship</label>
                 </div>
               </td>
             </tr>
             <tr>
               <td>
                 <div className="radio">
-                  <label><input type="radio" id='express' name="optradio" />JNE</label>
+                  <label><input type="radio" id='express' name="optradio" /></label>
                 </div>
               </td>
               <td>
