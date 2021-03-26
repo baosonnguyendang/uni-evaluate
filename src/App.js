@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import SignInSide from "./components/signin"
 import StickyFooter from "./components/dashboard"
+import Dashboard from "./components/dashboard-admin"
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <div>
         {/* <Navbar /> */}
         <Route path="/" exact component={SignInSide} />
-        <Route path="/dashboard" component={StickyFooter} />
+        <Route path="/dashboard" component={Dashboard} />
         {/* <Route path="/edit/:id" component={EditExercise} />
         <Route path="/create" component={CreateExercise} />
         <Route path="/user" component={CreateUser} /> */}
