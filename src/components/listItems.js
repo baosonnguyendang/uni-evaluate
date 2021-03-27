@@ -12,8 +12,16 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   menu: {
     display: 'contents',
-    textDecoration: 'none'
-  }
+    textDecoration: 'none',
+    boxShadow: 'none',
+  },
+
+  menuLink: {
+    color: 'black',
+    '&:hover': {
+      textDecoration: 'none'
+    },
+  },
 }));
 
 export function MainListItems() {
@@ -21,15 +29,15 @@ export function MainListItems() {
   return (
     <div>
       <ListItem button>
-        <Link to='/dashborad/user' className={classes.menu}>
+        <Link to='/dashboard/user' className={classes.menu} style={{ textDecoration: 'none' }}>
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
-          <ListItemText primary="Người dùng" />
+          <ListItemText primary="Người dùng" className={classes.menuLink}/>
         </Link>
       </ListItem>
       <ListItem button>
-        <Link to='/dashboard/user' className={classes.menu}>
+        <Link to='/dashboard' className={classes.menu} style={{ textDecoration: 'none' }}>
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
@@ -62,7 +70,7 @@ export function SecondaryListItems() {
         </Link>
       </ListItem>
       <ListItem button>
-        <Link to="/dashboard/user" className={classes.menu}>
+        <Link to="/dashboard" className={classes.menu}>
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>
