@@ -6,56 +6,77 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import PersonIcon from '@material-ui/icons/Person';
+import { Link } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 
-export const mainListItems = (
-  <div>
-    <ListItem button>
-      <ListItemIcon>
-        <PersonIcon />
-      </ListItemIcon>
-      <ListItemText primary="Người dùng" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <PersonIcon />
-      </ListItemIcon>
-      <ListItemText primary="Phòng ban" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Customers" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Reports" />
-    </ListItem>
-  </div>
-);
+const useStyles = makeStyles((theme) => ({
+  menu: {
+    display: 'contents',
+    textDecoration: 'none'
+  }
+}));
 
-export const secondaryListItems = (
-  <div>
-    <ListSubheader inset>Tùy chỉnh đánh giá</ListSubheader>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="DS Tiêu chuẩn" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="DS Tiêu chí" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="DS Đợt đánh giá" />
-    </ListItem>
-  </div>
-)
+export function MainListItems() {
+  const classes = useStyles();
+  return (
+    <div>
+      <ListItem button>
+        <Link to='/dashborad/user' className={classes.menu}>
+          <ListItemIcon>
+            <PersonIcon />
+          </ListItemIcon>
+          <ListItemText primary="Người dùng" />
+        </Link>
+      </ListItem>
+      <ListItem button>
+        <Link to='/dashboard/user' className={classes.menu}>
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Customers" />
+        </Link>
+      </ListItem>
+      <ListItem button>
+        <Link to='/dashboard/user' className={classes.menu}>
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Reports" />
+        </Link>
+      </ListItem>
+    </div>
+  )
+}
+
+export function SecondaryListItems() {
+  const classes = useStyles();
+  return (
+    <div>
+      <ListSubheader inset>Tùy chỉnh đánh giá</ListSubheader>
+      <ListItem button>
+        <Link to="/dashboard/user" className={classes.menu}>
+          <ListItemIcon>
+            <AssignmentIcon />
+          </ListItemIcon>
+          <ListItemText primary="DS Tiêu chuẩn" />
+        </Link>
+      </ListItem>
+      <ListItem button>
+        <Link to="/dashboard/user" className={classes.menu}>
+          <ListItemIcon>
+            <AssignmentIcon />
+          </ListItemIcon>
+          <ListItemText primary="DS Tiêu chí" />
+        </Link>
+      </ListItem>
+      <ListItem button>
+        <Link to="/dashboard/user" className={classes.menu}>
+          <ListItemIcon>
+            <AssignmentIcon />
+          </ListItemIcon>
+          <ListItemText primary="DS Đợt đánh giá" />
+        </Link>
+      </ListItem>
+    </div>
+  )
+}
