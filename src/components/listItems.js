@@ -11,9 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   menu: {
-    display: 'contents',
-    textDecoration: 'none',
-    boxShadow: 'none',
+
   },
 
   menuLink: {
@@ -29,7 +27,7 @@ export function MainListItems() {
   return (
     <div>
       <ListItem button>
-        <Link to='/dashboard/user' className={classes.menu} style={{ textDecoration: 'none' }}>
+        <Link to='/dashboard/user' className={classes.menu} style={{display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
@@ -37,19 +35,19 @@ export function MainListItems() {
         </Link>
       </ListItem>
       <ListItem button>
-        <Link to='/dashboard' className={classes.menu} style={{ textDecoration: 'none' }}>
+        <Link to='/dashboard' style={{display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
-          <ListItemText primary="Customers" />
+          <ListItemText primary="Customers" className={classes.menuLink}/>
         </Link>
       </ListItem>
       <ListItem button>
-        <Link to='/dashboard/user' className={classes.menu}>
+        <Link to='/dashboard/user' style={{display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
-          <ListItemText primary="Reports" />
+          <ListItemText primary="Reports" className={classes.menuLink}/>
         </Link>
       </ListItem>
     </div>
@@ -62,27 +60,27 @@ export function SecondaryListItems() {
     <div>
       <ListSubheader inset>Tùy chỉnh đánh giá</ListSubheader>
       <ListItem button>
-        <Link to="/dashboard/user" className={classes.menu}>
+        <Link to="/dashboard/user" style={{display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>
-          <ListItemText primary="DS Tiêu chuẩn" />
+          <ListItemText primary="DS Tiêu chuẩn" className={classes.menuLink}/>
         </Link>
       </ListItem>
       <ListItem button>
-        <Link to="/dashboard" className={classes.menu}>
+        <Link to="/dashboard" style={{display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>
-          <ListItemText primary="DS Tiêu chí" />
+          <ListItemText primary="DS Tiêu chí" className={classes.menuLink}/>
         </Link>
       </ListItem>
       <ListItem button>
-        <Link to="/dashboard/user" className={classes.menu}>
+        <Link to="/dashboard/user" style={{display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>
-          <ListItemText primary="DS Đợt đánh giá" />
+          <ListItemText primary="DS Đợt đánh giá" className={classes.menuLink}/>
         </Link>
       </ListItem>
     </div>
