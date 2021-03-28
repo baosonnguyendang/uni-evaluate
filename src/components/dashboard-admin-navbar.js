@@ -18,12 +18,14 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import Button from '@material-ui/core/Button';
+
 import { MainListItems, SecondaryListItems } from './listItems';
 // import Chart from './Chart';
 // import Deposits from './Deposits';
 // import Orders from './Orders';
 import BasicTable from "./dashboard-admin-user"
-import Button from '@material-ui/core/Button';
+import Faculty from "./dashboard-admin-faculty"
 
 function Copyright() {
   return (
@@ -182,6 +184,11 @@ export default function Dashboard() {
                   <Button className={classes.b} variant="contained">Sửa</Button>
                 </div>
                 <BasicTable />
+              </Paper>
+            </Grid>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <Faculty />
               </Paper>
             </Grid>
           </Grid>

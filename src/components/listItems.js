@@ -24,31 +24,34 @@ const useStyles = makeStyles((theme) => ({
 
 export function MainListItems() {
   const classes = useStyles();
+
+  function disableAll(){
+    alert('abc')
+  }
+
+  function user(){
+    disableAll()
+  }
+
   return (
     <div>
-      <ListItem button>
-        <Link to='/dashboard/user' className={classes.menu} style={{display: 'contents', textDecoration: 'none' }}>
-          <ListItemIcon>
-            <PersonIcon />
-          </ListItemIcon>
-          <ListItemText primary="Người dùng" className={classes.menuLink}/>
-        </Link>
+      <ListItem button onClick={user}>
+        <ListItemIcon>
+          <PersonIcon />
+        </ListItemIcon>
+        <ListItemText primary="Người dùng" className={classes.menuLink} />
+      </ListItem>
+      <ListItem button onClick={() => { alert('clicked') }}>
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Customers" className={classes.menuLink} />
       </ListItem>
       <ListItem button>
-        <Link to='/dashboard' style={{display: 'contents', textDecoration: 'none' }}>
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Customers" className={classes.menuLink}/>
-        </Link>
-      </ListItem>
-      <ListItem button>
-        <Link to='/dashboard/user' style={{display: 'contents', textDecoration: 'none' }}>
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Reports" className={classes.menuLink}/>
-        </Link>
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Reports" className={classes.menuLink} />
       </ListItem>
     </div>
   )
@@ -60,28 +63,28 @@ export function SecondaryListItems() {
     <div>
       <ListSubheader inset>Tùy chỉnh đánh giá</ListSubheader>
       <ListItem button>
-        <Link to="/dashboard/user" style={{display: 'contents', textDecoration: 'none' }}>
+        {/* <Link to="/dashboard/user" style={{ display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>
-          <ListItemText primary="DS Tiêu chuẩn" className={classes.menuLink}/>
-        </Link>
+          <ListItemText primary="DS Tiêu chuẩn" className={classes.menuLink} />
+        </Link> */}
+        <ListItemIcon>
+          <AssignmentIcon />
+        </ListItemIcon>
+        <ListItemText primary="DS Tiêu chuẩn" className={classes.menuLink} />
       </ListItem>
       <ListItem button>
-        <Link to="/dashboard" style={{display: 'contents', textDecoration: 'none' }}>
-          <ListItemIcon>
-            <AssignmentIcon />
-          </ListItemIcon>
-          <ListItemText primary="DS Tiêu chí" className={classes.menuLink}/>
-        </Link>
+        <ListItemIcon>
+          <AssignmentIcon />
+        </ListItemIcon>
+        <ListItemText primary="DS Tiêu chí" className={classes.menuLink} />
       </ListItem>
       <ListItem button>
-        <Link to="/dashboard/user" style={{display: 'contents', textDecoration: 'none' }}>
-          <ListItemIcon>
-            <AssignmentIcon />
-          </ListItemIcon>
-          <ListItemText primary="DS Đợt đánh giá" className={classes.menuLink}/>
-        </Link>
+        <ListItemIcon>
+          <AssignmentIcon />
+        </ListItemIcon>
+        <ListItemText primary="DS Đợt đánh giá" className={classes.menuLink} />
       </ListItem>
     </div>
   )
