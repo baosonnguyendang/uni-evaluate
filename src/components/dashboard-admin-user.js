@@ -1,68 +1,64 @@
-import React from 'react';
-import Link from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Title from './Title';
+import * as React from 'react';
+import { DataGrid } from '@material-ui/data-grid';
 
-// Generate Order Data
-function createData(id, date, name, shipTo, paymentMethod, amount) {
-  return { id, date, name, shipTo, paymentMethod, amount };
-}
-
-const rows = [
-  createData(0, '16 Mar, 2019', 'Elvis Presley', 'Tupelo, MS', 'VISA ⠀•••• 3719', 312.44),
-  createData(1, '16 Mar, 2019', 'Paul McCartney', 'London, UK', 'VISA ⠀•••• 2574', 866.99),
-  createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-  createData(3, '16 Mar, 2019', 'Michael Jackson', 'Gary, IN', 'AMEX ⠀•••• 2000', 654.39),
-  createData(4, '15 Mar, 2019', 'Bruce Springsteen', 'Long Branch, NJ', 'VISA ⠀•••• 5919', 212.79),
+const columns = [
+  { field: 'id', headerName: 'ID', width: 70 },
+  { field: 'firstName', headerName: 'Tên', width: 100 },
+  { field: 'lastName', headerName: 'Họ và tên đệm', width: 180 },
+  {
+    field: 'dob',
+    headerName: 'DOB',
+    // type: 'number',
+    width: 90,
+  },
+  // {
+  //   field: 'fullName',
+  //   headerName: 'Full name',
+  //   description: 'This column has a value getter and is not sortable.',
+  //   sortable: false,
+  //   width: 160,
+  //   valueGetter: (params) =>
+  //     `${params.getValue('firstName') || ''} ${params.getValue('lastName') || ''}`,
+  // },
+  {
+    field: 'user',
+    headerName: 'Tên đăng nhập',
+    width: 180,
+  },
+  {
+    field: 'password',
+    headerName: 'Mật khẩu',
+    sortable: false,
+    width: 180,
+  },
+  {
+    field: 'role',
+    headerName: 'Chức vụ',
+    width: 120,
+  },
+  {
+    field: 'faculty',
+    headerName: 'Khoa/Phòng/Ban',
+    width: 180,
+  },
 ];
 
-function preventDefault(event) {
-  event.preventDefault();
-}
-
-const useStyles = makeStyles((theme) => ({
-  seeMore: {
-    marginTop: theme.spacing(3),
-  },
-}));
+const rows = [
+  { id: 1, lastName: 'Snow', firstName: 'Jon', dob: 35 },
+  { id: 2, lastName: 'Lannister', firstName: 'Cersei', dob: 42 },
+  { id: 3, lastName: 'Lannister', firstName: 'Jaime', dob: 45 },
+  { id: 4, lastName: 'Stark', firstName: 'Arya', dob: 16 },
+  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', dob: null },
+  { id: 6, lastName: 'Melisandre', firstName: null, dob: 150 },
+  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', dob: 44 },
+  { id: 8, lastName: 'Frances', firstName: 'Rossini', dob: 36 },
+  { id: 9, lastName: 'Roxie', firstName: 'Harvey', dob: 65 },
+];
 
 export default function BasicTable() {
-  const classes = useStyles();
   return (
-    <React.Fragment>
-      <Title>Danh sách tài khoản</Title>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Ngày tạo</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Ship To</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align="right">Sale Amount</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{row.amount}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <div className={classes.seeMore}>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          See more orders
-        </Link>
-      </div>
-    </React.Fragment>
+    <div style={{ height: 400, width: '100%' }}>
+      <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+    </div>
   );
 }

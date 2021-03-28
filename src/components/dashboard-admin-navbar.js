@@ -23,6 +23,7 @@ import { MainListItems, SecondaryListItems } from './listItems';
 // import Deposits from './Deposits';
 // import Orders from './Orders';
 import BasicTable from "./dashboard-admin-user"
+import Button from '@material-ui/core/Button';
 
 function Copyright() {
   return (
@@ -114,6 +115,11 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
+  b: {
+    width: '80px',
+    margin: '10px',
+    textAlign: 'end',
+  }
 }));
 
 export default function Dashboard() {
@@ -167,9 +173,14 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>    
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
+                <div>
+                  <Button className={classes.b} variant="contained">Thêm</Button>
+                  <Button className={classes.b} variant="contained">Xóa</Button>
+                  <Button className={classes.b} variant="contained">Sửa</Button>
+                </div>
                 <BasicTable />
               </Paper>
             </Grid>
