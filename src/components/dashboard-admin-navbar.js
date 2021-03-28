@@ -18,7 +18,7 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import Button from '@material-ui/core/Button';
+
 
 import { MainListItems, SecondaryListItems } from './listItems';
 // import Chart from './Chart';
@@ -178,11 +178,6 @@ export default function Dashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <div>
-                  <Button className={classes.b} variant="contained">Thêm</Button>
-                  <Button className={classes.b} variant="contained">Xóa</Button>
-                  <Button className={classes.b} variant="contained">Sửa</Button>
-                </div>
                 <BasicTable />
               </Paper>
             </Grid>
@@ -192,9 +187,6 @@ export default function Dashboard() {
               </Paper>
             </Grid>
           </Grid>
-          {/* <Box pt={4}>
-            <Copyright />
-          </Box> */}
         </Container>
       </main>
     </div>

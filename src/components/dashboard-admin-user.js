@@ -1,5 +1,15 @@
 import * as React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import { DataGrid } from '@material-ui/data-grid';
+import Button from '@material-ui/core/Button';
+
+const useStyles = makeStyles((theme) => ({
+  b: {
+    width: '80px',
+    margin: '10px',
+    textAlign: 'end',
+  }
+}));
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -56,9 +66,18 @@ const rows = [
 ];
 
 export default function BasicTable() {
+  const classes = useStyles();
+
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+    <div>
+      <div style={{ textAlign: "right" }}>
+        <Button className={classes.b} variant="contained">Thêm</Button>
+        <Button className={classes.b} variant="contained">Xóa</Button>
+        <Button className={classes.b} variant="contained">Sửa</Button>
+      </div>
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+      </div>
     </div>
   );
 }
