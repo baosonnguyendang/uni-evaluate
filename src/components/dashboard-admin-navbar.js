@@ -24,7 +24,11 @@ import { MainListItems } from './listItems';
 // import Orders from './Orders';
 import BasicTable from "./dashboard-admin-user"
 import Faculty from "./dashboard-admin-faculty"
-
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -172,14 +176,18 @@ export default function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Paper className={classes.paper}>
+              {/* <Paper className={classes.paper}>
                 <BasicTable />
               </Paper>
             </Grid>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
                 <Faculty />
-              </Paper>
+              </Paper> */}
+              <Switch>
+                <Route path='/dashboard/user' children={<BasicTable />} />
+                <Route path='/dashboard/customer' children={<Faculty />} />
+              </Switch>
             </Grid>
           </Grid>
         </Container>
