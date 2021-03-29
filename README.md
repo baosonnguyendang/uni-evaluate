@@ -73,3 +73,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 react-router
 material-ui
 @material-ui/data-grid
+redux
