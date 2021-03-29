@@ -14,7 +14,7 @@ function App() {
         {/* <Navbar /> */}
         <Route path="/" exact component={SignInSide} />
         <Route path="/dashboard" component={Dashboard} />
-        <Route path="/dashboard/user" component={BasicTable} />
+        {/* <Route path="/dashboard/user" component={BasicTable} /> */}
         {/* <Route path="/edit/:id" component={EditExercise} />
         <Route path="/create" component={CreateExercise} />
         <Route path="/user" component={CreateUser} /> */}

@@ -71,7 +71,7 @@ export function MainListItems() {
 
       <Divider />
 
-      <ListItem button button onClick={tab4}>
+      <ListItem button onClick={tab4}>
         {/* <Link to="/dashboard/user" style={{ display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <AssignmentIcon />
@@ -83,7 +83,7 @@ export function MainListItems() {
         </ListItemIcon>
         <ListItemText primary="DS Tiêu chuẩn" />
       </ListItem>
-      <ListItem button button onClick={tab5}>
+      <ListItem button onClick={tab5}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
