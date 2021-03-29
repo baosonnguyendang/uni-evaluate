@@ -14,7 +14,6 @@ import Faculty from "./dashboard-admin-faculty"
 
 import { useState } from 'react'
 
-
 export function MainListItems() {
   const [state, setState] = useState(0)
 
@@ -51,13 +50,13 @@ export function MainListItems() {
 
   return (
     <div>
-      <ListItem button onClick={tab1}>
+      <ListItem button component={Link} to={'/dashboard/user'}>
         <ListItemIcon>
           <PersonIcon />
         </ListItemIcon>
         <ListItemText primary="Người dùng" />
       </ListItem>
-      <ListItem button onClick={() => { alert(state) }}>
+      <ListItem button component={Link} to={'/dashboard/customer'}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
