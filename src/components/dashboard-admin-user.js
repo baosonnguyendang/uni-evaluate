@@ -2,6 +2,8 @@ import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { DataGrid } from '@material-ui/data-grid';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+
 
 const useStyles = makeStyles((theme) => ({
   b: {
@@ -69,15 +71,17 @@ export default function BasicTable() {
   const classes = useStyles();
 
   return (
-    <div>
-      <div style={{ textAlign: "right" }}>
-        <Button className={classes.b} variant="contained">Thêm</Button>
-        <Button className={classes.b} variant="contained">Xóa</Button>
-        <Button className={classes.b} variant="contained">Sửa</Button>
+    <Paper>
+      <div>
+        <div style={{ textAlign: "right", paddingTop: '5px' }}>
+          <Button className={classes.b} variant="contained">Thêm</Button>
+          <Button className={classes.b} variant="contained">Xóa</Button>
+          <Button className={classes.b} variant="contained">Sửa</Button>
+        </div>
+        <div style={{ height: 400, width: '100%', padding:'5px 10px 10px 10px'}}>
+          <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+        </div>
       </div>
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
-      </div>
-    </div>
+    </Paper>
   );
 }
