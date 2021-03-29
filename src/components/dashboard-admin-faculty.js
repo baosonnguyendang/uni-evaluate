@@ -4,8 +4,8 @@ import Paper from '@material-ui/core/Paper';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last name', width: 130 },
+  { field: 'name', headerName: 'Tên Khoa/Phòng ban', width: 220 },
+  { field: 'head', headerName: 'Trưởng Khoa/Phòng ban', width: 220 },
   {
     field: 'age',
     headerName: 'Age',
@@ -19,20 +19,20 @@ const columns = [
     sortable: false,
     width: 160,
     valueGetter: (params) =>
-      `${params.getValue('firstName') || ''} ${params.getValue('lastName') || ''}`,
+      `${params.getValue('name') || ''} ${params.getValue('head') || ''}`,
   },
 ];
 
 const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  { id: 1, name: 'Snow', head: 'Jon', age: 35 },
+  { id: 2, name: 'Lannister', head: 'Cersei', age: 42 },
+  { id: 3, name: 'Lannister', head: 'Jaime', age: 45 },
+  { id: 4, name: 'Stark', head: 'Arya', age: 16 },
+  { id: 5, name: 'Targaryen', head: 'Daenerys', age: null },
+  { id: 6, name: 'Melisandre', head: null, age: 150 },
+  { id: 7, name: 'Clifford', head: 'Ferrara', age: 44 },
+  { id: 8, name: 'Frances', head: 'Rossini', age: 36 },
+  { id: 9, name: 'Roxie', head: 'Harvey', age: 65 },
 ];
 
 export default function Faculty() {

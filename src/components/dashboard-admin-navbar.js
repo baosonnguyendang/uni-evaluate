@@ -18,6 +18,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { MainListItems } from './listItems';
 import BasicTable from "./dashboard-admin-user"
 import Faculty from "./dashboard-admin-faculty"
+import logo from '../img/logo.png'
 
 import {
   BrowserRouter as Router,
@@ -70,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   menuButton: {
-    marginRight: 36,
+    marginRight: 10,
   },
   menuButtonHidden: {
     display: 'none',
@@ -119,6 +120,10 @@ const useStyles = makeStyles((theme) => ({
     width: '80px',
     margin: '10px',
     textAlign: 'end',
+  },
+  logo: {
+    maxWidth: '60px',
+    marginRight: '10px'
   }
 }));
 
@@ -146,6 +151,7 @@ export default function Dashboard() {
           >
             <MenuIcon />
           </IconButton>
+          <img className={classes.logo} src={logo} alt='' />
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             LVTN
           </Typography>
@@ -182,7 +188,7 @@ export default function Dashboard() {
               </Paper> */}
               <Switch>
                 <Route path='/dashboard/user' children={<BasicTable className={classes.paper}/>} />
-                <Route path='/dashboard/customer' children={<Faculty className={classes.paper}/>} />
+                <Route path='/dashboard/faculty' children={<Faculty className={classes.paper}/>} />
               </Switch>
             </Grid>
           </Grid>
