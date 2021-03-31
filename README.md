@@ -74,3 +74,4 @@ react-router;
 material-ui;
 @material-ui/data-grid;
 react-modal;
+react-boostrap
