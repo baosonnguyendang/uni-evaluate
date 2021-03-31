@@ -16,9 +16,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import { MainListItems } from './listItems';
-import BasicTable from "./dashboard-admin-user"
-import Faculty from "./dashboard-admin-faculty"
-import logo from '../img/logo.png'
+import BasicTable from "./admin-user"
+import Faculty from "./admin-faculty"
+import logo from '../../img/logo.png'
 
 import {
   BrowserRouter as Router,
@@ -187,8 +187,8 @@ export default function Dashboard() {
                 <Faculty />
               </Paper> */}
               <Switch>
-                <Route path='/dashboard/user' children={<BasicTable className={classes.paper}/>} />
-                <Route path='/dashboard/faculty' children={<Faculty className={classes.paper}/>} />
+                <Route path='/admin/user' children={<BasicTable className={classes.paper}/>} />
+                <Route path='/admin/faculty' children={<Faculty className={classes.paper}/>} />
               </Switch>
             </Grid>
           </Grid>

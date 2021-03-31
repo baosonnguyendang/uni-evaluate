@@ -133,7 +133,7 @@ class SignInSide extends Component {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              <Link to="/dashboard" className="nav-link">
+              <Link to="/admin/user" className="nav-link">
                 <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                   Sign In
                 </Button>
