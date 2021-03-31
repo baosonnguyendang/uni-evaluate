@@ -50,7 +50,7 @@ export function MainListItems() {
         </ListItemIcon>
         <ListItemText primary="DS Tiêu chí" />
       </ListItem>
-      <ListItem button>
+      <ListItem button button component={Link} to={'/admin/evaluate-settings'}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>

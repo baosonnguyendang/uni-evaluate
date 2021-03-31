@@ -18,6 +18,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { MainListItems } from './listItems';
 import BasicTable from "./admin-user"
 import Faculty from "./admin-faculty"
+import EvaluateList from './admin-evaluate'
 import logo from '../../img/logo.png'
 
 import {
@@ -189,6 +190,7 @@ export default function Dashboard() {
               <Switch>
                 <Route path='/admin/user' children={<BasicTable className={classes.paper}/>} />
                 <Route path='/admin/faculty' children={<Faculty className={classes.paper}/>} />
+                <Route path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper}/>} />
               </Switch>
             </Grid>
           </Grid>

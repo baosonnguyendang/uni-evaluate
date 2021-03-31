@@ -140,7 +140,7 @@ class SignInSide extends Component {
               </Link>
               <Grid container>
                 <Grid item xs>
-                  <Link to="/dashboard" variant="body2">Forgot password?</Link>
+                  <Link to="/trangchu" variant="body2">Forgot password?</Link>
                 </Grid>
               </Grid>
               <Box mt={5}>
