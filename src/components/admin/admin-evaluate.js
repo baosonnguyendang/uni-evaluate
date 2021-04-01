@@ -23,6 +23,7 @@ function ListItem(props) {
 
 function NumberList(props) {
   const numbers = props.numbers;
+  console.log(numbers)
   const listItems = numbers.map((number) =>
     // Correct! Key should be specified inside the array.
     <Link to=''><ListItem key={number.id} value={number.name} /></Link>
@@ -34,21 +35,20 @@ function NumberList(props) {
   );
 }
 
-const numbers = [
-  { id: 1, name: 'Đợt 1 năm 2020' },
-  { id: 2, name: 'Đợt 2 năm 2020' },
-];
-
 //create modal
 
 const useStyles = makeStyles((theme) => ({
+  paper: {
+    padding: '10px',
+  },
   modal: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  paper: {
+  paper1: {
     position: 'absolute',
+    // padding: '10px',
     width: 400,
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
@@ -73,12 +73,28 @@ export default function EvaluateList() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
+  //new Evaluation
+  const listEvaluate = [
+    { id: 1, name: 'Đợt 1 năm 2020' },
+    { id: 2, name: 'Đợt 2 năm 2020' },
+  ];
+  const [number, setNumber] = useState(listEvaluate);
+
+  const [evaluation, setEvaluation] = useState('')
+  const submit = e => {
+    e.preventDefault()
+    setNumber(number => [...number, { id: listEvaluate.length, name: evaluation }])
+    // // useEffect
+    // console.log(number)
+    // console.log(listEvaluate)
+  }
+
   return (
-    <Paper>
+    <Paper className={classes.paper}>
       <Typography component="h1" variant="h6" color="inherit" noWrap>
         Đợt đánh giá
-        </Typography>
-      <NumberList numbers={numbers} />
+      </Typography>
+      <NumberList numbers={number} />
       <Button variant="contained" type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -93,9 +109,9 @@ export default function EvaluateList() {
         }}
       >
         <Fade in={open}>
-          <div className={classes.paper}>
+          <div className={classes.paper1}>
             <h2 id="transition-modal-title">Thêm đợt đánh giá</h2>
-            <form>
+            <form onSubmit={submit}>
               <TextField
                 // onChange={this.onChangeUsername}
                 variant="outlined"
@@ -107,6 +123,7 @@ export default function EvaluateList() {
                 name="evaluateName"
                 autoComplete="evaluateName"
                 autoFocus
+                onChange={e => setEvaluation(e.target.value)}
               />
               <label>Từ ngày:  &nbsp; </label>
               <DatePicker selected={startDate} onChange={date => setStartDate(date)} selectsStart
@@ -118,8 +135,10 @@ export default function EvaluateList() {
                 startDate={startDate} endDate={endDate} minDate={startDate} dateFormat="dd/MM/yyyy"
               />
               <br />
-              <Button type="submit" variant="contained" color="primary">Tạo</Button>
-              <Button variant="contained" color="primary" onClick={handleClose}>Hủy</Button>
+              <div style={{textAlign:'center', marginTop:'10px'}}>
+                <Button style={{marginRight:'10px'}} type="submit" variant="contained" color="primary">Tạo</Button>
+                <Button style={{marginLeft:'10px'}}variant="contained" color="primary" onClick={handleClose}>Hủy</Button>
+              </div>
             </form>
           </div>
         </Fade>
