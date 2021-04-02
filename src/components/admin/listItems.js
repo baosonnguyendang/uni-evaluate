@@ -32,7 +32,7 @@ export function MainListItems() {
 
       <Divider />
 
-      <ListItem button>
+      <ListItem button component={Link} to={'/admin/criterion'}>
         {/* <Link to="/dashboard/user" style={{ display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <AssignmentIcon />
@@ -44,13 +44,13 @@ export function MainListItems() {
         </ListItemIcon>
         <ListItemText primary="DS Tiêu chuẩn" />
       </ListItem>
-      <ListItem button>
+      <ListItem button component={Link} to={'/admin/criteria'}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="DS Tiêu chí" />
       </ListItem>
-      <ListItem button button component={Link} to={'/admin/evaluate-settings'}>
+      <ListItem button component={Link} to={'/admin/evaluate-settings'}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
