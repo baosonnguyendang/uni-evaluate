@@ -44,7 +44,9 @@
 // }
 
 import React from 'react';
+
 import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -55,34 +57,47 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
 const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
+  { id: 'buttonList', label: 'Thao tác', minWidth: 100, align: 'center' },
+  { id: 'id', label: 'Mã\u00a0tiêu\u00a0chuẩn', minWidth: 60, align: 'center' },
+  { id: 'name', label: 'Tên\u00a0tiêu\u00a0chuẩn', minWidth: 250 },
   {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
+    id: 'description',
+    label: 'Mô\u00a0tả',
+    minWidth: 250,
+    // format: (value) => value.toLocaleString('en-US'),
   },
   {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
+    id: 'numOfCriteria',
+    label: 'Số tiêu chí',
+    minWidth: 60,
+    align: 'center',
   },
   {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
+    id: 'point',
+    label: 'Tổng điểm',
+    minWidth: 60,
+    align: 'center',
   },
 ];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
+// function createData(name, code, population, size) {
+//   const density = population / size;
+//   return { name, code, population, size, density };
+// }
+
+
+function createData(id, name, description, numOfCriteria, point) {
+  const btn = (
+    <div>
+      <Button variant="contained" color="primary">
+        Primary
+      </Button>
+      <Button variant="contained" color="secondary">
+        Secondary
+      </Button>
+    </div>
+  )
+  return { btn, id, name, description, numOfCriteria, point }
 }
 
 const rows = [
@@ -146,7 +161,7 @@ export default function Criterion() {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
@@ -162,13 +177,13 @@ export default function Criterion() {
         </Table>
       </TableContainer>
       <TablePagination
-        // rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[10, 25, 100]}
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
-        // onChangeRowsPerPage={handleChangeRowsPerPage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
       />
     </Paper>
   )
