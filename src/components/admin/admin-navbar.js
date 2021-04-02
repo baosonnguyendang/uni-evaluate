@@ -19,6 +19,7 @@ import { MainListItems } from './listItems';
 import BasicTable from "./admin-user"
 import Faculty from "./admin-faculty"
 import EvaluateList from './admin-evaluate'
+import Criterion from './admin-criterion'
 import logo from '../../img/logo.png'
 
 import {
@@ -191,6 +192,7 @@ export default function Dashboard() {
                 <Route path='/admin/user' children={<BasicTable className={classes.paper}/>} />
                 <Route path='/admin/faculty' children={<Faculty className={classes.paper}/>} />
                 <Route path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper}/>} />
+                <Route path='/admin/criterion' children={<Criterion className={classes.paper}/>} />
               </Switch>
             </Grid>
           </Grid>
