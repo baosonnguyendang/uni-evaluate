@@ -187,9 +187,10 @@ export default function Criterion() {
   const [point, setP] = React.useState(0)
   const submit = e => {
     e.preventDefault()
-    rows.push(createData(name, id, description, quantity, point))
+    rows.push(createData(id, name, description, quantity, point))
     // // useEffect
     setCriterion(rows)
+    alert('Đã thêm tiêu chuẩn')
   }
 
   return (
@@ -220,10 +221,10 @@ export default function Criterion() {
                 <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field}/>
                 <TextField onChange={e => setId(e.target.value)} id="id" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field}/>
                 <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field}/>
-                <TextField onChange={e => setQ(e.target.value)} id="quantity" label="Số tiêu chí" variant="outlined" fullWidth className={classes.field}/>
-                <TextField onChange={e => setP(e.target.value)} id="point" label="Tổng điểm" variant="outlined" fullWidth className={classes.field}/>
+                <TextField onChange={e => setQ(e.target.value)} id="quantity" type='number' label="Số tiêu chí" variant="outlined" fullWidth className={classes.field}/>
+                <TextField onChange={e => setP(e.target.value)} id="point" type='number' label="Tổng điểm" variant="outlined" fullWidth className={classes.field}/>
                 <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">Tạo</Button>
+                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={handleClose}>Tạo</Button>
                   <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Hủy</Button>
                 </div>
               </form>
