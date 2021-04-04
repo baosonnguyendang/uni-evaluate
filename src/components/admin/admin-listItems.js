@@ -11,17 +11,17 @@ import { Link } from 'react-router-dom';
 export function MainListItems() {
   return (
     <div>
-      <ListItem button component={Link} to={'/dashboard/user'}>
+      <ListItem button component={Link} to={'/admin/user'}>
         <ListItemIcon>
           <PersonIcon />
         </ListItemIcon>
         <ListItemText primary="Người dùng" />
       </ListItem>
-      <ListItem button component={Link} to={'/dashboard/faculty'}>
+      <ListItem button component={Link} to={'/admin/faculty'}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
-        <ListItemText primary="Customers" />
+        <ListItemText primary="DS Đơn vị" />
       </ListItem>
       <ListItem button>
         <ListItemIcon>
@@ -32,7 +32,7 @@ export function MainListItems() {
 
       <Divider />
 
-      <ListItem button>
+      <ListItem button component={Link} to={'/admin/criterion'}>
         {/* <Link to="/dashboard/user" style={{ display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <AssignmentIcon />
@@ -44,13 +44,13 @@ export function MainListItems() {
         </ListItemIcon>
         <ListItemText primary="DS Tiêu chuẩn" />
       </ListItem>
-      <ListItem button>
+      <ListItem button component={Link} to={'/admin/criteria'}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="DS Tiêu chí" />
       </ListItem>
-      <ListItem button>
+      <ListItem button component={Link} to={'/admin/evaluate-settings'}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>

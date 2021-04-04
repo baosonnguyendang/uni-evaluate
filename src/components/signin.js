@@ -133,14 +133,14 @@ class SignInSide extends Component {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              <Link to="/dashboard" className="nav-link">
+              <Link to="/admin/user" className="nav-link">
                 <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                   Sign In
                 </Button>
               </Link>
               <Grid container>
                 <Grid item xs>
-                  <Link to="/dashboard" variant="body2">Forgot password?</Link>
+                  <Link to="/user/info" variant="body2">Forgot password?</Link>
                 </Grid>
               </Grid>
               <Box mt={5}>
