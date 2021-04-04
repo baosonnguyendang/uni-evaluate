@@ -62,7 +62,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 const columns = [
-  { id: 'buttonList', label: 'Thao tác', minWidth: 100, align: 'center' },
+  { id: 'btn', label: 'Thao tác', minWidth: 100, align: 'center' },
   { id: 'id', label: 'Mã\u00a0tiêu\u00a0chuẩn', minWidth: 60, align: 'center' },
   { id: 'name', label: 'Tên\u00a0tiêu\u00a0chuẩn', minWidth: 250 },
   {
@@ -88,11 +88,11 @@ const columns = [
 function createData(id, name, description, numOfCriteria, point) {
   const btn = (
     <div>
-      <Button variant="contained" color="primary">
-        Primary
+      <Button variant="contained" color="primary" style={{marginRight:'5px'}}>
+        Sửa
       </Button>
       <Button variant="contained" color="secondary">
-        Secondary
+        Xóa
       </Button>
     </div>
   )

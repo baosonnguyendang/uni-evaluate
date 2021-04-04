@@ -1,6 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
+
 import { makeStyles } from '@material-ui/core/styles';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -14,6 +16,9 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Popper from '@material-ui/core/Popper';
 
 import { MainListItems } from './admin-listItems';
 import BasicTable from "./admin-user"
@@ -131,12 +136,25 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
+
+  //dong, mo menu
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  //dang xuat
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -157,6 +175,9 @@ export default function Dashboard() {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             LVTN
           </Typography>
+          <IconButton color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+            <AccountCircleIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -180,19 +201,11 @@ export default function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              {/* <Paper className={classes.paper}>
-                <BasicTable />
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Faculty />
-              </Paper> */}
               <Switch>
-                <Route path='/admin/user' children={<BasicTable className={classes.paper}/>} />
-                <Route path='/admin/faculty' children={<Faculty className={classes.paper}/>} />
-                <Route path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper}/>} />
-                <Route path='/admin/criterion' children={<Criterion className={classes.paper}/>} />
+                <Route path='/admin/user' children={<BasicTable className={classes.paper} />} />
+                <Route path='/admin/faculty' children={<Faculty className={classes.paper} />} />
+                <Route path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper} />} />
+                <Route path='/admin/criterion' children={<Criterion className={classes.paper} />} />
               </Switch>
             </Grid>
           </Grid>
