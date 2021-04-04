@@ -3,9 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DataGrid } from '@material-ui/data-grid';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
+  paper: {
+    // padding: '10px',
+    marginTop: '15px'
+  },
   b: {
     width: '80px',
     margin: '10px',
@@ -71,17 +75,22 @@ export default function BasicTable() {
   const classes = useStyles();
 
   return (
-    <Paper>
-      <div>
-        <div style={{ textAlign: "right", paddingTop: '5px' }}>
-          <Button className={classes.b} variant="contained">Thêm</Button>
-          <Button className={classes.b} variant="contained">Xóa</Button>
-          <Button className={classes.b} variant="contained">Sửa</Button>
+    <div>
+      <Typography component="h1" variant="h5" color="inherit" noWrap>
+        DANH SÁCH NGƯỜI DÙNG
+      </Typography>
+      <Paper className={classes.paper}>
+        <div>
+          <div style={{ textAlign: "right", paddingTop: '5px' }}>
+            <Button className={classes.b} variant="contained">Thêm</Button>
+            <Button className={classes.b} variant="contained">Xóa</Button>
+            <Button className={classes.b} variant="contained">Sửa</Button>
+          </div>
+          <div style={{ height: 400, width: '100%', padding: '5px 10px 10px 10px' }}>
+            <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+          </div>
         </div>
-        <div style={{ height: 400, width: '100%', padding:'5px 10px 10px 10px'}}>
-          <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
-        </div>
-      </div>
-    </Paper>
+      </Paper>
+    </div>
   );
 }

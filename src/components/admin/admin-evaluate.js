@@ -40,6 +40,7 @@ function NumberList(props) {
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: '10px',
+    marginTop: '15px'
   },
   modal: {
     display: 'flex',
@@ -90,59 +91,61 @@ export default function EvaluateList() {
   }
 
   return (
-    <Paper className={classes.paper}>
-      <Typography component="h1" variant="h6" color="inherit" noWrap>
-        Đợt đánh giá
+    <div>
+      <Typography component="h1" variant="h5" color="inherit" noWrap>
+        DANH SÁCH ĐỢT ĐÁNH GIÁ
       </Typography>
-      <NumberList numbers={number} />
-      <Button variant="contained" type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={open}>
-          <div className={classes.paper1}>
-            <h2 id="transition-modal-title">Thêm đợt đánh giá</h2>
-            <form onSubmit={submit}>
-              <TextField
-                // onChange={this.onChangeUsername}
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="evaluateName"
-                label="Tên đợt đánh giá"
-                name="evaluateName"
-                autoComplete="evaluateName"
-                autoFocus
-                onChange={e => setEvaluation(e.target.value)}
-              />
-              <label>Từ ngày:  &nbsp; </label>
-              <DatePicker selected={startDate} onChange={date => setStartDate(date)} selectsStart
-                startDate={startDate} endDate={endDate} dateFormat="dd/MM/yyyy"
-              />
-              <br />
-              <label>Đến ngày:&nbsp; </label>
-              <DatePicker selected={endDate} onChange={date => setEndDate(date)} selectsEnd
-                startDate={startDate} endDate={endDate} minDate={startDate} dateFormat="dd/MM/yyyy"
-              />
-              <br />
-              <div style={{textAlign:'center', marginTop:'10px'}}>
-                <Button style={{marginRight:'10px'}} type="submit" variant="contained" color="primary">Tạo</Button>
-                <Button style={{marginLeft:'10px'}}variant="contained" color="primary" onClick={handleClose}>Hủy</Button>
-              </div>
-            </form>
-          </div>
-        </Fade>
-      </Modal>
-    </Paper>
+      <Paper className={classes.paper}>
+        <NumberList numbers={number} />
+        <Button variant="contained" type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            <div className={classes.paper1}>
+              <h2 id="transition-modal-title">Thêm đợt đánh giá</h2>
+              <form onSubmit={submit}>
+                <TextField
+                  // onChange={this.onChangeUsername}
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="evaluateName"
+                  label="Tên đợt đánh giá"
+                  name="evaluateName"
+                  autoComplete="evaluateName"
+                  autoFocus
+                  onChange={e => setEvaluation(e.target.value)}
+                />
+                <label>Từ ngày:  &nbsp; </label>
+                <DatePicker selected={startDate} onChange={date => setStartDate(date)} selectsStart
+                  startDate={startDate} endDate={endDate} dateFormat="dd/MM/yyyy"
+                />
+                <br />
+                <label>Đến ngày:&nbsp; </label>
+                <DatePicker selected={endDate} onChange={date => setEndDate(date)} selectsEnd
+                  startDate={startDate} endDate={endDate} minDate={startDate} dateFormat="dd/MM/yyyy"
+                />
+                <br />
+                <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">Tạo</Button>
+                  <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Hủy</Button>
+                </div>
+              </form>
+            </div>
+          </Fade>
+        </Modal>
+      </Paper>
+    </div>
   )
 }

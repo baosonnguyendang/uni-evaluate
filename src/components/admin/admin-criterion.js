@@ -85,12 +85,6 @@ const columns = [
   },
 ];
 
-// function createData(name, code, population, size) {
-//   const density = population / size;
-//   return { name, code, population, size, density };
-// }
-
-
 function createData(id, name, description, numOfCriteria, point) {
   const btn = (
     <div>
