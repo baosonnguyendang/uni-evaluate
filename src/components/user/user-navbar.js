@@ -15,11 +15,7 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
-import { MainListItems } from './admin-listItems';
-import BasicTable from "./admin-user"
-import Faculty from "./admin-faculty"
-import EvaluateList from './admin-evaluate'
-import Criterion from './admin-criterion'
+import { MainListItems } from './user-listItems';
 import logo from '../../img/logo.png'
 
 import {
@@ -129,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Dashboard() {
+export default function Dashboard2() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -189,10 +185,8 @@ export default function Dashboard() {
                 <Faculty />
               </Paper> */}
               <Switch>
-                <Route path='/admin/user' children={<BasicTable className={classes.paper}/>} />
-                <Route path='/admin/faculty' children={<Faculty className={classes.paper}/>} />
-                <Route path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper}/>} />
-                <Route path='/admin/criterion' children={<Criterion className={classes.paper}/>} />
+                {/* <Route path='/user/info' children={<BasicTable className={classes.paper}/>} />
+                <Route path='/user/evaluate' children={<Faculty className={classes.paper}/>} /> */}
               </Switch>
             </Grid>
           </Grid>

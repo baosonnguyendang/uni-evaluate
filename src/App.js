@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import SignInSide from "./components/signin"
 import StickyFooter from "./components/dashboard"
 import Dashboard from "./components/admin/admin-navbar"
-import BasicTable from "./components/admin/admin-user"
+import Dashboard2 from './components/user/user-navbar'
 
 function App() {
   return (
@@ -14,6 +14,7 @@ function App() {
         {/* <Navbar /> */}
         <Route path="/" exact component={SignInSide} />
         <Route path="/admin" component={Dashboard} />
+        <Route path="/user" component={Dashboard2} />
         {/* <Route path="/dashboard/user" component={BasicTable} /> */}
         {/* <Route path="/edit/:id" component={EditExercise} />
         <Route path="/create" component={CreateExercise} />
