@@ -43,7 +43,7 @@
 //   }
 // }
 
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -88,7 +88,7 @@ const columns = [
 function createData(id, name, description, numOfCriteria, point) {
   const btn = (
     <div>
-      <Button variant="contained" color="primary" style={{marginRight:'5px'}}>
+      <Button variant="contained" color="primary" style={{ marginRight: '5px' }}>
         Sửa
       </Button>
       <Button variant="contained" color="secondary">
@@ -125,6 +125,7 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     textTransform: 'none',
     margin: '15px',
+    float: 'right'
   },
   container: {
     maxHeight: 440,
@@ -151,6 +152,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Criterion() {
   const classes = useStyles();
+
+  //qua trang
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -184,7 +187,7 @@ export default function Criterion() {
     rows.push(createData(id, name, description, quantity, point))
     // // useEffect
     setCriterion(rows)
-    alert('Đã thêm tiêu chuẩn')
+    alert('Đã thêm tiêu chuẩn, vui lòng nhấn "Thoát"')
   }
 
   return (
@@ -212,14 +215,14 @@ export default function Criterion() {
             <div className={classes.paper1}>
               <h2 id="transition-modal-title">Thêm tiêu chuẩn</h2>
               <form onSubmit={submit}>
-                <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field}/>
-                <TextField onChange={e => setId(e.target.value)} id="id" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field}/>
-                <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field}/>
-                <TextField onChange={e => setQ(e.target.value)} id="quantity" type='number' label="Số tiêu chí" variant="outlined" fullWidth className={classes.field}/>
-                <TextField onChange={e => setP(e.target.value)} id="point" type='number' label="Tổng điểm" variant="outlined" fullWidth className={classes.field}/>
+                <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                <TextField onChange={e => setId(e.target.value)} id="id" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
+                <TextField onChange={e => setQ(e.target.value)} id="quantity" type='number' label="Số tiêu chí" variant="outlined" fullWidth className={classes.field} />
+                <TextField onChange={e => setP(e.target.value)} id="point" type='number' label="Tổng điểm" variant="outlined" fullWidth className={classes.field} />
                 <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={handleClose}>Tạo</Button>
-                  <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Hủy</Button>
+                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                  <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                 </div>
               </form>
             </div>
