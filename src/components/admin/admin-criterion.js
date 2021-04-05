@@ -90,15 +90,12 @@ const columns = [
 // lam cai var de cho button biet sua xoa vao dung hang cua minh
 var index = 0;
 
-function createData(id, name, description, numOfCriteria, point) {
-  const editCriterion = () => {
-    console.log(this.parentNode.id)
-    console.log(rows)
-  }
-  const deleteCriterion = (e) => rows.splice(e.target.parentNode.id, 1)
+function Btn(props) {
+  const editCriterion = () => {console.log(rows)}
+  const deleteCriterion = () => rows.splice(props.index, 1)
 
-  const btn = (
-    <div id={index}>
+  return (
+    <div>
       <Button onClick={editCriterion} variant="contained" color="primary" style={{ marginRight: '5px' }} startIcon={<EditIcon />} size="small">
         Sửa
       </Button>
@@ -107,6 +104,11 @@ function createData(id, name, description, numOfCriteria, point) {
       </Button>
     </div>
   )
+}
+
+function createData(id, name, description, numOfCriteria, point) {
+  const btn = <Btn index={index} />
+  
   index++;
   return { btn, id, name, description, numOfCriteria, point }
 }

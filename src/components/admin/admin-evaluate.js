@@ -23,7 +23,6 @@ function ListItem(props) {
 
 function NumberList(props) {
   const numbers = props.numbers;
-  console.log(numbers)
   const listItems = numbers.map((number) =>
     // Correct! Key should be specified inside the array.
     <Link to=''><ListItem key={number.id} value={number.name} /></Link>
