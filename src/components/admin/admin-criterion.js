@@ -43,12 +43,14 @@
 //   }
 // }
 
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
+import EditIcon from '@material-ui/icons/Edit';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -63,39 +65,49 @@ import Typography from '@material-ui/core/Typography';
 
 const columns = [
   { id: 'btn', label: 'Thao tác', minWidth: 100, align: 'center' },
-  { id: 'id', label: 'Mã\u00a0tiêu\u00a0chuẩn', minWidth: 60, align: 'center' },
+  { id: 'id', label: 'Mã\u00a0tiêu\u00a0chuẩn', minWidth: 40, align: 'center' },
   { id: 'name', label: 'Tên\u00a0tiêu\u00a0chuẩn', minWidth: 250 },
   {
     id: 'description',
     label: 'Mô\u00a0tả',
-    minWidth: 250,
+    minWidth: 280,
     // format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'numOfCriteria',
     label: 'Số tiêu chí',
-    minWidth: 60,
+    minWidth: 40,
     align: 'center',
   },
   {
     id: 'point',
     label: 'Tổng điểm',
-    minWidth: 60,
+    minWidth: 40,
     align: 'center',
   },
 ];
 
+// lam cai var de cho button biet sua xoa vao dung hang cua minh
+var index = 0;
+
 function createData(id, name, description, numOfCriteria, point) {
+  const editCriterion = () => {
+    console.log(this.parentNode.id)
+    console.log(rows)
+  }
+  const deleteCriterion = (e) => rows.splice(e.target.parentNode.id, 1)
+
   const btn = (
-    <div>
-      <Button variant="contained" color="primary" style={{ marginRight: '5px' }}>
+    <div id={index}>
+      <Button onClick={editCriterion} variant="contained" color="primary" style={{ marginRight: '5px' }} startIcon={<EditIcon />} size="small">
         Sửa
       </Button>
-      <Button variant="contained" color="secondary">
+      <Button onClick={deleteCriterion} variant="contained" color="secondary" endIcon={<DeleteIcon />} size="small">
         Xóa
       </Button>
     </div>
   )
+  index++;
   return { btn, id, name, description, numOfCriteria, point }
 }
 
@@ -229,7 +241,7 @@ export default function Criterion() {
           </Fade>
         </Modal>
         <TableContainer className={classes.container}>
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table" id='table'>
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
