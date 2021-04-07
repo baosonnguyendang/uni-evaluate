@@ -16,6 +16,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import { MainListItems } from './user-listItems';
+import Criterion from './user-evaluate';
+import Info from './user-info'
 import logo from '../../img/logo.png'
 
 import {
@@ -184,9 +186,11 @@ export default function Dashboard2() {
               <Paper className={classes.paper}>
                 <Faculty />
               </Paper> */}
-              <Switch>
+              <Switch> 
                 {/* <Route path='/user/info' children={<BasicTable className={classes.paper}/>} />
-                <Route path='/user/evaluate' children={<Faculty className={classes.paper}/>} /> */}
+                <Route path='/user/evaluate' children={<Criterion className={classes.paper}/>} /> */}
+                <Route path='/user/info' children={<Info className={classes.paper}/>} />
+                <Route path='/user/evaluate' children={<Criterion className={classes.paper}/>} />
               </Switch>
             </Grid>
           </Grid>

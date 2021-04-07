@@ -43,7 +43,7 @@
 //   }
 // }
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -78,21 +78,45 @@ const columns = [
     label: 'Số tiêu chí',
     minWidth: 40,
     align: 'center',
+    type: 'number',
   },
   {
     id: 'point',
     label: 'Tổng điểm',
     minWidth: 40,
     align: 'center',
+    type: 'number',
   },
 ];
 
 // lam cai var de cho button biet sua xoa vao dung hang cua minh
 var index = 0;
+/*  */
+
 
 function Btn(props) {
-  const editCriterion = () => {console.log(rows)}
-  const deleteCriterion = () => rows.splice(props.index, 1)
+  // const [bool, setBool] = useState(true);
+
+  // const editCriterion = () => {
+  //   console.log(rows)
+  // }
+
+  // const deleteCriterion = React.memo(() => {
+  //   rows.splice(props.index, 1)
+  // })
+
+  const editCriterion = () => {
+
+  }
+  const [num, setNum] = React.useState(-1)
+  const deleteCriterion = () => {
+    
+    console.log(props.index)
+    setNum(props.index);
+    rows.splice(props.index, 1)
+    console.log(num)
+    alert(num)
+  }
 
   return (
     <div>
@@ -104,31 +128,27 @@ function Btn(props) {
       </Button>
     </div>
   )
+
+
 }
 
 function createData(id, name, description, numOfCriteria, point) {
   const btn = <Btn index={index} />
-  
+
   index++;
   return { btn, id, name, description, numOfCriteria, point }
 }
 
 const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
+  createData('TC001', 'Hoạt động giảng dạy', 'Mô tả', 3, 42),
+  createData('TC002', 'Hoạt động khoa học', 'Mô tả', 1, 32),
+  createData('TC003', 'Hoạt động chuyên môn khác', 'Mô tả', 4, 10),
+  createData('TC004', 'Kiến thức, kỹ năng bổ trợ', 'Mô tả', 2, 6),
+  createData('TC005', 'Hoạt động đoàn thể, cộng đồng', 'Mô tả', 2, 10),
+  createData('TC011', 'Hoạt động chuyên môn', 'Mô tả', 3, 60),
+  createData('TC012', 'Ý thức, thái độ làm việc', 'Mô tả', 2, 20),
+  createData('TC013', 'Kiến thức, kỹ năng bổ trợ', 'Mô tả', 2, 10),
+  createData('TC014', 'Hoạt động đoàn thể, cộng đồng', 'Mô tả', 2, 10),
 ];
 
 const useStyles = makeStyles((theme) => ({
