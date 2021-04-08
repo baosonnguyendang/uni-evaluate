@@ -11,20 +11,17 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { MainListItems } from './user-listItems';
-import Criterion from './user-evaluate';
-import Info from './user-info'
+import Evaluation from './user-evaluation';
+import Evaluate from './user-evaluate';
+import Info from './user-info';
 import logo from '../../img/logo.png'
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 function Copyright() {
   return (
@@ -155,6 +152,11 @@ export default function Dashboard2() {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             LVTN
           </Typography>
+          <Link to='/'>
+            <IconButton style={{color: 'white'}} aria-controls="simple-menu" aria-haspopup="true">
+              <ExitToAppIcon />
+            </IconButton>
+          </Link>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -190,7 +192,8 @@ export default function Dashboard2() {
                 {/* <Route path='/user/info' children={<BasicTable className={classes.paper}/>} />
                 <Route path='/user/evaluate' children={<Criterion className={classes.paper}/>} /> */}
                 <Route path='/user/info' children={<Info className={classes.paper}/>} />
-                <Route path='/user/evaluate' children={<Criterion className={classes.paper}/>} />
+                <Route path='/user/evaluate' exact children={<Evaluation className={classes.paper}/>} />
+                <Route path='/user/evaluate/id' exact children={<Evaluate className={classes.paper}/>} />
               </Switch>
             </Grid>
           </Grid>

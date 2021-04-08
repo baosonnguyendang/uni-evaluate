@@ -1,41 +1,48 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  title: {
-    fontSize: 18,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-});
-
-export default function OutlinedCard() {
-  const classes = useStyles();
-
+export default function Evaluate() {
   return (
-    <Card className={classes.root} variant="outlined">
-      <CardContent>
-        <Typography className={classes.title} color="primary" gutterBottom>
-          Đợt đánh giá lần 1 năm 2021
-        </Typography>
-        <span>[1 Tiêu chuẩn, 2 Tiêu chí] </span>
-        <br/>
-        <span>Từ ngày: </span>
-        <br/>
-        <span>Đến ngày: </span>
-      </CardContent>
-      <CardActions>
-        <Button size="small" color='secondary'>Thực hiện khảo sát</Button>
-      </CardActions>
-    </Card>
+    <div>
+      <form>
+        <table className="table table-responsive">
+          <thead>
+            <tr>
+              <th>Courier</th>
+              <th>Service</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div className="radio">
+                  <label><input type="radio" id='regular' name="optradio" /></label>
+                </div>
+              </td>
+              <td>
+                <div className="radiotext">
+                  <label for='regular'>Regular ship</label>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div className="radio">
+                  <label><input type="radio" id='express' name="optradio" /></label>
+                </div>
+              </td>
+              <td>
+                <div className="radiotext">
+                  <label for='express'>Express Shipping</label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
   );
 }
