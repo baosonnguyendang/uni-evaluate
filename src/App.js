@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import SignInSide from "./components/signin"
-import StickyFooter from "./components/dashboard"
 import Dashboard from "./components/admin/admin-navbar"
 import Dashboard2 from './components/user/user-navbar'
 
