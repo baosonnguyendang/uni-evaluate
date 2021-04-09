@@ -7,11 +7,13 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
-export default function EvaluateSettings(props) {
+export default function EvaluateSetting(props) {
+  const name = props.name
+
   return (
     <Paper>
       <Table aria-label="caption table">
-        <caption>Các nhóm tham gia đánh giá</caption>
+        <caption>Các nhóm tham gia đánh giá {name} </caption>
         <TableHead>
           <TableRow>
             <TableCell align="left" />

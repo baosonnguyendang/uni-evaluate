@@ -22,6 +22,7 @@ import { MainListItems } from './admin-listItems';
 import BasicTable from "./admin-user"
 import Faculty from "./admin-faculty"
 import EvaluateList from './admin-evaluate'
+import EvaluateSetting from './admin-evaluate-setting'
 import Criterion from './admin-criterion'
 import logo from '../../img/logo.png'
 
@@ -180,10 +181,11 @@ export default function Dashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Switch>
-                <Route path='/admin/user' children={<BasicTable className={classes.paper} />} />
-                <Route path='/admin/faculty' children={<Faculty className={classes.paper} />} />
-                <Route path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper} />} />
-                <Route path='/admin/criterion' children={<Criterion className={classes.paper} />} />
+                <Route exact path='/admin/user' children={<BasicTable className={classes.paper} />} />
+                <Route exact path='/admin/faculty' children={<Faculty className={classes.paper} />} />
+                <Route exact path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper} />} />
+                <Route path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
+                <Route exact path='/admin/criterion' children={<Criterion className={classes.paper} />} />
               </Switch>
             </Grid>
           </Grid>
