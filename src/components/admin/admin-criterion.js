@@ -43,12 +43,14 @@
 //   }
 // }
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
+import EditIcon from '@material-ui/icons/Edit';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -62,59 +64,91 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 const columns = [
-  { id: 'buttonList', label: 'Thao tác', minWidth: 100, align: 'center' },
-  { id: 'id', label: 'Mã\u00a0tiêu\u00a0chuẩn', minWidth: 60, align: 'center' },
+  { id: 'btn', label: 'Thao tác', minWidth: 100, align: 'center' },
+  { id: 'id', label: 'Mã\u00a0tiêu\u00a0chuẩn', minWidth: 40, align: 'center' },
   { id: 'name', label: 'Tên\u00a0tiêu\u00a0chuẩn', minWidth: 250 },
   {
     id: 'description',
     label: 'Mô\u00a0tả',
-    minWidth: 250,
+    minWidth: 280,
     // format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'numOfCriteria',
     label: 'Số tiêu chí',
-    minWidth: 60,
+    minWidth: 40,
     align: 'center',
+    type: 'number',
   },
   {
     id: 'point',
     label: 'Tổng điểm',
-    minWidth: 60,
+    minWidth: 40,
     align: 'center',
+    type: 'number',
   },
 ];
 
-function createData(id, name, description, numOfCriteria, point) {
-  const btn = (
+// lam cai var de cho button biet sua xoa vao dung hang cua minh
+var index = 0;
+/*  */
+
+
+function Btn(props) {
+  // const [bool, setBool] = useState(true);
+
+  // const editCriterion = () => {
+  //   console.log(rows)
+  // }
+
+  // const deleteCriterion = React.memo(() => {
+  //   rows.splice(props.index, 1)
+  // })
+
+  const editCriterion = () => {
+
+  }
+  const [num, setNum] = React.useState(-1)
+  const deleteCriterion = () => {
+    
+    console.log(props.index)
+    setNum(props.index);
+    rows.splice(props.index, 1)
+    console.log(num)
+    alert(num)
+  }
+
+  return (
     <div>
-      <Button variant="contained" color="primary">
-        Primary
+      <Button onClick={editCriterion} variant="contained" color="primary" style={{ marginRight: '5px' }} startIcon={<EditIcon />} size="small">
+        Sửa
       </Button>
-      <Button variant="contained" color="secondary">
-        Secondary
+      <Button onClick={deleteCriterion} variant="contained" color="secondary" endIcon={<DeleteIcon />} size="small">
+        Xóa
       </Button>
     </div>
   )
+
+
+}
+
+function createData(id, name, description, numOfCriteria, point) {
+  const btn = <Btn index={index} />
+
+  index++;
   return { btn, id, name, description, numOfCriteria, point }
 }
 
 const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
+  createData('TC001', 'Hoạt động giảng dạy', 'Mô tả', 3, 42),
+  createData('TC002', 'Hoạt động khoa học', 'Mô tả', 1, 32),
+  createData('TC003', 'Hoạt động chuyên môn khác', 'Mô tả', 4, 10),
+  createData('TC004', 'Kiến thức, kỹ năng bổ trợ', 'Mô tả', 2, 6),
+  createData('TC005', 'Hoạt động đoàn thể, cộng đồng', 'Mô tả', 2, 10),
+  createData('TC011', 'Hoạt động chuyên môn', 'Mô tả', 3, 60),
+  createData('TC012', 'Ý thức, thái độ làm việc', 'Mô tả', 2, 20),
+  createData('TC013', 'Kiến thức, kỹ năng bổ trợ', 'Mô tả', 2, 10),
+  createData('TC014', 'Hoạt động đoàn thể, cộng đồng', 'Mô tả', 2, 10),
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -125,6 +159,7 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     textTransform: 'none',
     margin: '15px',
+    float: 'right'
   },
   container: {
     maxHeight: 440,
@@ -151,6 +186,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Criterion() {
   const classes = useStyles();
+
+  //qua trang
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -184,7 +221,7 @@ export default function Criterion() {
     rows.push(createData(id, name, description, quantity, point))
     // // useEffect
     setCriterion(rows)
-    alert('Đã thêm tiêu chuẩn')
+    alert('Đã thêm tiêu chuẩn, vui lòng nhấn "Thoát"')
   }
 
   return (
@@ -212,21 +249,21 @@ export default function Criterion() {
             <div className={classes.paper1}>
               <h2 id="transition-modal-title">Thêm tiêu chuẩn</h2>
               <form onSubmit={submit}>
-                <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field}/>
-                <TextField onChange={e => setId(e.target.value)} id="id" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field}/>
-                <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field}/>
-                <TextField onChange={e => setQ(e.target.value)} id="quantity" type='number' label="Số tiêu chí" variant="outlined" fullWidth className={classes.field}/>
-                <TextField onChange={e => setP(e.target.value)} id="point" type='number' label="Tổng điểm" variant="outlined" fullWidth className={classes.field}/>
+                <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                <TextField onChange={e => setId(e.target.value)} id="id" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
+                <TextField onChange={e => setQ(e.target.value)} id="quantity" type='number' label="Số tiêu chí" variant="outlined" fullWidth className={classes.field} />
+                <TextField onChange={e => setP(e.target.value)} id="point" type='number' label="Tổng điểm" variant="outlined" fullWidth className={classes.field} />
                 <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={handleClose}>Tạo</Button>
-                  <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Hủy</Button>
+                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                  <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                 </div>
               </form>
             </div>
           </Fade>
         </Modal>
         <TableContainer className={classes.container}>
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table" id='table'>
             <TableHead>
               <TableRow>
                 {columns.map((column) => (

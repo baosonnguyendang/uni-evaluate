@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
@@ -11,9 +12,11 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import { MainListItems } from './admin-listItems';
 import BasicTable from "./admin-user"
@@ -22,24 +25,7 @@ import EvaluateList from './admin-evaluate'
 import Criterion from './admin-criterion'
 import logo from '../../img/logo.png'
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -131,12 +117,20 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
+
+  //dong, mo menu
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  //dang xuat
+
+  const handleClick = () => {
+
   };
 
   return (
@@ -157,6 +151,11 @@ export default function Dashboard() {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             LVTN
           </Typography>
+          <Link to='/'>
+            <IconButton style={{color: 'white'}} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+              <ExitToAppIcon />
+            </IconButton>
+          </Link>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -180,19 +179,11 @@ export default function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              {/* <Paper className={classes.paper}>
-                <BasicTable />
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Faculty />
-              </Paper> */}
               <Switch>
-                <Route path='/admin/user' children={<BasicTable className={classes.paper}/>} />
-                <Route path='/admin/faculty' children={<Faculty className={classes.paper}/>} />
-                <Route path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper}/>} />
-                <Route path='/admin/criterion' children={<Criterion className={classes.paper}/>} />
+                <Route path='/admin/user' children={<BasicTable className={classes.paper} />} />
+                <Route path='/admin/faculty' children={<Faculty className={classes.paper} />} />
+                <Route path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper} />} />
+                <Route path='/admin/criterion' children={<Criterion className={classes.paper} />} />
               </Switch>
             </Grid>
           </Grid>

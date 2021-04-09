@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
     width: '80px',
     margin: '10px',
     textAlign: 'end',
+  },
+  input: {
+    display: 'none',
   }
 }));
 
@@ -82,7 +85,18 @@ export default function BasicTable() {
       <Paper className={classes.paper}>
         <div>
           <div style={{ textAlign: "right", paddingTop: '5px' }}>
-            <Button className={classes.b} variant="contained">Thêm</Button>
+            <input
+              accept="image/*"
+              className={classes.input}
+              id="contained-button-file"
+              multiple
+              type="file"
+            />
+            <label htmlFor="contained-button-file">
+              <Button variant="contained" color="primary" component="span" className={classes.b}>
+                Thêm
+              </Button>
+            </label>
             <Button className={classes.b} variant="contained">Xóa</Button>
             <Button className={classes.b} variant="contained">Sửa</Button>
           </div>

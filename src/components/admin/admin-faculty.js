@@ -6,35 +6,23 @@ import Typography from '@material-ui/core/Typography';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'name', headerName: 'Tên Khoa/Phòng ban', width: 220 },
-  { field: 'head', headerName: 'Trưởng Khoa/Phòng ban', width: 220 },
+  { field: 'name', headerName: 'Tên Đơn vị', width: 220 },
+  { field: 'head', headerName: 'Trưởng Đơn vị', width: 220 },
   {
-    field: 'age',
-    headerName: 'Age',
+    field: 'headID',
+    headerName: 'ID Trưởng Đơn vị',
     type: 'number',
-    width: 90,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params) =>
-      `${params.getValue('name') || ''} ${params.getValue('head') || ''}`,
+    width: 180,
   },
 ];
 
 const rows = [
-  { id: 1, name: 'Snow', head: 'Jon', age: 35 },
-  { id: 2, name: 'Lannister', head: 'Cersei', age: 42 },
-  { id: 3, name: 'Lannister', head: 'Jaime', age: 45 },
-  { id: 4, name: 'Stark', head: 'Arya', age: 16 },
-  { id: 5, name: 'Targaryen', head: 'Daenerys', age: null },
-  { id: 6, name: 'Melisandre', head: null, age: 150 },
-  { id: 7, name: 'Clifford', head: 'Ferrara', age: 44 },
-  { id: 8, name: 'Frances', head: 'Rossini', age: 36 },
-  { id: 9, name: 'Roxie', head: 'Harvey', age: 65 },
+  { id: 1, name: 'Khoa Máy tính', head: 'Jon', headID: 35 },
+  { id: 2, name: 'Khoa Điện - Điện tử', head: 'Cersei', headID: 42 },
+  { id: 3, name: 'Khoa Cơ khí', head: 'Jaime', headID: 45 },
+  { id: 4, name: 'Phòng Đào tạo', head: 'Arya', headID: 16 },
+  { id: 5, name: 'Phòng Y tế', head: 'Daenerys', headID: null },
+  { id: 6, name: 'Thư viện', head: null, headID: 150 },
 ];
 
 export default function Faculty() {
