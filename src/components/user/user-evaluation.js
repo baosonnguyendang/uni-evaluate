@@ -41,7 +41,7 @@ export default class Evaluation extends React.Component {
   }
 
   setEndDate = () => {
-    
+    alert('danh dz')
   }
 
   render() {
