@@ -75,4 +75,5 @@ material-ui;
 @material-ui/data-grid;
 react-modal;
 react-boostrap;
-react-datepicker
+react-datepicker;
+moment;
