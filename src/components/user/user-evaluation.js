@@ -20,11 +20,23 @@ export default class Evaluation extends React.Component {
     this.setEndDate = this.setEndDate.bind(this)
 
     this.state = {
-      numOfCriterion: 0,
-      numOfCriteria: 0,
       today: Moment(),
-      startDate: Moment('2021-1-13'),
-      endDate: Moment('2021-12-13'),
+      listOfEvaluation: [
+        {
+          name: 'Đợt đánh giá lần 1 năm 2021',
+          numOfCriterion: 5,
+          numOfCriteria: 11,
+          startDate: Moment('2021-1-14'),
+          endDate: Moment('2021-2-13'),
+        },
+        {
+          name: 'Đợt đánh giá lần 2 năm 2021',
+          numOfCriterion: 0,
+          numOfCriteria: 0,
+          startDate: Moment('2021-1-13'),
+          endDate: Moment('2021-12-13'),
+        }
+      ],
     }
   }
 
@@ -45,29 +57,38 @@ export default class Evaluation extends React.Component {
   }
 
   render() {
-    let randum;
-    // if (this.state.today > this.state.startDate && this.state.today < this.state.endDate) {
-    if (this.state.today.isAfter(this.state.startDate) && this.state.today.isBefore(this.state.endDate)) {
-      randum = <Link to='/user/evaluate/id'><Button size="small" color='secondary'>Thực hiện khảo sát</Button></Link>
-    } else {
-      randum = <Button size="small" color='secondary' onClick={() => alert('Ngoài thời gian thực hiện khảo sát')}>Thực hiện khảo sát</Button>
-    }
+    const InTime = (
+      <Link to='/user/evaluate/id'>
+        <Button size="small" color='secondary'>
+          Thực hiện khảo sát
+        </Button>
+      </Link>
+    )
+    const NotInTime = (
+      <Button size="small" color='secondary' onClick={() => alert('Ngoài thời gian thực hiện khảo sát')}>
+        Thực hiện khảo sát
+      </Button>
+    )
     return (
-      <Card style={{minWidth: '275'}} variant="outlined">
-        <CardContent>
-          <Typography style={{fontSize: '18'}} color="primary" gutterBottom>
-            Đợt đánh giá lần 1 năm 2021
-          </Typography>
-          <span>[1 Tiêu chuẩn, 2 Tiêu chí] </span>
-          <br />
-          <span>Từ ngày: {this.state.startDate.format('DD/MM/YYYY')}</span>
-          <br />
-          <span>Đến ngày: {this.state.endDate.format('DD/MM/YYYY')}</span>
-        </CardContent>
-        <CardActions>
-          {randum}
-        </CardActions>
-      </Card>
+      <div>
+        {this.state.listOfEvaluation.map(item => (
+          <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+            <CardContent>
+              <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+                {item.name}
+              </Typography>
+              <span>[{item.numOfCriteria} Tiêu chuẩn, {item.numOfCriterion} Tiêu chí] </span>
+              <br />
+              <span>Từ ngày: {item.startDate.format('DD/MM/YYYY')}</span>
+              <br />
+              <span>Đến ngày: {item.endDate.format('DD/MM/YYYY')}</span>
+            </CardContent>
+            <CardActions>
+              { this.state.today.isAfter(item.startDate) && this.state.today.isBefore(item.endDate) ? InTime : NotInTime }
+            </CardActions>
+          </Card>
+        ))}
+      </div>
     )
   }
 }
