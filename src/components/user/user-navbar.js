@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,13 +15,17 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
+import Calendar from 'react-calendar';
 import { MainListItems } from './user-listItems';
 import Evaluation from './user-evaluation';
 import Evaluate from './user-evaluate';
 import Info from './user-info';
 import logo from '../../img/logo.png'
 
+import 'react-calendar/dist/Calendar.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Main from './user-main'
+import TableEvaluation from './element/user-table'
 
 function Copyright() {
   return (
@@ -36,11 +40,15 @@ function Copyright() {
   );
 }
 
-const drawerWidth = 240;
+const drawerWidth = 0;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+  },
+  task: {
+    flexGrow:1,
+    minWidth:700
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -99,6 +107,7 @@ const useStyles = makeStyles((theme) => ({
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
+    marginTop: 20,
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
@@ -121,8 +130,11 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     maxWidth: '60px',
     marginRight: '10px'
-  }
+  },
+
 }));
+
+
 
 export default function Dashboard2() {
   const classes = useStyles();
@@ -159,45 +171,19 @@ export default function Dashboard2() {
           </Link>
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        {/* <List>{mainListItems}</List> */}
-        <List><MainListItems /></List>
-      </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              {/* <Paper className={classes.paper}>
-                <BasicTable />
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Faculty />
-              </Paper> */}
-              <Switch> 
-                {/* <Route path='/user/info' children={<BasicTable className={classes.paper}/>} />
-                <Route path='/user/evaluate' children={<Criterion className={classes.paper}/>} /> */}
-                <Route path='/user/info' children={<Info className={classes.paper}/>} />
-                <Route path='/user/evaluate' exact children={<Evaluation className={classes.paper}/>} />
-                <Route path='/user/evaluate/id' exact children={<Evaluate className={classes.paper}/>} />
-              </Switch>
-            </Grid>
+          <Grid container justify="center">
+            <Switch>
+              <Route path='/user/evaluate/:slug'>
+                <TableEvaluation />
+              </Route>
+              <Route path='/'>
+                <Main />
+              </Route>
+            </Switch>
           </Grid>
-        </Container>
+
       </main>
     </div>
   );
