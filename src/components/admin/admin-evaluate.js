@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 
-import { Link } from 'react-router-dom';
+import EvaluateSetting from './admin-evaluate-setting'
+
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import DatePicker from 'react-datepicker';
 
@@ -23,9 +24,9 @@ function ListItem(props) {
 
 function NumberList(props) {
   const numbers = props.numbers;
-  const listItems = numbers.map((number) =>
+  const listItems = numbers.map((item) =>
     // Correct! Key should be specified inside the array.
-    <Link to={'evaluate/' + number.id}><ListItem key={number.id} value={number.name} /></Link>
+    <Link to={'/admin/evaluate-settings/' + item.id}><ListItem key={item.id} value={item.name} /></Link>
   );
   return (
     <ul>
