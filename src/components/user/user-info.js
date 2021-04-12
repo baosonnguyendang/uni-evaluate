@@ -54,6 +54,10 @@ export default function Info() {
                   <th>Đơn vị:</th>
                   <td>RB Leipzig</td>
                 </tr>
+                <tr>
+                  <th>Chức vụ:</th>
+                  <td>Midfielder</td>
+                </tr>
               </tbody>
             </table>
           </div>

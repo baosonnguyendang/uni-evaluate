@@ -2,9 +2,14 @@ import React from 'react'
 import { Grid,Typography } from "@material-ui/core";
 import Calendar from 'react-calendar'
 import { makeStyles } from "@material-ui/core";
-import Line from './element/user-listline'
+// import Line from './element/user-listline'
 import Line1 from './element/user-lineitem'
-const data = [{id:1, name:"Đánh giá cuối năm 2019"},{id:2, name:"Đánh giá cuối năm 2020"},{id:3, name:"Đánh giá cuối năm"},]
+
+const data = [
+  {id:1, name:"Đánh giá cuối năm 2019"},
+  {id:2, name:"Đánh giá cuối năm 2020"},
+  {id:3, name:"Đánh giá cuối năm"},
+]
 
 const useStyles = makeStyles((theme) => ({
     root: {

@@ -24,6 +24,7 @@ export default class Evaluation extends React.Component {
       listOfEvaluation: [
         {
           name: 'Đợt đánh giá lần 1 năm 2021',
+          id: 1,
           numOfCriterion: 5,
           numOfCriteria: 11,
           startDate: Moment('2021-1-14'),
@@ -31,6 +32,7 @@ export default class Evaluation extends React.Component {
         },
         {
           name: 'Đợt đánh giá lần 2 năm 2021',
+          id: 2,
           numOfCriterion: 0,
           numOfCriteria: 0,
           startDate: Moment('2021-1-13'),
@@ -57,13 +59,13 @@ export default class Evaluation extends React.Component {
   }
 
   render() {
-    const InTime = (
-      <Link to='/user/evaluate/id'>
-        <Button size="small" color='secondary'>
-          Thực hiện khảo sát
-        </Button>
-      </Link>
-    )
+    // const InTime = (
+    //   <Link to={'/user/evaluate/' + '1'}>
+    //     <Button size="small" color='secondary'>
+    //       Thực hiện khảo sát
+    //     </Button>
+    //   </Link>
+    // )
     const NotInTime = (
       <Button size="small" color='secondary' onClick={() => alert('Ngoài thời gian thực hiện khảo sát')}>
         Thực hiện khảo sát
@@ -84,7 +86,13 @@ export default class Evaluation extends React.Component {
               <span>Đến ngày: {item.endDate.format('DD/MM/YYYY')}</span>
             </CardContent>
             <CardActions>
-              { this.state.today.isAfter(item.startDate) && this.state.today.isBefore(item.endDate) ? InTime : NotInTime }
+              {this.state.today.isAfter(item.startDate) && this.state.today.isBefore(item.endDate) ?
+                <Link to={'/user/evaluate/' + item.id}>
+                  <Button size="small" color='secondary'>
+                    Thực hiện khảo sát
+                    </Button>
+                </Link> :
+                NotInTime}
             </CardActions>
           </Card>
         ))}
