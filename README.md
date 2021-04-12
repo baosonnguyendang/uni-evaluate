@@ -77,3 +77,4 @@ react-modal;
 react-boostrap;
 react-datepicker;
 moment;
+react-calendar
