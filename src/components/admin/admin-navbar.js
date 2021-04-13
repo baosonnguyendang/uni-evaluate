@@ -23,8 +23,9 @@ import BasicTable from "./admin-user"
 import Faculty from "./admin-faculty"
 import EvaluateList from './admin-evaluate'
 import EvaluateSetting from './admin-evaluate-setting'
-import Criterion from './admin-criterion'
 import Criteria from './admin-criteria'
+import Criterion from './admin-criterion'
+import Sub from './admin-sub'
 import logo from '../../img/logo.png'
 
 import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
@@ -187,7 +188,8 @@ export default function Dashboard() {
                 <Route exact path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper} />} />
                 <Route path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
                 <Route exact path='/admin/criterion' children={<Criterion className={classes.paper} />} />
-                <Route exact path='/admin/criteria' children={<Criteria className={classes.paper} />} />
+                <Route exact path='/admin/criteria/' children={<Sub className={classes.paper} />} />
+                <Route path='/admin/criteria/:id' children={<Criteria className={classes.paper} />} />
               </Switch>
             </Grid>
           </Grid>

@@ -23,7 +23,7 @@ export function MainListItems() {
         </ListItemIcon>
         <ListItemText primary="DS Đơn vị" />
       </ListItem>
-      <ListItem button>
+      <ListItem button component={Link} to={'/admin/criteria'}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
@@ -39,12 +39,6 @@ export function MainListItems() {
           </ListItemIcon>
           <ListItemText primary="DS Tiêu chuẩn" className={classes.menuLink} />
         </Link> */}
-        <ListItemIcon>
-          <AssignmentIcon />
-        </ListItemIcon>
-        <ListItemText primary="DS Tiêu chuẩn" />
-      </ListItem>
-      <ListItem button component={Link} to={'/admin/criteria'}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>

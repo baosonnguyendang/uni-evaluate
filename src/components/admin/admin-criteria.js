@@ -1,5 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
+
+import { Link, useParams } from 'react-router-dom';
+
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -41,7 +44,8 @@ const useStyles = makeStyles(theme => ({
     height: 40
   },
   name: {
-    width: '30%'
+    width: '30%',
+    height: 40,
   },
   number: {
     width: '10%'
@@ -61,13 +65,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const createData = (name, code, description, numOfCriteria, point) => ({
-  id: name.replace(" ", "_"),
+const createData = (name, code, description) => ({
+  id: code,
   name,
   code,
   description,
-  numOfCriteria,
-  point,
   isEditMode: false
 });
 
@@ -92,15 +94,9 @@ const CustomTableCell = ({ row, name, onChange }) => {
 
 export default function Criteria() {
   const [rows, setRows] = React.useState([
-    createData("Hoạt động giảng dạy", 'TC001', 'Mô tả', 3, 42),
-    createData("Hoạt động khoa học", 'TC002', 'Mô tả', 1, 32),
-    createData("Hoạt động chuyên môn khác", 'TC003', 'Mô tả', 4, 10),
-    createData("Kiến thức, kỹ năng bổ trợ", 'TC004', 'Mô tả', 2, 6),
-    createData("Hoạt động đoàn thể, cộng đồng", 'TC005', 'Mô tả', 2, 10),
-    createData("Hoạt động chuyên môn", 'TC011', 'Mô tả', 3, 60),
-    createData("Ý thức, thái độ làm việc", 'TC012', 'Mô tả', 2, 20),
-    createData("Kiến thức, kỹ năng bổ trợ", 'TC013', 'Mô tả', 2, 10),
-    createData("Hoạt động đoàn thể, cộng đồng", 'TC014', 'Mô tả', 2, 10)
+    createData("Định mức giờ chuẩn hoàn thành", '00101', 'BÙm bùm bùm bùm'),
+    createData("Kết quả khảo sát chất lượng dịch vụ", '00102', 'Mô tảaaaaaaaaaaaaaaaaaaaaaa'),
+    createData("Hình thức giảng dạy khác", '00103', 'Description')
   ]);
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
@@ -165,28 +161,31 @@ export default function Criteria() {
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
   const [description, setD] = React.useState('')
-  const [numOfCriteria, setN] = React.useState(0)
-  const [point, setP] = React.useState(0)
   const submit = e => {
     e.preventDefault()
-    setRows(rows => [...rows, createData(name, code, description, numOfCriteria, point)])
+    setRows(rows => [...rows, createData(name, code, description)])
+  }
+
+  function User() {
+    let { id } = useParams();
+    return (
+      < Typography component = "h1" variant = "h5" color = "inherit" noWrap >
+        Tiêu chuẩn { id } - DS Tiêu chí
+      </Typography >
+    )
   }
 
   return (
     <div>
-      <Typography component="h1" variant="h5" color="inherit" noWrap>
-        DANH SÁCH TIÊU CHUẨN
-    </Typography>
+      <User />
       <Paper className={classes.root}>
         <Table className={classes.table} aria-label="caption table">
           <TableHead>
-            <TableRow style={{backgroundColor:'#f4f4f4'}}>
+            <TableRow style={{ backgroundColor: '#f4f4f4' }}>
               <TableCell align="left" />
-              <TableCell className={classes.name} align="left">Tên tiêu chuẩn</TableCell>
-              <TableCell className={classes.number} align="left">Mã TC</TableCell>
-              <TableCell align="left">Mô tả</TableCell>
-              <TableCell className={classes.number} align="left">Số tiêu chí</TableCell>
-              <TableCell className={classes.number} align="left">Tổng điểm</TableCell>
+              <TableCell className={classes.name} >Tên tiêu chí</TableCell>
+              <TableCell className={classes.number} >Mã tiêu chí</TableCell>
+              <TableCell >Mô tả</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -228,15 +227,13 @@ export default function Criteria() {
                 <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
                 <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
                 <CustomTableCell {...{ row, name: "description", onChange }} />
-                <CustomTableCell className={classes.number} {...{ row, name: "numOfCriteria", onChange }} />
-                <CustomTableCell className={classes.number} {...{ row, name: "point", onChange }} />
               </TableRow>
             ))}
           </TableBody>
         </Table>
         <div style={{ margin: '10px', textAlign: 'right' }}>
           <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-            Tạo tiêu chuẩn mới
+            Tạo tiêu chí mới
           </Button>
           <Modal
             aria-labelledby="transition-modal-title"
@@ -257,8 +254,6 @@ export default function Criteria() {
                   <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
-                  <TextField onChange={e => setN(e.target.value)} id="numOfCriteria" type='number' label="Số tiêu chí" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setP(e.target.value)} id="point" type='number' label="Tổng điểm" variant="outlined" fullWidth className={classes.field} />
                   <div style={{ textAlign: 'center', marginTop: '10px' }}>
                     <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                     <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
