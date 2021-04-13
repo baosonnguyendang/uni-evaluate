@@ -10,9 +10,15 @@ import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
+import Backdrop from '@material-ui/core/Backdrop';
+import Button from '@material-ui/core/Button';
+import Fade from '@material-ui/core/Fade';
 import EditIcon from "@material-ui/icons/EditOutlined";
 import DoneIcon from "@material-ui/icons/DoneAllTwoTone";
+import DeleteIcon from '@material-ui/icons/Delete';
+import Modal from '@material-ui/core/Modal';
 import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
+import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
@@ -25,25 +31,43 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   selectTableCell: {
-    width: 60
+    width: 120,
+    paddingRight: 0,
   },
   tableCell: {
-    width: 130,
-    height: 40
+    height: 40,
   },
   input: {
-    width: 130,
     height: 40
-  }
+  },
+  name: {
+    width: '30%'
+  },
+  number: {
+    width: '10%'
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper1: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
 
-const createData = (name, calories, fat, carbs, protein) => ({
+const createData = (name, code, description, numOfCriteria, point) => ({
   id: name.replace(" ", "_"),
   name,
-  calories,
-  fat,
-  carbs,
-  protein,
+  code,
+  description,
+  numOfCriteria,
+  point,
   isEditMode: false
 });
 
@@ -68,9 +92,15 @@ const CustomTableCell = ({ row, name, onChange }) => {
 
 export default function Criteria() {
   const [rows, setRows] = React.useState([
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0)
+    createData("Hoạt động giảng dạy", 'TC001', 'Mô tả', 3, 42),
+    createData("Hoạt động khoa học", 'TC002', 'Mô tả', 1, 32),
+    createData("Hoạt động chuyên môn khác", 'TC003', 'Mô tả', 4, 10),
+    createData("Kiến thức, kỹ năng bổ trợ", 'TC004', 'Mô tả', 2, 6),
+    createData("Hoạt động đoàn thể, cộng đồng", 'TC005', 'Mô tả', 2, 10),
+    createData("Hoạt động chuyên môn", 'TC011', 'Mô tả', 3, 60),
+    createData("Ý thức, thái độ làm việc", 'TC012', 'Mô tả', 2, 20),
+    createData("Kiến thức, kỹ năng bổ trợ", 'TC013', 'Mô tả', 2, 10),
+    createData("Hoạt động đoàn thể, cộng đồng", 'TC014', 'Mô tả', 2, 10)
   ]);
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
@@ -102,6 +132,11 @@ export default function Criteria() {
     setRows(newRows);
   };
 
+  const onDelete = id => {
+    const newRows = rows.filter(row => row.id !== id)
+    setRows(newRows)
+  }
+
   const onRevert = id => {
     const newRows = rows.map(row => {
       if (row.id === id) {
@@ -117,22 +152,41 @@ export default function Criteria() {
     onToggleEditMode(id);
   };
 
+  //open modal
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  //get data from new criterion
+  const [name, setName] = React.useState('')
+  const [code, setC] = React.useState('')
+  const [description, setD] = React.useState('')
+  const [numOfCriteria, setN] = React.useState(0)
+  const [point, setP] = React.useState(0)
+  const submit = e => {
+    e.preventDefault()
+    setRows(rows => [...rows, createData(name, code, description, numOfCriteria, point)])
+  }
+
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
-        DANH SÁCH TIÊU CHÍ
+        DANH SÁCH TIÊU CHUẨN
     </Typography>
       <Paper className={classes.root}>
         <Table className={classes.table} aria-label="caption table">
-          <caption>A barbone structure table example with a caption</caption>
           <TableHead>
-            <TableRow>
+            <TableRow style={{backgroundColor:'#f4f4f4'}}>
               <TableCell align="left" />
-              <TableCell align="left">Tên tiêu chí</TableCell>
-              <TableCell align="left">Mã tiêu chí</TableCell>
-              <TableCell align="left">Mã tiêu chuẩn</TableCell>
-              <TableCell align="left">Carbs&nbsp;(g)</TableCell>
-              <TableCell align="left">Protein&nbsp;(g)</TableCell>
+              <TableCell className={classes.name} align="left">Tên tiêu chuẩn</TableCell>
+              <TableCell className={classes.number} align="left">Mã TC</TableCell>
+              <TableCell align="left">Mô tả</TableCell>
+              <TableCell className={classes.number} align="left">Số tiêu chí</TableCell>
+              <TableCell className={classes.number} align="left">Tổng điểm</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -155,23 +209,65 @@ export default function Criteria() {
                       </IconButton>
                     </>
                   ) : (
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => onToggleEditMode(row.id)}
-                    >
-                      <EditIcon />
-                    </IconButton>
+                    <>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => onToggleEditMode(row.id)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => onDelete(row.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
                   )}
                 </TableCell>
-                <CustomTableCell {...{ row, name: "name", onChange }} />
-                <CustomTableCell {...{ row, name: "calories", onChange }} />
-                <CustomTableCell {...{ row, name: "fat", onChange }} />
-                <CustomTableCell {...{ row, name: "carbs", onChange }} />
-                <CustomTableCell {...{ row, name: "protein", onChange }} />
+                <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
+                <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
+                <CustomTableCell {...{ row, name: "description", onChange }} />
+                <CustomTableCell className={classes.number} {...{ row, name: "numOfCriteria", onChange }} />
+                <CustomTableCell className={classes.number} {...{ row, name: "point", onChange }} />
               </TableRow>
             ))}
           </TableBody>
         </Table>
+        <div style={{ margin: '10px', textAlign: 'right' }}>
+          <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+            Tạo tiêu chuẩn mới
+          </Button>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={open}>
+              <div className={classes.paper1}>
+                <h2 id="transition-modal-title">Thêm tiêu chuẩn</h2>
+                <form onSubmit={submit}>
+                  <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
+                  <TextField onChange={e => setN(e.target.value)} id="numOfCriteria" type='number' label="Số tiêu chí" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setP(e.target.value)} id="point" type='number' label="Tổng điểm" variant="outlined" fullWidth className={classes.field} />
+                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                    <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                    <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                  </div>
+                </form>
+              </div>
+            </Fade>
+          </Modal>
+        </div>
       </Paper>
     </div>
   );
