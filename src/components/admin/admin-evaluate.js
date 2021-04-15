@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import EvaluateSetting from './admin-evaluate-setting'
+import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
