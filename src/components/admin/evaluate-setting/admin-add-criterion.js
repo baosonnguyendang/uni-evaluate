@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper1: {
     position: 'absolute',
-    width: 500,
+    width: 600,
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
@@ -27,10 +27,10 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const criteria = (name, id) => ({ name, id })
+const criteria = (name, id) => ({ name, id, check: true })
 
 const createData = (name, id, listOfCriteria) => {
-  return { name, id, listOfCriteria, check: true }
+  return { name, id, listOfCriteria, check: false }
 }
 
 export default function AddCriterion() {
@@ -51,15 +51,6 @@ export default function AddCriterion() {
     ),
   ])
 
-  const test = () => {
-    data.map(item => {
-      // item.listOfCriteria.map(i => {
-      //   console.log(i.name)
-      // })
-      console.log(item.name)
-    })
-  }
-
   //open criteria modal
   const [openCriteria, setOpenCriteria] = React.useState(false);
   // const handleOpenCriteria = () => {
@@ -79,16 +70,7 @@ export default function AddCriterion() {
     setOpen(false);
   };
 
-  //check tieu chuan
-  const check = () => {
-
-  }
-  const [state, setState] = React.useState({
-    checkedA: true,
-    checkedB: true,
-    checkedF: true,
-    checkedG: true,
-  });
+  const [state, setState] = React.useState(true);
 
   const handleChange = (event) => {
     event.target.checked = !event.target.checked
@@ -150,7 +132,7 @@ export default function AddCriterion() {
                     control={
                       <Checkbox
                         checked={criterion.check}
-                        onChange={() => criterion.check = !criterion.check}
+                        onChange={() => {criterion.check = !criterion.check; setState(!state)}}
                         color="primary"
                       />
                     }
@@ -158,6 +140,7 @@ export default function AddCriterion() {
                   />
                 ))}
               </FormGroup>
+              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Xong</Button>
             </div>
           </Fade>
         </Modal>
@@ -185,8 +168,8 @@ export default function AddCriterion() {
                     // <p>{criteria.id}</p>
                     <FormControlLabel control={
                       <Checkbox
-                        checked='true'
-                        onChange={handleChange}
+                        checked={criteria.check}
+                        onChange={() => {criteria.check = !criteria.check; setState(!state)}}
                         name={criteria.id}
                         color="primary"
                       />
@@ -196,6 +179,7 @@ export default function AddCriterion() {
                   )
                 })}
               </FormGroup>
+              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
             </div>
           </Fade>
         </Modal>
