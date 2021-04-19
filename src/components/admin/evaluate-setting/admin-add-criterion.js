@@ -6,12 +6,21 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Checkbox from '@material-ui/core/Checkbox';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles(theme => ({
+  paper: {
+    minHeight: 400,
+    padding: 10,
+    marginTop: 24,
+  },
   modal: {
     display: 'flex',
     alignItems: 'center',
@@ -24,6 +33,11 @@ const useStyles = makeStyles(theme => ({
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  },
+  formControl: {
+    margin: theme.spacing(3),
+    marginTop: 0,
+    marginBottom: 0,
   },
 }))
 
@@ -70,10 +84,14 @@ export default function AddCriterion() {
     setOpen(false);
   };
 
+  //cai nay la de sau khi check hoac uncheck se render lai luon
   const [state, setState] = React.useState(true);
 
+  //cai nay la de check tung gia tri trong tieu chi
+  const { gilad, jason, antoine } = state;
+  const error = [gilad, jason, antoine].filter((v) => v).length < 1;
   const handleChange = (event) => {
-    event.target.checked = !event.target.checked
+    setState({ ...state, [event.target.name]: event.target.checked });
   };
 
   const submit = e => {
@@ -84,13 +102,15 @@ export default function AddCriterion() {
   const [showCriteria, setShowCriteria] = React.useState([])
 
   const SelectedCriterion = () => {
+    let bool = false
     return (
       <div>
-        <ul>
+        <ul style={{ marginTop: 10 }}>
           {
             data.map(criterion => {
               // criterion.check ? (<p>{criterion.name}</p>) : ()
               if (criterion.check) {
+                bool = true
                 return (<li style={{ cursor: 'pointer' }} code={criterion.id} component='button' onClick={() => {
                   setOpenCriteria(true);
                   setId(criterion.id);
@@ -100,13 +120,20 @@ export default function AddCriterion() {
             })
           }
         </ul>
+        {!bool && <p>(Chưa có tiêu chuẩn nào được thêm cả)</p>}
       </div>
     )
   }
 
   return (
     <div>
-      <Paper>
+      <Typography component="h1" variant="h5" color="inherit" noWrap>
+        Nhóm 01
+      </Typography>
+      <Paper className={classes.paper}>
+        <Typography component="h3" variant="h5" color="inherit">
+          Các tiêu chuẩn sẽ đánh giá:
+        </Typography>
         <SelectedCriterion />
         <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
           Danh sách bộ tiêu chuẩn
@@ -125,14 +152,14 @@ export default function AddCriterion() {
         >
           <Fade in={open}>
             <div className={classes.paper1}>
-              <h3 id="transition-modal-title">Thêm tiêu chuẩn vào Form</h3>
+              <h4 id="transition-modal-title">Danh sách bộ tiêu chuẩn</h4>
               <FormGroup>
                 {data.map(criterion => (
                   <FormControlLabel
                     control={
                       <Checkbox
                         checked={criterion.check}
-                        onChange={() => {criterion.check = !criterion.check; setState(!state)}}
+                        onChange={() => { criterion.check = !criterion.check; setState(!state) }}
                         color="primary"
                       />
                     }
@@ -166,20 +193,67 @@ export default function AddCriterion() {
                 {showCriteria.map(criteria => {
                   return (
                     // <p>{criteria.id}</p>
-                    <FormControlLabel control={
-                      <Checkbox
-                        checked={criteria.check}
-                        onChange={() => {criteria.check = !criteria.check; setState(!state)}}
-                        name={criteria.id}
-                        color="primary"
+                    <FormGroup>
+                      <FormControlLabel control={
+                        <Checkbox
+                          checked={criteria.check}
+                          onChange={() => { criteria.check = !criteria.check; setState(!state) }}
+                          name={criteria.id}
+                          color="primary"
+                        />
+                      }
+                        label={criteria.name}
                       />
-                    }
-                      label={criteria.name}
-                    />
+                      {
+                        criteria.check &&
+                        <FormControl required error={error} component="fieldset" className={classes.formControl}>
+                          {/* <FormLabel component="legend">Chọn ít nhất 1 cái nha để còn phân loại</FormLabel> */}
+                          <FormGroup style={{display:'inline'}}>
+                            <FormControlLabel 
+                              control={<Checkbox checked={jason} onChange={handleChange} name="jason" />}
+                              label="10%"
+                            />
+                            <FormControlLabel
+                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
+                              label="20%"
+                            />
+                            <FormControlLabel
+                              control={<Checkbox checked={antoine} onChange={handleChange} name="gilad" />}
+                              label="30%"
+                            />
+                            <FormControlLabel
+                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
+                              label="40%"
+                            />
+                            <FormControlLabel
+                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
+                              label="50%"
+                            />
+                            <FormControlLabel
+                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
+                              label="60%"
+                            />
+                            <FormControlLabel
+                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
+                              label="70%"
+                            />
+                            <FormControlLabel
+                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
+                              label="80%"
+                            />
+                            <FormControlLabel
+                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
+                              label="90%"
+                            />
+                          </FormGroup>
+                          {error && <FormHelperText>Chọn ít nhất 1 cái nha để còn phân loại</FormHelperText>}
+                        </FormControl>
+                      }
+                    </FormGroup>
                   )
                 })}
               </FormGroup>
-              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
+              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={!error && handleCloseCriteria}>Xong</Button>
             </div>
           </Fade>
         </Modal>
