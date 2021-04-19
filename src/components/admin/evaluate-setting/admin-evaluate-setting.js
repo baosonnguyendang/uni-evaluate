@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import AddCriterion from './admin-add-criterion'
 
+import Link from '@material-ui/core/Link'
 import Paper from '@material-ui/core/Paper'
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -30,7 +31,7 @@ export default function EvaluateSetting(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow component={Link} to={'a'}>
+              <TableRow component={Link} href={window.location.href + '/a'}>
                 <TableCell align="center">01</TableCell>
                 <TableCell align="left">Giảng viên, Nghiên cứu viên, Kỹ sư phục vụ giảng dạy</TableCell>
               </TableRow>
@@ -44,11 +45,11 @@ export default function EvaluateSetting(props) {
               </TableRow>
             </TableBody>
           </Table>
-          <Switch>
+          {/* <Switch>
             <Route path='/admin/evaluate-settings/a'>
               <AddCriterion />
             </Route>
-          </Switch>
+          </Switch> */}
         </Router>
       </Paper>
     </div>

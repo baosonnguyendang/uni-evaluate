@@ -9,7 +9,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Modal from '@material-ui/core/Modal';
-
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper1: {
     position: 'absolute',
-    width: 450,
+    width: 500,
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
@@ -60,6 +60,16 @@ export default function AddCriterion() {
     })
   }
 
+  //open criteria modal
+  const [openCriteria, setOpenCriteria] = React.useState(false);
+  // const handleOpenCriteria = () => {
+  //   setOpenCriteria(true);
+  //   setId(criterion.id)
+  // }
+  const handleCloseCriteria = () => {
+    setOpenCriteria(false);
+  }
+
   //open modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -87,60 +97,109 @@ export default function AddCriterion() {
   const submit = e => {
     e.preventDefault()
   }
+  //dung de luu tieu chuan duoc click vao de chon tieu chi
+  const [id, setId] = React.useState()
+  const [showCriteria, setShowCriteria] = React.useState([])
 
   const SelectedCriterion = () => {
     return (
       <div>
-        {
-          data.map(criterion => {
-            // criterion.check ? (<p>{criterion.name}</p>) : ()
-            if (criterion.check) {
-              return (<p style={{cursor:'pointer'}} component='button' onClick={handleOpen}>{criterion.name}</p>)
-            }
-          })
-        }
+        <ul>
+          {
+            data.map(criterion => {
+              // criterion.check ? (<p>{criterion.name}</p>) : ()
+              if (criterion.check) {
+                return (<li style={{ cursor: 'pointer' }} code={criterion.id} component='button' onClick={() => {
+                  setOpenCriteria(true);
+                  setId(criterion.id);
+                  setShowCriteria(criterion.listOfCriteria)
+                }}>{criterion.name}</li>)
+              }
+            })
+          }
+        </ul>
       </div>
     )
   }
 
   return (
     <div>
-      <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-        Thêm tiêu chuẩn
-      </Button>
-      <SelectedCriterion />
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={open}>
-          <div className={classes.paper1}>
-            <h3 id="transition-modal-title">Thêm tiêu chuẩn vào Form</h3>
-            <FormGroup>
-              {data.map(criterion => (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={criterion.check}
-                      onChange={() => criterion.check = !criterion.check}
-                      color="primary"
+      <Paper>
+        <SelectedCriterion />
+        <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+          Danh sách bộ tiêu chuẩn
+        </Button>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            <div className={classes.paper1}>
+              <h3 id="transition-modal-title">Thêm tiêu chuẩn vào Form</h3>
+              <FormGroup>
+                {data.map(criterion => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={criterion.check}
+                        onChange={() => criterion.check = !criterion.check}
+                        color="primary"
+                      />
+                    }
+                    label={criterion.name}
+                  />
+                ))}
+              </FormGroup>
+            </div>
+          </Fade>
+        </Modal>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={openCriteria}
+          onClose={handleCloseCriteria}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }} >
+          <Fade in={openCriteria}>
+            <div className={classes.paper1}>
+              <h3 id="transition-modal-title">Thêm tiêu chí vào tiêu chuẩn {id}</h3>
+              {showCriteria.map(criteria => {
+                <p>{criteria.id}</p>
+              })}
+              <FormGroup>
+                {console.log(showCriteria)}
+                {showCriteria.map(criteria => {
+                  return (
+                    // <p>{criteria.id}</p>
+                    <FormControlLabel control={
+                      <Checkbox
+                        checked='true'
+                        onChange={handleChange}
+                        name={criteria.id}
+                        color="primary"
+                      />
+                    }
+                      label={criteria.name}
                     />
-                  }
-                  label={criterion.name}
-                />
-              ))}
-            </FormGroup>
-          </div>
-        </Fade>
-      </Modal>
+                  )
+                })}
+              </FormGroup>
+            </div>
+          </Fade>
+        </Modal>
+      </Paper>
     </div>
   )
 }
