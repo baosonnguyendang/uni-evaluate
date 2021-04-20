@@ -97,7 +97,9 @@ export default function AddCriterion() {
   }
   const handleClosePercentage = () => {
     setOpenPercentage(false);
-    Object.values(percentageState).forEach((x, index) => x === true ? (!criteriaChosen.percentage.includes(10 * (index + 1)) && criteriaChosen.percentage.push(10 * (index + 1))) : null)
+    console.log(criteriaChosen.percentage)
+    criteriaChosen.percentage = []
+    Object.values(percentageState).forEach((x, index) => x === true ? (criteriaChosen.percentage.push(10 * (index + 1))) : null)
   }
 
   //cai nay la de check tung gia tri trong tieu chi
