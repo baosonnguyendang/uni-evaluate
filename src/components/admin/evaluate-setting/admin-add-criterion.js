@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const criteria = (name, id) => ({ name, id, check: true })
+const criteria = (name, id) => ({ name, id, check: true, percentage: [], clicked: false })
 
 const createData = (name, id, listOfCriteria) => {
   return { name, id, listOfCriteria, check: false }
@@ -87,12 +87,87 @@ export default function AddCriterion() {
   //cai nay la de sau khi check hoac uncheck se render lai luon
   const [state, setState] = React.useState(true);
 
+  //cai nay la de khi mo cai chon phan tram thi se biet chon phan tram cho tieu chi nao
+  const [criteriaChosen, setCriteriaChosen] = React.useState([])
+
+  //cai nay la de mo cai modal chon phan tram tieu chi a
+  const [openPercentage, setOpenPercentage] = React.useState(false)
+  const handleOpenPercentage = () => {
+    setOpenPercentage(true);
+  }
+  const handleClosePercentage = () => {
+    setOpenPercentage(false);
+    Object.values(percentageState).forEach((x, index) => x === true ? (!criteriaChosen.percentage.includes(10 * (index + 1)) && criteriaChosen.percentage.push(10 * (index + 1))) : null)
+  }
+
   //cai nay la de check tung gia tri trong tieu chi
-  const { gilad, jason, antoine } = state;
-  const error = [gilad, jason, antoine].filter((v) => v).length < 1;
-  const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+  const [percentageState, setPercentageState] = React.useState({
+    a: false,
+    b: false,
+    c: false,
+    d: false,
+    e: false,
+    f: false,
+    g: false,
+    h: false,
+    i: false,
+  });
+  const handleChangePercentage = (event) => {
+    setPercentageState({ ...percentageState, [event.target.name]: event.target.checked });
   };
+  const { a, b, c, d, e, f, g, h, i } = percentageState;
+  const error = [a, b, c, d, e, f, g, h, i].filter((v) => v).length < 1;
+
+  //cai nay la de lay cai phan tram cua tieu chi neu da duoc check it nhat 1 lan
+  const setPercentage = (criteria) => {
+    percentageState.a = false;
+    percentageState.b = false;
+    percentageState.c = false;
+    percentageState.d = false;
+    percentageState.e = false;
+    percentageState.f = false;
+    percentageState.g = false;
+    percentageState.h = false;
+    percentageState.i = false;
+    if (criteria.clicked == true) {
+      criteria.percentage.map(x => {
+        switch (x) {
+          case 10:
+            percentageState.a = true;
+            break;
+          case 20:
+            percentageState.b = true;
+            break;
+          case 30:
+            percentageState.c = true;
+            break;
+          case 40:
+            percentageState.d = true;
+            break;
+          case 50:
+            percentageState.e = true;
+            break;
+          case 60:
+            percentageState.f = true;
+            break;
+          case 70:
+            percentageState.g = true;
+            break;
+          case 80:
+            percentageState.h = true;
+            break;
+          case 90:
+            percentageState.i = true;
+            break;
+        }
+      })
+    } else {
+      // for (var x in percentageState) {
+      //   x = false;
+      // }
+      criteria.clicked = true;
+    }
+  }
 
   const submit = e => {
     e.preventDefault()
@@ -105,21 +180,47 @@ export default function AddCriterion() {
     let bool = false
     return (
       <div>
-        <ul style={{ marginTop: 10 }}>
+        <ol style={{ marginTop: 10 }}>
           {
             data.map(criterion => {
               // criterion.check ? (<p>{criterion.name}</p>) : ()
               if (criterion.check) {
                 bool = true
-                return (<li style={{ cursor: 'pointer' }} code={criterion.id} component='button' onClick={() => {
-                  setOpenCriteria(true);
-                  setId(criterion.id);
-                  setShowCriteria(criterion.listOfCriteria)
-                }}>{criterion.name}</li>)
+                return (
+                  <li><span style={{ cursor: 'pointer' }} code={criterion.id} component='button' onClick={() => {
+                    setOpenCriteria(true);
+                    setId(criterion.id);
+                    setShowCriteria(criterion.listOfCriteria)
+                    // console.log(showCriteria)
+                  }}>{criterion.name}</span>
+                    <ol>
+                      {criterion.listOfCriteria.map(criteria => {
+                        return (
+                          criteria.check &&
+                          <li>
+                            <div style={{ cursor: 'pointer', margin: '10px' }} component='button' onClick={() => {
+                              handleOpenPercentage();
+                              setCriteriaChosen(criteria);
+                              setPercentage(criteria);
+                            }}>{criteria.name}
+                            </div>
+                            <div style={{marginBottom: '10px'}}>
+                              {criteria.percentage.map(x => {
+                                return (
+                                  <span style={{ marginRight: '10px', padding: '5px', border: '1px solid #f4f4f4' }}>{x}%</span>
+                                )
+                              })}
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ol>
+                  </li>
+                )
               }
             })
           }
-        </ul>
+        </ol>
         {!bool && <p>(Chưa có tiêu chuẩn nào được thêm cả)</p>}
       </div>
     )
@@ -132,7 +233,7 @@ export default function AddCriterion() {
       </Typography>
       <Paper className={classes.paper}>
         <Typography component="h3" variant="h5" color="inherit">
-          Các tiêu chuẩn sẽ đánh giá:
+          Các tiêu chuẩn và tiêu chí sẽ đánh giá:
         </Typography>
         <SelectedCriterion />
         <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
@@ -189,7 +290,6 @@ export default function AddCriterion() {
                 <p>{criteria.id}</p>
               })}
               <FormGroup>
-                {console.log(showCriteria)}
                 {showCriteria.map(criteria => {
                   return (
                     // <p>{criteria.id}</p>
@@ -204,56 +304,73 @@ export default function AddCriterion() {
                       }
                         label={criteria.name}
                       />
-                      {
-                        criteria.check &&
-                        <FormControl required error={error} component="fieldset" className={classes.formControl}>
-                          {/* <FormLabel component="legend">Chọn ít nhất 1 cái nha để còn phân loại</FormLabel> */}
-                          <FormGroup style={{display:'inline'}}>
-                            <FormControlLabel 
-                              control={<Checkbox checked={jason} onChange={handleChange} name="jason" />}
-                              label="10%"
-                            />
-                            <FormControlLabel
-                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
-                              label="20%"
-                            />
-                            <FormControlLabel
-                              control={<Checkbox checked={antoine} onChange={handleChange} name="gilad" />}
-                              label="30%"
-                            />
-                            <FormControlLabel
-                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
-                              label="40%"
-                            />
-                            <FormControlLabel
-                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
-                              label="50%"
-                            />
-                            <FormControlLabel
-                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
-                              label="60%"
-                            />
-                            <FormControlLabel
-                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
-                              label="70%"
-                            />
-                            <FormControlLabel
-                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
-                              label="80%"
-                            />
-                            <FormControlLabel
-                              control={<Checkbox checked={antoine} onChange={handleChange} name="antoine" />}
-                              label="90%"
-                            />
-                          </FormGroup>
-                          {error && <FormHelperText>Chọn ít nhất 1 cái nha để còn phân loại</FormHelperText>}
-                        </FormControl>
-                      }
                     </FormGroup>
                   )
                 })}
               </FormGroup>
               <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={!error && handleCloseCriteria}>Xong</Button>
+            </div>
+          </Fade>
+        </Modal>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={openPercentage}
+          onClose={handleClosePercentage}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openPercentage}>
+            <div className={classes.paper1}>
+              <h4 id="transition-modal-title">Chọn các mốc</h4>
+              <FormGroup>
+                <FormControl required error={error} component="fieldset" className={classes.formControl}>
+                  <FormGroup style={{ display: 'inline' }}>
+                    <FormControlLabel
+                      control={<Checkbox checked={a} onChange={handleChangePercentage} name="a" />}
+                      label="10%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={b} onChange={handleChangePercentage} name="b" />}
+                      label="20%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={c} onChange={handleChangePercentage} name="c" />}
+                      label="30%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={d} onChange={handleChangePercentage} name="d" />}
+                      label="40%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={e} onChange={handleChangePercentage} name="e" />}
+                      label="50%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={f} onChange={handleChangePercentage} name="f" />}
+                      label="60%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={g} onChange={handleChangePercentage} name="g" />}
+                      label="70%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={h} onChange={handleChangePercentage} name="h" />}
+                      label="80%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={i} onChange={handleChangePercentage} name="i" />}
+                      label="90%"
+                    />
+                  </FormGroup>
+                  {error && <FormHelperText>Chọn ít nhất 1 cái nha để còn phân loại</FormHelperText>}
+                </FormControl>
+              </FormGroup>
+              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={!error && handleClosePercentage}>Xong</Button>
             </div>
           </Fade>
         </Modal>
