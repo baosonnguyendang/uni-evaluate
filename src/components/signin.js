@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 // import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import logo from '../img/logo.png'
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import axios from 'axios'
 
 function Copyright() {
   return (
@@ -87,8 +88,23 @@ class SignInSide extends Component {
   }
 
   onSubmit(e) {
+    const data = {email:this.state.username,password:this.state.password}
     e.preventDefault()
     console.log(this.state.username)
+    axios.post("/signin", data
+      ).then (
+      res => {
+        console.log(res.data.roles)
+      if (res.data.roles === "admin") {
+        // <Redirect to="/admin/user" />
+        window.open('/admin/user')
+        console.log("vô")
+      }
+      else{
+        console.log("lỗi");
+      }
+    }
+    )
   }
 
   render() {
@@ -133,11 +149,9 @@ class SignInSide extends Component {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              <Link to="/admin/user" className="nav-link">
                 <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                   Sign In
                 </Button>
-              </Link>
               <Grid container>
                 <Grid item xs>
                   <Link to="/user/info" variant="body2">Forgot password?</Link>

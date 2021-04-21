@@ -5,8 +5,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import SignInSide from "./components/signin"
 import Dashboard from "./components/admin/admin-navbar"
 import Dashboard2 from './components/user/user-navbar'
-
+import axios from 'axios'
 function App() {
+  axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
   return (
     <Router>
       <div>
