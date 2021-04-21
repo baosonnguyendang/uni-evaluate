@@ -63,6 +63,9 @@ const useStyles = makeStyles(theme => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  field: {
+    marginBottom: 10,
+  }
 }));
 
 const createData = (name, code, description) => ({
@@ -169,8 +172,8 @@ export default function Criteria() {
   function User() {
     let { id } = useParams();
     return (
-      < Typography component = "h1" variant = "h5" color = "inherit" noWrap >
-        Tiêu chuẩn { id } - DS Tiêu chí
+      < Typography component="h1" variant="h5" color="inherit" noWrap >
+        Tiêu chuẩn { id} - DS Tiêu chí
       </Typography >
     )
   }
@@ -249,10 +252,10 @@ export default function Criteria() {
           >
             <Fade in={open}>
               <div className={classes.paper1}>
-                <h2 id="transition-modal-title">Thêm tiêu chuẩn</h2>
+                <h2 id="transition-modal-title">Thêm tiêu chí</h2>
                 <form onSubmit={submit}>
-                  <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chí" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
                   <div style={{ textAlign: 'center', marginTop: '10px' }}>
                     <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>

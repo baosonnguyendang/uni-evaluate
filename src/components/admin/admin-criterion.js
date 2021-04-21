@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
     height: 40,
   },
   number: {
-    width: '10%'
+    width: '15%'
   },
   modal: {
     display: 'flex',
@@ -64,6 +64,9 @@ const useStyles = makeStyles(theme => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  field: {
+    marginBottom: 10,
+  }
 }));
 
 const createData = (name, code, description, numOfCriteria, point) => ({
@@ -183,11 +186,9 @@ export default function Criterion() {
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
   const [description, setD] = React.useState('')
-  const [numOfCriteria, setN] = React.useState(0)
-  const [point, setP] = React.useState(0)
   const submit = e => {
     e.preventDefault()
-    setRows(rows => [...rows, createData(name, code, description, numOfCriteria, point)])
+    setRows(rows => [...rows, createData(name, code, description, 0)])
   }
 
   return (
@@ -204,7 +205,6 @@ export default function Criterion() {
               <TableCell className={classes.number} align="left">Mã TC</TableCell>
               <TableCell align="left">Mô tả</TableCell>
               <TableCell className={classes.number} align="left">Số tiêu chí</TableCell>
-              <TableCell className={classes.number} align="left">Tổng điểm</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -248,7 +248,6 @@ export default function Criterion() {
                   <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
                   <CustomTableCell {...{ row, name: "description", onChange }} />
                   <CustomTableCell className={classes.number} {...{ row, name: "numOfCriteria", onChange }} />
-                  <CustomTableCell className={classes.number} {...{ row, name: "point", onChange }} />
                 </TableRow>
               )
             })}
@@ -328,8 +327,6 @@ export default function Criterion() {
                   <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
-                  <TextField onChange={e => setN(e.target.value)} id="numOfCriteria" type='number' label="Số tiêu chí" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setP(e.target.value)} id="point" type='number' label="Tổng điểm" variant="outlined" fullWidth className={classes.field} />
                   <div style={{ textAlign: 'center', marginTop: '10px' }}>
                     <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                     <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
