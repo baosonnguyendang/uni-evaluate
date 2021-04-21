@@ -103,6 +103,9 @@ import ReactDOM from "react-dom";
 import { Link } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -169,7 +172,11 @@ const useStyles = makeStyles(theme => ({
   },
   field: {
     marginBottom: 10,
-  }
+  },
+  formControl: {
+    marginBottom: 8,
+    minWidth: 120,
+  },
 }));
 
 const createData = (id, lname, fname, email, unit, role) => ({
@@ -278,12 +285,17 @@ export default function Criterion() {
   const [lname, setName] = React.useState('')
   const [fname, setC] = React.useState('')
   const [email, setD] = React.useState('')
-  const [unit, setN] = React.useState(0)
-  const [role, setP] = React.useState(0)
+  const [role, setP] = React.useState('')
   const submit = e => {
     e.preventDefault()
-    setRows(rows => [...rows, createData(id, lname, fname, email, unit, role)])
+    setRows(rows => [...rows, createData(id, lname, fname, email, newUnit, role)])
   }
+
+  //chon don vi trong modal
+  const [newUnit, setNewUnit] = React.useState('');
+  const handleChangeUnit = (event) => {
+    setNewUnit(event.target.value); 
+  };
 
   return (
     <div>
@@ -388,9 +400,22 @@ export default function Criterion() {
                   <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setName(e.target.value)} id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setC(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setD(e.target.value)} id="email" label="Email" multiline variant="outlined" className={classes.field} />
-                  <TextField onChange={e => setN(e.target.value)} id="unit" type='number' label="Đơn vị" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setP(e.target.value)} id="role" type='number' label="Chức vụ" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setD(e.target.value)} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                  <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                    <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
+                    <Select
+                      native
+                      value={newUnit}
+                      label='Đơn vị'
+                      onChange={handleChangeUnit}
+                    >
+                      <option aria-label="None" value="" />
+                      <option value={10}>Phòng Đào tạo</option>
+                      <option value={20}>Khoa Máy tính</option>
+                      <option value={30}>Phòng Y tế</option>
+                    </Select>
+                  </FormControl>
+                  <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth className={classes.field} />
                   <div style={{ textAlign: 'center', marginTop: '10px' }}>
                     <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                     <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
