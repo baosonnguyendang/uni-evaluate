@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react'
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -13,7 +13,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles(theme => ({
@@ -34,21 +33,15 @@ const useStyles = makeStyles(theme => ({
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-    minHeight: 20,
   },
   formControl: {
     margin: theme.spacing(3),
     marginTop: 0,
     marginBottom: 0,
   },
-  input: {
-    width: '100%',
-    marginTop: 6,
-    padding: 5
-  }
 }))
 
-const criteria = (name, id) => ({ name, id, check: true, selectionList: [], clicked: false })
+const criteria = (name, id) => ({ name, id, check: true, percentage: [], clicked: false })
 
 const createData = (name, id, listOfCriteria) => {
   return { name, id, listOfCriteria, check: false }
@@ -97,12 +90,90 @@ export default function AddCriterion() {
   //cai nay la de khi mo cai chon phan tram thi se biet chon phan tram cho tieu chi nao
   const [criteriaChosen, setCriteriaChosen] = React.useState([])
 
-  //cai nay la de mo cai modal them cac lua chon trong tieu chi a
+  //cai nay la de mo cai modal chon phan tram tieu chi a
   const [openPercentage, setOpenPercentage] = React.useState(false)
   const handleOpenPercentage = () => {
     setOpenPercentage(true);
   }
+  const handleClosePercentage = () => {
+    setOpenPercentage(false);
+    console.log(criteriaChosen.percentage)
+    criteriaChosen.percentage = []
+    Object.values(percentageState).forEach((x, index) => x === true ? (criteriaChosen.percentage.push(10 * (index + 1))) : null)
+  }
 
+  //cai nay la de check tung gia tri trong tieu chi
+  const [percentageState, setPercentageState] = React.useState({
+    a: false,
+    b: false,
+    c: false,
+    d: false,
+    e: false,
+    f: false,
+    g: false,
+    h: false,
+    i: false,
+  });
+  const handleChangePercentage = (event) => {
+    setPercentageState({ ...percentageState, [event.target.name]: event.target.checked });
+  };
+  const { a, b, c, d, e, f, g, h, i } = percentageState;
+  const error = [a, b, c, d, e, f, g, h, i].filter((v) => v).length < 1;
+
+  //cai nay la de lay cai phan tram cua tieu chi neu da duoc check it nhat 1 lan
+  const setPercentage = (criteria) => {
+    percentageState.a = false;
+    percentageState.b = false;
+    percentageState.c = false;
+    percentageState.d = false;
+    percentageState.e = false;
+    percentageState.f = false;
+    percentageState.g = false;
+    percentageState.h = false;
+    percentageState.i = false;
+    if (criteria.clicked == true) {
+      criteria.percentage.map(x => {
+        switch (x) {
+          case 10:
+            percentageState.a = true;
+            break;
+          case 20:
+            percentageState.b = true;
+            break;
+          case 30:
+            percentageState.c = true;
+            break;
+          case 40:
+            percentageState.d = true;
+            break;
+          case 50:
+            percentageState.e = true;
+            break;
+          case 60:
+            percentageState.f = true;
+            break;
+          case 70:
+            percentageState.g = true;
+            break;
+          case 80:
+            percentageState.h = true;
+            break;
+          case 90:
+            percentageState.i = true;
+            break;
+        }
+      })
+    } else {
+      // for (var x in percentageState) {
+      //   x = false;
+      // }
+      criteria.clicked = true;
+    }
+  }
+
+  const submit = e => {
+    e.preventDefault()
+  }
   //dung de luu tieu chuan duoc click vao de chon tieu chi
   const [id, setId] = React.useState()
   const [showCriteria, setShowCriteria] = React.useState([])
@@ -132,12 +203,13 @@ export default function AddCriterion() {
                             <div style={{ cursor: 'pointer', margin: '10px' }} component='button' onClick={() => {
                               handleOpenPercentage();
                               setCriteriaChosen(criteria);
+                              setPercentage(criteria);
                             }}>{criteria.name}
                             </div>
-                            <div style={{ marginBottom: '10px' }}>
-                              {criteria.selectionList.map(x => {
+                            <div style={{marginBottom: '10px'}}>
+                              {criteria.percentage.map(x => {
                                 return (
-                                  <span style={{ marginRight: '10px', border: '1px solid #f4f4f4' }}>{x}</span>
+                                  <span style={{ marginRight: '10px', padding: '5px', border: '1px solid #f4f4f4' }}>{x}%</span>
                                 )
                               })}
                             </div>
@@ -154,42 +226,6 @@ export default function AddCriterion() {
         {!bool && <p>(Chưa có tiêu chuẩn nào được thêm cả)</p>}
       </div>
     )
-  }
-
-  //them cac lua chon vao tieu chi version 2
-  const [selection, setSelection] = React.useState([])
-
-  const Input = (props) => {
-    const text = {
-      style: {
-        padding: 6
-      }
-    }
-    return <TextField variant="outlined" inputProps={text} className={classes.input} placeholder="Thêm lựa chọn vào đây" onChange={e => {
-      setSelection(e.target.value); 
-    }} />;
-  };
-
-  const [inputList, setInputList] = React.useState([]);
-
-  const onAddBtnClick = () => {
-    // setInputList(inputList.concat(<Input key={inputList.length} />));
-    inputList.map(x => {
-      console.log(x.key)
-    })
-    setInputList(inputList => [...inputList, <Input key={inputList.length} />])
-  };
-
-  //cai nay la de luu cac lua chon vao tieu chi version 2
-  const error = !inputList.length //phai them it nhat 1 lua chon vao tieu chi
-  const handleClosePercentage = () => {
-    setOpenPercentage(false);
-    criteriaChosen.selectionList = []
-    criteriaChosen.selectionList.push(inputList)
-    // console.log(criteriaChosen.selection)
-    inputList.map(x => {
-      console.log(x.key)
-    })
   }
 
   return (
@@ -274,7 +310,7 @@ export default function AddCriterion() {
                   )
                 })}
               </FormGroup>
-              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
+              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={!error && handleCloseCriteria}>Xong</Button>
             </div>
           </Fade>
         </Modal>
@@ -292,16 +328,51 @@ export default function AddCriterion() {
         >
           <Fade in={openPercentage}>
             <div className={classes.paper1}>
-              <h4 id="transition-modal-title">Thêm các lựa chọn cho tiêu chí</h4>
-              <div>
-                <Button onClick={onAddBtnClick} variant="contained" color="primary" size="small">
-                  Thêm lựa chọn
-                </Button>
-                <Button onClick={!error && handleClosePercentage} variant="contained" color="secondary" style={{ float: 'right' }} size="small">
-                  Lưu
-                </Button>
-                {inputList}
-              </div>
+              <h4 id="transition-modal-title">Chọn các mốc</h4>
+              <FormGroup>
+                <FormControl required error={error} component="fieldset" className={classes.formControl}>
+                  <FormGroup style={{ display: 'inline' }}>
+                    <FormControlLabel
+                      control={<Checkbox checked={a} onChange={handleChangePercentage} name="a" />}
+                      label="10%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={b} onChange={handleChangePercentage} name="b" />}
+                      label="20%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={c} onChange={handleChangePercentage} name="c" />}
+                      label="30%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={d} onChange={handleChangePercentage} name="d" />}
+                      label="40%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={e} onChange={handleChangePercentage} name="e" />}
+                      label="50%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={f} onChange={handleChangePercentage} name="f" />}
+                      label="60%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={g} onChange={handleChangePercentage} name="g" />}
+                      label="70%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={h} onChange={handleChangePercentage} name="h" />}
+                      label="80%"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox checked={i} onChange={handleChangePercentage} name="i" />}
+                      label="90%"
+                    />
+                  </FormGroup>
+                  {error && <FormHelperText>Chọn ít nhất 1 cái nha để còn phân loại</FormHelperText>}
+                </FormControl>
+              </FormGroup>
+              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={!error && handleClosePercentage}>Xong</Button>
             </div>
           </Fade>
         </Modal>
