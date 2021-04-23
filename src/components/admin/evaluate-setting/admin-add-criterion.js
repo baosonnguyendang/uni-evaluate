@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
@@ -36,6 +37,9 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 4, 3),
     minHeight: 20,
   },
+  btn: {
+    textTransform: 'none',
+  },
   formControl: {
     margin: theme.spacing(3),
     marginTop: 0,
@@ -53,6 +57,8 @@ const criteria = (name, id) => ({ name, id, check: true, selectionList: [], clic
 const createData = (name, id, listOfCriteria) => {
   return { name, id, listOfCriteria, check: false }
 }
+
+var listOfSelection = new Array('')
 
 export default function AddCriterion() {
   const classes = useStyles()
@@ -157,7 +163,7 @@ export default function AddCriterion() {
   }
 
   //them cac lua chon vao tieu chi version 2
-  const [selection, setSelection] = React.useState([])
+  const [selection, setSelection] = React.useState(['0'])
 
   const Input = (props) => {
     const text = {
@@ -165,31 +171,36 @@ export default function AddCriterion() {
         padding: 6
       }
     }
-    return <TextField variant="outlined" inputProps={text} className={classes.input} placeholder="Thêm lựa chọn vào đây" onChange={e => {
-      setSelection(e.target.value); 
-    }} />;
+    let temp = ''
+    return (
+      <div>
+        <TextField
+          variant="outlined" inputProps={text} className={classes.input} placeholder="Thêm lựa chọn vào đây"
+          onChange={e => {
+            temp = e.target.value
+            setSelection(selection.map((value, index) => (index == props.stt ? (value = e.target.value) : value)))
+          }}
+        />
+      </div>
+    )
   };
 
   const [inputList, setInputList] = React.useState([]);
 
   const onAddBtnClick = () => {
-    // setInputList(inputList.concat(<Input key={inputList.length} />));
-    inputList.map(x => {
-      console.log(x.key)
-    })
-    setInputList(inputList => [...inputList, <Input key={inputList.length} />])
+    setSelection(selection.push('0'))
+    console.log(selection)
+    // setInputList(inputList.concat(<Input stt={inputList.length} key={inputList.length} />));
+    setInputList(inputList => [...inputList, <Input key={inputList.length} stt={inputList.length} />])
   };
 
   //cai nay la de luu cac lua chon vao tieu chi version 2
   const error = !inputList.length //phai them it nhat 1 lua chon vao tieu chi
   const handleClosePercentage = () => {
-    setOpenPercentage(false);
-    criteriaChosen.selectionList = []
-    criteriaChosen.selectionList.push(inputList)
-    // console.log(criteriaChosen.selection)
-    inputList.map(x => {
-      console.log(x.key)
-    })
+    var listOfSelection = selection.slice(0, inputList.length)
+    !listOfSelection.includes('0') && setOpenPercentage(false);
+    criteriaChosen.selectionList = listOfSelection
+    console.log(criteriaChosen.selectionList)
   }
 
   return (
@@ -203,7 +214,7 @@ export default function AddCriterion() {
         </Typography>
         <SelectedCriterion />
         <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-          Danh sách bộ tiêu chuẩn
+          Thêm tiêu chuẩn vào Form
         </Button>
         <Modal
           aria-labelledby="transition-modal-title"
@@ -219,22 +230,29 @@ export default function AddCriterion() {
         >
           <Fade in={open}>
             <div className={classes.paper1}>
-              <h4 id="transition-modal-title">Danh sách bộ tiêu chuẩn</h4>
-              <FormGroup>
-                {data.map(criterion => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={criterion.check}
-                        onChange={() => { criterion.check = !criterion.check; setState(!state) }}
-                        color="primary"
-                      />
-                    }
-                    label={criterion.name}
+              <h4 id="transition-modal-title">Thêm tiêu chuẩn</h4>
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={data}
+                getOptionLabel={(data) => data.name}
+                defaultValue={data.filter(x => x.check === true)}
+                onChange={(event, value) => {
+                  console.log(value)
+                  data.map(criterion => criterion.check = false)
+                  value.map(criterion => criterion.check = true)
+                }}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Danh sách tiêu chuẩn được chọn"
+                    placeholder="Tiêu chuẩn"
                   />
-                ))}
-              </FormGroup>
-              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Xong</Button>
+                )}
+              />
+              <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleClose}>Xong</Button>
             </div>
           </Fade>
         </Modal>
