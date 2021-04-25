@@ -15,7 +15,7 @@ export const loadUser = () => (dispatch, getState) => {
   dispatch({ type: USER_LOADING });
 
   axios
-    .get('/signin', tokenConfig(getState))
+    .get('/auth/signin', tokenConfig(getState))
     .then(res =>
       dispatch({
         type: USER_LOADED,
@@ -45,7 +45,7 @@ export const login = ({ email, password }) => (dispatch) => {
   const body = JSON.stringify({ email, password });
 
   axios
-    .post('/signin', body, config)
+    .post('/auth/signin', body, config)
     .then(res =>
       dispatch({
         type: LOGIN_SUCCESS,
@@ -54,7 +54,7 @@ export const login = ({ email, password }) => (dispatch) => {
     )
     .catch(err => {
       dispatch(
-        returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
+        returnErrors(err.response.data.message,'LOGIN_FAIL')
       );
       dispatch({
         type: LOGIN_FAIL

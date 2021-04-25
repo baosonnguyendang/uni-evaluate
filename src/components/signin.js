@@ -12,7 +12,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import logo from '../img/logo.png'
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { Alert } from '@material-ui/lab';
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../actions/authActions'
@@ -77,6 +77,7 @@ const SignInSide = () => {
   const onChangeUsername = (e) => { setUsername(e.target.value)}
   const onChangePassword = (e) => { setPassword(e.target.value)}
   let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
+  const error = useSelector(state => state.error.msg)
   return (
     <Grid container component="main" className={classes.root}>
       {
@@ -120,6 +121,7 @@ const SignInSide = () => {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
+            {error && <Alert severity="error">{error}</Alert>}
               <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} onClick={onSubmit} >
                 Sign In
               </Button>

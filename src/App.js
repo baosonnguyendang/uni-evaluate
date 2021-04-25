@@ -20,7 +20,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 )
 
 function App() {
-  axios.defaults.baseURL = 'http://localhost:5000/';
+  axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
   useEffect(() => {
     // store.dispatch(loadUser());
   }, []);
