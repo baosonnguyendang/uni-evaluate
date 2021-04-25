@@ -19,19 +19,39 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-datepicker/dist/react-datepicker.css";
 
 function ListItem(props) {
-  return <li>{props.value}</li>;
+  return (
+    // <li>{props.id}</li>
+    <tr>
+      <td style={{width:'30%', lineHeight:'50px', paddingLeft:10, fontSize:'1.125rem'}}><Link to={'/admin/evaluate-settings/' + props.id}>{props.value}</Link></td>
+      <td style={{textAlign:'center', lineHeight:'50px', fontSize:'1.125rem'}}>{props.id}</td>
+      {/* <td align='center'>{props.start.toString()}</td>
+      <td align='center'>{props.end.toString()}</td> */}
+    </tr>
+  )
 }
 
 function NumberList(props) {
   const numbers = props.numbers;
   const listItems = numbers.map((item) =>
     // Correct! Key should be specified inside the array.
-    <Link to={'/admin/evaluate-settings/' + item.id}><ListItem key={item.id} value={item.name} /></Link>
+    // <Link to={'/admin/evaluate-settings/' + item.id}>
+    <ListItem key={item.id} id={item.id} value={item.name} start={item.start} end={item.end} />
+    //</Link>
   );
   return (
-    <ul>
-      {listItems}
-    </ul>
+    <table style={{width:'100%', marginBottom: 10}}>
+      <thead style={{backgroundColor:'#f4f4f4', lineHeight:'50px'}}>
+        <tr>
+          <th style={{width:'30%', fontSize:'1.125rem', paddingLeft:10}}>Tên đợt đánh giá</th>
+          <th style={{textAlign:'center', fontSize:'1.125rem'}}>Mã đợt đánh giá</th>
+          {/* <th style={{textAlign:'center'}}>Ngày bắt đầu</th>
+          <th style={{textAlign:'center'}}>Ngày kết thúc</th> */}
+        </tr>
+      </thead>
+      <tbody>
+        {listItems}
+      </tbody>
+    </table>
   );
 }
 
@@ -39,7 +59,7 @@ function NumberList(props) {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    padding: '10px',
+    paddingBottom: '10px',
     marginTop: '15px'
   },
   modal: {
@@ -76,15 +96,16 @@ export default function EvaluateList() {
 
   //new Evaluation
   const listEvaluate = [
-    { id: 1, name: 'Đợt 1 năm 2020' },
-    { id: 2, name: 'Đợt 2 năm 2020' },
+    { id: 1, name: 'Đợt 1 năm 2020', start: Date(2021, 1, 14), end: Date(2021, 11, 14) },
+    { id: 2, name: 'Đợt 2 năm 2020', start: Date(2021, 1, 14), end: Date(2021, 11, 14) },
   ];
   const [number, setNumber] = useState(listEvaluate);
 
   const [evaluation, setEvaluation] = useState('')
   const submit = e => {
+    console.log(startDate)
     e.preventDefault()
-    setNumber(number => [...number, { id: listEvaluate.length, name: evaluation }])
+    setNumber(number => [...number, { id: number.length + 1, name: evaluation, start: startDate, end: endDate }])
     // // useEffect
     // console.log(number)
     // console.log(listEvaluate)
@@ -97,7 +118,7 @@ export default function EvaluateList() {
       </Typography>
       <Paper className={classes.paper}>
         <NumberList numbers={number} />
-        <Button variant="contained" type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
+        <Button style={{marginLeft:10}} variant="contained" type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"

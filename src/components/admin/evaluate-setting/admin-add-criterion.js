@@ -171,13 +171,11 @@ export default function AddCriterion() {
         padding: 6
       }
     }
-    let temp = ''
     return (
       <div>
         <TextField
-          variant="outlined" inputProps={text} className={classes.input} placeholder="Thêm lựa chọn vào đây"
+          variant="outlined" inputProps={text} className={classes.input} placeholder="Thêm lựa chọn vào đây" defaultValue={selection[props.stt]}
           onChange={e => {
-            temp = e.target.value
             setSelection(selection.map((value, index) => (index == props.stt ? (value = e.target.value) : value)))
           }}
         />
