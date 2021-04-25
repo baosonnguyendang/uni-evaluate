@@ -29,8 +29,10 @@ import Criterion from './admin-criterion'
 import Sub from './admin-sub'
 import logo from '../../img/logo.png'
 
-import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
-
+import { BrowserRouter as Router, Switch, Route, Redirect, NavLink } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { logout } from '../../actions/authActions'
+import { useHistory } from "react-router-dom";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -121,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
-
+  const dispatch = useDispatch()
   //dong, mo menu
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -130,15 +132,19 @@ export default function Dashboard() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  const history = useHistory();
   //dang xuat
 
   const handleClick = () => {
-
+    dispatch(logout())
+    history.push('/')
   };
-
+  let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
   return (
     <div className={classes.root}>
+      {
+        isLogged ? (localStorage.getItem('role') === 'user' && <Redirect to='/user' />) : <Redirect to='/' />
+      }
       <CssBaseline />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
@@ -155,11 +161,9 @@ export default function Dashboard() {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             LVTN
           </Typography>
-          <Link to='/'>
-            <IconButton style={{color: 'white'}} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+            <IconButton onClick={handleClick} style={{color: 'white'}} aria-controls="simple-menu" aria-haspopup="true" >
               <ExitToAppIcon />
             </IconButton>
-          </Link>
         </Toolbar>
       </AppBar>
       <Drawer

@@ -1,3 +1,4 @@
+import { ImportExport } from '@material-ui/icons';
 import axios from 'axios';
 import { returnErrors } from './errorActions';
 import {
@@ -6,18 +7,15 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  LOGOUT_SUCCESS,
-  REGISTER_SUCCESS,
-  REGISTER_FAIL
+  LOGOUT_SUCCESS
 } from './types';
-
 // Check token & load user
 export const loadUser = () => (dispatch, getState) => {
   // User loading
   dispatch({ type: USER_LOADING });
 
   axios
-    .get('/login', tokenConfig(getState))
+    .get('/signin', tokenConfig(getState))
     .then(res =>
       dispatch({
         type: USER_LOADED,
@@ -25,7 +23,7 @@ export const loadUser = () => (dispatch, getState) => {
       })
     )
     .catch(err => {
-      dispatch(returnErrors(err.response.data, err.response.status));
+      dispatch(returnErrors(err.message, '404'));
       dispatch({
         type: AUTH_ERROR
       });
@@ -34,9 +32,8 @@ export const loadUser = () => (dispatch, getState) => {
 
 
 // Login User
-export const login = ({ email, password }) => (
-  dispatch
-) => {
+export const login = ({ email, password }) => (dispatch) => {
+  console.log(email, password);
   // Headers
   const config = {
     headers: {
@@ -48,7 +45,7 @@ export const login = ({ email, password }) => (
   const body = JSON.stringify({ email, password });
 
   axios
-    .post('/api/auth/login', body, config)
+    .post('/signin', body, config)
     .then(res =>
       dispatch({
         type: LOGIN_SUCCESS,

@@ -26,6 +26,10 @@ import 'react-calendar/dist/Calendar.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Main from './user-main'
 import TableEvaluation from './element/user-table'
+import { Badge, MenuItem, Menu} from '@material-ui/core'
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MailIcon from '@material-ui/icons/Mail';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 
 function Copyright() {
   return (
@@ -134,15 +138,43 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+
+
 export default function Dashboard2() {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(true);
+
+  const isMenuOpen = Boolean(anchorEl);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+    </Menu>
+  );
 
   return (
     <div className={classes.root}>
@@ -162,11 +194,27 @@ export default function Dashboard2() {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             LVTN
           </Typography>
-          <Link to='/'>
-            <IconButton style={{ color: 'white' }} aria-controls="simple-menu" aria-haspopup="true">
-              <ExitToAppIcon />
+          <div className={classes.sectionDesktop}>
+            <IconButton aria-label="show 4 new mails" color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <MailIcon />
+              </Badge>
             </IconButton>
-          </Link>
+            <IconButton aria-label="show 17 new notifications" color="inherit">
+              <Badge badgeContent={17} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -183,7 +231,6 @@ export default function Dashboard2() {
         </div>
         <Divider />
         {/* <List>{mainListItems}</List> */}
-        <List><MainListItems /></List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

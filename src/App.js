@@ -1,28 +1,37 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect  } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import SignInSide from "./components/signin"
 import Dashboard from "./components/admin/admin-navbar"
-import Dashboard2 from './components/user/user-navbar'
+import UserPage from './components/user/user-page'
 import axios from 'axios'
 import { Provider } from 'react-redux'
 import store from './store'
 import { loadUser } from './actions/authActions';
 
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={props => (
+        localStorage.getItem('token')
+            ? <Component {...props} />
+            : <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+    )} />
+)
+
 function App() {
-  axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
+  axios.defaults.baseURL = 'http://localhost:5000/';
   useEffect(() => {
-    store.dispatch(loadUser());
+    // store.dispatch(loadUser());
   }, []);
   return (
     <Provider store={store}>
-    <Router>
+    <Router >
       <div>
         {/* <Navbar /> */}
         <Route path="/" exact component={SignInSide} />
         <Route path="/admin" component={Dashboard} />
-        <Route path="/user" component={Dashboard2} />
+        <PrivateRoute path="/user" component={UserPage} />
         {/* <Route path="/dashboard/user" component={BasicTable} /> */}
         {/* <Route path="/edit/:id" component={EditExercise} />
         <Route path="/create" component={CreateExercise} />
