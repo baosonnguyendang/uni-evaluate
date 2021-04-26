@@ -16,7 +16,7 @@ import { Alert } from '@material-ui/lab';
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../actions/authActions'
-import { makeStyles } from '@material-ui/core'
+import { makeStyles, LinearProgress } from '@material-ui/core'
 
 function Copyright() {
   return (
@@ -68,7 +68,7 @@ const SignInSide = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch();
-  const isAuth = useSelector(state => state.auth.isAuthenticated);
+  const isLoading = useSelector(state => state.auth.isLoading);
   const classes = useStyles()
   const onSubmit = (e) => {
     e.preventDefault();
@@ -82,10 +82,15 @@ const SignInSide = () => {
     <Grid container component="main" className={classes.root}>
       {
           isLogged && (localStorage.getItem('role') === 'admin' ? <Redirect to='/admin' /> : <Redirect to='/user' />)
+          
       }
       <CssBaseline />
+      <Grid item xs = {12}>
+      {isLoading&&<LinearProgress />}
+      </Grid>
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+
         <div className={classes.paper}>
           {/* <Avatar className={classes.avatar}>
                           <img src={logo}/>

@@ -1,6 +1,6 @@
 import { ImportExport } from '@material-ui/icons';
 import axios from 'axios';
-import { returnErrors } from './errorActions';
+import { returnErrors, clearErrors } from './errorActions';
 import {
   USER_LOADED,
   USER_LOADING,
@@ -33,7 +33,9 @@ export const loadUser = () => (dispatch, getState) => {
 
 // Login User
 export const login = ({ email, password }) => (dispatch) => {
-  console.log(email, password);
+  // User loading
+  dispatch({ type: USER_LOADING });
+
   // Headers
   const config = {
     headers: {
@@ -46,11 +48,13 @@ export const login = ({ email, password }) => (dispatch) => {
 
   axios
     .post('/auth/signin', body, config)
-    .then(res =>
+    .then(res =>{
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data
       })
+      dispatch(clearErrors())
+    }
     )
     .catch(err => {
       dispatch(
