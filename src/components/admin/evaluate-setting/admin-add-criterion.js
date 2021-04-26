@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import UnitSettings from './admin-unit-settings'
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -117,6 +119,9 @@ export default function AddCriterion() {
     let bool = false
     return (
       <div>
+        <Typography component="h3" variant="h5" color="inherit">
+          Các tiêu chuẩn và tiêu chí sẽ đánh giá:
+        </Typography>
         <ol style={{ marginTop: 10 }}>
           {
             data.map(criterion => {
@@ -207,9 +212,7 @@ export default function AddCriterion() {
         Nhóm 01
       </Typography>
       <Paper className={classes.paper}>
-        <Typography component="h3" variant="h5" color="inherit">
-          Các tiêu chuẩn và tiêu chí sẽ đánh giá:
-        </Typography>
+        <UnitSettings />
         <SelectedCriterion />
         <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
           Thêm tiêu chuẩn vào Form
