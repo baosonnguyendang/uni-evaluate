@@ -6,24 +6,47 @@ import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import PersonIcon from '@material-ui/icons/Person';
 import Divider from '@material-ui/core/Divider';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core'
+const useStyles = makeStyles((theme) => ({
+  grow: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    }
+  },
+  active: {
+    background:"rgba(224, 224, 224, 1)",
+    hover:{
+      background: "rgba(224, 224, 224, 1)"
+    }
+  }
+}
+  ))
 
 export function MainListItems() {
+  const classes = useStyles()
   return (
     <div>
-      <ListItem button component={Link} to={'/admin/user'}>
+      <ListItem button component={NavLink} to={'/admin/user'} activeClassName={classes.active}>
         <ListItemIcon>
           <PersonIcon />
         </ListItemIcon>
         <ListItemText primary="Người dùng" />
       </ListItem>
-      <ListItem button component={Link} to={'/admin/faculty'}>
+      <ListItem button component={NavLink} to={'/admin/faculty'}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="DS Đơn vị" />
       </ListItem>
-      <ListItem button component={Link} to={'/admin/criteria'}>
+      <ListItem button component={NavLink} to={'/admin/criteria'}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
@@ -32,7 +55,7 @@ export function MainListItems() {
 
       <Divider />
 
-      <ListItem button component={Link} to={'/admin/criterion'}>
+      <ListItem button component={NavLink} to={'/admin/criterion'}>
         {/* <Link to="/dashboard/user" style={{ display: 'contents', textDecoration: 'none' }}>
           <ListItemIcon>
             <AssignmentIcon />

@@ -17,7 +17,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import { logout } from '../../actions/authActions'
 import { useDispatch } from 'react-redux'
 import { useHistory } from "react-router-dom";
-
+import logo from '../../img/logo.png'
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
@@ -80,6 +80,10 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  logo: {
+    maxWidth: '60px',
+    marginRight: '10px'
+  }
 }));
 
 export default function PrimarySearchAppBar() {
@@ -176,16 +180,9 @@ export default function PrimarySearchAppBar() {
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
+          <img className={classes.logo} src={logo} alt='' />
           <Typography className={classes.title} variant="h6" noWrap>
-            Material-UI
+            LVTN
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -202,11 +199,6 @@ export default function PrimarySearchAppBar() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton>
             <IconButton aria-label="show 17 new notifications" color="inherit">
               <Badge badgeContent={17} color="secondary">
                 <NotificationsIcon />

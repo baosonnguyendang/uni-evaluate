@@ -95,7 +95,7 @@ const SignInSide = () => {
                       </Avatar> */}
           <img className={classes.logo} src={logo} alt='' />
           {/* <form className={classes.form} noValidate> */}
-          <form className={classes.form}>
+          <form className={classes.form} onSubmit={onSubmit}>
             <TextField
               onChange={onChangeUsername}
               variant="outlined"
@@ -125,7 +125,7 @@ const SignInSide = () => {
               label="Remember me"
             />
             {error && <Alert severity="error">{error}</Alert>}
-              <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} onClick={onSubmit} >
+              <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} >
                 Sign In
               </Button>
             <Grid container>
