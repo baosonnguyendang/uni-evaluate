@@ -79,15 +79,13 @@ const SignInSide = () => {
   let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
   const error = useSelector(state => state.error.msg)
   return (
+    <>
+      {isLoading&&<LinearProgress />}
     <Grid container component="main" className={classes.root}>
       {
           isLogged && (localStorage.getItem('role') === 'admin' ? <Redirect to='/admin' /> : <Redirect to='/user' />)
-          
       }
       <CssBaseline />
-      <Grid item xs = {12}>
-      {isLoading&&<LinearProgress />}
-      </Grid>
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 
@@ -142,6 +140,7 @@ const SignInSide = () => {
         </div>
       </Grid>
     </Grid>
+    </>
   );
 }
 
