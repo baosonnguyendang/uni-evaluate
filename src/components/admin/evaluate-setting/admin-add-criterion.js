@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import UnitSettings from './admin-unit-settings'
+import Results from './admin-results';
+import UnitSettings from './admin-unit-settings';
 
 import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink } from "react-router-dom";
 
@@ -214,125 +215,138 @@ export default function AddCriterion() {
     console.log(criteriaChosen.selectionList)
   }
 
+  const [showResults, setShowResults] = React.useState(false);
+
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
         Nhóm 01
       </Typography>
       <Paper className={classes.paper}>
-        <UnitSettings />
-        <SelectedCriterion />
-        <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-          Thêm tiêu chuẩn vào Form
+        {showResults ? (
+          <div>
+            <Results />
+            <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(false) }}>Trở lại trang điều chỉnh</Typography >
+          </div>
+        ) : (
+          <div>
+            <UnitSettings />
+            <SelectedCriterion />
+            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+              Thêm tiêu chuẩn vào Form
         </Button>
-        <Typography style={{position:'absolute', bottom: 0, right: 10}} component={Link} to={`${url}/results`}>Xem kết quả đánh giá</Typography >
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          className={classes.modal}
-          open={open}
-          onClose={handleClose}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={open}>
-            <div className={classes.paper1}>
-              <h4 id="transition-modal-title">Thêm tiêu chuẩn</h4>
-              <Autocomplete
-                multiple
-                id="tags-outlined"
-                options={data}
-                getOptionLabel={(data) => data.name}
-                defaultValue={data.filter(x => x.check === true)}
-                onChange={(event, value) => {
-                  console.log(value)
-                  data.map(criterion => criterion.check = false)
-                  value.map(criterion => criterion.check = true)
-                }}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label="Danh sách tiêu chuẩn được chọn"
-                    placeholder="Tiêu chuẩn"
-                  />
-                )}
-              />
-              <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleClose}>Xong</Button>
-            </div>
-          </Fade>
-        </Modal>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          className={classes.modal}
-          open={openCriteria}
-          onClose={handleCloseCriteria}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }} >
-          <Fade in={openCriteria}>
-            <div className={classes.paper1}>
-              <h3 id="transition-modal-title">Thêm tiêu chí vào tiêu chuẩn {id}</h3>
-              {showCriteria.map(criteria => {
-                <p>{criteria.id}</p>
-              })}
-              <FormGroup>
-                {showCriteria.map(criteria => {
-                  return (
-                    // <p>{criteria.id}</p>
-                    <FormGroup>
-                      <FormControlLabel control={
-                        <Checkbox
-                          checked={criteria.check}
-                          onChange={() => { criteria.check = !criteria.check; setState(!state) }}
-                          name={criteria.id}
-                          color="primary"
-                        />
-                      }
-                        label={criteria.name}
+            <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(true) }}>Xem kết quả đánh giá</Typography >
+            <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              className={classes.modal}
+              open={open}
+              onClose={handleClose}
+              closeAfterTransition
+              BackdropComponent={Backdrop}
+              BackdropProps={{
+                timeout: 500,
+              }}
+            >
+              <Fade in={open}>
+                <div className={classes.paper1}>
+                  <h4 id="transition-modal-title">Thêm tiêu chuẩn</h4>
+                  <Autocomplete
+                    multiple
+                    id="tags-outlined"
+                    options={data}
+                    getOptionLabel={(data) => data.name}
+                    defaultValue={data.filter(x => x.check === true)}
+                    onChange={(event, value) => {
+                      console.log(value)
+                      data.map(criterion => criterion.check = false)
+                      value.map(criterion => criterion.check = true)
+                    }}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Danh sách tiêu chuẩn được chọn"
+                        placeholder="Tiêu chuẩn"
                       />
-                    </FormGroup>
-                  )
-                })}
-              </FormGroup>
-              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
-            </div>
-          </Fade>
-        </Modal>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          className={classes.modal}
-          open={openPercentage}
-          onClose={handleClosePercentage}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={openPercentage}>
-            <div className={classes.paper1}>
-              <h4 id="transition-modal-title">Thêm các lựa chọn cho tiêu chí</h4>
-              <div>
-                <Button onClick={onAddBtnClick} variant="contained" color="primary" size="small">
-                  Thêm lựa chọn
+                    )}
+                  />
+                  <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleClose}>Xong</Button>
+                </div>
+              </Fade>
+            </Modal>
+            <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              className={classes.modal}
+              open={openCriteria}
+              onClose={handleCloseCriteria}
+              closeAfterTransition
+              BackdropComponent={Backdrop}
+              BackdropProps={{
+                timeout: 500,
+              }} >
+              <Fade in={openCriteria}>
+                <div className={classes.paper1}>
+                  <h3 id="transition-modal-title">Thêm tiêu chí vào tiêu chuẩn {id}</h3>
+                  {showCriteria.map(criteria => {
+                    <p>{criteria.id}</p>
+                  })}
+                  <FormGroup>
+                    {showCriteria.map(criteria => {
+                      return (
+                        // <p>{criteria.id}</p>
+                        <FormGroup>
+                          <FormControlLabel control={
+                            <Checkbox
+                              checked={criteria.check}
+                              onChange={() => { criteria.check = !criteria.check; setState(!state) }}
+                              name={criteria.id}
+                              color="primary"
+                            />
+                          }
+                            label={criteria.name}
+                          />
+                        </FormGroup>
+                      )
+                    })}
+                  </FormGroup>
+                  <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
+                </div>
+              </Fade>
+            </Modal>
+            <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              className={classes.modal}
+              open={openPercentage}
+              onClose={handleClosePercentage}
+              closeAfterTransition
+              BackdropComponent={Backdrop}
+              BackdropProps={{
+                timeout: 500,
+              }}
+            >
+              <Fade in={openPercentage}>
+                <div className={classes.paper1}>
+                  <h4 id="transition-modal-title">Thêm các lựa chọn cho tiêu chí</h4>
+                  <div>
+                    <Button onClick={onAddBtnClick} variant="contained" color="primary" size="small">
+                      Thêm lựa chọn
                 </Button>
-                <Button onClick={!error && handleClosePercentage} variant="contained" color="secondary" style={{ float: 'right' }} size="small">
-                  Lưu
+                    <Button onClick={!error && handleClosePercentage} variant="contained" color="secondary" style={{ float: 'right' }} size="small">
+                      Lưu
                 </Button>
-                {inputList}
-              </div>
-            </div>
-          </Fade>
-        </Modal>
+                    {inputList}
+                  </div>
+                </div>
+              </Fade>
+            </Modal>
+          </div>
+        )
+        }
+
       </Paper>
     </div>
   )

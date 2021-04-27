@@ -193,7 +193,6 @@ export default function Dashboard() {
                 <Route exact path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper} />} />
                 <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting className={classes.paper}/>} />
                 <Route exact path='/admin/evaluate-settings/:id/:id' children={<AddCriterion className={classes.paper}/>} />
-                <Route path='/admin/evaluate-settings/:id/:id/results' children={<Results />} />
                 <Route exact path='/admin/criterion' children={<Criterion className={classes.paper} />} />
                 <Route exact path='/admin/criteria/' children={<Sub className={classes.paper} />} />
                 <Route path='/admin/criteria/:id' children={<Criteria className={classes.paper} />} />
