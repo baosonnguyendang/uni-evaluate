@@ -41,6 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
   btn: {
     textTransform: 'none',
+    width: '16vw',
   },
   formControl: {
     margin: theme.spacing(3),

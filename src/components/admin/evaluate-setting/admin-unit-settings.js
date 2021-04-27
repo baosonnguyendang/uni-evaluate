@@ -8,6 +8,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Fade from '@material-ui/core/Fade';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -37,16 +41,17 @@ const useStyles = makeStyles(theme => ({
   btn: {
     textTransform: 'none',
     marginBottom: '15px',
+    width: '16vw'
   }
 }))
 
 const createData = (name, id) => {
-  return { name, id }
+  return { name, id, check: false }
 }
 //ds don vi va ma don vi
 const units = [
   createData('Khoa Máy tính', '0001'),
-  createData('Khoa Cơ Khí', '0002'),
+  createData('Khoa Cơ khí', '0002'),
   createData('Phòng Đào tạo', '0011'),
   createData('Phòng Y tế', '0012'),
   createData('Ban Giám hiệu', '0020'),
@@ -61,22 +66,46 @@ export default function UnitSettings() {
   //open modal them don vi
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
+    // console.log(chosen)
     setOpen(true);
   };
   const handleClose = () => {
+    setChosen(units.filter(unit => unit.check === true))
     setOpen(false);
+    units.map(x => {
+      console.log(x.check)
+    })
   };
 
   const [chosen, setChosen] = React.useState([])
 
+  const SelectedUnit = () => {
+    let bool = false;
+    return (
+      <div>
+        <ol style={{ marginTop: 10 }}>
+          {units.map(unit => {
+            if (unit.check) {
+              bool = true;
+              return (
+                <li key={unit.id}>{unit.name}</li>
+              )
+            }
+          })}
+        </ol>
+        {!bool && <p>(Không có đơn vị nào nằm trong nhóm)</p>}
+      </div>
+    )
+  }
+
   return (
     <div>
       <Typography component="h3" variant="h5" color="inherit">
-        Các đơn vị sẽ đánh giá nằm trong nhóm
+        Các đơn vị tham gia đánh giá nằm trong nhóm
       </Typography>
-      <p>(Không có đơn vị nào nằm trong nhóm)</p>
+      <SelectedUnit/>
       <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-        Thêm đơn vị vào Form
+        Thêm đơn vị vào nhóm
       </Button>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -98,6 +127,7 @@ export default function UnitSettings() {
               id="checkboxes-tags-demo"
               options={units}
               disableCloseOnSelect
+              defaultValue = {chosen}
               getOptionLabel={(option) => option.name}
               renderOption={(option, { selected }) => (
                 <React.Fragment>
@@ -105,7 +135,7 @@ export default function UnitSettings() {
                     icon={icon}
                     checkedIcon={checkedIcon}
                     style={{ marginRight: 8 }}
-                    checked={selected}
+                    checked={option.check = selected}
                   />
                   {option.name}
                 </React.Fragment>
