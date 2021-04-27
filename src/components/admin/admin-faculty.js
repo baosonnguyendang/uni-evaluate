@@ -1,46 +1,4 @@
-// import * as React from 'react';
-
-// import { DataGrid } from '@material-ui/data-grid';
-// import Paper from '@material-ui/core/Paper';
-// import Typography from '@material-ui/core/Typography';
-
-// const columns = [
-//   { field: 'id', headerName: 'ID', width: 70 },
-//   { field: 'name', headerName: 'Tên Đơn vị', width: 220 },
-//   { field: 'head', headerName: 'Trưởng Đơn vị', width: 220 },
-//   {
-//     field: 'headID',
-//     headerName: 'ID Trưởng Đơn vị',
-//     type: 'number',
-//     width: 180,
-//   },
-// ];
-
-// const rows = [
-//   { id: 1, name: 'Khoa Máy tính', head: 'Jon', headID: 35 },
-//   { id: 2, name: 'Khoa Điện - Điện tử', head: 'Cersei', headID: 42 },
-//   { id: 3, name: 'Khoa Cơ khí', head: 'Jaime', headID: 45 },
-//   { id: 4, name: 'Phòng Đào tạo', head: 'Arya', headID: 16 },
-//   { id: 5, name: 'Phòng Y tế', head: 'Daenerys', headID: null },
-//   { id: 6, name: 'Thư viện', head: null, headID: 150 },
-// ];
-
-// export default function Faculty() {
-//   return (
-//     <div>
-//       <Typography component="h1" variant="h5" color="inherit" noWrap>
-//         DANH SÁCH ĐƠN VỊ
-//       </Typography>
-//       <Paper style={{marginTop: '15px'}}>
-//         <div style={{ height: 400, width: '100%' }}>
-//           <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
-//         </div>
-//       </Paper>
-//     </div>
-//   );
-// }
-
-import React from "react";
+import React, {useEffect} from "react";
 import ReactDOM from "react-dom";
 
 import { Link } from 'react-router-dom';
@@ -66,6 +24,7 @@ import Modal from '@material-ui/core/Modal';
 import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -144,6 +103,17 @@ export default function Criterion() {
     createData("2", 'Phòng đào tạo', 'Bùi Hoài Thắng', '1234568', null),
     createData("3", 'Máy tính', 'idk', '0', null),
   ]);
+  const token = localStorage.getItem('token')
+  const fetchDepartment = () => {
+    axios.get('/admin/department', { headers: {"Authorization" : `Bearer ${token}`} })
+          .then(res => {
+              console.log(res.data.departments);
+             setRows(res.data.departments.map(dep => ({...dep,namemanager:(dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`),idmanager:dep?.manager?.staff_id})))
+              // setIsLoading(false)
+  })}
+  useEffect(() => {
+    fetchDepartment()
+  }, [])
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
 
@@ -248,11 +218,11 @@ export default function Criterion() {
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
                 <TableRow key={row.id}>
-                  <CustomTableCell className={classes.number} {...{ row, name: "id", onChange }} />
+                  <CustomTableCell className={classes.number} {...{ row, name: "department_code", onChange }} />
                   <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "head", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "headId", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "under", onChange }} />
+                  <CustomTableCell className={classes.name} {...{ row, name: "namemanager", onChange }} />
+                  <CustomTableCell className={classes.name} {...{ row, name: "idmanager", onChange }} />
+                  <CustomTableCell className={classes.name} {...{ row, name: "parent", onChange }} />
                   <TableCell className={classes.selectTableCell}>
                     {row.isEditMode ? (
                       <>

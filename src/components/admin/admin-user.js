@@ -106,12 +106,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
 };
 
 export default function Criterion() {
-  const [rows, setRows] = React.useState([
-    createData("1712970", 'Szoboszlai', 'Dominik', 'a@b.com', 'Máy tính', 'NV'),
-    createData("1234567", 'Mai Thanh', 'Phong', 'aa@b.com', 'BGH', 'Hiệu trưởng'),
-    createData("1234568", 'Bùi Hoài', 'Thắng', 'aaa@b.com', 'Phòng đào tạo', 'Trưởng'),
-  ]);
-  console.log(rows);
+  const [rows, setRows] = React.useState([]);
   const token = localStorage.getItem('token')
   const fetchUser = () => {
     axios.get('/admin/user', { headers: {"Authorization" : `Bearer ${token}`} })
