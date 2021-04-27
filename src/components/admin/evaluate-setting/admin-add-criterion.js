@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 
 import UnitSettings from './admin-unit-settings'
 
+import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Backdrop from '@material-ui/core/Backdrop';
+import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -14,6 +17,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
+// import Link from '@material-ui/core/Link'
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
@@ -24,6 +28,7 @@ const useStyles = makeStyles(theme => ({
     minHeight: 400,
     padding: 10,
     marginTop: 24,
+    position: 'relative',
   },
   modal: {
     display: 'flex',
@@ -218,6 +223,7 @@ export default function AddCriterion() {
         <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
           Thêm tiêu chuẩn vào Form
         </Button>
+        <Typography style={{position:'absolute', bottom: 0, right: 10}} component={Link} to={window.location.href + '/results'}>Xem kết quả đánh giá</Typography >
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"

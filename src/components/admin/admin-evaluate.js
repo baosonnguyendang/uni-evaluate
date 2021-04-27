@@ -22,10 +22,10 @@ function ListItem(props) {
   return (
     // <li>{props.id}</li>
     <tr>
-      <td style={{width:'30%', lineHeight:'50px', paddingLeft:10, fontSize:'1.125rem'}}><Link to={'/admin/evaluate-settings/' + props.id}>{props.value}</Link></td>
-      <td style={{textAlign:'center', lineHeight:'50px', fontSize:'1.125rem'}}>{props.id}</td>
-      {/* <td align='center'>{props.start.toString()}</td>
-      <td align='center'>{props.end.toString()}</td> */}
+      <td style={{width:'30%', lineHeight:'50px', paddingLeft:10}}><Link to={'/admin/evaluate-settings/' + props.id}>{props.value}</Link></td>
+      <td style={{textAlign:'center', lineHeight:'50px'}}>{props.id}</td>
+      <td align='center'>{props.start.getDate() + '/' + (props.start.getMonth() + 1) + '/' + props.start.getFullYear()}</td>
+      <td align='center'>{props.end.getDate() + '/' + (props.end.getMonth() + 1) + '/' + props.end.getFullYear()}</td>
     </tr>
   )
 }
@@ -42,10 +42,10 @@ function NumberList(props) {
     <table style={{width:'100%', marginBottom: 10}}>
       <thead style={{backgroundColor:'#f4f4f4', lineHeight:'50px'}}>
         <tr>
-          <th style={{width:'30%', fontSize:'1.125rem', paddingLeft:10}}>Tên đợt đánh giá</th>
-          <th style={{textAlign:'center', fontSize:'1.125rem'}}>Mã đợt đánh giá</th>
-          {/* <th style={{textAlign:'center'}}>Ngày bắt đầu</th>
-          <th style={{textAlign:'center'}}>Ngày kết thúc</th> */}
+          <th style={{width:'30%', paddingLeft:10}}>Tên đợt đánh giá</th>
+          <th style={{textAlign:'center',}}>Mã đợt</th>
+          <th style={{textAlign:'center'}}>Ngày bắt đầu</th>
+          <th style={{textAlign:'center'}}>Ngày kết thúc</th>
         </tr>
       </thead>
       <tbody>
@@ -96,8 +96,8 @@ export default function EvaluateList() {
 
   //new Evaluation
   const listEvaluate = [
-    { id: 1, name: 'Đợt 1 năm 2020', start: Date(2021, 1, 14), end: Date(2021, 11, 14) },
-    { id: 2, name: 'Đợt 2 năm 2020', start: Date(2021, 1, 14), end: Date(2021, 11, 14) },
+    { id: 1, name: 'Đợt 1 năm 2020', start: new Date('January 14 2021'), end: new Date('November 14 2021') },
+    { id: 2, name: 'Đợt 2 năm 2020', start: new Date('January 1 2021'), end: new Date('December 14 2021') },
   ];
   const [number, setNumber] = useState(listEvaluate);
 
