@@ -117,7 +117,7 @@ export default function Criterion() {
     axios.get('/admin/user', { headers: {"Authorization" : `Bearer ${token}`} })
           .then(res => {
               console.log(res.data.users);
-              setRows(res.data.users.map(user => ({...user,department:[user.department.map(dep=>dep.name)].join(',')})))
+              setRows(res.data.users.map(user => ({...user,department:user.department.map(dep=>dep.name).join(", ")})))
               setIsLoading(false)
   })}
   useEffect(() => {
