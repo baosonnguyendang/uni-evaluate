@@ -108,7 +108,7 @@ export default function Criterion() {
     axios.get('/admin/department', { headers: {"Authorization" : `Bearer ${token}`} })
           .then(res => {
               console.log(res.data.departments);
-             setRows(res.data.departments.map(dep => ({...dep,namemanager:(dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`),idmanager:dep?.manager?.staff_id})))
+             setRows(res.data.departments.map(dep => ({...dep,namemanager:(dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`),idmanager:dep?.manager?.staff_id,parent:dep?.parent?.name})))
               // setIsLoading(false)
   })}
   useEffect(() => {
