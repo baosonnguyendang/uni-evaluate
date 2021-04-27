@@ -97,7 +97,7 @@
 //     </div>
 //   );
 // }
-import React from "react";
+import React, { useEffect} from "react";
 import ReactDOM from "react-dom";
 
 import { Link } from 'react-router-dom';
@@ -126,6 +126,7 @@ import Modal from '@material-ui/core/Modal';
 import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -208,6 +209,16 @@ export default function Criterion() {
     createData("1234567", 'Mai Thanh', 'Phong', 'aa@b.com', 'BGH', 'Hiệu trưởng'),
     createData("1234568", 'Bùi Hoài', 'Thắng', 'aaa@b.com', 'Phòng đào tạo', 'Trưởng'),
   ]);
+  const token = localStorage.getItem('token')
+  const fetchUser = () => {
+    axios.get('/admin/user', { headers: {"Authorization" : `Bearer ${token}`} })
+          .then(res => {
+              console.log(res.data);
+        
+  })}
+  useEffect(() => {
+    fetchUser()
+  }, [])
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
 

@@ -19,7 +19,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { MainListItems } from './admin-listItems';
-import BasicTable from "./admin-user"
+import UserTable from "./admin-user"
 import Faculty from "./admin-faculty"
 import EvaluateList from './admin-evaluate'
 import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
@@ -188,7 +188,7 @@ export default function Dashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Switch>
-                <Route exact path='/admin/user' children={<BasicTable className={classes.paper} />} />
+                <Route exact path='/admin/user' children={<UserTable className={classes.paper} />} />
                 <Route exact path='/admin/faculty' children={<Faculty className={classes.paper} />} />
                 <Route exact path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper} />} />
                 <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting className={classes.paper}/>} />
