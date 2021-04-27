@@ -27,8 +27,7 @@ import { useRouteMatch } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    minHeight: 400,
-    padding: 10,
+    minHeight: 440,
     marginTop: 24,
     position: 'relative',
   },
@@ -217,24 +216,31 @@ export default function AddCriterion() {
 
   const [showResults, setShowResults] = React.useState(false);
 
+  const group = 1
+
   return (
     <div>
-      <Typography component="h1" variant="h5" color="inherit" noWrap>
-        Nhóm 01
-      </Typography>
-      <Paper className={classes.paper}>
-        {showResults ? (
-          <div>
-            <Results />
+      {showResults ? (
+        <div>
+          <Typography component="h3" variant="h5" color="inherit">
+            Kết quả đánh giá nhóm {group}
+          </Typography>
+          <Paper className={classes.paper}>
+            <Results group={group} />
             <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(false) }}>Trở lại trang điều chỉnh</Typography >
-          </div>
-        ) : (
-          <div>
+          </Paper>
+        </div>
+      ) : (
+        <div>
+          <Typography component="h1" variant="h5" color="inherit" noWrap>
+            Nhóm 0{group}
+          </Typography>
+          <Paper style={{padding: 10}} className={classes.paper}>
             <UnitSettings />
             <SelectedCriterion />
             <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
               Thêm tiêu chuẩn vào Form
-        </Button>
+            </Button>
             <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(true) }}>Xem kết quả đánh giá</Typography >
             <Modal
               aria-labelledby="transition-modal-title"
@@ -343,11 +349,9 @@ export default function AddCriterion() {
                 </div>
               </Fade>
             </Modal>
-          </div>
-        )
-        }
-
-      </Paper>
+          </Paper>
+        </div>
+      )}
     </div>
   )
 }

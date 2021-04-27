@@ -19,11 +19,6 @@ import Typography from '@material-ui/core/Typography';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles(theme => ({
-  paper: {
-    minHeight: 400,
-    padding: 10,
-    marginTop: 24,
-  },
   modal: {
     display: 'flex',
     alignItems: 'center',
