@@ -16,8 +16,9 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { logout } from '../../actions/authActions'
 import { useDispatch } from 'react-redux'
-import { useHistory } from "react-router-dom";
+import { useRouteMatch ,Link, useHistory } from "react-router-dom";
 import logo from '../../img/logo.png'
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
@@ -94,6 +95,9 @@ export default function PrimarySearchAppBar() {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  let { path, url } = useRouteMatch();
+  console.log(path)
+
   const dispatch = useDispatch()
 
   const handleProfileMenuOpen = (event) => {
@@ -129,8 +133,7 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem component={Link} to={`${url}/profile`}>My account</MenuItem>
       <MenuItem onClick={redirecLogin}>Log out</MenuItem>
     </Menu>
   );
@@ -180,7 +183,9 @@ export default function PrimarySearchAppBar() {
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
+          <Link to='/user'>
           <img className={classes.logo} src={logo} alt='' />
+          </Link>
           <Typography className={classes.title} variant="h6" noWrap>
             LVTN
           </Typography>

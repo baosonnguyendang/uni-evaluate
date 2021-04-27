@@ -22,6 +22,7 @@ import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
+import { useRouteMatch } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -70,6 +71,7 @@ var listOfSelection = new Array('')
 
 export default function AddCriterion() {
   const classes = useStyles()
+  let { url } = useRouteMatch()
 
   const [data, setData] = React.useState([
     createData('Hoạt động giảng dạy', 'TC001',
@@ -223,7 +225,7 @@ export default function AddCriterion() {
         <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
           Thêm tiêu chuẩn vào Form
         </Button>
-        <Typography style={{position:'absolute', bottom: 0, right: 10}} component={Link} to={window.location.href + '/results'}>Xem kết quả đánh giá</Typography >
+        <Typography style={{position:'absolute', bottom: 0, right: 10}} component={Link} to={`${url}/results`}>Xem kết quả đánh giá</Typography >
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"

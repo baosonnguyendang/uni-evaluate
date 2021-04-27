@@ -1,102 +1,3 @@
-// import * as React from 'react';
-// import { makeStyles } from '@material-ui/core/styles';
-// import { DataGrid } from '@material-ui/data-grid';
-// import Button from '@material-ui/core/Button';
-// import Paper from '@material-ui/core/Paper';
-// import Typography from '@material-ui/core/Typography';
-
-// const useStyles = makeStyles((theme) => ({
-//   paper: {
-//     marginTop: '15px'
-//   },
-//   b: {
-//     width: '80px',
-//     margin: '10px',
-//     textAlign: 'end',
-//   },
-//   input: {
-//     display: 'none',
-//   }
-// }));
-
-// const columns = [
-//   { field: 'id', headerName: 'ID', width: 70 },
-//   { field: 'firstName', headerName: 'Tên', width: 100 },
-//   { field: 'lastName', headerName: 'Họ và tên đệm', width: 180 },
-//   {
-//     field: 'dob',
-//     headerName: 'DOB',
-//     width: 90,
-//   },
-//   {
-//     field: 'user',
-//     headerName: 'Tên đăng nhập',
-//     width: 180,
-//   },
-//   {
-//     field: 'password',
-//     headerName: 'Mật khẩu',
-//     sortable: false,
-//     width: 180,
-//   },
-//   {
-//     field: 'role',
-//     headerName: 'Chức vụ',
-//     width: 120,
-//   },
-//   {
-//     field: 'faculty',
-//     headerName: 'Khoa/Phòng/Ban',
-//     width: 180,
-//   },
-// ];
-
-// const rows = [
-//   { id: 1, lastName: 'Snow', firstName: 'Jon', dob: 35 },
-//   { id: 2, lastName: 'Lannister', firstName: 'Cersei', dob: 42 },
-//   { id: 3, lastName: 'Lannister', firstName: 'Jaime', dob: 45 },
-//   { id: 4, lastName: 'Stark', firstName: 'Arya', dob: 16 },
-//   { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', dob: null },
-//   { id: 6, lastName: 'Melisandre', firstName: null, dob: 150 },
-//   { id: 7, lastName: 'Clifford', firstName: 'Ferrara', dob: 44 },
-//   { id: 8, lastName: 'Frances', firstName: 'Rossini', dob: 36 },
-//   { id: 9, lastName: 'Roxie', firstName: 'Harvey', dob: 65 },
-// ];
-
-// export default function BasicTable() {
-//   const classes = useStyles();
-
-//   return (
-//     <div>
-//       <Typography component="h1" variant="h5" color="inherit" noWrap>
-//         DANH SÁCH NGƯỜI DÙNG
-//       </Typography>
-//       <Paper className={classes.paper}>
-//         <div>
-//           <div style={{ textAlign: "right", paddingTop: '5px' }}>
-//             <input
-//               accept="image/*"
-//               className={classes.input}
-//               id="contained-button-file"
-//               multiple
-//               type="file"
-//             />
-//             <label htmlFor="contained-button-file">
-//               <Button variant="contained" color="primary" component="span" className={classes.b}>
-//                 Thêm
-//               </Button>
-//             </label>
-//             <Button className={classes.b} variant="contained">Xóa</Button>
-//             <Button className={classes.b} variant="contained">Sửa</Button>
-//           </div>
-//           <div style={{ height: 400, width: '100%', padding: '5px 10px 10px 10px' }}>
-//             <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
-//           </div>
-//         </div>
-//       </Paper>
-//     </div>
-//   );
-// }
 import React, { useEffect} from "react";
 import ReactDOM from "react-dom";
 
@@ -209,12 +110,14 @@ export default function Criterion() {
     createData("1234567", 'Mai Thanh', 'Phong', 'aa@b.com', 'BGH', 'Hiệu trưởng'),
     createData("1234568", 'Bùi Hoài', 'Thắng', 'aaa@b.com', 'Phòng đào tạo', 'Trưởng'),
   ]);
+  console.log(rows);
   const token = localStorage.getItem('token')
   const fetchUser = () => {
     axios.get('/admin/user', { headers: {"Authorization" : `Bearer ${token}`} })
           .then(res => {
-              console.log(res.data);
-        
+              console.log(res.data.users);
+              setRows(res.data.users)
+
   })}
   useEffect(() => {
     fetchUser()
@@ -329,13 +232,13 @@ export default function Criterion() {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow key={row.id}>
-                  <CustomTableCell className={classes.name} {...{ row, name: "id", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "lname", onChange }} />
-                  <CustomTableCell {...{ row, name: "fname", onChange }} />
+                <TableRow key={row._id}>
+                  <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange }} />
+                  <CustomTableCell className={classes.name} {...{ row, name: "lastname", onChange }} />
+                  <CustomTableCell {...{ row, name: "firstname", onChange }} />
                   <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "unit", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "role", onChange }} />
+                  <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
+                  <CustomTableCell className={classes.name} {...{ row, name: "roles", onChange }} />
                   <TableCell className={classes.selectTableCell}>
                     {row.isEditMode ? (
                       <>
