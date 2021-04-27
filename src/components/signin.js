@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
-  },
+  }
 }));
 
 
@@ -80,8 +80,8 @@ const SignInSide = () => {
   const error = useSelector(state => state.error.msg)
   return (
     <>
-      {isLoading&&<LinearProgress />}
-    <Grid container component="main" className={classes.root}>
+    {isLoading && <LinearProgress style={{position:"absolute", width:"100%"}}/>}
+    <Grid container component="main" className={classes.root} >
       {
           isLogged && (localStorage.getItem('role') === 'admin' ? <Redirect to='/admin' /> : <Redirect to='/user' />)
       }
