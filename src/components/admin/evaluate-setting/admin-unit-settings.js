@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import { Route, Link, Redirect  } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import Backdrop from '@material-ui/core/Backdrop';
@@ -8,6 +10,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Fade from '@material-ui/core/Fade';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -18,11 +22,13 @@ import Typography from '@material-ui/core/Typography';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
+import UserSettings from './admin-user-settings'
+
 const useStyles = makeStyles(theme => ({
   modal: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   paper1: {
     position: 'absolute',
@@ -55,21 +61,13 @@ const units = [
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
+//ten don vi dc chon
 var unitChosen = ''
 
-const SelectedUnit = () => {
+const SelectedUnit = ({match}) => {
   const classes = useStyles()
 
   let bool = false;
-  //open modal coi co ai trong don vi khong tham gia ko thi uncheck
-  const [openUnit, setOpenUnit] = React.useState(false);
-  const handleOpenUnit = (x) => {
-    unitChosen = units.find(a => a.id==x).name
-    setOpenUnit(true)
-  }
-  const handleCloseUnit = () => {
-    setOpenUnit(false);
-  };
 
   return (
     <div>
@@ -78,29 +76,12 @@ const SelectedUnit = () => {
           if (unit.check) {
             bool = true;
             return (
-              <li key={unit.id} component='button' onClick={() => { handleOpenUnit(unit.id) }}><span>{unit.name}</span></li>
+              <li key={unit.id}><Link to={`${match.url}/${unit.id}`}>{unit.name}</Link></li>
             )
           }
         })}
       </ol>
       {!bool && <p>(Không có đơn vị nào nằm trong nhóm)</p>}
-      <Modal
-        className={classes.modal}
-        open={openUnit}
-        onClose={handleCloseUnit}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={openUnit}>
-          <div className={classes.paper1}>
-            <h4 id="transition-modal-title">Các viên chức thuộc {unitChosen}</h4>
-            <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseUnit}>Xong</Button>
-          </div>
-        </Fade>
-      </Modal>
     </div>
   )
 }
@@ -129,7 +110,7 @@ export default function UnitSettings() {
       <Typography component="h3" variant="h5" color="inherit">
         Các đơn vị tham gia đánh giá nằm trong nhóm
       </Typography>
-      <SelectedUnit />
+      <SelectedUnit/>
       <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
         Thêm đơn vị vào nhóm
       </Button>

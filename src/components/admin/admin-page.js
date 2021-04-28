@@ -5,6 +5,7 @@ import Faculty from "./admin-faculty"
 import EvaluateList from './admin-evaluate'
 import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
 import AddCriterion from './evaluate-setting/admin-add-criterion'
+import UserSettings from './evaluate-setting/admin-user-settings'
 import Criteria from './admin-criteria'
 import Criterion from './admin-criterion'
 import Results from './evaluate-setting/admin-results'
@@ -64,6 +65,7 @@ const AdminPage = () => {
                     <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
                     <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
                     <Route exact path='/admin/evaluate-settings/:id/:id' children={<AddCriterion />} />
+                    <Route exact path='/admin/evaluate-settings/:id/:id/:id' children={<UserSettings />} />
                     <Route exact path='/admin/criterion' children={<Criterion />} />
                     <Route exact path='/admin/criteria/' children={<Sub />} />
                     <Route path='/admin/criteria/:id' children={<Criteria />} />
