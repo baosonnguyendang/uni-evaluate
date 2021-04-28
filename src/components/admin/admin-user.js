@@ -112,7 +112,7 @@ export default function Criterion() {
     axios.get('/admin/user', { headers: {"Authorization" : `Bearer ${token}`} })
           .then(res => {
               console.log(res.data.users);
-              setRows(res.data.users.map(user => ({...user,department:user.department.map(dep=>dep.name).join(", ")})))
+              setRows(res.data.users.map(user => ({...user,department:user.department.map(dep=>dep.name).join(", "),isEditMode:false})))
               setIsLoading(false)
   })}
   useEffect(() => {
@@ -241,13 +241,13 @@ export default function Criterion() {
                      <>
                        <IconButton
                          aria-label="done"
-                         onClick={() => onToggleEditMode(row.id)}
+                         onClick={() => onToggleEditMode(row._id)}
                        >
                          <DoneIcon />
                        </IconButton>
                        <IconButton
                          aria-label="revert"
-                         onClick={() => onRevert(row.id)}
+                         onClick={() => onRevert(row._id)}
                        >
                          <RevertIcon />
                        </IconButton>
@@ -256,13 +256,13 @@ export default function Criterion() {
                      <>
                        <IconButton
                          aria-label="delete"
-                         onClick={() => onToggleEditMode(row.id)}
+                         onClick={() => onToggleEditMode(row._id)}
                        >
                          <EditIcon />
                        </IconButton>
                        <IconButton
                          aria-label="delete"
-                         onClick={() => onDelete(row.id)}
+                         onClick={() => onDelete(row._id)}
                        >
                          <DeleteIcon />
                        </IconButton>

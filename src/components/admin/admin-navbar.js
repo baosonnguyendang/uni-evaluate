@@ -10,11 +10,11 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -26,9 +26,9 @@ import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
 import AddCriterion from './evaluate-setting/admin-add-criterion'
 import Criteria from './admin-criteria'
 import Criterion from './admin-criterion'
+import Results from './evaluate-setting/admin-results'
 import Sub from './admin-sub'
 import logo from '../../img/logo.png'
-import Results from './evaluate-setting/admin-results'
 import { BrowserRouter as Router, Switch, Route, Redirect, NavLink } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { logout } from '../../actions/authActions'
@@ -139,12 +139,8 @@ export default function Dashboard() {
     dispatch(logout())
     history.push('/')
   };
-  let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
   return (
-    <div className={classes.root}>
-      {
-        isLogged ? (localStorage.getItem('role') === 'user' && <Redirect to='/user' />) : <Redirect to='/' />
-      }
+    <>
       <CssBaseline />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
@@ -182,25 +178,7 @@ export default function Dashboard() {
         {/* <List>{mainListItems}</List> */}
         <List><MainListItems /></List>
       </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Switch>
-                <Route exact path='/admin/user' children={<UserTable className={classes.paper} />} />
-                <Route exact path='/admin/faculty' children={<Faculty className={classes.paper} />} />
-                <Route exact path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper} />} />
-                <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting className={classes.paper}/>} />
-                <Route exact path='/admin/evaluate-settings/:id/:id' children={<AddCriterion className={classes.paper}/>} />
-                <Route exact path='/admin/criterion' children={<Criterion className={classes.paper} />} />
-                <Route exact path='/admin/criteria/' children={<Sub className={classes.paper} />} />
-                <Route path='/admin/criteria/:id' children={<Criteria className={classes.paper} />} />
-              </Switch>
-            </Grid>
-          </Grid>
-        </Container>
-      </main>
-    </div>
+
+    </>
   );
 }
