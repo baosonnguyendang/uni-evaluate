@@ -68,11 +68,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const createData = (name, code, description) => ({
+const createData = (name, code, description, point) => ({
   id: code,
   name,
   code,
   description,
+  point,
   isEditMode: false
 });
 
@@ -97,9 +98,9 @@ const CustomTableCell = ({ row, name, onChange }) => {
 
 export default function Criteria() {
   const [rows, setRows] = React.useState([
-    createData("Định mức giờ chuẩn hoàn thành", '00101', 'BÙm bùm bùm bùm'),
-    createData("Kết quả khảo sát chất lượng dịch vụ", '00102', 'Mô tảaaaaaaaaaaaaaaaaaaaaaa'),
-    createData("Hình thức giảng dạy khác", '00103', 'Description')
+    createData("Định mức giờ chuẩn hoàn thành", '00101', 'BÙm bùm bùm bùm', 5),
+    createData("Kết quả khảo sát chất lượng dịch vụ", '00102', 'Mô tảaaaaaaaaaaaaaaaaaaaaaa', 7),
+    createData("Hình thức giảng dạy khác", '00103', 'Description', 10)
   ]);
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
@@ -164,9 +165,10 @@ export default function Criteria() {
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
   const [description, setD] = React.useState('')
+  const [point, setP] = React.useState(0)
   const submit = e => {
     e.preventDefault()
-    setRows(rows => [...rows, createData(name, code, description)])
+    setRows(rows => [...rows, createData(name, code, description, point)])
   }
 
   function User() {
@@ -189,6 +191,7 @@ export default function Criteria() {
               <TableCell className={classes.name} >Tên tiêu chí</TableCell>
               <TableCell className={classes.number} >Mã tiêu chí</TableCell>
               <TableCell >Mô tả</TableCell>
+              <TableCell >Tổng điểm</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -230,6 +233,7 @@ export default function Criteria() {
                 <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
                 <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
                 <CustomTableCell {...{ row, name: "description", onChange }} />
+                <CustomTableCell {...{ row, name: "point", onChange }} />
               </TableRow>
             ))}
           </TableBody>
@@ -256,7 +260,8 @@ export default function Criteria() {
                 <form onSubmit={submit}>
                   <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chí" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
+                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />          
+                  <TextField onChange={e => setP(e.target.value)} id="point" label="Tổng điểm" type="number" variant="outlined" className={classes.field} />
                   <div style={{ textAlign: 'center', marginTop: '10px' }}>
                     <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                     <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
