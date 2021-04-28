@@ -48,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
 const AdminPage = () => {
     const classes = useStyles()
     let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
-
     return (
         <div className={classes.root}>
             {
@@ -60,15 +59,14 @@ const AdminPage = () => {
             <Container maxWidth="lg" className={classes.container}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
- 
                     <Route exact path='/admin/user' component={UserTable} />
-                    <Route exact path='/admin/faculty' children={<Faculty className={classes.paper} />} />
-                    <Route exact path='/admin/evaluate-settings' children={<EvaluateList className={classes.paper} />} />
-                    <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting className={classes.paper}/>} />
-                    <Route exact path='/admin/evaluate-settings/:id/:id' children={<AddCriterion className={classes.paper}/>} />
-                    <Route exact path='/admin/criterion' children={<Criterion className={classes.paper} />} />
-                    <Route exact path='/admin/criteria/' children={<Sub className={classes.paper} />} />
-                    <Route path='/admin/criteria/:id' children={<Criteria className={classes.paper} />} />
+                    <Route exact path='/admin/faculty' children={<Faculty />} />
+                    <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
+                    <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
+                    <Route exact path='/admin/evaluate-settings/:id/:id' children={<AddCriterion />} />
+                    <Route exact path='/admin/criterion' children={<Criterion />} />
+                    <Route exact path='/admin/criteria/' children={<Sub />} />
+                    <Route path='/admin/criteria/:id' children={<Criteria />} />
                 </Grid>
             </Grid>
             </Container>

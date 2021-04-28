@@ -111,10 +111,11 @@ export default function Criterion() {
     createData("Kiến thức, kỹ năng bổ trợ", 'TC013', 'Mô tả', 2, 10),
     createData("Hoạt động đoàn thể, cộng đồng", 'TC014', 'Mô tả', 2, 10)
   ]);
-  const [previous, setPrevious] = React.useState({});
+  const [previous, setPrevious] = React.useState([...rows]);
   const classes = useStyles();
 
   const onToggleEditMode = id => {
+    setPrevious([...rows])
     setRows(state => {
       return rows.map(row => {
         if (row.id === id) {
@@ -123,12 +124,10 @@ export default function Criterion() {
         return row;
       });
     });
+    
   };
 
   const onChange = (e, row) => {
-    if (!previous[row.id]) {
-      setPrevious(state => ({ ...state, [row.id]: row }));
-    }
     const value = e.target.value;
     const name = e.target.name;
     const { id } = row;
@@ -147,18 +146,10 @@ export default function Criterion() {
   }
 
   const onRevert = id => {
-    const newRows = rows.map(row => {
-      if (row.id === id) {
-        return previous[id] ? previous[id] : row;
-      }
-      return row;
-    });
-    setRows(newRows);
-    setPrevious(state => {
-      delete state[id];
-      return state;
-    });
-    onToggleEditMode(id);
+    console.log(rows)
+    console.log(previous)
+    setRows([...previous]);
+
   };
 
   //qua trang

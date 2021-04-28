@@ -105,7 +105,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
   );
 };
 
-export default function Criterion() {
+export default function ListUser() {
   const [rows, setRows] = React.useState([]);
   const token = localStorage.getItem('token')
   const fetchUser = () => {
