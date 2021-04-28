@@ -83,7 +83,7 @@ const SignInSide = () => {
       {isLoading &&<LinearProgress style={{position:"absolute", width:"100%" }} />}
     <Grid container component="main" className={classes.root}>
       {
-          isLogged && (localStorage.getItem('role') === 'admin' ? <Redirect to='/admin' /> : <Redirect to='/user' />)
+          isLogged && (localStorage.getItem('role') === 'admin' ? <Redirect to='/admin/user' /> : <Redirect to='/user' />)
       }
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />

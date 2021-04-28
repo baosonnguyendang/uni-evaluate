@@ -25,6 +25,7 @@ import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios'
+import Sleketon from '../common/sleketon'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -98,18 +99,15 @@ const CustomTableCell = ({ row, name, onChange }) => {
 };
 
 export default function Criterion() {
-  const [rows, setRows] = React.useState([
-    createData("1", 'BGH', 'Mai Thanh Phong', '1234567', null),
-    createData("2", 'Phòng đào tạo', 'Bùi Hoài Thắng', '1234568', null),
-    createData("3", 'Máy tính', 'idk', '0', null),
-  ]);
+  const [rows, setRows] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true)
   const token = localStorage.getItem('token')
   const fetchDepartment = () => {
     axios.get('/admin/department', { headers: {"Authorization" : `Bearer ${token}`} })
           .then(res => {
               console.log(res.data.departments);
-             setRows(res.data.departments.map(dep => ({...dep,namemanager:(dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`),idmanager:dep?.manager?.staff_id,parent:dep?.parent?.name})))
-              // setIsLoading(false)
+              setRows(res.data.departments.map(dep => ({...dep,namemanager:(dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`),idmanager:dep?.manager?.staff_id, parent:dep?.parent?.name})))
+              setIsLoading(false)
   })}
   useEffect(() => {
     fetchDepartment()
@@ -198,7 +196,9 @@ export default function Criterion() {
   }
 
   return (
-    <div>
+    <>
+    { isLoading ? <Sleketon /> : (
+      <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
         DANH SÁCH ĐƠN VỊ
       </Typography>
@@ -310,5 +310,8 @@ export default function Criterion() {
         </div>
       </Paper>
     </div>
+    )}
+    </>
+    
   );
 }
