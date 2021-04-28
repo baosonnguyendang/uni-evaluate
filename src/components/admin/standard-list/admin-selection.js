@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
+import Link from '@material-ui/core/Link'
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -96,7 +97,9 @@ const CustomTableCell = ({ row, name, onChange }) => {
   );
 };
 
-export default function Criteria() {
+// component={Link} href={window.location.href + '/a'}
+
+export default function Selection() {
   const [rows, setRows] = React.useState([
     createData("Định mức giờ chuẩn hoàn thành", '00101', 'BÙm bùm bùm bùm', 5),
     createData("Kết quả khảo sát chất lượng dịch vụ", '00102', 'Mô tảaaaaaaaaaaaaaaaaaaaaaa', 7),
@@ -175,7 +178,7 @@ export default function Criteria() {
     let { id } = useParams();
     return (
       < Typography component="h1" variant="h5" color="inherit" noWrap >
-        Tiêu chuẩn { id} - DS Tiêu chí
+        Tiêu chí { id} - DS lựa chọn
       </Typography >
     )
   }
@@ -187,16 +190,20 @@ export default function Criteria() {
         <Table className={classes.table} aria-label="caption table">
           <TableHead>
             <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-              <TableCell align="left" />
-              <TableCell className={classes.name} >Tên tiêu chí</TableCell>
-              <TableCell className={classes.number} >Mã tiêu chí</TableCell>
+              <TableCell className={classes.name} >Lựa chọn </TableCell>
+              <TableCell className={classes.number} >Mã </TableCell>
               <TableCell >Mô tả</TableCell>
-              <TableCell >Tổng điểm</TableCell>
+              <TableCell >Điểm</TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map(row => (
               <TableRow key={row.id}>
+                <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
+                <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
+                <CustomTableCell {...{ row, name: "description", onChange }} />
+                <CustomTableCell {...{ row, name: "point", onChange }} />
                 <TableCell className={classes.selectTableCell}>
                   {row.isEditMode ? (
                     <>
@@ -230,17 +237,13 @@ export default function Criteria() {
                     </>
                   )}
                 </TableCell>
-                <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
-                <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
-                <CustomTableCell {...{ row, name: "description", onChange }} />
-                <CustomTableCell {...{ row, name: "point", onChange }} />
               </TableRow>
             ))}
           </TableBody>
         </Table>
         <div style={{ margin: '10px', textAlign: 'right' }}>
           <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-            Tạo tiêu chí mới
+            Thêm lựa chọn
           </Button>
           <Modal
             aria-labelledby="transition-modal-title"
@@ -256,12 +259,12 @@ export default function Criteria() {
           >
             <Fade in={open}>
               <div className={classes.paper1}>
-                <h2 id="transition-modal-title">Thêm tiêu chí</h2>
+                <h2 id="transition-modal-title">Thêm lựa chọn</h2>
                 <form onSubmit={submit}>
-                  <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chí" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />          
-                  <TextField onChange={e => setP(e.target.value)} id="point" label="Tổng điểm" type="number" variant="outlined" className={classes.field} />
+                  <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setC(e.target.value)} id="code" label="Mã" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
+                  <TextField onChange={e => setP(e.target.value)} id="point" label="Điểm" type="number" variant="outlined" className={classes.field} />
                   <div style={{ textAlign: 'center', marginTop: '10px' }}>
                     <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                     <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
