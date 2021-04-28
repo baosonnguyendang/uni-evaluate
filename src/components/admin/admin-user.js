@@ -108,23 +108,27 @@ const CustomTableCell = ({ row, name, onChange }) => {
 export default function ListUser() {
   const [rows, setRows] = React.useState([]);
   const token = localStorage.getItem('token')
+  const [previous, setPrevious] = React.useState([]);
   const fetchUser = () => {
     axios.get('/admin/user', { headers: {"Authorization" : `Bearer ${token}`} })
           .then(res => {
               console.log(res.data.users);
               setRows(res.data.users.map(user => ({...user,department:user.department.map(dep=>dep.name).join(", "),isEditMode:false})))
+              setPrevious([...rows])
               setIsLoading(false)
   })}
   useEffect(() => {
     fetchUser()
   }, [])
-  const [previous, setPrevious] = React.useState({});
+  
+  console.log(previous)
   const classes = useStyles();
 
   const onToggleEditMode = id => {
+    setPrevious([...rows])
     setRows(state => {
       return rows.map(row => {
-        if (row.id === id) {
+        if (row._id === id) {
           return { ...row, isEditMode: !row.isEditMode };
         }
         return row;
@@ -133,14 +137,11 @@ export default function ListUser() {
   };
 
   const onChange = (e, row) => {
-    if (!previous[row.id]) {
-      setPrevious(state => ({ ...state, [row.id]: row }));
-    }
     const value = e.target.value;
     const name = e.target.name;
-    const { id } = row;
+    const { _id } = row;
     const newRows = rows.map(row => {
-      if (row.id === id) {
+      if (row._id === _id) {
         return { ...row, [name]: value };
       }
       return row;
@@ -149,23 +150,12 @@ export default function ListUser() {
   };
 
   const onDelete = id => {
-    const newRows = rows.filter(row => row.id !== id)
+    const newRows = rows.filter(row => row._id !== id)
     setRows(newRows)
   }
 
   const onRevert = id => {
-    const newRows = rows.map(row => {
-      if (row.id === id) {
-        return previous[id] ? previous[id] : row;
-      }
-      return row;
-    });
-    setRows(newRows);
-    setPrevious(state => {
-      delete state[id];
-      return state;
-    });
-    onToggleEditMode(id);
+    setRows([...previous]);
   };
 
   //qua trang

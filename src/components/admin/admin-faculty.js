@@ -102,23 +102,26 @@ export default function Criterion() {
   const [rows, setRows] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true)
   const token = localStorage.getItem('token')
+  const [previous, setPrevious] = React.useState([]);
   const fetchDepartment = () => {
     axios.get('/admin/department', { headers: {"Authorization" : `Bearer ${token}`} })
           .then(res => {
-              console.log(res.data.departments);
-              setRows(res.data.departments.map(dep => ({...dep,namemanager:(dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`),idmanager:dep?.manager?.staff_id, parent:dep?.parent?.name})))
+            console.log(res.data.departments);
+            setRows(res.data.departments.map(dep => ({...dep,namemanager:(dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`),idmanager:dep?.manager?.staff_id, parent:dep?.parent?.name, isEditMode: false})))
+              setPrevious([...rows])  
               setIsLoading(false)
   })}
   useEffect(() => {
     fetchDepartment()
   }, [])
-  const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
 
   const onToggleEditMode = id => {
+    setPrevious([...rows])
+    console.log(rows)
     setRows(state => {
       return rows.map(row => {
-        if (row.id === id) {
+        if (row._id === id) {
           return { ...row, isEditMode: !row.isEditMode };
         }
         return row;
@@ -127,14 +130,11 @@ export default function Criterion() {
   };
 
   const onChange = (e, row) => {
-    if (!previous[row.id]) {
-      setPrevious(state => ({ ...state, [row.id]: row }));
-    }
     const value = e.target.value;
     const name = e.target.name;
-    const { id } = row;
+    const { _id } = row;
     const newRows = rows.map(row => {
-      if (row.id === id) {
+      if (row._id === _id) {
         return { ...row, [name]: value };
       }
       return row;
@@ -143,23 +143,12 @@ export default function Criterion() {
   };
 
   const onDelete = id => {
-    const newRows = rows.filter(row => row.id !== id)
+    const newRows = rows.filter(row => row._id !== id)
     setRows(newRows)
   }
 
   const onRevert = id => {
-    const newRows = rows.map(row => {
-      if (row.id === id) {
-        return previous[id] ? previous[id] : row;
-      }
-      return row;
-    });
-    setRows(newRows);
-    setPrevious(state => {
-      delete state[id];
-      return state;
-    });
-    onToggleEditMode(id);
+    setRows([...previous])
   };
 
   //qua trang
@@ -217,7 +206,7 @@ export default function Criterion() {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow key={row.id}>
+                <TableRow key={row._id}>
                   <CustomTableCell className={classes.number} {...{ row, name: "department_code", onChange }} />
                   <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
                   <CustomTableCell className={classes.name} {...{ row, name: "namemanager", onChange }} />
@@ -228,13 +217,13 @@ export default function Criterion() {
                       <>
                         <IconButton
                           aria-label="done"
-                          onClick={() => onToggleEditMode(row.id)}
+                          onClick={() => onToggleEditMode(row._id)}
                         >
                           <DoneIcon />
                         </IconButton>
                         <IconButton
                           aria-label="revert"
-                          onClick={() => onRevert(row.id)}
+                          onClick={() => onRevert(row._id)}
                         >
                           <RevertIcon />
                         </IconButton>
@@ -243,13 +232,13 @@ export default function Criterion() {
                       <>
                         <IconButton
                           aria-label="delete"
-                          onClick={() => onToggleEditMode(row.id)}
+                          onClick={() => onToggleEditMode(row._id)}
                         >
                           <EditIcon />
                         </IconButton>
                         <IconButton
                           aria-label="delete"
-                          onClick={() => onDelete(row.id)}
+                          onClick={() => onDelete(row._id)}
                         >
                           <DeleteIcon />
                         </IconButton>
