@@ -74,7 +74,7 @@ const SelectedUnit = () => {
           if (unit.check) {
             bool = true;
             return (
-              <li key={unit.id}><Link to={`${url}/${unit.id}`}>{unit.name}</Link></li>
+              <li key={unit.id} id={unit.id}>{unit.name}</li>
             )
           }
         })}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Results from './admin-results';
 import UnitSettings from './admin-unit-settings';
+import UserSettings from './admin-user-settings';
 
 import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink } from "react-router-dom";
 
