@@ -214,7 +214,7 @@ export default function Criterion() {
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
-        DANH SÁCH TIÊU CHUẨN {message}
+        DANH SÁCH TIÊU CHUẨN
       </Typography>
       <Paper className={classes.root}>
         <Table className={classes.table} aria-label="caption table">
