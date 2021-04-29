@@ -203,19 +203,26 @@ export default function Criterion() {
   let data = {code,name,description}
   const submit = e => {
     e.preventDefault()
-    axios.post('/admin/standard/add',data,config)
-    .then(res => {
-      setMessage(res.data.message)
-      handleClose()
-      handleOpenToast()
-      setRows(rows => [...rows, data])
-      })
+   return(   axios.post('/admin/standard/add',data,config)
+   .then(res => {
+     // setMessage("res.data.message")
+     // handleClose()
+     // handleOpenToast()
+     // setRows(rows => [...rows, data])
+     console.log(res);
+
+     })
+     .catch((e)=> {console.log(e)}))
+   
+    
+    
+
   }
 
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
-        DANH SÁCH TIÊU CHUẨN { message}
+        DANH SÁCH TIÊU CHUẨN
       </Typography>
       <Paper className={classes.root}>
         <Table className={classes.table} aria-label="caption table">
