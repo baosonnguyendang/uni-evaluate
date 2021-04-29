@@ -69,7 +69,8 @@ const createData = (name, id, listOfCriteria) => {
 
 var listOfSelection = new Array('')
 
-export default function AddCriterion() {
+export default function AddCriterion({ match }) {
+  console.log(match);
   const classes = useStyles()
   let { url } = useRouteMatch()
 

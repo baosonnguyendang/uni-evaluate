@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Route, Link, Redirect  } from 'react-router-dom';
+import { Route, Link, useRouteMatch  } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -64,11 +64,9 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 //ten don vi dc chon
 var unitChosen = ''
 
-const SelectedUnit = ({match}) => {
-  const classes = useStyles()
-
+const SelectedUnit = () => {
   let bool = false;
-
+  let { url } = useRouteMatch();
   return (
     <div>
       <ol style={{ marginTop: 10 }}>
@@ -76,7 +74,7 @@ const SelectedUnit = ({match}) => {
           if (unit.check) {
             bool = true;
             return (
-              <li key={unit.id}><Link to={`${match.url}/${unit.id}`}>{unit.name}</Link></li>
+              <li key={unit.id}><Link to={`${url}/${unit.id}`}>{unit.name}</Link></li>
             )
           }
         })}
@@ -88,7 +86,6 @@ const SelectedUnit = ({match}) => {
 
 export default function UnitSettings() {
   const classes = useStyles()
-
   //open modal them don vi
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
