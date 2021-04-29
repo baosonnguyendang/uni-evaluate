@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
-import { useParams } from 'react-router-dom';
+import { useParams, useRouteMatch } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
 import Link from '@material-ui/core/Link'
@@ -24,6 +24,7 @@ import Modal from '@material-ui/core/Modal';
 import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -99,14 +100,32 @@ const CustomTableCell = ({ row, name, onChange }) => {
 
 // component={Link} href={window.location.href + '/a'}
 
-export default function Criteria() {
-  const [rows, setRows] = React.useState([
+export default function Criteria(props) {
+  console.log(useRouteMatch())
+  const [rows, setRows] = useState([
     createData("Định mức giờ chuẩn hoàn thành", '00101', 'BÙm bùm bùm bùm', 5),
     createData("Kết quả khảo sát chất lượng dịch vụ", '00102', 'Mô tảaaaaaaaaaaaaaaaaaaaaaa', 7),
     createData("Hình thức giảng dạy khác", '00103', 'Description', 10)
   ]);
-  const [previous, setPrevious] = React.useState({});
+  const [previous, setPrevious] = useState({});
   const classes = useStyles();
+  const token = localStorage.getItem('token')
+  let { id } = useParams();
+  const [title, setTitle] = useState('');
+
+  const fetchUser = () => {
+    axios.get(`/admin/standard/${id}/criteria`, { headers: {"Authorization" : `Bearer ${token}`} })
+          .then(res => {
+              console.log(res.data.criterions);
+              setRows(res.data.criterions)
+              setTitle(res.data.criterions[0].standard.name)
+              console.log(title)
+              setPrevious([...rows])
+              // setIsLoading(false)
+  })}
+  useEffect(() => {
+    fetchUser()
+  }, [])
 
   const onToggleEditMode = id => {
     setRows(state => {
@@ -175,10 +194,10 @@ export default function Criteria() {
   }
 
   function User() {
-    let { id } = useParams();
+    
     return (
       < Typography component="h1" variant="h5" color="inherit" noWrap >
-        Tiêu chuẩn { id } - DS Tiêu chí
+        Tiêu chuẩn { title } - DS Tiêu chí
       </Typography >
     )
   }
@@ -199,19 +218,19 @@ export default function Criteria() {
           </TableHead>
           <TableBody>
             {rows.map(row => (
-              <TableRow key={row.id}>
+              <TableRow key={row._id}>
                 <TableCell className={classes.selectTableCell}>
                   {row.isEditMode ? (
                     <>
                       <IconButton
                         aria-label="done"
-                        onClick={() => onToggleEditMode(row.id)}
+                        onClick={() => onToggleEditMode(row._id)}
                       >
                         <DoneIcon />
                       </IconButton>
                       <IconButton
                         aria-label="revert"
-                        onClick={() => onRevert(row.id)}
+                        onClick={() => onRevert(row._id)}
                       >
                         <RevertIcon />
                       </IconButton>
@@ -220,13 +239,13 @@ export default function Criteria() {
                     <>
                       <IconButton
                         aria-label="delete"
-                        onClick={() => onToggleEditMode(row.id)}
+                        onClick={() => onToggleEditMode(row._id)}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         aria-label="delete"
-                        onClick={() => onDelete(row.id)}
+                        onClick={() => onDelete(row._id)}
                       >
                         <DeleteIcon />
                       </IconButton>

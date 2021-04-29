@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
 import { Link } from 'react-router-dom';
@@ -24,6 +24,8 @@ import Modal from '@material-ui/core/Modal';
 import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import axios from "axios";
+import Toast from '../../common/snackbar'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -93,24 +95,29 @@ const CustomTableCell = ({ row, name, onChange }) => {
           className={classes.input}
         />
       ) : (
-        name === 'name' ? (<Link to={'/admin/criterion/' + row.id} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
+        name === 'name' ? (<Link to={{pathname: '/admin/criterion/' + row._id}}  style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
       )}
     </TableCell>
   );
 };
 
 export default function Criterion() {
-  const [rows, setRows] = React.useState([
-    createData("Hoạt động giảng dạy", 'TC001', 'Mô tả', 3, 42),
-    createData("Hoạt động khoa học", 'TC002', 'Mô tả', 1, 32),
-    createData("Hoạt động chuyên môn khác", 'TC003', 'Mô tả', 4, 10),
-    createData("Kiến thức, kỹ năng bổ trợ", 'TC004', 'Mô tả', 2, 6),
-    createData("Hoạt động đoàn thể, cộng đồng", 'TC005', 'Mô tả', 2, 10),
-    createData("Hoạt động chuyên môn", 'TC011', 'Mô tả', 3, 60),
-    createData("Ý thức, thái độ làm việc", 'TC012', 'Mô tả', 2, 20),
-    createData("Kiến thức, kỹ năng bổ trợ", 'TC013', 'Mô tả', 2, 10),
-    createData("Hoạt động đoàn thể, cộng đồng", 'TC014', 'Mô tả', 2, 10)
-  ]);
+  const [rows, setRows] = React.useState([]);
+  const [isLoading, setIsLoading] = useState(true)
+  const token = localStorage.getItem('token')
+  const config = { headers: {"Authorization" : `Bearer ${token}`} }
+  const fetchStandard = () => {
+    axios.get('admin/standard',config)
+      .then(res => {
+        console.log(res.data.standards)
+        setRows(res.data.standards)
+        setIsLoading(false)
+      })
+  }
+  useEffect(() => {
+    fetchStandard()
+  }, [])
+
   const [previous, setPrevious] = React.useState([...rows]);
   const classes = useStyles();
 
@@ -118,7 +125,7 @@ export default function Criterion() {
     setPrevious([...rows])
     setRows(state => {
       return rows.map(row => {
-        if (row.id === id) {
+        if (row._id === id) {
           return { ...row, isEditMode: !row.isEditMode };
         }
         return row;
@@ -130,9 +137,9 @@ export default function Criterion() {
   const onChange = (e, row) => {
     const value = e.target.value;
     const name = e.target.name;
-    const { id } = row;
+    const { _id } = row;
     const newRows = rows.map(row => {
-      if (row.id === id) {
+      if (row._id === _id) {
         return { ...row, [name]: value };
       }
       return row;
@@ -141,8 +148,15 @@ export default function Criterion() {
   };
 
   const onDelete = id => {
-    const newRows = rows.filter(row => row.id !== id)
-    setRows(newRows)
+    axios.post(`admin/standard/${id}/delete`,{id},config)
+      .then( res => {
+        console.log(res.data)
+        const newRows = rows.filter(row => row._id !== id)
+        setRows(newRows)
+        setMessage(res.data.message)
+        handleOpenToast()
+
+      })
   }
 
   const onRevert = id => {
@@ -174,19 +188,34 @@ export default function Criterion() {
     setOpen(false);
   };
 
+  const [openToast, setOpenToast] = useState(false)
+  const handleOpenToast = () => {
+    setOpenToast(true);
+  };
+  const handleCloseToast = () => {
+    setOpenToast(false);
+  };
+  const [message, setMessage] = React.useState('');
   //get data from new criterion
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
   const [description, setD] = React.useState('')
+  let data = {code,name,description}
   const submit = e => {
     e.preventDefault()
-    setRows(rows => [...rows, createData(name, code, description, 0, 0)])
+    axios.post('/admin/standard/add',data,config)
+    .then(res => {
+      setMessage(res.data.message)
+      handleClose()
+      handleOpenToast()
+      setRows(rows => [...rows, data])
+      })
   }
 
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
-        DANH SÁCH TIÊU CHUẨN
+        DANH SÁCH TIÊU CHUẨN { message}
       </Typography>
       <Paper className={classes.root}>
         <Table className={classes.table} aria-label="caption table">
@@ -203,19 +232,19 @@ export default function Criterion() {
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
-                <TableRow key={row.id}>
+                <TableRow key={row._id}>
                   <TableCell className={classes.selectTableCell}>
                     {row.isEditMode ? (
                       <>
                         <IconButton
                           aria-label="done"
-                          onClick={() => onToggleEditMode(row.id)}
+                          onClick={() => onToggleEditMode(row._id)}
                         >
                           <DoneIcon />
                         </IconButton>
                         <IconButton
                           aria-label="revert"
-                          onClick={() => onRevert(row.id)}
+                          onClick={() => onRevert(row._id)}
                         >
                           <RevertIcon />
                         </IconButton>
@@ -224,13 +253,13 @@ export default function Criterion() {
                       <>
                         <IconButton
                           aria-label="delete"
-                          onClick={() => onToggleEditMode(row.id)}
+                          onClick={() => onToggleEditMode(row._id)}
                         >
                           <EditIcon />
                         </IconButton>
                         <IconButton
                           aria-label="delete"
-                          onClick={() => onDelete(row.id)}
+                          onClick={() => onDelete(row._id)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -245,48 +274,6 @@ export default function Criterion() {
                 </TableRow>
               )
             })}
-            {/* {rows.map(row => (
-              <TableRow key={row.id}>
-                <TableCell className={classes.selectTableCell}>
-                  {row.isEditMode ? (
-                    <>
-                      <IconButton
-                        aria-label="done"
-                        onClick={() => onToggleEditMode(row.id)}
-                      >
-                        <DoneIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="revert"
-                        onClick={() => onRevert(row.id)}
-                      >
-                        <RevertIcon />
-                      </IconButton>
-                    </>
-                  ) : (
-                    <>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => onToggleEditMode(row.id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => onDelete(row.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  )}
-                </TableCell>
-                <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
-                <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
-                <CustomTableCell {...{ row, name: "description", onChange }} />
-                <CustomTableCell className={classes.number} {...{ row, name: "numOfCriteria", onChange }} />
-                <CustomTableCell className={classes.number} {...{ row, name: "point", onChange }} />
-              </TableRow>
-            ))} */}
           </TableBody>
         </Table>
         <TablePagination
@@ -320,13 +307,9 @@ export default function Criterion() {
                 <form onSubmit={submit}>
                   <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
-                  {/* <TextField
-                    type="number"
-                  /> */}
-                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                    <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
-                    <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                  <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                   </div>
                 </form>
               </div>
@@ -334,6 +317,7 @@ export default function Criterion() {
           </Modal>
         </div>
       </Paper>
+      <Toast open={openToast} time={2000} message={message} severity='success' handleClose={handleCloseToast} />
     </div>
   );
 }
