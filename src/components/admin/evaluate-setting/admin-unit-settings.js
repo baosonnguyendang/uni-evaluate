@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+
+import { Route, Link, useRouteMatch  } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -8,6 +10,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Fade from '@material-ui/core/Fade';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -18,11 +22,13 @@ import Typography from '@material-ui/core/Typography';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
+import UserSettings from './admin-user-settings'
+
 const useStyles = makeStyles(theme => ({
   modal: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   paper1: {
     position: 'absolute',
@@ -55,9 +61,37 @@ const units = [
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
+//ten don vi dc chon
+var unitChosen = ''
+
+const SelectedUnit = () => {
+  let bool = false;
+  let { url } = useRouteMatch();
+
+  const openUnit = (x) => {
+    console.log(x)
+    unitChosen = x
+  }
+
+  return (
+    <div>
+      <ol style={{ marginTop: 10 }}>
+        {units.map(unit => {
+          if (unit.check) {
+            bool = true;
+            return (
+              <li key={unit.id} id={unit.id} style={{marginBottom: 10}} type='button' onClick={() => openUnit(unit.id)}>- {unit.name}</li>
+            )
+          }
+        })}
+      </ol>
+      {!bool && <p>(Không có đơn vị nào nằm trong nhóm)</p>}
+    </div>
+  )
+}
+
 export default function UnitSettings() {
   const classes = useStyles()
-
   //open modal them don vi
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -74,31 +108,12 @@ export default function UnitSettings() {
 
   const [chosen, setChosen] = React.useState([])
 
-  const SelectedUnit = () => {
-    let bool = false;
-    return (
-      <div>
-        <ol style={{ marginTop: 10 }}>
-          {units.map(unit => {
-            if (unit.check) {
-              bool = true;
-              return (
-                <li key={unit.id}>{unit.name}</li>
-              )
-            }
-          })}
-        </ol>
-        {!bool && <p>(Không có đơn vị nào nằm trong nhóm)</p>}
-      </div>
-    )
-  }
-
   return (
     <div>
       <Typography component="h3" variant="h5" color="inherit">
         Các đơn vị tham gia đánh giá nằm trong nhóm
       </Typography>
-      <SelectedUnit/>
+      <SelectedUnit selected={unitChosen}/>
       <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
         Thêm đơn vị vào nhóm
       </Button>
@@ -122,7 +137,7 @@ export default function UnitSettings() {
               id="checkboxes-tags-demo"
               options={units}
               disableCloseOnSelect
-              defaultValue = {chosen}
+              defaultValue={chosen}
               getOptionLabel={(option) => option.name}
               renderOption={(option, { selected }) => (
                 <React.Fragment>
