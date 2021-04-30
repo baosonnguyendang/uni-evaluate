@@ -61,16 +61,12 @@ const units = [
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-//ten don vi dc chon
-var unitChosen = ''
-
 const SelectedUnit = () => {
   let bool = false;
   let { url } = useRouteMatch();
 
   const openUnit = (x) => {
     console.log(x)
-    unitChosen = x
   }
 
   return (
@@ -93,43 +89,43 @@ const SelectedUnit = () => {
 export default function UnitSettings() {
   const classes = useStyles()
   //open modal them don vi
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
+  const [openUnit, setOpenUnit] = React.useState(false);
+  const handleOpenUnit = () => {
     // console.log(chosen)
-    setOpen(true);
+    setOpenUnit(true);
   };
-  const handleClose = () => {
-    setChosen(units.filter(unit => unit.check === true))
-    setOpen(false);
+  const handleCloseUnit = () => {
+    setUnitChosen(units.filter(unit => unit.check === true))
+    setOpenUnit(false);
     units.map(x => {
       console.log(x.check)
     })
   };
 
-  const [chosen, setChosen] = React.useState([])
+  const [unitChosen, setUnitChosen] = React.useState([])
 
   return (
     <div>
       <Typography component="h3" variant="h5" color="inherit">
         Các đơn vị tham gia đánh giá nằm trong nhóm
       </Typography>
-      <SelectedUnit selected={unitChosen}/>
-      <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+      <SelectedUnit/>
+      <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
         Thêm đơn vị vào nhóm
       </Button>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={open}
-        onClose={handleClose}
+        open={openUnit}
+        onClose={handleCloseUnit}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={open}>
+        <Fade in={openUnit}>
           <div className={classes.paper1}>
             <h4 id="transition-modal-title">Thêm đơn vị vào nhóm</h4>
             <Autocomplete
@@ -137,7 +133,7 @@ export default function UnitSettings() {
               id="checkboxes-tags-demo"
               options={units}
               disableCloseOnSelect
-              defaultValue={chosen}
+              defaultValue={unitChosen}
               getOptionLabel={(option) => option.name}
               renderOption={(option, { selected }) => (
                 <React.Fragment>
@@ -155,7 +151,7 @@ export default function UnitSettings() {
                 <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
               )}
             />
-            <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleClose}>Xong</Button>
+            <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseUnit}>Xong</Button>
           </div>
         </Fade>
       </Modal>

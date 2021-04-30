@@ -4,8 +4,7 @@ import UserTable from "./admin-user"
 import Faculty from "./admin-faculty"
 import EvaluateList from './admin-evaluate'
 import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
-import AddCriterion from './evaluate-setting/admin-add-criterion'
-import UserSettings from './evaluate-setting/admin-user-settings'
+import AddSettings from './evaluate-setting/admin-add-settings'
 import Criteria from './standard-list/admin-criteria'
 import Criterion from './standard-list/admin-criterion'
 import Selection from './standard-list/admin-selection'
@@ -65,7 +64,7 @@ const AdminPage = () => {
               <Route exact path='/admin/faculty' children={<Faculty />} />
               <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
               <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id' children={<AddCriterion />} />
+              <Route exact path='/admin/evaluate-settings/:id/:id' children={<AddSettings />} />
               <Route exact path='/admin/evaluate-settings/:id/:id/results' children={<Results />} />
               <Route exact path='/admin/criterion' children={<Criterion />} />
               <Route exact path='/admin/criteria/' children={<Sub />} />
