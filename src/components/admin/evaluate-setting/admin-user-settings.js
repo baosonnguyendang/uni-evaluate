@@ -17,10 +17,20 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Modal from '@material-ui/core/Modal';
+import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
+
+const useStyles = makeStyles(theme => ({
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+}))
+
 //ds vien chuc thuoc don vi duoc chon
 const users = [
   { name: 'A', id: '1712970', chosen: true },
@@ -29,28 +39,38 @@ const users = [
   { name: 'AIA', id: '1712974', chosen: true },
 ]
 
-export default function UserSettings() {
+const group = 1
+
+export default function UserSettings(props) {
+  const classes = useStyles()
 
   //cai nay la de sau khi check hoac uncheck se render lai luon
   const [state, setState] = React.useState(true);
 
   return (
-    <FormGroup>
-      {users.map(user => {
-        return (
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={user.chosen}
-                onChange={() => { user.chosen = !user.chosen; setState(!state) }}
-                name="checkedB"
-                color="primary"
+    <div>
+      <Typography component="h1" variant="h5" color="inherit" noWrap>
+        Nhóm 0{group} -
+      </Typography>
+      <Paper>
+        <FormGroup>
+          {users.map(user => {
+            return (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={user.chosen}
+                    onChange={() => { user.chosen = !user.chosen; setState(!state) }}
+                    name="checkedB"
+                    color="primary"
+                  />
+                }
+                label={user.id + ' - ' + user.name}
               />
-            }
-            label={user.id + ' - ' + user.name}
-          />
-        )
-      })}
-    </FormGroup>
+            )
+          })}
+        </FormGroup>
+      </Paper>
+    </div>
   )
 }

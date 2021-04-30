@@ -67,6 +67,12 @@ var unitChosen = ''
 const SelectedUnit = () => {
   let bool = false;
   let { url } = useRouteMatch();
+
+  const openUnit = (x) => {
+    console.log(x)
+    unitChosen = x
+  }
+
   return (
     <div>
       <ol style={{ marginTop: 10 }}>
@@ -74,7 +80,7 @@ const SelectedUnit = () => {
           if (unit.check) {
             bool = true;
             return (
-              <li key={unit.id} id={unit.id}>{unit.name}</li>
+              <li key={unit.id} id={unit.id} style={{marginBottom: 10}} type='button' onClick={() => openUnit(unit.id)}>- {unit.name}</li>
             )
           }
         })}
@@ -107,7 +113,7 @@ export default function UnitSettings() {
       <Typography component="h3" variant="h5" color="inherit">
         Các đơn vị tham gia đánh giá nằm trong nhóm
       </Typography>
-      <SelectedUnit/>
+      <SelectedUnit selected={unitChosen}/>
       <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
         Thêm đơn vị vào nhóm
       </Button>
