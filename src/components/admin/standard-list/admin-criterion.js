@@ -144,7 +144,6 @@ export default function Criterion() {
         console.log(res.data)
         const newRows = rows.filter(row => row._id !== id)
         setRows(newRows)
-        setMessage(res.data.message)
         handleOpenToast("Xoá tiêu chuẩn thành công","success")
       })
   }
@@ -176,14 +175,12 @@ export default function Criterion() {
     setOpen(false);
   };
   const [toast, setToast] = useState({open: false, time: "2000", message:'', severity:''})
-  const [openToast, setOpenToast] = useState(false)
   const handleOpenToast = (message, severity, time='2000') => {
     setToast({...toast, message, time, severity, open: true});
   };
   const handleCloseToast = () => {
     setToast({...toast, open:false});
   };
-  const [message, setMessage] = React.useState('');
   //get data from new criterion
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
@@ -193,7 +190,6 @@ export default function Criterion() {
     e.preventDefault()
     axios.post('/admin/standard/add', data, config)
       .then(res => {
-        setMessage(res.data.message)
         handleClose()
         handleOpenToast("Tạo tiêu chuẩn thành công", 'success')
         setRows(rows => [...rows, data])
