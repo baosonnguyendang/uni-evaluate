@@ -1,76 +1,90 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import MUIDataTable from "mui-datatables";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 
-import { Route, Link } from 'react-router-dom';
+export default function UserSettings() {
+  const [responsive, setResponsive] = useState("vertical");
+  const [tableBodyHeight, setTableBodyHeight] = useState("400px");
+  const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
 
-import { makeStyles } from '@material-ui/core/styles';
+  const columns = ["Name", "Title", "Location"];
 
-import Backdrop from '@material-ui/core/Backdrop';
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import Fade from '@material-ui/core/Fade';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Modal from '@material-ui/core/Modal';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
+  const options = {
+    filter: true,
+    filterType: "dropdown",
+    responsive,
+    tableBodyHeight,
+    tableBodyMaxHeight
+  };
 
-import Autocomplete from '@material-ui/lab/Autocomplete';
-
-const useStyles = makeStyles(theme => ({
-  modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-}))
-
-//ds vien chuc thuoc don vi duoc chon
-const users = [
-  { name: 'A', id: '1712970', chosen: true },
-  { name: 'AA', id: '1712972', chosen: true },
-  { name: 'AAA', id: '1712973', chosen: true },
-  { name: 'AIA', id: '1712974', chosen: true },
-]
-
-const group = 1
-
-export default function UserSettings(props) {
-  const classes = useStyles()
-
-  //cai nay la de sau khi check hoac uncheck se render lai luon
-  const [state, setState] = React.useState(true);
+  const data = [
+    ["Gabby George", "Business Analyst", "Minneapolis"],
+    [
+      "Aiden Lloyd",
+      "Business Consultant for an International Company and CEO of Tony's Burger Palace",
+      "Dallas"
+    ],
+    ["Jaden Collins", "Attorney", "Santa Ana"],
+    ["Franky Rees", "Business Analyst", "St. Petersburg"],
+    ["Aaren Rose", null, "Toledo"],
+    ["Johnny Jones", "Business Analyst", "St. Petersburg"],
+    ["Jimmy Johns", "Business Analyst", "Baltimore"],
+    ["Jack Jackson", "Business Analyst", "El Paso"],
+    ["Joe Jones", "Computer Programmer", "El Paso"],
+    ["Jacky Jackson", "Business Consultant", "Baltimore"],
+    ["Jo Jo", "Software Developer", "Washington DC"],
+    ["Donna Marie", "Business Manager", "Annapolis"]
+  ];
 
   return (
-    <div>
-      <Typography component="h1" variant="h5" color="inherit" noWrap>
-        Nhóm 0{group} -
-      </Typography>
-      <Paper>
-        <FormGroup>
-          {users.map(user => {
-            return (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={user.chosen}
-                    onChange={() => { user.chosen = !user.chosen; setState(!state) }}
-                    name="checkedB"
-                    color="primary"
-                  />
-                }
-                label={user.id + ' - ' + user.name}
-              />
-            )
-          })}
-        </FormGroup>
-      </Paper>
-    </div>
-  )
+    <React.Fragment>
+      <FormControl>
+        <InputLabel id="demo-simple-select-label">Responsive Option</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={responsive}
+          style={{ width: "200px", marginBottom: "10px", marginRight: 10 }}
+          onChange={(e) => setResponsive(e.target.value)}
+        >
+          <MenuItem value={"vertical"}>vertical</MenuItem>
+          <MenuItem value={"standard"}>standard</MenuItem>
+          <MenuItem value={"simple"}>simple</MenuItem>
+
+          <MenuItem value={"scroll"}>scroll (deprecated)</MenuItem>
+          <MenuItem value={"scrollMaxHeight"}>
+            scrollMaxHeight (deprecated)
+          </MenuItem>
+          <MenuItem value={"stacked"}>stacked (deprecated)</MenuItem>
+        </Select>
+      </FormControl>
+      <FormControl>
+        <InputLabel id="demo-simple-select-label">Table Body Height</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={tableBodyHeight}
+          style={{ width: "200px", marginBottom: "10px", marginRight: 10 }}
+          onChange={(e) => setTableBodyHeight(e.target.value)}
+        >
+          <MenuItem value={""}>[blank]</MenuItem>
+          <MenuItem value={"400px"}>400px</MenuItem>
+          <MenuItem value={"800px"}>800px</MenuItem>
+          <MenuItem value={"100%"}>100%</MenuItem>
+        </Select>
+      </FormControl>
+      <MUIDataTable
+        title={"ACME Employee list"}
+        data={data}
+        columns={columns}
+        options={options}
+      />
+    </React.Fragment>
+  );
 }
+

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import SelectCriterion from './admin-select-criterion'
+import UserSettings from './admin-user-settings'
 
 import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink } from "react-router-dom";
 
@@ -20,6 +21,8 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
 import { useRouteMatch } from 'react-router-dom'
+
+import MUIDataTable from "mui-datatables";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -147,7 +150,7 @@ export default function AddSettings() {
             Nhóm 0{group} - {units.find(x => x.id == unit).name} - Các thành viên tham gia đánh giá
           </Typography>
           <Paper style={{ padding: 10 }} className={classes.paper}>
-            <FormGroup>
+            {/* <FormGroup>
               {usersList.map(user => {
                 return (
                   <FormGroup>
@@ -164,7 +167,8 @@ export default function AddSettings() {
                   </FormGroup>
                 )
               })}
-            </FormGroup>
+            </FormGroup> */}
+            <UserSettings />
             <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(false) }}>Trở lại trang điều chỉnh</Typography >
           </Paper>
         </div>
