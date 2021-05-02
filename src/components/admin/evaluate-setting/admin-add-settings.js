@@ -85,12 +85,12 @@ export default function AddSettings() {
   const [state, setState] = React.useState(true);
 
   //ds vien chuc thuoc don vi duoc chon
-  const users = [
+  const [usersList, showUsersList] = React.useState([
     { name: 'A', id: '1712970', chosen: true },
     { name: 'AA', id: '1712972', chosen: true },
     { name: 'AAA', id: '1712973', chosen: true },
     { name: 'AIA', id: '1712974', chosen: true },
-  ]
+  ])
 
   const group = 1
 
@@ -148,19 +148,20 @@ export default function AddSettings() {
           </Typography>
           <Paper style={{ padding: 10 }} className={classes.paper}>
             <FormGroup>
-              {users.map(user => {
+              {usersList.map(user => {
                 return (
-                  <FormControlLabel
-                    control={
+                  <FormGroup>
+                    <FormControlLabel control={
                       <Checkbox
                         checked={user.chosen}
-                        onChange={() => { user.chosen = !user.chosen; setState(!state) }}
-                        name="checkedB"
+                        onChange={() => { user.chosen = !user.chosen; setState(!state); console.log(user.name, user.chosen) }}
+                        name={user.id}
                         color="primary"
                       />
                     }
-                    label={user.id + ' - ' + user.name}
-                  />
+                      label={user.id + ' - ' + user.name}
+                    />
+                  </FormGroup>
                 )
               })}
             </FormGroup>
