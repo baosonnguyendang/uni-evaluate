@@ -80,3 +80,4 @@ moment;
 react-calendar;
 @material/lab;
 jsonwebtoken;
+mui-datatables;
