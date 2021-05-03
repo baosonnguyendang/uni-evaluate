@@ -102,7 +102,7 @@ export default function SelectCriterion() {
   //dung de luu tieu chuan duoc click vao de chon tieu chi
   const [id, setId] = React.useState()
   const [showCriteria, setShowCriteria] = React.useState([])
-
+  
   let bool = false
 
   return (

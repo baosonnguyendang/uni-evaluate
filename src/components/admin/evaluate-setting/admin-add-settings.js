@@ -18,6 +18,9 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
 import { useRouteMatch } from 'react-router-dom'
@@ -44,6 +47,9 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 4, 3),
     minHeight: 20,
   },
+  field: {
+    marginBottom: 10
+  },
   btn: {
     textTransform: 'none',
     width: '16vw',
@@ -58,6 +64,10 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     marginTop: 6,
     padding: 5
+  },
+  tab: {
+    backgroundColor: '#abcdef',
+    padding: 0,
   }
 }))
 
@@ -83,6 +93,41 @@ var unit = ''
 export default function AddSettings() {
   const classes = useStyles()
   let { url } = useRouteMatch()
+
+  //khoi tao Form
+  const [init, setInit] = React.useState(true)
+
+  const Init = () => {
+
+    const handleSubmitInit = (e) => {
+      e.preventDefault()
+      setInit(false)
+      console.log(init)
+    }
+
+    const [name, setName] = React.useState('')
+    const [code, setC] = React.useState('')
+
+    return (
+      <div>
+        <Typography component="h1" variant="h5" color="inherit" noWrap>
+          Nhóm 0{group}
+        </Typography>
+        <Paper style={{ padding: 10 }} className={classes.paper}>
+          <Typography component="h3" variant="h5" color="inherit">
+            Khởi tạo Form
+          </Typography>
+          <form onSubmit={handleSubmitInit} style={{ marginTop: 15 }}>
+            <TextField id="code" onChange={e => setC(e.target.value)} label="Mã Form" variant="outlined" className={classes.field} />
+            <br />
+            <TextField id="name" onChange={e => setName(e.target.value)} label="Tên Form" variant="outlined" className={classes.field} />
+            <br />
+            <Button style={{ marginRight: '10px' }} type="submit" value='submit' variant="contained" color="primary" >Vào cấu hình Form</Button>
+          </form>
+        </Paper>
+      </div>
+    )
+  }
 
   //cai nay la de sau khi check hoac uncheck se render lai luon
   const [state, setState] = React.useState(true);
@@ -142,15 +187,27 @@ export default function AddSettings() {
     )
   }
 
+  //change tab
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    // console.log(newValue)
+  };
+
   return (
     <div>
-      {showResults ? (
+      {init ? (
+        <Init />
+      ) : (
         <div>
-          <Typography component="h1" variant="h5" color="inherit" noWrap>
-            Nhóm 0{group} - {units.find(x => x.id == unit).name} - Các thành viên tham gia đánh giá
-          </Typography>
-          <Paper style={{ padding: 10 }} className={classes.paper}>
-            {/* <FormGroup>
+          {showResults ? (
+            <div>
+              <Typography component="h1" variant="h5" color="inherit" noWrap>
+                Nhóm 0{group} - {units.find(x => x.id == unit).name}
+              </Typography>
+              <Paper style={{ padding: 10 }} className={classes.paper}>
+                {/* <FormGroup>
               {usersList.map(user => {
                 return (
                   <FormGroup>
@@ -168,74 +225,95 @@ export default function AddSettings() {
                 )
               })}
             </FormGroup> */}
-            <UserSettings />
-            <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(false) }}>Trở lại trang điều chỉnh</Typography >
-          </Paper>
-        </div>
-      ) : (
-        <div>
-          <Typography component="h1" variant="h5" color="inherit" noWrap>
-            Nhóm 0{group}
-          </Typography>
-          <Paper style={{ padding: 10 }} className={classes.paper}>
-            <div>
-              <Typography component="h3" variant="h5" color="inherit">
-                Các đơn vị tham gia đánh giá nằm trong nhóm
-              </Typography>
-              <SelectedUnit />
-              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
-                Thêm đơn vị vào nhóm
-              </Button>
-              <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={openUnit}
-                onClose={handleCloseUnit}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                  timeout: 500,
-                }}
-              >
-                <Fade in={openUnit}>
-                  <div className={classes.paper1}>
-                    <h4 id="transition-modal-title">Thêm đơn vị vào nhóm</h4>
-                    <Autocomplete
-                      multiple
-                      options={units}
-                      disableCloseOnSelect
-                      defaultValue={unitChosen}
-                      getOptionLabel={(option) => option.name}
-                      renderOption={(option, { selected }) => (
-                        <React.Fragment>
-                          <Checkbox
-                            icon={icon}
-                            checkedIcon={checkedIcon}
-                            style={{ marginRight: 8 }}
-                            checked={option.check = selected}
-                          />
-                          {option.name}
-                        </React.Fragment>
-                      )}
-                      style={{ width: 500 }}
-                      renderInput={(params) => (
-                        <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
-                      )}
-                    />
-                    <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseUnit}>Xong</Button>
-                  </div>
-                </Fade>
-              </Modal>
+                <UserSettings />
+                <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(false) }}>Trở lại trang điều chỉnh</Typography >
+              </Paper>
             </div>
-            <SelectCriterion />
-            {/* <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+          ) : (
+            <div>
+              <Typography component="h1" variant="h5" color="inherit" noWrap>
+                Nhóm 0{group}
+              </Typography>
+              <Paper style={{ padding: 10 }} className={classes.paper}>
+                {/* <AppBar position="static"> */}
+                <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
+                  <Tab className={classes.tab} label="Item One" />
+                  <Tab className={classes.tab} label="Item Two" />
+                </Tabs>
+                {/* </AppBar> */}
+                {(() => {
+                  switch (value) {
+                    case 0:
+                      return (
+                        <div>
+                          <SelectCriterion />
+                        </div>
+                      )
+                    case 1:
+                      return (
+                        <div>
+                          <Typography component="h3" variant="h5" color="inherit">
+                            Các đơn vị tham gia đánh giá nằm trong nhóm
+                              </Typography>
+                          <SelectedUnit />
+                          <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
+                            Thêm đơn vị vào nhóm
+                              </Button>
+                          <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            className={classes.modal}
+                            open={openUnit}
+                            onClose={handleCloseUnit}
+                            closeAfterTransition
+                            BackdropComponent={Backdrop}
+                            BackdropProps={{
+                              timeout: 500,
+                            }}
+                          >
+                            <Fade in={openUnit}>
+                              <div className={classes.paper1}>
+                                <h4 id="transition-modal-title">Thêm đơn vị vào nhóm</h4>
+                                <Autocomplete
+                                  multiple
+                                  options={units}
+                                  disableCloseOnSelect
+                                  defaultValue={unitChosen}
+                                  getOptionLabel={(option) => option.name}
+                                  renderOption={(option, { selected }) => (
+                                    <React.Fragment>
+                                      <Checkbox
+                                        icon={icon}
+                                        checkedIcon={checkedIcon}
+                                        style={{ marginRight: 8 }}
+                                        checked={option.check = selected}
+                                      />
+                                      {option.name}
+                                    </React.Fragment>
+                                  )}
+                                  style={{ width: 500 }}
+                                  renderInput={(params) => (
+                                    <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
+                                  )}
+                                />
+                                <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseUnit}>Xong</Button>
+                              </div>
+                            </Fade>
+                          </Modal>
+                        </div>
+                      )
+                  }
+                })()}
+
+                {/* <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
               Thêm tiêu chuẩn vào Form
             </Button> */}
-          </Paper>
+              </Paper>
+            </div >
+          )
+          }
         </div >
-      )
-      }
-    </div >
+      )}
+    </div>
   )
 }
