@@ -119,9 +119,9 @@ export default function AddSettings() {
             Khởi tạo Form
           </Typography>
           <form onSubmit={handleSubmitInit} style={{ marginTop: 15 }}>
-            <TextField id="code" onChange={e => setC(e.target.value)} label="Mã Form" variant="outlined" className={classes.field} />
+            <TextField id="code" required onChange={e => setC(e.target.value)} label="Mã Form" variant="outlined" className={classes.field} />
             <br />
-            <TextField id="name" onChange={e => setName(e.target.value)} label="Tên Form" variant="outlined" className={classes.field} />
+            <TextField id="name" required onChange={e => setName(e.target.value)} label="Tên Form" variant="outlined" className={classes.field} />
             <br />
             <Button style={{ marginRight: '10px' }} type="submit" value='submit' variant="contained" color="primary" >Vào cấu hình Form</Button>
           </form>
