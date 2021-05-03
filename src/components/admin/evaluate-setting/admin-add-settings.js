@@ -68,6 +68,7 @@ const useStyles = makeStyles(theme => ({
   tab: {
     backgroundColor: '#abcdef',
     padding: 0,
+    width: '100%',
   }
 }))
 
@@ -237,8 +238,8 @@ export default function AddSettings() {
               <Paper style={{ padding: 10 }} className={classes.paper}>
                 {/* <AppBar position="static"> */}
                 <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
-                  <Tab className={classes.tab} label="Item One" />
-                  <Tab className={classes.tab} label="Item Two" />
+                  <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
+                  <Tab className={classes.tab} label="Cấu hình đơn vị" />
                 </Tabs>
                 {/* </AppBar> */}
                 {(() => {
