@@ -109,7 +109,7 @@ export default function SelectCriterion() {
     <div>
       <Typography component="h3" variant="h5" color="inherit">
         Các tiêu chuẩn và tiêu chí sẽ đánh giá:
-        </Typography>
+      </Typography>
       <ol style={{ marginTop: 10 }}>
         {
           data.map(criterion => {

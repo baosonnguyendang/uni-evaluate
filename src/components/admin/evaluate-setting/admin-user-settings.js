@@ -8,13 +8,13 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 
 export default function UserSettings() {
-  const columns = ["Name", "Company", "City", "State"];
+  const columns = ["Tên", "Mã NV", "City"];
 
   const data = [
-    ["Joe James", "Test Corp", "Yonkers", "NY"],
-    ["John Walsh", "Test Corp", "Hartford", "CT"],
-    ["Bob Herm", "Test Corp", "Tampa", "FL"],
-    ["James Houston", "Test Corp", "Dallas", "TX"],
+    ["Joe James", "1712970", "Yonkers"],
+    ["John Walsh", "1712972", "Hartford"],
+    ["Bob Herm", "1712973", "Tampa"],
+    ["James Houston", "1712974", "Dallas"],
   ];
 
   const options = {

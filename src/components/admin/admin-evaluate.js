@@ -144,16 +144,6 @@ export default function EvaluateList() {
                   required
                   fullWidth
                   id="evaluateName"
-                  label="Tên đợt đánh giá"
-                  autoFocus
-                  onChange={e => setEvaluation(e.target.value)}
-                />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="evaluateName"
                   label="Mã đợt đánh giá"
                   autoFocus
                   onChange={e => setId(e.target.value)}
@@ -162,6 +152,15 @@ export default function EvaluateList() {
                   variant="outlined"
                   margin="normal"
                   required
+                  fullWidth
+                  id="evaluateName"
+                  label="Tên đợt đánh giá"
+                  autoFocus
+                  onChange={e => setEvaluation(e.target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
                   fullWidth
                   id="evaluateName"
                   label="Mô tả"
