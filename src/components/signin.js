@@ -91,7 +91,6 @@ const SignInSide = () => {
 
         <div className={classes.paper}>
           <img className={classes.logo} src={logo} alt='' />
-          {/* <form className={classes.form} noValidate> */}
           <form className={classes.form} onSubmit={onSubmit}>
             <TextField
               onChange={onChangeUsername}

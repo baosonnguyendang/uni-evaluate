@@ -21,7 +21,7 @@ function App() {
   return (
     <Router >
         <Route path="/" exact component={SignInSide} />
-        {!isLogin && <Redirect to='/' />}
+        {/* {!isLogin && <Redirect to='/' />} */}
         <Route path="/admin" component={Dashboard} />
         <Route path="/user" component={UserPage} />
     </Router>

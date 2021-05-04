@@ -1,6 +1,4 @@
-import React from "react";
-import ReactDOM from "react-dom";
-
+import React, { useEffect, useState } from "react";
 import { Link, useParams, useRouteMatch } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,6 +21,7 @@ import Modal from '@material-ui/core/Modal';
 import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -108,11 +107,28 @@ export default function Criteria() {
   ]);
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
+  const [isLoading, setIsLoading] = useState(true)
+  const token = localStorage.getItem('token')
+  const config = { headers: {"Authorization" : `Bearer ${token}`} }
+  const { id } = useParams()
+  const [nameStandard, setNameStandard] = useState('')
+  const fetchCriteriaOfStandard = () => {
+    axios.get(`admin/standard/${id}/criteria`,config)
+      .then(res => {
+        console.log(res.data.criterions)
+        setRows(res.data.criterions)
+        setNameStandard(res.data.criterions[0].standard.name)
+        setIsLoading(false)
+      })
+  }
+  useEffect(() => {
+    fetchCriteriaOfStandard()
+  }, [])
 
   const onToggleEditMode = id => {
     setRows(state => {
       return rows.map(row => {
-        if (row.id === id) {
+        if (row._id === id) {
           return { ...row, isEditMode: !row.isEditMode };
         }
         return row;
@@ -128,7 +144,7 @@ export default function Criteria() {
     const name = e.target.name;
     const { id } = row;
     const newRows = rows.map(row => {
-      if (row.id === id) {
+      if (row._id === id) {
         return { ...row, [name]: value };
       }
       return row;
@@ -137,13 +153,13 @@ export default function Criteria() {
   };
 
   const onDelete = id => {
-    const newRows = rows.filter(row => row.id !== id)
+    const newRows = rows.filter(row => row._id !== id)
     setRows(newRows)
   }
 
   const onRevert = id => {
     const newRows = rows.map(row => {
-      if (row.id === id) {
+      if (row._id === id) {
         return previous[id] ? previous[id] : row;
       }
       return row;
@@ -167,26 +183,19 @@ export default function Criteria() {
 
   //get data from new criterion
   const [name, setName] = React.useState('')
-  const [code, setC] = React.useState('')
-  const [description, setD] = React.useState('')
+  const [code, setCode] = React.useState('')
+  const [description, setDescription] = React.useState('')
   const [point, setP] = React.useState(0)
   const submit = e => {
     e.preventDefault()
     setRows(rows => [...rows, createData(name, code, description, point)])
   }
 
-  function User() {
-    let { id } = useParams();
-    return (
-      < Typography component="h1" variant="h5" color="inherit" noWrap >
-        Tiêu chuẩn { id} - DS Tiêu chí
-      </Typography >
-    )
-  }
-
   return (
     <div>
-      <User />
+      <Typography component="h1" variant="h5" color="inherit" noWrap >
+        Tiêu chuẩn { nameStandard } - DS Tiêu chí
+      </Typography >
       <Paper className={classes.root}>
         <Table className={classes.table} aria-label="caption table">
           <TableHead>
@@ -194,29 +203,27 @@ export default function Criteria() {
               <TableCell className={classes.name} >Tên tiêu chí</TableCell>
               <TableCell className={classes.number} >Mã tiêu chí</TableCell>
               <TableCell >Mô tả</TableCell>
-              <TableCell >Tổng điểm</TableCell>
               <TableCell align="left" />
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map(row => (
-              <TableRow key={row.id}>
+              <TableRow key={row._id}>
                 <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
                 <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
                 <CustomTableCell {...{ row, name: "description", onChange }} />
-                <CustomTableCell {...{ row, name: "point", onChange }} />
                 <TableCell className={classes.selectTableCell}>
                   {row.isEditMode ? (
                     <>
                       <IconButton
                         aria-label="done"
-                        onClick={() => onToggleEditMode(row.id)}
+                        onClick={() => onToggleEditMode(row._id)}
                       >
                         <DoneIcon />
                       </IconButton>
                       <IconButton
                         aria-label="revert"
-                        onClick={() => onRevert(row.id)}
+                        onClick={() => onRevert(row._id)}
                       >
                         <RevertIcon />
                       </IconButton>
@@ -225,13 +232,13 @@ export default function Criteria() {
                     <>
                       <IconButton
                         aria-label="delete"
-                        onClick={() => onToggleEditMode(row.id)}
+                        onClick={() => onToggleEditMode(row._id)}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         aria-label="delete"
-                        onClick={() => onDelete(row.id)}
+                        onClick={() => onDelete(row._id)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -263,9 +270,8 @@ export default function Criteria() {
                 <h2 id="transition-modal-title">Thêm tiêu chí</h2>
                 <form onSubmit={submit}>
                   <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chí" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
-                  <TextField onChange={e => setP(e.target.value)} id="point" label="Tổng điểm" type="number" variant="outlined" className={classes.field} />
+                  <TextField onChange={e => setCode(e.target.value)} id="code" label="Mã tiêu chí" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
                   <div style={{ textAlign: 'center', marginTop: '10px' }}>
                     <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                     <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -86,7 +85,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
           className={classes.input}
         />
       ) : (
-        name === 'name' ? (<Link to={{ pathname: '/admin/criterion/' + row._id }} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
+        name === 'name' ? (<Link to={{pathname: '/admin/criterion/' + row._id}}  style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
       )}
     </TableCell>
   );
@@ -96,9 +95,9 @@ export default function Criterion() {
   const [rows, setRows] = React.useState([]);
   const [isLoading, setIsLoading] = useState(true)
   const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
+  const config = { headers: {"Authorization" : `Bearer ${token}`} }
   const fetchStandard = () => {
-    axios.get('admin/standard', config)
+    axios.get('admin/standard',config)
       .then(res => {
         console.log(res.data.standards)
         setRows(res.data.standards)
@@ -122,7 +121,7 @@ export default function Criterion() {
         return row;
       });
     });
-
+    
   };
 
   const onChange = (e, row) => {
@@ -139,8 +138,8 @@ export default function Criterion() {
   };
 
   const onDelete = id => {
-    axios.post(`admin/standard/${id}/delete`, { id }, config)
-      .then(res => {
+    axios.post(`admin/standard/${id}/delete`,{id},config)
+      .then( res => {
         console.log(res.data)
         const newRows = rows.filter(row => row._id !== id)
         setRows(newRows)
@@ -174,8 +173,8 @@ export default function Criterion() {
   const handleClose = () => {
     setOpen(false);
   };
-  const [toast, setToast] = useState({open: false, time: "2000", message:'', severity:''})
-  const handleOpenToast = (message, severity, time='2000') => {
+  const [toast, setToast] = useState({open: false, time: 2000, message:'', severity:''})
+  const handleOpenToast = (message, severity, time=2000) => {
     setToast({...toast, message, time, severity, open: true});
   };
   const handleCloseToast = () => {
@@ -185,7 +184,7 @@ export default function Criterion() {
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
   const [description, setD] = React.useState('')
-  let data = { code, name, description }
+  let data = {code,name,description}
   const submit = e => {
     e.preventDefault()
     axios.post('/admin/standard/add', data, config)
@@ -208,21 +207,18 @@ export default function Criterion() {
         <Table className={classes.table} aria-label="caption table">
           <TableHead>
             <TableRow style={{ backgroundColor: '#f4f4f4' }}>
+              <TableCell align="left" />
               <TableCell className={classes.name} align="left">Tên tiêu chuẩn</TableCell>
               <TableCell className={classes.number} align="left">Mã TC</TableCell>
               <TableCell align="left">Mô tả</TableCell>
+              <TableCell className={classes.number} align="left">Số tiêu chí</TableCell>
               <TableCell className={classes.number} align="left">Tổng điểm</TableCell>
-              <TableCell align="left" />
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
               return (
                 <TableRow key={row._id}>
-                  <CustomTableCell {...{ row, name: "name", onChange }} />
-                  <CustomTableCell {...{ row, name: "code", onChange }} />
-                  <CustomTableCell {...{ row, name: "description", onChange }} />
-                  <CustomTableCell {...{ row, name: "point", onChange }} />
                   <TableCell className={classes.selectTableCell}>
                     {row.isEditMode ? (
                       <>
@@ -256,6 +252,11 @@ export default function Criterion() {
                       </>
                     )}
                   </TableCell>
+                  <CustomTableCell {...{ row, name: "name", onChange }} />
+                  <CustomTableCell {...{ row, name: "code", onChange }} />
+                  <CustomTableCell {...{ row, name: "description", onChange }} />
+                  <CustomTableCell {...{ row, name: "numOfCriteria", onChange }} />
+                  <CustomTableCell {...{ row, name: "point", onChange }} />
                 </TableRow>
               )
             })}
@@ -293,8 +294,8 @@ export default function Criterion() {
                   <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                    <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
-                    <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                  <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                   </div>
                 </form>
               </div>

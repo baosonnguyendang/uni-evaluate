@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from './admin-navbar'
 import UserTable from "./admin-user"
 import Faculty from "./admin-faculty"
@@ -48,12 +48,14 @@ const useStyles = makeStyles((theme) => ({
 
 const AdminPage = () => {
   const classes = useStyles()
-  let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
+  useEffect(() => {
+    {
+      let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
+      isLogged ? (localStorage.getItem('role') === 'user' && <Redirect to='/user' />) : <Redirect to='/' />
+    }
+  }, [])
   return (
     <div className={classes.root}>
-      {
-        isLogged ? (localStorage.getItem('role') === 'user' && <Redirect to='/user' />) : <Redirect to='/' />
-      }
       <Navbar />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
