@@ -273,10 +273,8 @@ export default function Criterion() {
             <div style={{ margin: '10px', textAlign: 'right' }}>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                 Tạo tiêu chuẩn mới
-            </Button>
+              </Button>
               <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
                 className={classes.modal}
                 open={open}
                 onClose={handleClose}
@@ -288,7 +286,7 @@ export default function Criterion() {
               >
                 <Fade in={open}>
                   <div className={classes.paper1}>
-                    <h2 id="transition-modal-title">Thêm tiêu chuẩn</h2>
+                    <h2>Thêm tiêu chuẩn</h2>
                     <form onSubmit={submit}>
                       <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
                       <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />

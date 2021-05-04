@@ -231,6 +231,31 @@ export default function AddSettings() {
     // console.log(newValue)
   };
 
+  //danh sach nguoi trong khoa
+  const [unitMember, setUnitMember] = useState([
+    ["Joe James", "1712970", "Khoa học máy tính"],
+    ["John Walsh", "1712972", "Hệ thống và Mạng"],
+    ["James Tarkowski", "1712973", "Hệ thống thông tin"],
+    ["James Houston", "1712974", "Công nghệ phần mềm"],
+    ["James Rodriguez", "1712975", "Kỹ thuật máy tính"],
+    ["James Bond", "1712976", "Công nghệ phần mềm"],
+  ])
+
+  //them nguoi rieng le vao danh gia vui
+  const [idd, setId] = React.useState('')
+  const [openAdd, setOpenAdd] = React.useState(false);
+  const handleOpenAdd = () => {
+    setOpenAdd(true);
+  };
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+  };
+  const submitAdd = (e) => {
+    e.preventDefault()
+    setUnitMember(unitMember => [...unitMember, ['null', idd, 'null']])
+    handleCloseAdd()
+  }
+
   return (
     <div>
       {console.log('code ' + code)}
@@ -250,28 +275,40 @@ export default function AddSettings() {
                     <Typography component="h1" variant="h5" color="inherit" noWrap>
                       Nhóm 0{group} - {units.find(x => x.id == unit).name}
                     </Typography>
-                    <Paper style={{ padding: 10 }} className={classes.paper}>
-                      {/* <FormGroup>
-              {usersList.map(user => {
-                return (
-                  <FormGroup>
-                    <FormControlLabel control={
-                      <Checkbox
-                        checked={user.chosen}
-                        onChange={() => { user.chosen = !user.chosen; setState(!state); console.log(user.name, user.chosen) }}
-                        name={user.id}
-                        color="primary"
-                      />
-                    }
-                      label={user.id + ' - ' + user.name}
-                    />
-                  </FormGroup>
-                )
-              })}
-            </FormGroup> */}
-                      <UserSettings />
-                      <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(false) }}>Trở lại trang điều chỉnh</Typography >
+                    <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
+                      <UserSettings data={unitMember} />
+                      <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
+                        <Button variant="contained" color="primary" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenAdd() }}>
+                          Thêm GV/VC khác
+                        </Button>
+                        <Button variant="contained" color="secondary" onClick={() => { setShowResults(false) }}>
+                          Trở lại trang điều chỉnh
+                        </Button>
+                      </div>
                     </Paper>
+                    <Modal
+                      className={classes.modal}
+                      open={openAdd}
+                      onClose={handleCloseAdd}
+                      closeAfterTransition
+                      BackdropComponent={Backdrop}
+                      BackdropProps={{
+                        timeout: 500,
+                      }}
+                    >
+                      <Fade in={openAdd}>
+                        <div className={classes.paper1}>
+                          <h2>Thêm GV/VC</h2>
+                          <form onSubmit={submitAdd}>
+                            <TextField onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required variant="outlined" className={classes.field} />
+                            <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                              <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Thêm</Button>
+                              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseAdd}>Thoát</Button>
+                            </div>
+                          </form>
+                        </div>
+                      </Fade>
+                    </Modal>
                   </div>
                 ) : (
                   <div>
@@ -304,8 +341,6 @@ export default function AddSettings() {
                                   Thêm đơn vị vào nhóm
                               </Button>
                                 <Modal
-                                  aria-labelledby="transition-modal-title"
-                                  aria-describedby="transition-modal-description"
                                   className={classes.modal}
                                   open={openUnit}
                                   onClose={handleCloseUnit}
@@ -317,7 +352,7 @@ export default function AddSettings() {
                                 >
                                   <Fade in={openUnit}>
                                     <div className={classes.paper1}>
-                                      <h4 id="transition-modal-title">Thêm đơn vị vào nhóm</h4>
+                                      <h4>Thêm đơn vị vào nhóm</h4>
                                       <Autocomplete
                                         multiple
                                         options={units}
