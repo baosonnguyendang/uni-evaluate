@@ -202,8 +202,8 @@ export default function Criteria() {
         <Table className={classes.table} aria-label="caption table">
           <TableHead>
             <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-              <TableCell className={classes.name} >Tên tiêu chí</TableCell>
               <TableCell className={classes.number} >Mã tiêu chí</TableCell>
+              <TableCell className={classes.name} >Tên tiêu chí</TableCell>
               <TableCell >Mô tả</TableCell>
               <TableCell align="left" />
             </TableRow>
@@ -212,8 +212,8 @@ export default function Criteria() {
             {rows.map(row => (
               <TableRow key={row._id}>
                 {console.log(row._id)}
-                <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
                 <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
+                <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
                 <CustomTableCell {...{ row, name: "description", onChange }} />
                 <TableCell className={classes.selectTableCell}>
                   {row.isEditMode ? (

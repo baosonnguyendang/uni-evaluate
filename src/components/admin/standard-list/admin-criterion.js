@@ -86,7 +86,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
           className={classes.input}
         />
       ) : (
-        name === 'name' ? (<Link to={{pathname: '/admin/criterion/' + row._id}}  style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
+        name === 'name' ? (<Link to={{ pathname: '/admin/criterion/' + row._id }} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
       )}
     </TableCell>
   );
@@ -96,9 +96,9 @@ export default function Criterion() {
   const [rows, setRows] = React.useState([]);
   const [isLoading, setIsLoading] = useState(true)
   const token = localStorage.getItem('token')
-  const config = { headers: {"Authorization" : `Bearer ${token}`} }
+  const config = { headers: { "Authorization": `Bearer ${token}` } }
   const fetchStandard = () => {
-    axios.get('admin/standard',config)
+    axios.get('admin/standard', config)
       .then(res => {
         console.log(res.data.standards)
         setRows(res.data.standards)
@@ -122,7 +122,7 @@ export default function Criterion() {
         return row;
       });
     });
-    
+
   };
 
   const onChange = (e, row) => {
@@ -139,12 +139,12 @@ export default function Criterion() {
   };
 
   const onDelete = id => {
-    axios.post(`admin/standard/${id}/delete`,{id},config)
-      .then( res => {
+    axios.post(`admin/standard/${id}/delete`, { id }, config)
+      .then(res => {
         console.log(res.data)
         const newRows = rows.filter(row => row._id !== id)
         setRows(newRows)
-        handleOpenToast("Xoá tiêu chuẩn thành công","success")
+        handleOpenToast("Xoá tiêu chuẩn thành công", "success")
       })
   }
 
@@ -174,18 +174,18 @@ export default function Criterion() {
   const handleClose = () => {
     setOpen(false);
   };
-  const [toast, setToast] = useState({open: false, time: 2000, message:'', severity:''})
-  const handleOpenToast = (message, severity, time=2000) => {
-    setToast({...toast, message, time, severity, open: true});
+  const [toast, setToast] = useState({ open: false, time: 2000, message: '', severity: '' })
+  const handleOpenToast = (message, severity, time = 2000) => {
+    setToast({ ...toast, message, time, severity, open: true });
   };
   const handleCloseToast = () => {
-    setToast({...toast, open:false});
+    setToast({ ...toast, open: false });
   };
   //get data from new criterion
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
   const [description, setD] = React.useState('')
-  let data = {code,name,description}
+  let data = { code, name, description }
   const submit = e => {
     e.preventDefault()
     axios.post('/admin/standard/add', data, config)
@@ -201,113 +201,109 @@ export default function Criterion() {
 
   return (
     <>
-    { isLoading ? <Sleketon /> : 
-      <div>
-        <Typography component="h1" variant="h5" color="inherit" noWrap>
-          DANH SÁCH TIÊU CHUẨN
+      { isLoading ? <Sleketon /> :
+        <div>
+          <Typography component="h1" variant="h5" color="inherit" noWrap>
+            DANH SÁCH TIÊU CHUẨN
         </Typography>
-        <Paper className={classes.root}>
-          <Table className={classes.table} aria-label="caption table">
-            <TableHead>
-              <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-                <TableCell align="left" />
-                <TableCell className={classes.name} align="left">Tên tiêu chuẩn</TableCell>
-                <TableCell className={classes.number} align="left">Mã TC</TableCell>
-                <TableCell align="left">Mô tả</TableCell>
-                <TableCell className={classes.number} align="left">Số tiêu chí</TableCell>
-                <TableCell className={classes.number} align="left">Tổng điểm</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                return (
-                  <TableRow key={row._id}>
-                    <TableCell className={classes.selectTableCell}>
-                      {row.isEditMode ? (
-                        <>
-                          <IconButton
-                            aria-label="done"
-                            onClick={() => onToggleEditMode(row._id)}
-                          >
-                            <DoneIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="revert"
-                            onClick={() => onRevert(row._id)}
-                          >
-                            <RevertIcon />
-                          </IconButton>
-                        </>
-                      ) : (
-                        <>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => onToggleEditMode(row._id)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => onDelete(row._id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </>
-                      )}
-                    </TableCell>
-                    <CustomTableCell {...{ row, name: "name", onChange }} />
-                    <CustomTableCell {...{ row, name: "code", onChange }} />
-                    <CustomTableCell {...{ row, name: "description", onChange }} />
-                    <CustomTableCell {...{ row, name: "numOfCriteria", onChange }} />
-                    <CustomTableCell {...{ row, name: "point", onChange }} />
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 20]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-          <div style={{ margin: '10px', textAlign: 'right' }}>
-            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-              Tạo tiêu chuẩn mới
+          <Paper className={classes.root}>
+            <Table className={classes.table} aria-label="caption table">
+              <TableHead>
+                <TableRow style={{ backgroundColor: '#f4f4f4' }}>
+                  <TableCell className={classes.number} align="left">Mã TC</TableCell>
+                  <TableCell className={classes.name} align="left">Tên tiêu chuẩn</TableCell>
+                  <TableCell align="left">Mô tả</TableCell>
+                  <TableCell align="left" />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  return (
+                    <TableRow key={row._id}>
+                      <CustomTableCell {...{ row, name: "code", onChange }} />
+                      <CustomTableCell {...{ row, name: "name", onChange }} />
+                      <CustomTableCell {...{ row, name: "description", onChange }} />
+                      <TableCell className={classes.selectTableCell}>
+                        {row.isEditMode ? (
+                          <>
+                            <IconButton
+                              aria-label="done"
+                              onClick={() => onToggleEditMode(row._id)}
+                            >
+                              <DoneIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label="revert"
+                              onClick={() => onRevert(row._id)}
+                            >
+                              <RevertIcon />
+                            </IconButton>
+                          </>
+                        ) : (
+                          <>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => onToggleEditMode(row._id)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => onDelete(row._id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 20]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+            <div style={{ margin: '10px', textAlign: 'right' }}>
+              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                Tạo tiêu chuẩn mới
             </Button>
-            <Modal
-              aria-labelledby="transition-modal-title"
-              aria-describedby="transition-modal-description"
-              className={classes.modal}
-              open={open}
-              onClose={handleClose}
-              closeAfterTransition
-              BackdropComponent={Backdrop}
-              BackdropProps={{
-                timeout: 500,
-              }}
-            >
-              <Fade in={open}>
-                <div className={classes.paper1}>
-                  <h2 id="transition-modal-title">Thêm tiêu chuẩn</h2>
-                  <form onSubmit={submit}>
-                    <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                    <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
-                    <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
-                    </div>
-                  </form>
-                </div>
-              </Fade>
-            </Modal>
-          </div>
-        </Paper>
-        <Toast toast={toast} handleClose={handleCloseToast} />
-      </div>}
-      </>
+              <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={open}
+                onClose={handleClose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}
+              >
+                <Fade in={open}>
+                  <div className={classes.paper1}>
+                    <h2 id="transition-modal-title">Thêm tiêu chuẩn</h2>
+                    <form onSubmit={submit}>
+                      <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                      <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                      <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                        <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                      </div>
+                    </form>
+                  </div>
+                </Fade>
+              </Modal>
+            </div>
+          </Paper>
+          <Toast toast={toast} handleClose={handleCloseToast} />
+        </div>}
+    </>
   );
 }
