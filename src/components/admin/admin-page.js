@@ -48,14 +48,11 @@ const useStyles = makeStyles((theme) => ({
 
 const AdminPage = () => {
   const classes = useStyles()
-  useEffect(() => {
-    {
+
       let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
-      isLogged ? (localStorage.getItem('role') === 'user' && <Redirect to='/user' />) : <Redirect to='/' />
-    }
-  }, [])
   return (
     <div className={classes.root}>
+      {isLogged ? (localStorage.getItem('role') === 'user' && <Redirect to='/user' />) : <Redirect to='/' />}
       <Navbar />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

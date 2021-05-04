@@ -28,7 +28,7 @@ import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
-import Sleketon from '../common/sleketon'
+import Sleketon from '../common/skeleton'
 
 const useStyles = makeStyles(theme => ({
   root: {

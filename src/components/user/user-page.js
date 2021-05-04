@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Redirect } from 'react-router'
 import AppBar from './user-appbar'
 import Main from './user-main'
@@ -12,10 +12,7 @@ const UserPage = () => {
     let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
     return (
         <>
-        {
-            isLogged ? (localStorage.getItem('role') === 'admin' && <Redirect to='/admin' />) : <Redirect to='/' />
-        }
-
+        {isLogged ? (localStorage.getItem('role') === 'admin' && <Redirect to='/admin/user' />) : <Redirect to='/' />}
         <AppBar />
         <Switch>
             <Route path='/user/profile' >

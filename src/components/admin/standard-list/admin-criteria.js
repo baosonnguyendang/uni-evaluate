@@ -22,7 +22,7 @@ import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios'
-
+import Skeleton from '../../common/skeleton'
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -117,7 +117,7 @@ export default function Criteria() {
       .then(res => {
         console.log(res.data.criterions)
         setRows(res.data.criterions)
-        res.data && setNameStandard(res.data?.criterions[0].standard.name) 
+        setNameStandard(res.data?.criterions[0]?.standard?.name) 
         setIsLoading(false)
       })
   }
@@ -192,7 +192,9 @@ export default function Criteria() {
   }
 
   return (
-    <div>
+    <>
+    {isLoading ? <Skeleton /> : (
+      <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap >
         Tiêu chuẩn { nameStandard } - DS Tiêu chí
       </Typography >
@@ -284,5 +286,8 @@ export default function Criteria() {
         </div>
       </Paper>
     </div>
+    )}
+    </>
+    
   );
 }

@@ -14,14 +14,12 @@ import { useDispatch, useSelector } from 'react-redux'
 function App() {
   axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
   const dispatch = useDispatch()
-  const isLogin = useSelector(state => state.auth.isAuthenticated);
   useEffect(() => {
     dispatch(checktoken());
   }, []);
   return (
     <Router >
         <Route path="/" exact component={SignInSide} />
-        {/* {!isLogin && <Redirect to='/' />} */}
         <Route path="/admin" component={Dashboard} />
         <Route path="/user" component={UserPage} />
     </Router>

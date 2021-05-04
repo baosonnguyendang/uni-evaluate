@@ -101,7 +101,7 @@ export default function AddSettings() {
   let { id, id1 } = useParams();
   let history = useHistory();
   //check form da duoc tao hay chua
- 
+
   //fe to be
   const token = localStorage.getItem('token')
 
@@ -276,7 +276,7 @@ export default function AddSettings() {
                 ) : (
                   <div>
                     <Typography component="h1" variant="h5" color="inherit" noWrap>
-                       {name} (Mã Form: {code})
+                      {name} (Mã Form: {code})
                     </Typography>
                     <Paper style={{ padding: 10 }} className={classes.paper}>
                       {/* <AppBar position="static"> */}

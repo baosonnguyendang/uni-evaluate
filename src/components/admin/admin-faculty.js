@@ -25,7 +25,7 @@ import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios'
-import Sleketon from '../common/sleketon'
+import Skeleton from '../common/skeleton'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -186,7 +186,7 @@ export default function Criterion() {
 
   return (
     <>
-    { isLoading ? <Sleketon /> : (
+    { isLoading ? <Skeleton /> : (
       <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
         DANH SÁCH ĐƠN VỊ

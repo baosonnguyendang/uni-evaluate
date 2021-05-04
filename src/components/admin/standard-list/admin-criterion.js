@@ -25,6 +25,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
 import Toast from '../../common/snackbar'
+import Sleketon from '../../common/skeleton'
 import { TocSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
@@ -199,111 +200,114 @@ export default function Criterion() {
   }
 
   return (
-    <div>
-      <Typography component="h1" variant="h5" color="inherit" noWrap>
-        DANH SÁCH TIÊU CHUẨN
-      </Typography>
-      <Paper className={classes.root}>
-        <Table className={classes.table} aria-label="caption table">
-          <TableHead>
-            <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-              <TableCell align="left" />
-              <TableCell className={classes.name} align="left">Tên tiêu chuẩn</TableCell>
-              <TableCell className={classes.number} align="left">Mã TC</TableCell>
-              <TableCell align="left">Mô tả</TableCell>
-              <TableCell className={classes.number} align="left">Số tiêu chí</TableCell>
-              <TableCell className={classes.number} align="left">Tổng điểm</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
-                <TableRow key={row._id}>
-                  <TableCell className={classes.selectTableCell}>
-                    {row.isEditMode ? (
-                      <>
-                        <IconButton
-                          aria-label="done"
-                          onClick={() => onToggleEditMode(row._id)}
-                        >
-                          <DoneIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="revert"
-                          onClick={() => onRevert(row._id)}
-                        >
-                          <RevertIcon />
-                        </IconButton>
-                      </>
-                    ) : (
-                      <>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => onToggleEditMode(row._id)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => onDelete(row._id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </>
-                    )}
-                  </TableCell>
-                  <CustomTableCell {...{ row, name: "name", onChange }} />
-                  <CustomTableCell {...{ row, name: "code", onChange }} />
-                  <CustomTableCell {...{ row, name: "description", onChange }} />
-                  <CustomTableCell {...{ row, name: "numOfCriteria", onChange }} />
-                  <CustomTableCell {...{ row, name: "point", onChange }} />
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-        <div style={{ margin: '10px', textAlign: 'right' }}>
-          <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-            Tạo tiêu chuẩn mới
-          </Button>
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={open}
-            onClose={handleClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500,
-            }}
-          >
-            <Fade in={open}>
-              <div className={classes.paper1}>
-                <h2 id="transition-modal-title">Thêm tiêu chuẩn</h2>
-                <form onSubmit={submit}>
-                  <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                  <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
-                  <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
-                  </div>
-                </form>
-              </div>
-            </Fade>
-          </Modal>
-        </div>
-      </Paper>
-      <Toast toast={toast} handleClose={handleCloseToast} />
-    </div>
+    <>
+    { isLoading ? <Sleketon /> : 
+      <div>
+        <Typography component="h1" variant="h5" color="inherit" noWrap>
+          DANH SÁCH TIÊU CHUẨN
+        </Typography>
+        <Paper className={classes.root}>
+          <Table className={classes.table} aria-label="caption table">
+            <TableHead>
+              <TableRow style={{ backgroundColor: '#f4f4f4' }}>
+                <TableCell align="left" />
+                <TableCell className={classes.name} align="left">Tên tiêu chuẩn</TableCell>
+                <TableCell className={classes.number} align="left">Mã TC</TableCell>
+                <TableCell align="left">Mô tả</TableCell>
+                <TableCell className={classes.number} align="left">Số tiêu chí</TableCell>
+                <TableCell className={classes.number} align="left">Tổng điểm</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                return (
+                  <TableRow key={row._id}>
+                    <TableCell className={classes.selectTableCell}>
+                      {row.isEditMode ? (
+                        <>
+                          <IconButton
+                            aria-label="done"
+                            onClick={() => onToggleEditMode(row._id)}
+                          >
+                            <DoneIcon />
+                          </IconButton>
+                          <IconButton
+                            aria-label="revert"
+                            onClick={() => onRevert(row._id)}
+                          >
+                            <RevertIcon />
+                          </IconButton>
+                        </>
+                      ) : (
+                        <>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onToggleEditMode(row._id)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onDelete(row._id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </>
+                      )}
+                    </TableCell>
+                    <CustomTableCell {...{ row, name: "name", onChange }} />
+                    <CustomTableCell {...{ row, name: "code", onChange }} />
+                    <CustomTableCell {...{ row, name: "description", onChange }} />
+                    <CustomTableCell {...{ row, name: "numOfCriteria", onChange }} />
+                    <CustomTableCell {...{ row, name: "point", onChange }} />
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 20]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+          <div style={{ margin: '10px', textAlign: 'right' }}>
+            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+              Tạo tiêu chuẩn mới
+            </Button>
+            <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              className={classes.modal}
+              open={open}
+              onClose={handleClose}
+              closeAfterTransition
+              BackdropComponent={Backdrop}
+              BackdropProps={{
+                timeout: 500,
+              }}
+            >
+              <Fade in={open}>
+                <div className={classes.paper1}>
+                  <h2 id="transition-modal-title">Thêm tiêu chuẩn</h2>
+                  <form onSubmit={submit}>
+                    <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                    <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                    <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                    </div>
+                  </form>
+                </div>
+              </Fade>
+            </Modal>
+          </div>
+        </Paper>
+        <Toast toast={toast} handleClose={handleCloseToast} />
+      </div>}
+      </>
   );
 }
