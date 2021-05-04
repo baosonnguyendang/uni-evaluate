@@ -117,7 +117,7 @@ export default function Criteria() {
       .then(res => {
         console.log(res.data.criterions)
         setRows(res.data.criterions)
-        setNameStandard(res.data.criterions[0].standard.name)
+        res.data && setNameStandard(res.data?.criterions[0].standard.name) 
         setIsLoading(false)
       })
   }
@@ -209,6 +209,7 @@ export default function Criteria() {
           <TableBody>
             {rows.map(row => (
               <TableRow key={row._id}>
+                {console.log(row._id)}
                 <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
                 <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
                 <CustomTableCell {...{ row, name: "description", onChange }} />
