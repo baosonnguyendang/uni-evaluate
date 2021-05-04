@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from "axios";
 
 import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
 
@@ -15,6 +16,8 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
+import Toast from '../common/snackbar'
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -22,10 +25,10 @@ function ListItem(props) {
   return (
     // <li>{props.id}</li>
     <tr>
-      <td style={{width:'30%', lineHeight:'50px', paddingLeft:10}}><Link to={'/admin/evaluate-settings/' + props.id}>{props.value}</Link></td>
-      <td style={{textAlign:'center', lineHeight:'50px'}}>{props.id}</td>
-      <td align='center'>{props.start.getDate() + '/' + (props.start.getMonth() + 1) + '/' + props.start.getFullYear()}</td>
-      <td align='center'>{props.end.getDate() + '/' + (props.end.getMonth() + 1) + '/' + props.end.getFullYear()}</td>
+      <td style={{ width: '30%', lineHeight: '50px', paddingLeft: 10 }}><Link to={'/admin/evaluate-settings/' + props.id}>{props.value}</Link></td>
+      <td style={{ textAlign: 'center', lineHeight: '50px' }}>{props.id}</td>
+      <td align='center'>{props.start.toString()}</td>
+      <td align='center'>{props.end.toString()}</td>
     </tr>
   )
 }
@@ -35,17 +38,17 @@ function NumberList(props) {
   const listItems = numbers.map((item) =>
     // Correct! Key should be specified inside the array.
     // <Link to={'/admin/evaluate-settings/' + item.id}>
-    <ListItem key={item.id} id={item.id} value={item.name} start={item.start} end={item.end} />
+    <ListItem key={item.id} id={item.code} value={item.name} start={new Date(item.start_date)} end={new Date(item.end_date)} />
     //</Link>
   );
   return (
-    <table style={{width:'100%', marginBottom: 10}}>
-      <thead style={{backgroundColor:'#f4f4f4', lineHeight:'50px'}}>
+    <table style={{ width: '100%', marginBottom: 10 }}>
+      <thead style={{ backgroundColor: '#f4f4f4', lineHeight: '50px' }}>
         <tr>
-          <th style={{width:'30%', paddingLeft:10}}>Tên đợt đánh giá</th>
-          <th style={{textAlign:'center',}}>Mã đợt</th>
-          <th style={{textAlign:'center'}}>Ngày bắt đầu</th>
-          <th style={{textAlign:'center'}}>Ngày kết thúc</th>
+          <th style={{ width: '30%', paddingLeft: 10 }}>Tên đợt đánh giá</th>
+          <th style={{ textAlign: 'center', }}>Mã đợt</th>
+          <th style={{ textAlign: 'center' }}>Ngày bắt đầu</th>
+          <th style={{ textAlign: 'center' }}>Ngày kết thúc</th>
         </tr>
       </thead>
       <tbody>
@@ -99,16 +102,54 @@ export default function EvaluateList() {
     { id: 1, name: 'Đợt 1 năm 2020', start: new Date('January 14 2021'), end: new Date('November 14 2021') },
     { id: 2, name: 'Đợt 2 năm 2020', start: new Date('January 1 2021'), end: new Date('December 14 2021') },
   ];
-  const [number, setNumber] = useState(listEvaluate);
+  const [number, setNumber] = useState([]);
+
+
+  //fe to be
+  const token = localStorage.getItem('token')
+  const fetchReview = () => {
+    axios.get('/admin/review/', { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data);
+        setNumber(res.data.reviews)
+        // setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
+        // setPrevious([...rows])
+        // setIsLoading(false)
+      })
+  }
+  useEffect(() => {
+    fetchReview()
+  }, [])
 
   const [evaluation, setEvaluation] = useState('')
   const [id, setId] = useState('')
   const [des, setD] = useState('')
 
+  const [toast, setToast] = useState({ open: false, time: "2000", message: '', severity: '' })
+  const handleOpenToast = (message, severity, time = '2000') => {
+    setToast({ ...toast, message, time, severity, open: true });
+  };
+  const handleCloseToast = () => {
+    setToast({ ...toast, open: false });
+  };
+
   const submit = e => {
     console.log(startDate)
     e.preventDefault()
-    setNumber(number => [...number, { id: id, name: evaluation, start: startDate, end: endDate }])
+    setNumber(number => [...number, { code: id, name: evaluation, start_date: startDate, end_date: endDate }])
+    axios.post('/admin/review/add', { code: id, name: evaluation, start_date: startDate, end_date: endDate }, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data)
+        handleClose()
+        handleOpenToast("Tạo đợt đánh giá thành công", 'success')
+        // handleOpenToast("Tạo tiêu chuẩn thành công", 'success')
+        // setRows(rows => [...rows, data])
+      })
+      .catch(e => {
+        console.log(e)
+        handleOpenToast("Lỗi gì rồi ông ơi", 'error')
+      })
+
     // // useEffect
     // console.log(number)
     // console.log(listEvaluate)
@@ -121,7 +162,7 @@ export default function EvaluateList() {
       </Typography>
       <Paper className={classes.paper}>
         <NumberList numbers={number} />
-        <Button style={{marginLeft:10}} variant="contained" type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
+        <Button style={{ marginLeft: 10 }} variant="contained" type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
