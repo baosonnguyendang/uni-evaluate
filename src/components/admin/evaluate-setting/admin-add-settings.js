@@ -9,6 +9,9 @@ import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink, usePar
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
@@ -168,14 +171,6 @@ export default function AddSettings() {
   //cai nay la de sau khi check hoac uncheck se render lai luon
   const [state, setState] = React.useState(true);
 
-  //ds vien chuc thuoc don vi duoc chon
-  const [usersList, showUsersList] = React.useState([
-    { name: 'A', id: '1712970', chosen: true },
-    { name: 'AA', id: '1712972', chosen: true },
-    { name: 'AAA', id: '1712973', chosen: true },
-    { name: 'AIA', id: '1712974', chosen: true },
-  ])
-
   const group = 1
 
   //open modal them don vi
@@ -252,9 +247,18 @@ export default function AddSettings() {
   };
   const submitAdd = (e) => {
     e.preventDefault()
-    setUnitMember(unitMember => [...unitMember, ['null', idd, 'null']])
+    if (id1 !== '03'){
+      setUnitMember(unitMember => [...unitMember, ['null', idd, 'null']])
+    } else {
+      
+    }
+    
     handleCloseAdd()
   }
+  const [newUnit, setNewUnit] = React.useState('');
+  const handleChangeUnit = (event) => {
+    setNewUnit(event.target.value); 
+  };
 
   return (
     <div>
@@ -276,10 +280,10 @@ export default function AddSettings() {
                       Nhóm 0{group} - {units.find(x => x.id == unit).name}
                     </Typography>
                     <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
-                      <UserSettings data={unitMember} />
+                      <UserSettings data={unitMember} type={ id1 } />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                         <Button variant="contained" color="primary" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenAdd() }}>
-                          Thêm GV/VC khác
+                          Thêm GV/VC
                         </Button>
                         <Button variant="contained" color="secondary" onClick={() => { setShowResults(false) }}>
                           Trở lại trang điều chỉnh
@@ -299,8 +303,25 @@ export default function AddSettings() {
                       <Fade in={openAdd}>
                         <div className={classes.paper1}>
                           <h2>Thêm GV/VC</h2>
-                          <form onSubmit={submitAdd}>
+                          <form onSubmit={submitAdd()}>
                             <TextField onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required variant="outlined" className={classes.field} />
+                            <br/>
+                            <FormControl variant="outlined" >
+                              <InputLabel >Đơn vị</InputLabel>
+                              <Select
+                                native
+                                value={newUnit}
+                                label='Đơn vị'
+                                onChange={handleChangeUnit}
+                              >
+                                <option aria-label="None" value="" />
+                                <option value={10}>Khoa học máy tính</option>
+                                <option value={20}>Hệ thống và Mạng</option>
+                                <option value={30}>Hệ thống thông tin</option>
+                                <option value={40}>Công nghệ phần mềm</option>
+                                <option value={50}>Kỹ thuật máy tính</option>
+                              </Select>
+                            </FormControl>
                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
                               <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Thêm</Button>
                               <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseAdd}>Thoát</Button>
