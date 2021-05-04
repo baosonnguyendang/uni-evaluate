@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { Link, useRouteMatch } from 'react-router-dom'
 
 import AddCriterion from './admin-add-criterion'
 
-import Link from '@material-ui/core/Link'
 import Paper from '@material-ui/core/Paper'
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -15,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 
 export default function EvaluateSetting(props) {
   const name = props.name
+  var { url } = useRouteMatch();
 
   return (
     <div>
@@ -22,35 +22,39 @@ export default function EvaluateSetting(props) {
         Các nhóm tham gia đánh giá {name}
       </Typography>
       <Paper style={{ marginTop: '24px' }}>
-        <Router>
-          <Table aria-label="caption table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">Mã nhóm</TableCell>
-                <TableCell align="left">Thành phần</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow component={Link} href={window.location.href + '/a'}>
-                <TableCell align="center">01</TableCell>
-                <TableCell align="left">Giảng viên, Nghiên cứu viên, Kỹ sư phục vụ giảng dạy</TableCell>
-              </TableRow>
-              <TableRow component={Link} to='/'>
-                <TableCell align="center">02</TableCell>
-                <TableCell align="left">Nhân viên hành chính, kỹ thuật, phục vụ, bảo vệ</TableCell>
-              </TableRow>
-              <TableRow component={Link} to='/'>
-                <TableCell align="center">03</TableCell>
-                <TableCell align="left">Viên chức quản lý</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-          {/* <Switch>
+
+        <Table aria-label="caption table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center">Mã nhóm</TableCell>
+              <TableCell align="left">Thành phần</TableCell>
+              <TableCell align="left"></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell align="center"><Link style={{color: 'black', textDecoration: 'none'}} to={`${url}/01`}>01</Link></TableCell>
+              <TableCell align="left"><Link style={{color: 'black', textDecoration: 'none'}} to={`${url}/01`}>Giảng viên, Nghiên cứu viên, Kỹ sư phục vụ giảng dạy</Link></TableCell>
+              <TableCell align="left"><Link to={`${url}/01/results`}>Xem kết quả đánh giá</Link></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center"><Link style={{color: 'black', textDecoration: 'none'}} to={`${url}/02`}>02</Link></TableCell>
+              <TableCell align="left"><Link style={{color: 'black', textDecoration: 'none'}} to={`${url}/02`}>Nhân viên hành chính, kỹ thuật, phục vụ, bảo vệ</Link></TableCell>
+              <TableCell align="left">Xem kết quả đánh giá</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center"><Link style={{color: 'black', textDecoration: 'none'}} to={`${url}/03`}>03</Link></TableCell>
+              <TableCell align="left"><Link style={{color: 'black', textDecoration: 'none'}} to={`${url}/03`}>Viên chức quản lý</Link></TableCell>
+              <TableCell align="left">Xem kết quả đánh giá</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+        {/* <Switch>
             <Route path='/admin/evaluate-settings/a'>
               <AddCriterion />
             </Route>
           </Switch> */}
-        </Router>
+
       </Paper>
     </div>
   )
