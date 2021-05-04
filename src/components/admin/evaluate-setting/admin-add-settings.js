@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
+import axios from 'axios';
+
 import SelectCriterion from './admin-select-criterion'
 import UserSettings from './admin-user-settings'
 
-import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink, useParams, useHistory } from "react-router-dom";
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -90,20 +92,53 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 var unit = ''
+var code = ''
+var name = ''
 
 export default function AddSettings() {
   const classes = useStyles()
   let { url } = useRouteMatch()
+  let { id, id1 } = useParams();
+  let history = useHistory();
+  //check form da duoc tao hay chua
+ 
+  //fe to be
+  const token = localStorage.getItem('token')
 
-  //khoi tao Form
-  const [init, setInit] = React.useState(true)
+  //khoi tao Form, check form da duoc tao hay chua
+  const [init, setInit] = React.useState(0)
+  axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
+    .then(res => {
+      console.log(res.data)
+      // (res.data) && (setInit(false))
+      if (res.data.form) {
+        code = res.data.form.code
+        name = res.data.form.name
+        setInit(2)
+      }
+      else {
+        setInit(1)
+      }
+    })
+    .catch(e => {
+      console.log(e)
+    })
 
   const Init = () => {
-
     const handleSubmitInit = (e) => {
       e.preventDefault()
       setInit(false)
-      console.log(init)
+      // console.log(id)
+      // console.log(id1)
+      // history.push(`${url}/${code}`)
+      // console.log(init)
+      axios.post(`/admin/review/${id}/formtype/${id1}/form/addForm`, { name: name, code: code }, { headers: { "Authorization": `Bearer ${token}` } })
+        .then(res => {
+          console.log(res.data)
+        })
+        .catch(e => {
+          console.log(e)
+        })
     }
 
     const [name, setName] = React.useState('')
@@ -198,17 +233,25 @@ export default function AddSettings() {
 
   return (
     <div>
-      {init ? (
-        <Init />
-      ) : (
-        <div>
-          {showResults ? (
-            <div>
-              <Typography component="h1" variant="h5" color="inherit" noWrap>
-                Nhóm 0{group} - {units.find(x => x.id == unit).name}
-              </Typography>
-              <Paper style={{ padding: 10 }} className={classes.paper}>
-                {/* <FormGroup>
+      {console.log('code ' + code)}
+      {(() => {
+        switch (init) {
+          case 0:
+            return null
+          case 1:
+            return (
+              <Init />
+            )
+          case 2:
+            return (
+              <div>
+                {showResults ? (
+                  <div>
+                    <Typography component="h1" variant="h5" color="inherit" noWrap>
+                      Nhóm 0{group} - {units.find(x => x.id == unit).name}
+                    </Typography>
+                    <Paper style={{ padding: 10 }} className={classes.paper}>
+                      {/* <FormGroup>
               {usersList.map(user => {
                 return (
                   <FormGroup>
@@ -226,95 +269,97 @@ export default function AddSettings() {
                 )
               })}
             </FormGroup> */}
-                <UserSettings />
-                <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(false) }}>Trở lại trang điều chỉnh</Typography >
-              </Paper>
-            </div>
-          ) : (
-            <div>
-              <Typography component="h1" variant="h5" color="inherit" noWrap>
-                Nhóm 0{group}
-              </Typography>
-              <Paper style={{ padding: 10 }} className={classes.paper}>
-                {/* <AppBar position="static"> */}
-                <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
-                  <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
-                  <Tab className={classes.tab} label="Cấu hình đơn vị" />
-                </Tabs>
-                {/* </AppBar> */}
-                {(() => {
-                  switch (value) {
-                    case 0:
-                      return (
-                        <div>
-                          <SelectCriterion />
-                        </div>
-                      )
-                    case 1:
-                      return (
-                        <div>
-                          <Typography component="h3" variant="h5" color="inherit">
-                            Các đơn vị tham gia đánh giá nằm trong nhóm
-                              </Typography>
-                          <SelectedUnit />
-                          <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
-                            Thêm đơn vị vào nhóm
-                              </Button>
-                          <Modal
-                            aria-labelledby="transition-modal-title"
-                            aria-describedby="transition-modal-description"
-                            className={classes.modal}
-                            open={openUnit}
-                            onClose={handleCloseUnit}
-                            closeAfterTransition
-                            BackdropComponent={Backdrop}
-                            BackdropProps={{
-                              timeout: 500,
-                            }}
-                          >
-                            <Fade in={openUnit}>
-                              <div className={classes.paper1}>
-                                <h4 id="transition-modal-title">Thêm đơn vị vào nhóm</h4>
-                                <Autocomplete
-                                  multiple
-                                  options={units}
-                                  disableCloseOnSelect
-                                  defaultValue={unitChosen}
-                                  getOptionLabel={(option) => option.name}
-                                  renderOption={(option, { selected }) => (
-                                    <React.Fragment>
-                                      <Checkbox
-                                        icon={icon}
-                                        checkedIcon={checkedIcon}
-                                        style={{ marginRight: 8 }}
-                                        checked={option.check = selected}
-                                      />
-                                      {option.name}
-                                    </React.Fragment>
-                                  )}
-                                  style={{ width: 500 }}
-                                  renderInput={(params) => (
-                                    <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
-                                  )}
-                                />
-                                <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseUnit}>Xong</Button>
+                      <UserSettings />
+                      <Typography style={{ position: 'absolute', bottom: 10, right: 10 }} component='button' onClick={() => { setShowResults(false) }}>Trở lại trang điều chỉnh</Typography >
+                    </Paper>
+                  </div>
+                ) : (
+                  <div>
+                    <Typography component="h1" variant="h5" color="inherit" noWrap>
+                       {name} (Mã Form: {code})
+                    </Typography>
+                    <Paper style={{ padding: 10 }} className={classes.paper}>
+                      {/* <AppBar position="static"> */}
+                      <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
+                        <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
+                        <Tab className={classes.tab} label="Cấu hình đơn vị" />
+                      </Tabs>
+                      {/* </AppBar> */}
+                      {(() => {
+                        switch (value) {
+                          case 0:
+                            return (
+                              <div>
+                                <SelectCriterion />
                               </div>
-                            </Fade>
-                          </Modal>
-                        </div>
-                      )
-                  }
-                })()}
+                            )
+                          case 1:
+                            return (
+                              <div>
+                                <Typography component="h3" variant="h5" color="inherit">
+                                  Các đơn vị tham gia đánh giá nằm trong nhóm
+                              </Typography>
+                                <SelectedUnit />
+                                <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
+                                  Thêm đơn vị vào nhóm
+                              </Button>
+                                <Modal
+                                  aria-labelledby="transition-modal-title"
+                                  aria-describedby="transition-modal-description"
+                                  className={classes.modal}
+                                  open={openUnit}
+                                  onClose={handleCloseUnit}
+                                  closeAfterTransition
+                                  BackdropComponent={Backdrop}
+                                  BackdropProps={{
+                                    timeout: 500,
+                                  }}
+                                >
+                                  <Fade in={openUnit}>
+                                    <div className={classes.paper1}>
+                                      <h4 id="transition-modal-title">Thêm đơn vị vào nhóm</h4>
+                                      <Autocomplete
+                                        multiple
+                                        options={units}
+                                        disableCloseOnSelect
+                                        defaultValue={unitChosen}
+                                        getOptionLabel={(option) => option.name}
+                                        renderOption={(option, { selected }) => (
+                                          <React.Fragment>
+                                            <Checkbox
+                                              icon={icon}
+                                              checkedIcon={checkedIcon}
+                                              style={{ marginRight: 8 }}
+                                              checked={option.check = selected}
+                                            />
+                                            {option.name}
+                                          </React.Fragment>
+                                        )}
+                                        style={{ width: 500 }}
+                                        renderInput={(params) => (
+                                          <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
+                                        )}
+                                      />
+                                      <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseUnit}>Xong</Button>
+                                    </div>
+                                  </Fade>
+                                </Modal>
+                              </div>
+                            )
+                        }
+                      })()}
 
-                {/* <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                      {/* <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
               Thêm tiêu chuẩn vào Form
             </Button> */}
-              </Paper>
-            </div >
-          )
-          }
-        </div >
-      )}
+                    </Paper>
+                  </div >
+                )
+                }
+              </div >
+            )
+        }
+      })()}
     </div>
   )
 }

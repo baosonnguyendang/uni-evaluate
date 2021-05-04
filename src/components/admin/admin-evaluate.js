@@ -110,7 +110,7 @@ export default function EvaluateList() {
   const fetchReview = () => {
     axios.get('/admin/review/', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         setNumber(res.data.reviews)
         // setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
         // setPrevious([...rows])

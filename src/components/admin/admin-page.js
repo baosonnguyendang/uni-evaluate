@@ -66,8 +66,9 @@ const AdminPage = () => {
               <Route exact path='/admin/faculty' children={<Faculty />} />
               <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
               <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id' children={<AddSettings />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id/results' children={<Results />} />
+              <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />
+              <Route exact path='/admin/evaluate-settings/:id/:id1/:id2' children={<AddSettings />} />
+              {/* <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<Results />} /> */}
               <Route exact path='/admin/criterion' children={<Criterion />} />
               <Route exact path='/admin/criteria/' children={<Sub />} />
               <Route exact path='/admin/criterion/:id' children={<Criteria />} />

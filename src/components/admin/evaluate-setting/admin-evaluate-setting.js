@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Link, useRouteMatch } from 'react-router-dom'
+import { Link, useRouteMatch, useParams } from 'react-router-dom'
 
 import Paper from '@material-ui/core/Paper'
 import Table from "@material-ui/core/Table";
@@ -15,6 +15,7 @@ import axios from "axios";
 export default function EvaluateSetting(props) {
   const name = props.name
   var { url } = useRouteMatch();
+  let { id } = useParams();
 
   //be to fe
   const [rows, setRows] = React.useState([])
