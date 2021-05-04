@@ -380,3 +380,73 @@ export default function AddCriterion() {
     </div>
   )
 }
+
+
+  //them cac lua chon vao tieu chi version 2
+  const [selection, setSelection] = React.useState(['0'])
+
+  const Input = (props) => {
+    const text = {
+      style: {
+        padding: 6
+      }
+    }
+    return (
+      <div>
+        <TextField
+          variant="outlined" inputProps={text} className={classes.input} placeholder="Thêm lựa chọn vào đây" defaultValue={selection[props.stt]}
+          onChange={e => {
+            setSelection(selection.map((value, index) => (index == props.stt ? (value = e.target.value) : value)))
+          }}
+        />
+      </div>
+    )
+  };
+
+
+
+const [inputList, setInputList] = React.useState([]);
+
+const onAddBtnClick = () => {
+  setSelection(selection.push('0'))
+  console.log(selection)
+  // setInputList(inputList.concat(<Input stt={inputList.length} key={inputList.length} />));
+  setInputList(inputList => [...inputList, <Input key={inputList.length} stt={inputList.length} />])
+};
+
+//cai nay la de luu cac lua chon vao tieu chi version 2
+const error = !inputList.length //phai them it nhat 1 lua chon vao tieu chi
+const handleClosePercentage = () => {
+  var listOfSelection = selection.slice(0, inputList.length)
+  !listOfSelection.includes('0') && setOpenPercentage(false);
+  criteriaChosen.selectionList = listOfSelection
+  console.log(criteriaChosen.selectionList)
+}
+
+<Modal
+aria-labelledby="transition-modal-title"
+aria-describedby="transition-modal-description"
+className={classes.modal}
+open={openPercentage}
+onClose={handleClosePercentage}
+closeAfterTransition
+BackdropComponent={Backdrop}
+BackdropProps={{
+  timeout: 500,
+}}
+>
+<Fade in={openPercentage}>
+  <div className={classes.paper1}>
+    <h4 id="transition-modal-title">Thêm các lựa chọn cho tiêu chí</h4>
+    <div>
+      <Button onClick={onAddBtnClick} variant="contained" color="primary" size="small">
+        Thêm lựa chọn
+      </Button>
+      <Button onClick={!error && handleClosePercentage} variant="contained" color="secondary" style={{ float: 'right' }} size="small">
+        Lưu
+      </Button>
+      {inputList}
+    </div>
+  </div>
+</Fade>
+</Modal>

@@ -11,7 +11,7 @@ import {
     token: localStorage.getItem('token'),
     isAuthenticated: null,
     isLoading: false,
-    user: null
+    role:''
   };
   
   export default function(state = initialState, action) {
@@ -26,7 +26,7 @@ import {
           ...state,
           isAuthenticated: true,
           isLoading: false,
-          user: action.payload
+          role: localStorage.getItem('role'),
         };
       case LOGIN_SUCCESS:
         localStorage.setItem('token', action.payload.token);

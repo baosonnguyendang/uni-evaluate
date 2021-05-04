@@ -76,7 +76,7 @@ const SignInSide = () => {
   }
   const onChangeUsername = (e) => { setUsername(e.target.value)}
   const onChangePassword = (e) => { setPassword(e.target.value)}
-  let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
+  const isLogged = useSelector(state => state.auth.isAuthenticated)
   const error = useSelector(state => state.error.msg)
   return (
     <>
@@ -90,14 +90,7 @@ const SignInSide = () => {
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 
         <div className={classes.paper}>
-          {/* <Avatar className={classes.avatar}>
-                          <img src={logo}/>
-                      </Avatar> */}
-                      {
-                        
-                      }
           <img className={classes.logo} src={logo} alt='' />
-          {/* <form className={classes.form} noValidate> */}
           <form className={classes.form} onSubmit={onSubmit}>
             <TextField
               onChange={onChangeUsername}

@@ -77,5 +77,7 @@ react-modal;
 react-boostrap;
 react-datepicker;
 moment;
-react-calendar
-@material/lab
+react-calendar;
+@material/lab;
+jsonwebtoken;
+mui-datatables;

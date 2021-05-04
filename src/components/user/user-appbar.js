@@ -96,7 +96,6 @@ export default function PrimarySearchAppBar() {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   let { path, url } = useRouteMatch();
-  console.log(path)
 
   const dispatch = useDispatch()
 

@@ -26,6 +26,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
 import Toast from '../../common/snackbar'
+import { TocSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -71,16 +72,6 @@ const useStyles = makeStyles(theme => ({
     width: '100%'
   }
 }));
-
-const createData = (name, code, description, numOfCriteria, point) => ({
-  id: code,
-  name,
-  code,
-  description,
-  numOfCriteria,
-  point,
-  isEditMode: false
-});
 
 const CustomTableCell = ({ row, name, onChange }) => {
   const classes = useStyles();
@@ -153,15 +144,11 @@ export default function Criterion() {
         console.log(res.data)
         const newRows = rows.filter(row => row._id !== id)
         setRows(newRows)
-        setMessage(res.data.message)
-        handleOpenToast()
-
+        handleOpenToast("Xoá tiêu chuẩn thành công","success")
       })
   }
 
   const onRevert = id => {
-    console.log(rows)
-    console.log(previous)
     setRows([...previous]);
 
   };
@@ -187,15 +174,13 @@ export default function Criterion() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const [openToast, setOpenToast] = useState(false)
-  const handleOpenToast = () => {
-    setOpenToast(true);
+  const [toast, setToast] = useState({open: false, time: "2000", message:'', severity:''})
+  const handleOpenToast = (message, severity, time='2000') => {
+    setToast({...toast, message, time, severity, open: true});
   };
   const handleCloseToast = () => {
-    setOpenToast(false);
+    setToast({...toast, open:false});
   };
-  const [message, setMessage] = React.useState('');
   //get data from new criterion
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
@@ -203,20 +188,15 @@ export default function Criterion() {
   let data = {code,name,description}
   const submit = e => {
     e.preventDefault()
-   return(   axios.post('/admin/standard/add',data,config)
-   .then(res => {
-     // setMessage("res.data.message")
-     // handleClose()
-     // handleOpenToast()
-     // setRows(rows => [...rows, data])
-     console.log(res);
-
-     })
-     .catch((e)=> {console.log(e)}))
-   
-    
-    
-
+    axios.post('/admin/standard/add', data, config)
+      .then(res => {
+        handleClose()
+        handleOpenToast("Tạo tiêu chuẩn thành công", 'success')
+        setRows(rows => [...rows, data])
+      })
+      .catch(e => {
+        handleOpenToast("Mã tiêu chuẩn đã tồn tại", 'error')
+      })
   }
 
   return (
@@ -324,7 +304,7 @@ export default function Criterion() {
           </Modal>
         </div>
       </Paper>
-      <Toast open={openToast} time={2000} message={message} severity='success' handleClose={handleCloseToast} />
+      <Toast toast={toast} handleClose={handleCloseToast} />
     </div>
   );
 }

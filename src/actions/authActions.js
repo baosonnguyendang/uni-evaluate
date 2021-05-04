@@ -1,4 +1,3 @@
-import { ImportExport } from '@material-ui/icons';
 import axios from 'axios';
 import { returnErrors, clearErrors } from './errorActions';
 import {
@@ -10,24 +9,18 @@ import {
   LOGOUT_SUCCESS
 } from './types';
 // Check token & load user
-export const loadUser = () => (dispatch, getState) => {
-  // User loading
-  dispatch({ type: USER_LOADING });
-
-  axios
-    .get('/auth/signin', tokenConfig(getState))
-    .then(res =>
-      dispatch({
-        type: USER_LOADED,
-        payload: res.data
-      })
-    )
-    .catch(err => {
-      dispatch(returnErrors(err.message, '404'));
-      dispatch({
-        type: AUTH_ERROR
-      });
-    });
+import jwt from 'jsonwebtoken'
+export const checktoken = () => (dispatch, getState) => {
+  const token = getState().auth.token;
+  if ( token ){
+    if (jwt.decode(token).exp < Date.now() / 1000) {
+      dispatch({type: LOGOUT_SUCCESS})
+    } 
+    else
+    {
+      dispatch({type: USER_LOADED})
+    }
+  }
 };
 
 
@@ -92,3 +85,4 @@ export const tokenConfig = (getState) => {
 
   return config;
 };
+

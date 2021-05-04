@@ -102,10 +102,13 @@ export default function EvaluateList() {
   const [number, setNumber] = useState(listEvaluate);
 
   const [evaluation, setEvaluation] = useState('')
+  const [id, setId] = useState('')
+  const [des, setD] = useState('')
+
   const submit = e => {
     console.log(startDate)
     e.preventDefault()
-    setNumber(number => [...number, { id: number.length + 1, name: evaluation, start: startDate, end: endDate }])
+    setNumber(number => [...number, { id: id, name: evaluation, start: startDate, end: endDate }])
     // // useEffect
     // console.log(number)
     // console.log(listEvaluate)
@@ -136,17 +139,33 @@ export default function EvaluateList() {
               <h2 id="transition-modal-title">Thêm đợt đánh giá</h2>
               <form onSubmit={submit}>
                 <TextField
-                  // onChange={this.onChangeUsername}
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="evaluateName"
+                  label="Mã đợt đánh giá"
+                  autoFocus
+                  onChange={e => setId(e.target.value)}
+                />
+                <TextField
                   variant="outlined"
                   margin="normal"
                   required
                   fullWidth
                   id="evaluateName"
                   label="Tên đợt đánh giá"
-                  name="evaluateName"
-                  autoComplete="evaluateName"
                   autoFocus
                   onChange={e => setEvaluation(e.target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  id="evaluateName"
+                  label="Mô tả"
+                  autoFocus
+                  onChange={e => setD(e.target.value)}
                 />
                 <label>Từ ngày:  &nbsp; </label>
                 <DatePicker selected={startDate} onChange={date => setStartDate(date)} selectsStart

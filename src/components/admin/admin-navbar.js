@@ -23,7 +23,7 @@ import UserTable from "./admin-user"
 import Faculty from "./admin-faculty"
 import EvaluateList from './admin-evaluate'
 import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
-import AddCriterion from './evaluate-setting/admin-add-criterion'
+import AddSettings from './evaluate-setting/admin-add-settings'
 import Criteria from './standard-list/admin-criteria'
 import Criterion from './standard-list/admin-criterion'
 import Results from './evaluate-setting/admin-results'
