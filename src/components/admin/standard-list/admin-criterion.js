@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -174,8 +173,8 @@ export default function Criterion() {
   const handleClose = () => {
     setOpen(false);
   };
-  const [toast, setToast] = useState({open: false, time: "2000", message:'', severity:''})
-  const handleOpenToast = (message, severity, time='2000') => {
+  const [toast, setToast] = useState({open: false, time: 2000, message:'', severity:''})
+  const handleOpenToast = (message, severity, time=2000) => {
     setToast({...toast, message, time, severity, open: true});
   };
   const handleCloseToast = () => {
