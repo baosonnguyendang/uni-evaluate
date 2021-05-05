@@ -303,7 +303,7 @@ export default function AddSettings() {
                       <Fade in={openAdd}>
                         <div className={classes.paper1}>
                           <h2>Thêm GV/VC</h2>
-                          <form onSubmit={submitAdd()}>
+                          <form onSubmit={submitAdd}>
                             <TextField onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required variant="outlined" className={classes.field} />
                             <br/>
                             <FormControl variant="outlined" >
