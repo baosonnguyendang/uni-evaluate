@@ -82,14 +82,14 @@ var listOfSelection = new Array('')
 const createData = (name, id) => {
   return { name, id, check: false }
 }
-//ds don vi va ma don vi
-const units = [
-  createData('Khoa Máy tính', '0001'),
-  createData('Khoa Cơ khí', '0002'),
-  createData('Phòng Đào tạo', '0011'),
-  createData('Phòng Y tế', '0012'),
-  createData('Ban Giám hiệu', '0020'),
-]
+
+// const units = [
+//   createData('Khoa Máy tính', '0001'),
+//   createData('Khoa Cơ khí', '0002'),
+//   createData('Phòng Đào tạo', '0011'),
+//   createData('Phòng Y tế', '0012'),
+//   createData('Ban Giám hiệu', '0020'),
+// ]
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -105,14 +105,28 @@ export default function AddSettings() {
   let history = useHistory();
   //check form da duoc tao hay chua
 
+  //ds don vi va ma don vi
+  const [units, setUnits] = useState([])
+
   //fe to be
   const token = localStorage.getItem('token')
+  const fetchUnits = () => {
+    axios.get('admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data.parents)
+        res.data.parents.map(x => {
+          setUnits(units => [...units, createData(x.name, x.department_code)])
+        })
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  }
 
   //khoi tao Form, check form da duoc tao hay chua
   const [init, setInit] = React.useState(0)
   axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
     .then(res => {
-      console.log(res.data)
       // (res.data) && (setInit(false))
       if (res.data.form) {
         code = res.data.form.code
@@ -137,7 +151,7 @@ export default function AddSettings() {
       // console.log(init)
       axios.post(`/admin/review/${id}/formtype/${id1}/form/addForm`, { name: name, code: code }, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
-          console.log(res.data)
+
         })
         .catch(e => {
           console.log(e)
@@ -178,13 +192,13 @@ export default function AddSettings() {
   const handleOpenUnit = () => {
     // console.log(chosen)
     setOpenUnit(true);
+    if (units.length == 0){
+      fetchUnits();
+    }
   };
   const handleCloseUnit = () => {
     setUnitChosen(units.filter(unit => unit.check === true))
     setOpenUnit(false);
-    units.map(x => {
-      console.log(x.check)
-    })
   };
 
   const [unitChosen, setUnitChosen] = React.useState([])
@@ -247,22 +261,21 @@ export default function AddSettings() {
   };
   const submitAdd = (e) => {
     e.preventDefault()
-    if (id1 !== '03'){
+    if (id1 !== '03') {
       setUnitMember(unitMember => [...unitMember, ['null', idd, 'null']])
     } else {
-      
+
     }
-    
+
     handleCloseAdd()
   }
   const [newUnit, setNewUnit] = React.useState('');
   const handleChangeUnit = (event) => {
-    setNewUnit(event.target.value); 
+    setNewUnit(event.target.value);
   };
 
   return (
     <div>
-      {console.log('code ' + code)}
       {(() => {
         switch (init) {
           case 0:
@@ -280,7 +293,7 @@ export default function AddSettings() {
                       Nhóm 0{group} - {units.find(x => x.id == unit).name}
                     </Typography>
                     <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
-                      <UserSettings data={unitMember} type={ id1 } />
+                      <UserSettings data={unitMember} type={id1} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                         <Button variant="contained" color="primary" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenAdd() }}>
                           Thêm GV/VC
@@ -305,7 +318,7 @@ export default function AddSettings() {
                           <h2>Thêm GV/VC</h2>
                           <form onSubmit={submitAdd}>
                             <TextField onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required variant="outlined" className={classes.field} />
-                            <br/>
+                            <br />
                             <FormControl variant="outlined" >
                               <InputLabel >Đơn vị</InputLabel>
                               <Select
@@ -339,19 +352,19 @@ export default function AddSettings() {
                     <Paper style={{ padding: 10 }} className={classes.paper}>
                       {/* <AppBar position="static"> */}
                       <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
-                        <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
                         <Tab className={classes.tab} label="Cấu hình đơn vị" />
+                        <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
                       </Tabs>
                       {/* </AppBar> */}
                       {(() => {
                         switch (value) {
-                          case 0:
+                          case 1:
                             return (
                               <div>
                                 <SelectCriterion />
                               </div>
                             )
-                          case 1:
+                          case 0:
                             return (
                               <div>
                                 <Typography component="h3" variant="h5" color="inherit">
@@ -360,7 +373,7 @@ export default function AddSettings() {
                                 <SelectedUnit />
                                 <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
                                   Thêm đơn vị vào nhóm
-                              </Button>
+                                </Button>
                                 <Modal
                                   className={classes.modal}
                                   open={openUnit}

@@ -42,11 +42,12 @@ export default function UserSettings(props) {
 
   const options = {
     filterType: 'checkbox',
-    onRowsDelete: (rowsDeleted => {
-      rowsDeleted.data.map(row => {
-        console.log(row)
-      })
-    })
+    selectableRows: true,
+    selectableRowsOnClick: true,
+    onRowClick: (rowData, rowState) => {
+      //What can I add here?
+      console.log(rowData, rowState);
+    },
   };
 
   const onDelete = (x) => {

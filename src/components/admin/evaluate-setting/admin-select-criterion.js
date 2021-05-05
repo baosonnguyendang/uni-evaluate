@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import axios from 'axios';
+
 import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink } from "react-router-dom";
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -57,7 +59,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const criteria = (name, id) => ({ name, id, check: true, selectionList: [], clicked: false })
+const criteria = (name, id) => ({ name, id, check: true, clicked: false })
 
 const createData = (name, id, listOfCriteria) => {
   return { name, id, listOfCriteria, check: false }
@@ -67,19 +69,34 @@ export default function SelectCriterion() {
   const classes = useStyles()
 
   const [data, setData] = React.useState([
-    createData('Hoạt động giảng dạy', 'TC001',
-      [
-        criteria('Định mức giờ chuẩn hoàn thành', '00101'),
-        criteria('Kết quả khảo sát chất lượng dịch vụ', '00102'),
-      ]
-    ),
-    createData('Hoạt động khoa học', 'TC002',
-      [
-        criteria('ab', '00201'),
-        criteria('cd', '00202'),
-      ]
-    ),
+    // createData('Hoạt động giảng dạy', 'TC001',
+    //   [
+    //     criteria('Định mức giờ chuẩn hoàn thành', '00101'),
+    //     criteria('Kết quả khảo sát chất lượng dịch vụ', '00102'),
+    //   ]
+    // ),
+    // createData('Hoạt động khoa học', 'TC002',
+    //   [
+    //     criteria('ab', '00201'),
+    //     criteria('cd', '00202'),
+    //   ]
+    // ),
   ])
+
+  //fe to be
+  const token = localStorage.getItem('token')
+  const fetchCriterion = () => {
+    axios.get('admin/standard/criteria', { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data.standards)
+        res.data.standards.map(x => {
+          setData(data => [...data, createData(x.name, x.code, x.criteria.map(y => {return (criteria(y.name, y.code))}))])
+        })
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  }
 
   //open criteria modal
   const [openCriteria, setOpenCriteria] = React.useState(false);
@@ -91,6 +108,9 @@ export default function SelectCriterion() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
+    if (data.length == 0) {
+      fetchCriterion();
+    }
   };
   const handleClose = () => {
     setOpen(false);
@@ -102,7 +122,7 @@ export default function SelectCriterion() {
   //dung de luu tieu chuan duoc click vao de chon tieu chi
   const [id, setId] = React.useState()
   const [showCriteria, setShowCriteria] = React.useState([])
-  
+
   let bool = false
 
   return (
@@ -128,14 +148,7 @@ export default function SelectCriterion() {
                       return (
                         criteria.check &&
                         <li>
-                          <div style={{ cursor: 'pointer', margin: '10px' }}>{criteria.name}
-                          </div>
-                          <div style={{ marginBottom: '10px' }}>
-                            {criteria.selectionList.map(x => {
-                              return (
-                                <span style={{ marginRight: '10px', border: '1px solid #f4f4f4' }}>{x}</span>
-                              )
-                            })}
+                          <div style={{ margin: '10px' }}>{criteria.name}
                           </div>
                         </li>
                       )
