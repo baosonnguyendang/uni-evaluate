@@ -70,31 +70,36 @@ const TableEvaluation = () => {
                         <TableCell>Hoàn thành từ 110% định mức giờ chuẩn trên lớp</TableCell>
                         <TableCell>26.0</TableCell>
                         <TableCell align='center' colSpan={1}><Radio/></TableCell>
-                        <TableCell align='center' colSpan={2}></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Hoàn thành từ 90% đến dưới 110% định mức giờ chuẩn trên lớp</TableCell>
                         <TableCell>22.0</TableCell>
                         <TableCell align='center' colSpan={1}><Radio/></TableCell>
-                        <TableCell align='center' colSpan={2}></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Hoàn thành từ 70% đến dưới 90% định mức giờ chuẩn trên lớp</TableCell>
                         <TableCell>18.0</TableCell>
                         <TableCell align='center' colSpan={1}><Radio/></TableCell>
-                        <TableCell align='center' colSpan={2}></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Hoàn thành từ 50% đến dưới 70% định mức giờ chuẩn trên lớp</TableCell>
                         <TableCell>16.0</TableCell>
                         <TableCell align='center' colSpan={1}><Radio/></TableCell>
-                        <TableCell align='center' colSpan={2}></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Hoàn thành từ 30% đến dưới 50% định mức giờ chuẩn trên lớp</TableCell>
                         <TableCell>14.0</TableCell>
                         <TableCell align='center' colSpan={1}><Radio/></TableCell>
-                        <TableCell align='center' colSpan={2}></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>1.2</TableCell>
