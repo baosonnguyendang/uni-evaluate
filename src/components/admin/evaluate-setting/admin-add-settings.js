@@ -145,10 +145,6 @@ export default function AddSettings() {
     const handleSubmitInit = (e) => {
       e.preventDefault()
       setInit(false)
-      // console.log(id)
-      // console.log(id1)
-      // history.push(`${url}/${code}`)
-      // console.log(init)
       axios.post(`/admin/review/${id}/formtype/${id1}/form/addForm`, { name: name, code: code }, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
 

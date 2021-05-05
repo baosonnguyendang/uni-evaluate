@@ -6,6 +6,9 @@ import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink } from 
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Backdrop from '@material-ui/core/Backdrop';
 import Box from '@material-ui/core/Box';
@@ -38,10 +41,13 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     width: 600,
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    border: '1px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-    minHeight: 20,
+    minHeight: 250,
+  },
+  paper2: {
+    padding: theme.spacing(2, 4, 3),
   },
   btn: {
     textTransform: 'none',
@@ -56,7 +62,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     marginTop: 6,
     padding: 5
-  }
+  },
 }))
 
 const criteria = (name, id) => ({ name, id, check: true, clicked: false })
@@ -88,9 +94,8 @@ export default function SelectCriterion() {
   const fetchCriterion = () => {
     axios.get('admin/standard/criteria', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        console.log(res.data.standards)
         res.data.standards.map(x => {
-          setData(data => [...data, createData(x.name, x.code, x.criteria.map(y => {return (criteria(y.name, y.code))}))])
+          setData(data => [...data, createData(x.name, x.code, x.criteria.map(y => { return (criteria(y.name, y.code)) }))])
         })
       })
       .catch(e => {
@@ -122,6 +127,14 @@ export default function SelectCriterion() {
   //dung de luu tieu chuan duoc click vao de chon tieu chi
   const [id, setId] = React.useState()
   const [showCriteria, setShowCriteria] = React.useState([])
+
+  //change tab
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    // console.log(newValue)
+  };
 
   let bool = false
 
@@ -214,31 +227,52 @@ export default function SelectCriterion() {
           timeout: 500,
         }} >
         <Fade in={openCriteria}>
-          <div className={classes.paper1}>
-            <h3 id="transition-modal-title">Thêm tiêu chí vào tiêu chuẩn {id}</h3>
-            {showCriteria.map(criteria => {
-              <p>{criteria.id}</p>
-            })}
-            <FormGroup>
-              {showCriteria.map(criteria => {
-                return (
-                  // <p>{criteria.id}</p>
-                  <FormGroup>
-                    <FormControlLabel control={
-                      <Checkbox
-                        checked={criteria.check}
-                        onChange={() => { criteria.check = !criteria.check; setState(!state) }}
-                        name={criteria.id}
-                        color="primary"
-                      />
-                    }
-                      label={criteria.name}
-                    />
-                  </FormGroup>
-                )
-              })}
-            </FormGroup>
-            <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
+          <div className={classes.paper1} style={{padding: 0}}>
+            <AppBar position="static" style={{ marginBottom: 10 }}>
+              <Tabs variant="fullWidth" value={value} onChange={handleChange}>
+                <Tab className={classes.tab} label="Cấu hình chung" />
+                <Tab className={classes.tab} label="Thêm tiêu chí" />
+              </Tabs>
+            </AppBar>
+            {/* <h3 id="transition-modal-title">Thêm tiêu chí vào tiêu chuẩn {id}</h3> */}
+            {(() => {
+              switch (value) {
+                case 0:
+                  return (
+                    <div className={classes.paper2}>
+                      a
+                    </div>
+                  )
+                case 1:
+                  return (
+                    <div className={classes.paper2}>
+                      {showCriteria.map(criteria => {
+                        <p>{criteria.id}</p>
+                      })}
+                      <FormGroup>
+                        {showCriteria.map(criteria => {
+                          return (
+                            // <p>{criteria.id}</p>
+                            <FormGroup>
+                              <FormControlLabel control={
+                                <Checkbox
+                                  checked={criteria.check}
+                                  onChange={() => { criteria.check = !criteria.check; setState(!state) }}
+                                  name={criteria.id}
+                                  color="primary"
+                                />
+                              }
+                                label={criteria.name}
+                              />
+                            </FormGroup>
+                          )
+                        })}
+                      </FormGroup>
+                      <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
+                    </div>
+                  )
+              }
+            })()}
           </div>
         </Fade>
       </Modal>
