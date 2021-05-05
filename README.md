@@ -81,3 +81,4 @@ react-calendar;
 @material/lab;
 jsonwebtoken;
 mui-datatables;
+react-drag-reorder;
