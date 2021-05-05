@@ -7,7 +7,7 @@ import TableEvaluation from './element/user-table'
 import Profile from './user-profile'
 import Evaluation from './user-evaluation';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-
+import { Container } from '@material-ui/core'
 const UserPage = () => {
     let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
     return (
@@ -18,9 +18,14 @@ const UserPage = () => {
             <Route path='/user/profile' >
                 <Profile />
             </Route>
+            <Container>
             <Route path='/user' exact>
-            <Evaluation />
+                <Evaluation />
             </Route>
+            <Route path='/user/evaluate/:id' exact>
+                <TableEvaluation />
+            </Route>
+            </Container>
         </Switch>
         </>
     )

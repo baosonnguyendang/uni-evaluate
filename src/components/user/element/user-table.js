@@ -40,25 +40,10 @@ const TableEvaluation = () => {
     const classes = useStyles();
 
     return (
-        <Grid container xs={12} md={10} justify='center'>
+        <Grid container xs={12} justify='center'>
             <TableContainer component={Paper}>
                 <Table className={classes.table} >
                 <TableHead>
-                    {/* <TableRow>
-                    <TableCell align="center" rowSpan={2}>
-                        Tiêu chuẩn/ Tiêu chí
-                    </TableCell>
-                    <TableCell align="center" rowSpan={2}>Nội dung</TableCell>
-                    <TableCell align="center" rowSpan={2}>Điểm quy định</TableCell>
-                    </TableRow>
-                    <TableRow>
-                            <TableCell align='center' colSpan={3}>Điểm đánh giá</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell align="right">Cá nhân tự chấm</TableCell>
-                        <TableCell align="right">Trưởng bộ môn</TableCell>
-                        <TableCell align="right">Hội đồng ĐGKQTHCV đơn vị</TableCell>
-                    </TableRow> */}
             <TableRow>
             <TableCell rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
             <TableCell rowSpan={2}>Nội dung</TableCell>
@@ -72,14 +57,6 @@ const TableEvaluation = () => {
           </TableRow>
                 </TableHead>
                 <TableBody>
-                    {/* {rows.map((row) => (
-                    <TableRow key={row.desc}>
-                        <TableCell>{row.desc}</TableCell>
-                        <TableCell align="right">{row.qty}</TableCell>
-                        <TableCell align="right">{row.unit}</TableCell>
-                        <TableCell align="right">{ccyFormat(row.price)}</TableCell>
-                    </TableRow>
-                    ))} */}
                     <TableRow>
                         <TableCell>1</TableCell>
                         <TableCell>Hoạt động giảng dạy</TableCell>
