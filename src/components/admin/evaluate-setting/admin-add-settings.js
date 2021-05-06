@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import SelectCriterion from './admin-select-criterion'
 import UserSettings from './admin-user-settings'
+import Drag from './admin-drag-criterion'
 
 import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink, useParams, useHistory } from "react-router-dom";
 
@@ -350,10 +351,17 @@ export default function AddSettings() {
                       <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
                         <Tab className={classes.tab} label="Cấu hình đơn vị" />
                         <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
+                        <Tab className={classes.tab} label="Sắp xếp Form" />
                       </Tabs>
                       {/* </AppBar> */}
                       {(() => {
                         switch (value) {
+                          case 2:
+                            return (
+                              <div>
+                                <Drag/>
+                              </div>
+                            )
                           case 1:
                             return (
                               <div>
@@ -365,7 +373,7 @@ export default function AddSettings() {
                               <div>
                                 <Typography component="h3" variant="h5" color="inherit">
                                   Các đơn vị tham gia đánh giá nằm trong nhóm
-                              </Typography>
+                                </Typography>
                                 <SelectedUnit />
                                 <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
                                   Thêm đơn vị vào nhóm

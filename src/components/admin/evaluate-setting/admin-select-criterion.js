@@ -23,7 +23,9 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography'
+import Typography from '@material-ui/core/Typography';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 import { useRouteMatch } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
@@ -68,7 +70,7 @@ const useStyles = makeStyles(theme => ({
 const criteria = (name, id) => ({ name, id, check: true, clicked: false })
 
 const createData = (name, id, listOfCriteria) => {
-  return { name, id, listOfCriteria, check: false }
+  return { name, id, listOfCriteria, check: false, order: null }
 }
 
 export default function SelectCriterion() {
@@ -134,6 +136,20 @@ export default function SelectCriterion() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
     // console.log(newValue)
+  };
+
+  //cau hinh chung tieu chuan
+  const [point, setP] = React.useState('')
+  const submitOrder = e => {
+    e.preventDefault()
+    data.find(x => x.id = id).order = order
+    console.log(data.find(x => x.id = id))
+  }
+
+  //chon don vi trong modal
+  const [order, setOrder] = React.useState('');
+  const handleChangeOrder = (event) => {
+    setOrder(event.target.value);
   };
 
   let bool = false
@@ -227,7 +243,7 @@ export default function SelectCriterion() {
           timeout: 500,
         }} >
         <Fade in={openCriteria}>
-          <div className={classes.paper1} style={{padding: 0}}>
+          <div className={classes.paper1} style={{ padding: 0 }}>
             <AppBar position="static" style={{ marginBottom: 10 }}>
               <Tabs variant="fullWidth" value={value} onChange={handleChange}>
                 <Tab className={classes.tab} label="Cấu hình chung" />
@@ -240,7 +256,30 @@ export default function SelectCriterion() {
                 case 0:
                   return (
                     <div className={classes.paper2}>
-                      a
+                      <form onSubmit={submitOrder}>
+                        <FormControl variant="outlined" fullWidth style={{ marginBottom: 10 }}>
+                          <InputLabel htmlFor="outlined-newUnit-native">STT trong Form</InputLabel>
+                          <Select
+                            native
+                            required
+                            value={order}
+                            label='STT trong Form'
+                            onChange={handleChangeOrder}
+                          >
+                            <option aria-label="None" value="" />
+                            {data.filter(x => x.check === true).map((x, index) => {
+                              return (
+                                <option value={index + 1}>{index + 1}</option>
+                              )
+                            })}
+                          </Select>
+                        </FormControl>
+                        <TextField onChange={e => setP(e.target.value)} type='number' id="point" label="Tổng điểm" variant="outlined" fullWidth />
+                        <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                          <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu</Button>
+                          <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Thoát</Button>
+                        </div>
+                      </form>
                     </div>
                   )
                 case 1:
