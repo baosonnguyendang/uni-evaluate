@@ -189,7 +189,7 @@ export default function AddSettings() {
   const handleOpenUnit = () => {
     // console.log(chosen)
     setOpenUnit(true);
-    if (units.length == 0){
+    if (units.length == 0) {
       fetchUnits();
     }
   };
@@ -292,6 +292,9 @@ export default function AddSettings() {
                     <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
                       <UserSettings data={unitMember} type={id1} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
+                        <Button variant="contained" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenAdd() }}>
+                          Trưởng đơn vị
+                        </Button>
                         <Button variant="contained" color="primary" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenAdd() }}>
                           Thêm GV/VC
                         </Button>
@@ -359,7 +362,7 @@ export default function AddSettings() {
                           case 2:
                             return (
                               <div>
-                                <Drag/>
+                                <Drag />
                               </div>
                             )
                           case 1:
