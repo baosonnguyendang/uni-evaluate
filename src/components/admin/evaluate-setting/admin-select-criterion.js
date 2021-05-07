@@ -76,6 +76,8 @@ const createData = (name, id, listOfCriteria) => {
 export default function SelectCriterion() {
   const classes = useStyles()
 
+  const [compare, setCompare] = React.useState([])
+
   const [data, setData] = React.useState([
     // createData('Hoạt động giảng dạy', 'TC001',
     //   [
@@ -109,6 +111,7 @@ export default function SelectCriterion() {
   const [openCriteria, setOpenCriteria] = React.useState(false);
   const handleCloseCriteria = () => {
     setOpenCriteria(false);
+    console.log(data.map(x => x.order))
   }
 
   //open modal
@@ -142,14 +145,17 @@ export default function SelectCriterion() {
   const [point, setP] = React.useState('')
   const submitOrder = e => {
     e.preventDefault()
-    data.find(x => x.id = id).order = order
-    console.log(data.find(x => x.id = id))
+    // data.find(x => x.id === id).order = order
+    console.log(new Set(compare).size !== compare.length)
   }
 
   //chon don vi trong modal
   const [order, setOrder] = React.useState('');
   const handleChangeOrder = (event) => {
     setOrder(event.target.value);
+    data.find(x => x.id === id).order = event.target.value
+    setCompare(data.map(x => x.order).filter(y => y !== null))
+    console.log(data.map(x => x.order))
   };
 
   let bool = false
@@ -169,6 +175,7 @@ export default function SelectCriterion() {
                 <li><span style={{ cursor: 'pointer' }} code={criterion.id} component='button' onClick={() => {
                   setOpenCriteria(true);
                   setId(criterion.id)
+                  setOrder(criterion.order)
                   setShowCriteria(criterion.listOfCriteria)
                   // console.log(showCriteria)
                 }}>{criterion.name}</span>
@@ -265,6 +272,7 @@ export default function SelectCriterion() {
                             value={order}
                             label='STT trong Form'
                             onChange={handleChangeOrder}
+                            error={new Set(compare).size !== compare.length}
                           >
                             <option aria-label="None" value="" />
                             {data.filter(x => x.check === true).map((x, index) => {
@@ -273,12 +281,11 @@ export default function SelectCriterion() {
                               )
                             })}
                           </Select>
+                          <FormHelperText>{new Set(compare).size !== compare.length && 'Trùng STT với tiêu chuẩn khác, vui lòng kiểm tra lại'}</FormHelperText>
                         </FormControl>
-                        <TextField onChange={e => setP(e.target.value)} type='number' id="point" label="Tổng điểm" variant="outlined" fullWidth />
-                        <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                          <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu</Button>
-                          <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Thoát</Button>
-                        </div>
+                        <TextField  error={point === ""} helperText={point === "" ? 'Empty field!' : ' '} onChange={e => setP(e.target.value)} type='number' id="point" label="Tổng điểm" variant="outlined" fullWidth />
+                          {/* <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu</Button> */}
+                        <Button style={{ marginLeft: '10px', marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Thoát</Button>                        
                       </form>
                     </div>
                   )
