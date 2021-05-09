@@ -114,7 +114,7 @@ export default function AddSettings() {
   const fetchUnits = () => {
     axios.get('admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        console.log(res.data.parents)
+        // console.log(res.data.parents)
         res.data.parents.map(x => {
           setUnits(units => [...units, createData(x.name, x.department_code)])
         })
@@ -122,6 +122,12 @@ export default function AddSettings() {
       .catch(e => {
         console.log(e)
       })
+  }
+
+  console.log(units)
+
+  if (units.length == 0) {
+    fetchUnits();
   }
 
   //khoi tao Form, check form da duoc tao hay chua
@@ -187,15 +193,18 @@ export default function AddSettings() {
   //open modal them don vi
   const [openUnit, setOpenUnit] = React.useState(false);
   const handleOpenUnit = () => {
-    // console.log(chosen)
     setOpenUnit(true);
-    if (units.length == 0) {
-      fetchUnits();
-    }
   };
   const handleCloseUnit = () => {
     setUnitChosen(units.filter(unit => unit.check === true))
-    setOpenUnit(false);
+    axios.post(`/admin/form/${code}/addFormDepartments`, { dcodes: units.filter(unit => unit.check === true).map(x => x.id) }, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        setOpenUnit(false);
+      })
+      .catch(e => {
+        console.log(e)
+      })
+    
   };
 
   const [unitChosen, setUnitChosen] = React.useState([])
@@ -211,6 +220,19 @@ export default function AddSettings() {
       unit = x
       setShowResults(true)
     }
+
+    axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        let _id = res.data.formDepartments.filter(x => (x.level === 1 || x.level === 0)).map(x => x.department_id.department_code)
+        _id.map(x => {
+          units.map(y => {
+            if (y.id === x){
+              y.check = true
+            }
+          })
+        })
+      })
+      .catch(e => console.log(e))
 
     return (
       <div>
@@ -234,7 +256,6 @@ export default function AddSettings() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    // console.log(newValue)
   };
 
   //danh sach nguoi trong khoa
@@ -448,6 +469,7 @@ export default function AddSettings() {
                                         )}
                                       />
                                       <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseUnit}>Xong</Button>
+                                      <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={() => setOpenUnit(false)}>Thoát</Button>
                                     </div>
                                   </Fade>
                                 </Modal>
