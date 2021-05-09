@@ -123,7 +123,7 @@ export default function Criteria() {
       .then(res => {
         console.log(res.data.criterions)
         setRows(res.data.criterions)
-        setNameStandard(res.data?.criterions[0]?.standard?.name)
+        setNameStandard(res.data.standard.name)
         setIsLoading(false)
       })
   }

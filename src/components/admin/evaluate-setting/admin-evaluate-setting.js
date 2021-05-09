@@ -52,7 +52,7 @@ export default function EvaluateSetting(props) {
           <TableBody>
             {rows.map((row) => {
               return (
-                <TableRow>
+                <TableRow key={row._id}>
                   <TableCell align="center"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/${row.code}`}>{row.code}</Link></TableCell>
                   <TableCell align="left"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/${row.code}`}>{row.name}</Link></TableCell>
                   <TableCell align="left"><Link to={`${url}/${row.code}/results`}>Xem kết quả đánh giá</Link></TableCell>
