@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-
+import moment from 'moment'
 import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
-
+import MomentUtils from '@date-io/moment';
+import {
+  TimePicker,
+  DateTimePicker,
+  MuiPickersUtilsProvider,
+  KeyboardDateTimePicker,
+} from '@material-ui/pickers';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import DatePicker from 'react-datepicker';
@@ -38,7 +44,7 @@ function NumberList(props) {
   const listItems = numbers.map((item) =>
     // Correct! Key should be specified inside the array.
     // <Link to={'/admin/evaluate-settings/' + item.id}>
-    <ListItem key={item.id} id={item.code} value={item.name} start={new Date(item.start_date)} end={new Date(item.end_date)} />
+    <ListItem key={item.code} id={item.code} value={item.name} start={moment(item.start_date).format("HH:mm DD/MM/yyyy")} end={moment(item.end_date).format("HH:mm DD/MM/yyyy")} />
     //</Link>
   );
   return (
@@ -134,9 +140,14 @@ export default function EvaluateList() {
   };
 
   const submit = e => {
-    console.log(startDate)
+    // const date = ["18:30 11/05/2098", "18:30 11/05/2078", "18:30 11/05/2088"]
+    // console.log(date.sort((a, b) => moment(a).diff(moment(b))))
+    // console.log(moment(startDate, "HH:mm DD/MM/yyyy"))
+
+    // console.log((startDate).format("HH:mm DD/MM/yyyy"))
+    // console.log(moment(endDate)._i)
     e.preventDefault()
-    setNumber(number => [...number, { code: id, name: evaluation, start_date: startDate, end_date: endDate }])
+    setNumber(number => [...number, { code: id, name: evaluation, start_date: startDate.format("HH:mm DD/MM/yyyy"), end_date: endDate.format("HH:mm DD/MM/yyyy") }])
     axios.post('/admin/review/add', { code: id, name: evaluation, start_date: startDate, end_date: endDate }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
@@ -154,6 +165,7 @@ export default function EvaluateList() {
     // console.log(number)
     // console.log(listEvaluate)
   }
+  const [selectedDate, handleDateChange] = useState(new Date());
 
   return (
     <div>
@@ -208,15 +220,31 @@ export default function EvaluateList() {
                   autoFocus
                   onChange={e => setD(e.target.value)}
                 />
-                <label>Từ ngày:  &nbsp; </label>
-                <DatePicker selected={startDate} onChange={date => setStartDate(date)} selectsStart
-                  startDate={startDate} endDate={endDate} dateFormat="dd/MM/yyyy"
-                />
-                <br />
-                <label>Đến ngày:&nbsp; </label>
-                <DatePicker selected={endDate} onChange={date => setEndDate(date)} selectsEnd
-                  startDate={startDate} endDate={endDate} minDate={startDate} dateFormat="dd/MM/yyyy"
-                />
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardDateTimePicker
+                    ampm={false}
+                    label="Ngày bắt đầu"
+                    value={startDate}
+                    onChange={setStartDate}
+                    onError={console.log}
+                    disablePast
+                    disableToolbar
+                    format="HH:mm DD/MM/yyyy"
+                    invalidDateMessage='Thời gian không hợp lệ'
+                  />
+                  <KeyboardDateTimePicker
+                    ampm={false}
+                    label="Ngày bắt đầu"
+                    value={endDate}
+                    onChange={setEndDate}
+                    onError={console.log}
+                    disablePast
+                    disableToolbar
+                    format="HH:mm DD/MM/yyyy"
+                    invalidDateMessage='Thời gian không hợp lệ'
+                    minDate={startDate}
+                  />
+                </MuiPickersUtilsProvider>
                 <br />
                 <div style={{ textAlign: 'center', marginTop: '10px' }}>
                   <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">Tạo</Button>
