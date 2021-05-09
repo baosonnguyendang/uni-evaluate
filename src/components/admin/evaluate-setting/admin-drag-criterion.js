@@ -1,51 +1,62 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 
-function PostButton(props){
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+
+function PostButton(props) {
   let style = {
-    width:24,
-    height:24
+    margin: 10,
+    height: 30,
+    maxWidth: 40
   };
-  return(
-    <button style={style} onClick={() => props.handleClick()}>{props.label}</button>
+  return (
+    <Button variant="contained" style={style} onClick={() => props.handleClick()}>{props.label}</Button>
+    // <button style={style} onClick={() => props.handleClick()}>{props.label}</button>
   );
 }
 
-function PostText(props){
+function PostText(props) {
   let style = {
-    border: '1px solid black',
-    width: props.width
+    // border: '1px solid black',
+    // width: props.width,
+    lineHeight: '30px',
+    marginTop: 10,
   };
-  return(
-    <div style={style}>{props.text}</div>
+  return (
+    // <div style={style}><span>{props.text}</span></div>
+    <Typography style={style}>{props.text}</Typography>
   );
 }
 
-function Post(props){
+function Post(props) {
   let style = {
-    display:"flex"
+    display: "flex"
   };
   return (
     <div style={style}>
-      <PostButton label = 'x' handleClick = {props.removeItem}/>
-      <PostText text = {props.title} width = "200"/>
-      <PostButton label = '+' handleClick = {props.incrementScore}/>
-      <PostText text = {props.score} width = "20" />
-      <PostButton label = '-' handleClick = {props.decrementScore}/>
+      <PostButton label='x' handleClick={props.removeItem} />
+      <PostText text={props.title} style={{width: '50%'}} />
+      <PostButton label='+' handleClick={props.incrementScore} />
+      <PostText text={props.score} width="20" />
+      <PostButton label='-' handleClick={props.decrementScore} />
     </div>
   );
 }
 
-function PostList(props){
+function PostList(props) {
   return (
     <ol>
       {
         props.postList.map((item, index) => (
-          <Post key = {index}
-                title = {item.title}
-                score = {item.score}
-                incrementScore = {() => props.updateScore(index, 1)}
-                decrementScore = {() => props.updateScore(index, -1)}
-                removeItem = {() => props.removeItem(index)}
+          <Post key={index}
+            title={item.title}
+            score={item.score}
+            incrementScore={() => props.updateScore(index, 1)}
+            decrementScore={() => props.updateScore(index, -1)}
+            removeItem={() => props.removeItem(index)}
           />
         ))
       }
@@ -53,55 +64,78 @@ function PostList(props){
   )
 }
 
-export default class Drag extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      value: "",
-      items : []
-    }
-  }
-  handleChange(event){
-    this.setState({value: event.target.value});
-  }
-  
-  addItem(){
-    let itemsCopy = this.state.items.slice();
-    let truncatedString = this.state.value.substring(0,20);
-    itemsCopy.push({"title": truncatedString, "score":0})
-    itemsCopy.sort((a,b) => {
+export default function Drag() {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     value: "",
+  //     items: []
+  //   }
+  // }
+  const [items, setItems] = useState([])
+  // const handleChange(event) {
+  //   this.setState({ value: event.target.value });
+  // }
+
+  const [newValue, setNewValue] = React.useState('');
+  const handleChangeValue = (event) => {
+    setNewValue(event.target.value);
+  };
+
+  const addItem = () => {
+    let itemsCopy = items.slice();
+    let truncatedString = newValue;
+    itemsCopy.push({ "title": truncatedString, "score": 0 })
+    itemsCopy.sort((a, b) => {
       return b.score - a.score;
     })
-    this.setState({items:itemsCopy, value:''});
+    setItems(itemsCopy)
+    setNewValue('')
+    // this.setState({ items: itemsCopy, value: '' });
   }
-  
-  updateScore(index, val){
-    let itemsCopy = this.state.items.slice();
+
+  const updateScore = (index, val) => {
+    let itemsCopy = items.slice();
     itemsCopy[index].score += val;
-    itemsCopy.sort((a,b) => {
+    itemsCopy.sort((a, b) => {
       return b.score - a.score;
     })
-    this.setState({ items: itemsCopy });
+    setItems(itemsCopy)
+    // this.setState({ items: itemsCopy });
   }
-  
-  removeItem(index){
-    var itemsCopy = this.state.items.slice();
+
+  const removeItem = (index) => {
+    var itemsCopy = items.slice();
     itemsCopy.splice(index, 1);
     itemsCopy.sort((a, b) => {
       return b.score - a.score;
     });
-    this.setState({ items: itemsCopy });
+    setItems(itemsCopy)
+    // this.setState({ items: itemsCopy });
   }
-  
-  render(){
-    return(
-      <div>
-        <input value={this.state.value} onChange={this.handleChange.bind(this)} />
-        <button onClick = {() => this.addItem()}>Submit</button>
-        <PostList postList = {this.state.items} 
-                  updateScore = {this.updateScore.bind(this)}
-                  removeItem = {this.removeItem.bind(this)}/>
-      </div>
-    );
-  }
+
+  return (
+    <div>
+      <FormControl variant="outlined" >
+        <InputLabel >Đơn vị</InputLabel>
+        <Select
+          native
+          value={newValue}
+          label='Đơn vị'
+          onChange={handleChangeValue}
+        >
+          <option aria-label="None" value="" />
+          <option value={'Định mức giờ chuẩn hoàn thành'}>Định mức giờ chuẩn hoàn thành</option>
+          <option value={20}>Kết quả khảo sát chất lượng dịch vụ</option>
+          <option value={30}>Hình thức giảng dạy khác</option>
+        </Select>
+      </FormControl>
+      {/* <input value={this.state.value} onChange={this.handleChange.bind(this)} /> */}
+      {/* <button onClick={() => addItem()}>Thêm</button> */}
+      <Button variant="contained" color="primary" onClick={() => addItem()}>Thêm</Button>
+      <PostList postList={items}
+        updateScore={updateScore}
+        removeItem={removeItem} />
+    </div>
+  );
 }

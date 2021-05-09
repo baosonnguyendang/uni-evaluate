@@ -247,6 +247,15 @@ export default function AddSettings() {
     ["James Bond", "1712976", "Công nghệ phần mềm"],
   ])
 
+  //chon truong don vi
+  const [openHead, setOpenHead] = React.useState(false);
+  const handleOpenHead = () => {
+    setOpenHead(true);
+  };
+  const handleCloseHead = () => {
+    setOpenHead(false);
+  };
+
   //them nguoi rieng le vao danh gia vui
   const [idd, setId] = React.useState('')
   const [openAdd, setOpenAdd] = React.useState(false);
@@ -292,7 +301,7 @@ export default function AddSettings() {
                     <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
                       <UserSettings data={unitMember} type={id1} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
-                        <Button variant="contained" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenAdd() }}>
+                        <Button variant="contained" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenHead() }}>
                           Trưởng đơn vị
                         </Button>
                         <Button variant="contained" color="primary" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenAdd() }}>
@@ -303,6 +312,28 @@ export default function AddSettings() {
                         </Button>
                       </div>
                     </Paper>
+                    <Modal
+                      className={classes.modal}
+                      open={openHead}
+                      onClose={handleCloseHead}
+                      closeAfterTransition
+                      BackdropComponent={Backdrop}
+                      BackdropProps={{
+                        timeout: 500,
+                      }}
+                    >
+                      <Fade in={openHead}>
+                        <div className={classes.paper1}>
+                          <h2>Trưởng đơn vị</h2>
+                          <form>
+                            <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                              <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu và thoát</Button>
+                              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseHead}>Thoát</Button>
+                            </div>
+                          </form>
+                        </div>
+                      </Fade>
+                    </Modal>
                     <Modal
                       className={classes.modal}
                       open={openAdd}

@@ -286,7 +286,7 @@ export default function Criteria() {
                       <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth className={classes.field} />
                       <TextField onChange={e => setName(e.target.value)} id="name" required label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} />
                       <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" className={classes.field} />
-                      <FormControl variant="outlined" >
+                      <FormControl fullWidth variant="outlined" >
                         <InputLabel >Kiểu đánh giá</InputLabel>
                         <Select
                           native
