@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 
 import { Link } from 'react-router-dom';
@@ -14,6 +14,9 @@ import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
@@ -104,13 +107,14 @@ export default function Criterion() {
   const token = localStorage.getItem('token')
   const [previous, setPrevious] = React.useState([]);
   const fetchDepartment = () => {
-    axios.get('/admin/department', { headers: {"Authorization" : `Bearer ${token}`} })
-          .then(res => {
-            console.log(res.data.departments);
-            setRows(res.data.departments.map(dep => ({...dep,namemanager:(dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`),idmanager:dep?.manager?.staff_id, parent:dep?.parent?.name, isEditMode: false})))
-              setPrevious([...rows])  
-              setIsLoading(false)
-  })}
+    axios.get('/admin/department', { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data.departments);
+        setRows(res.data.departments.map(dep => ({ ...dep, namemanager: (dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`), idmanager: dep?.manager?.staff_id, parent: dep?.parent?.name, isEditMode: false })))
+        setPrevious([...rows])
+        setIsLoading(false)
+      })
+  }
   useEffect(() => {
     fetchDepartment()
   }, [])
@@ -176,131 +180,150 @@ export default function Criterion() {
   //get data from new criterion
   const [id, setId] = React.useState('')
   const [name, setName] = React.useState('')
-  const [head, setC] = React.useState('')
-  const [headId, setD] = React.useState('')
-  const [under, setN] = React.useState(0)
+  const [head, setHead] = React.useState('')
   const submit = e => {
     e.preventDefault()
-    setRows(rows => [...rows, createData(id, name, head, headId, under)])
+    setRows(rows => [...rows, createData(id, name, null, head, newUnit)])
   }
+
+  //chon don vi cha khi them don vi moi
+  const [newUnit, setNewUnit] = React.useState('');
+  const handleChangeUnit = (event) => {
+    setNewUnit(event.target.value); 
+  };
 
   return (
     <>
-    { isLoading ? <Skeleton /> : (
-      <div>
-      <Typography component="h1" variant="h5" color="inherit" noWrap>
-        DANH SÁCH ĐƠN VỊ
+      { isLoading ? <Skeleton /> : (
+        <div>
+          <Typography component="h1" variant="h5" color="inherit" noWrap>
+            DANH SÁCH ĐƠN VỊ
       </Typography>
-      <Paper className={classes.root}>
-        <Table className={classes.table} aria-label="caption table">
-          <TableHead>
-            <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-              <TableCell align="left">ID</TableCell>
-              <TableCell className={classes.name} align="left">Tên đơn vị</TableCell>
-              <TableCell className={classes.name} align="left">Trưởng đơn vị</TableCell>
-              <TableCell className={classes.name} align="left">ID Trưởng đơn vị</TableCell>
-              <TableCell className={classes.name} align="left">Trực thuộc</TableCell>
-              <TableCell align="left" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
-                <TableRow key={row._id}>
-                  <CustomTableCell className={classes.number} {...{ row, name: "department_code", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "namemanager", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "idmanager", onChange }} />
-                  <CustomTableCell className={classes.name} {...{ row, name: "parent", onChange }} />
-                  <TableCell className={classes.selectTableCell}>
-                    {row.isEditMode ? (
-                      <>
-                        <IconButton
-                          aria-label="done"
-                          onClick={() => onToggleEditMode(row._id)}
-                        >
-                          <DoneIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="revert"
-                          onClick={() => onRevert(row._id)}
-                        >
-                          <RevertIcon />
-                        </IconButton>
-                      </>
-                    ) : (
-                      <>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => onToggleEditMode(row._id)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => onDelete(row._id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </>
-                    )}
-                  </TableCell>
+          <Paper className={classes.root}>
+            <Table className={classes.table} aria-label="caption table">
+              <TableHead>
+                <TableRow style={{ backgroundColor: '#f4f4f4' }}>
+                  <TableCell align="left">ID</TableCell>
+                  <TableCell className={classes.name} align="left">Tên đơn vị</TableCell>
+                  <TableCell className={classes.name} align="left">Trưởng đơn vị</TableCell>
+                  <TableCell className={classes.name} align="left">ID Trưởng đơn vị</TableCell>
+                  <TableCell className={classes.name} align="left">Trực thuộc</TableCell>
+                  <TableCell align="left" />
                 </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-        <div style={{ margin: '10px', textAlign: 'right' }}>
-          <div>
-            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-              Thêm đơn vị
+              </TableHead>
+              <TableBody>
+                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  return (
+                    <TableRow key={row._id}>
+                      <CustomTableCell className={classes.number} {...{ row, name: "department_code", onChange }} />
+                      <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
+                      <CustomTableCell className={classes.name} {...{ row, name: "namemanager", onChange }} />
+                      <CustomTableCell className={classes.name} {...{ row, name: "idmanager", onChange }} />
+                      <CustomTableCell className={classes.name} {...{ row, name: "parent", onChange }} />
+                      <TableCell className={classes.selectTableCell}>
+                        {row.isEditMode ? (
+                          <>
+                            <IconButton
+                              aria-label="done"
+                              onClick={() => onToggleEditMode(row._id)}
+                            >
+                              <DoneIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label="revert"
+                              onClick={() => onRevert(row._id)}
+                            >
+                              <RevertIcon />
+                            </IconButton>
+                          </>
+                        ) : (
+                          <>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => onToggleEditMode(row._id)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => onDelete(row._id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 20]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+            <div style={{ margin: '10px', textAlign: 'right' }}>
+              <div>
+                <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                  Thêm đơn vị
             </Button>
-            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-              import file
+                <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                  import file
             </Button>
-          </div>
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={open}
-            onClose={handleClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500,
-            }}
-          >
-            <Fade in={open}>
-              <div className={classes.paper1}>
-                <h2 id="transition-modal-title">Thêm đơn vị</h2>
-                <form onSubmit={submit}>
-                  <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setC(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setD(e.target.value)} id="email" label="ID Trưởng đơn vị" multiline variant="outlined" className={classes.field} />
-                  <TextField onChange={e => setN(e.target.value)} id="unit" type='number' label="Đơn vị" variant="outlined" fullWidth className={classes.field} />
-                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                    <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
-                    <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
-                  </div>
-                </form>
               </div>
-            </Fade>
-          </Modal>
+              <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={open}
+                onClose={handleClose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}
+              >
+                <Fade in={open}>
+                  <div className={classes.paper1}>
+                    <h2 id="transition-modal-title">Thêm đơn vị</h2>
+                    <form onSubmit={submit}>
+                      <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
+                      <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
+                      <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" className={classes.field} />
+                      {/* <TextField onChange={e => setN(e.target.value)} id="unit" label="Đơn vị" variant="outlined" fullWidth className={classes.field} /> */}
+                      <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                        <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
+                        <Select
+                          native
+                          required
+                          value={newUnit}
+                          label='Đơn vị'
+                          onChange={handleChangeUnit}
+                        >
+                          <option aria-label="None" value="" />
+                          <option value={10}>Phòng Đào tạo</option>
+                          <option value={20}>Khoa Máy tính</option>
+                          <option value={30}>Phòng Y tế</option>
+                        </Select>
+                      </FormControl>
+                      <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                        <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                      </div>
+                    </form>
+                  </div>
+                </Fade>
+              </Modal>
+            </div>
+          </Paper>
         </div>
-      </Paper>
-    </div>
-    )}
+      )}
     </>
-    
+
   );
 }
