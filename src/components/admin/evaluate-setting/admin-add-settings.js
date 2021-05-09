@@ -124,8 +124,6 @@ export default function AddSettings() {
       })
   }
 
-  console.log(units)
-
   if (units.length == 0) {
     fetchUnits();
   }
@@ -199,6 +197,7 @@ export default function AddSettings() {
     setUnitChosen(units.filter(unit => unit.check === true))
     axios.post(`/admin/form/${code}/addFormDepartments`, { dcodes: units.filter(unit => unit.check === true).map(x => x.id) }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
+        console.log(unitChosen)
         setOpenUnit(false);
       })
       .catch(e => {
@@ -231,6 +230,7 @@ export default function AddSettings() {
             }
           })
         })
+        setUnitChosen(units.filter(unit => unit.check === true))
       })
       .catch(e => console.log(e))
 
@@ -459,6 +459,7 @@ export default function AddSettings() {
                                               checkedIcon={checkedIcon}
                                               style={{ marginRight: 8 }}
                                               checked={option.check = selected}
+                                              onChange={console.log(units.map(x => x.check))}
                                             />
                                             {option.name}
                                           </React.Fragment>
@@ -468,7 +469,7 @@ export default function AddSettings() {
                                           <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
                                         )}
                                       />
-                                      <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseUnit}>Xong</Button>
+                                      <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={() => handleCloseUnit()}>Xong</Button>
                                       <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={() => setOpenUnit(false)}>Thoát</Button>
                                     </div>
                                   </Fade>
