@@ -65,14 +65,14 @@ export default function Drag() {
     };
 
     const handleOpen = (x) => {
-      setOpenCriteria(true)
       setChosen(x)
+      setOpenCriteria(true)
     }
 
     return (
       <tr>
         <td><PostButton label='x' handleClick={props.removeItem} /></td>
-        <td><span type='button' onClick={() => {handleOpen(props.code)}}><PostText text={props.title} /></span></td>
+        <td><span type='button' onClick={() => { handleOpen(props.code) }}><PostText text={props.title} /></span></td>
         <td style={style}>
           <PostButton label='+' handleClick={props.incrementScore} />
           <PostText score={true} text={props.score} style={{ lineHeight: 30 }} />
@@ -125,29 +125,43 @@ export default function Drag() {
   }
 
   useEffect(() => {
-    if (data.length == 0) {
+    if (data.length === 0) {
       fetchCriterion()
     }
   })
 
+  //cai tren la ds tieu chuan, cai duoi la ds tieu chi
   const [items, setItems] = useState([])
+  const [itemsCriteria, setItemsCriteria] = useState([])
 
-  //selection
-  const [newValue, setNewValue] = React.useState('');
-  const handleChangeValue = (event) => {
-    setNewValue(event.target.value);
+  //chon tieu chuan
+  const [newCriterion, setNewCriterion] = React.useState('');
+  const handleChangeCriterion = (event) => {
+    setNewCriterion(event.target.value);
   };
 
-  const addItem = () => {
-    let itemsCopy = items.slice();
-    let truncatedString = data.find(x => x.code == newValue).name; //data.find(x => x.code == value).name
-    itemsCopy.push({ "title": truncatedString, "score": 1, "code": newValue })
+  //chon tieu chi
+  const [newCriteria, setNewCriteria] = React.useState('');
+  const handleChangeCriteria = (event) => {
+    setNewCriteria(event.target.value);
+  };
+
+  const addItem = (type) => {
+    chosen && console.log(data.find(x => x.code == chosen).criteria.map(y => y.name))
+    console.log(chosen)
+    let itemsCopy = type === 'criterion' ? items.slice() : itemsCriteria.slice()
+    let truncatedString = (type === 'criterion' ? data.find(x => x.code == newCriterion).name : (chosen && data.find(x => x.code == chosen).criteria.find(y => y.code == newCriteria).name)); //data.find(x => x.code == value).name
+    itemsCopy.push({ "title": truncatedString, "score": 1, "code": type === 'criterion' ? newCriterion : newCriteria })
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
     })
-    setItems(itemsCopy)
-    setNewValue('')
-    // this.setState({ items: itemsCopy, value: '' });
+    if (type === 'criterion') {
+      setItems(itemsCopy)
+      setNewCriterion('')
+    } else {
+      setItemsCriteria(itemsCopy)
+      setNewCriteria('')
+    }
   }
 
   const updateScore = (index, val) => {
@@ -159,7 +173,7 @@ export default function Drag() {
       return a.score - b.score;
     })
     setItems(itemsCopy)
-    console.log(items)
+    console.log(data)
     // this.setState({ items: itemsCopy });
   }
 
@@ -179,9 +193,9 @@ export default function Drag() {
         <InputLabel >Tiêu chuẩn</InputLabel>
         <Select
           native
-          value={newValue}
+          value={newCriterion}
           label='Đơn vị'
-          onChange={handleChangeValue}
+          onChange={handleChangeCriterion}
         >
           <option aria-label="None" value="" />
           {data.map(x => {
@@ -191,7 +205,7 @@ export default function Drag() {
           })}
         </Select>
       </FormControl>
-      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => addItem()}>Thêm tiêu ch</Button>
+      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => addItem('criterion')}>Thêm tiêu ch</Button>
       <PostList postList={items}
         updateScore={updateScore}
         removeItem={removeItem}
@@ -211,6 +225,27 @@ export default function Drag() {
         <Fade in={openCriteria}>
           <div className={classes.paper1}>
             <h4 id="transition-modal-title">Thêm tiêu chí cho tiêu chuẩn {chosen}</h4>
+            <FormControl variant="outlined" >
+              <InputLabel >Tiêu chí</InputLabel>
+              <Select
+                native
+                value={newCriteria}
+                label='Đơn vị'
+                onChange={handleChangeCriteria}
+              >
+                <option aria-label="None" value="" />
+                {chosen && data.find(x => x.code == chosen).criteria.map(y => {
+                  return (
+                    <option key={y._id} value={y.code}>{y.name}</option>
+                  )
+                })}
+              </Select>
+            </FormControl>
+            <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => addItem('criteria')}>Thêm tiêu ch</Button>
+            <PostList postList={itemsCriteria}
+              updateScore={updateScore}
+              removeItem={removeItem}
+            />
             <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
           </div>
         </Fade>
