@@ -165,25 +165,25 @@ export default function Drag() {
   }
 
   const updateScore = (index, val) => {
-    let itemsCopy = items.slice();
+    let itemsCopy = openCriteria ? itemsCriteria.slice() : items.slice();
     if ((itemsCopy[index].score < items.length && val > 0) || (itemsCopy[index].score > 1 && val < 0)) {
       itemsCopy[index].score += val
     }
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
     })
-    setItems(itemsCopy)
+    openCriteria ? setItemsCriteria(itemsCopy) : setItems(itemsCopy)
     console.log(data)
     // this.setState({ items: itemsCopy });
   }
 
   const removeItem = (index) => {
-    var itemsCopy = items.slice();
+    var itemsCopy = openCriteria ? itemsCriteria.slice() : items.slice();
     itemsCopy.splice(index, 1);
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
     });
-    setItems(itemsCopy)
+    openCriteria ? setItemsCriteria(itemsCopy) : setItems(itemsCopy)
     // this.setState({ items: itemsCopy });
   }
 
