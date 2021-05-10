@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import TextField from '@material-ui/core/TextField'
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -78,18 +79,20 @@ export default function Drag() {
           <PostText score={true} text={props.score} style={{ lineHeight: 30 }} />
           <PostButton label='-' handleClick={props.decrementScore} />
         </td>
+        <td><TextField value={props.pts} id="outlined-basic" type='number' label="Điểm tối đa" variant="outlined" size='small'/></td>
       </tr>
     );
   }
 
   const PostList = (props) => {
     return (
-      <table>
+      <table style={{marginTop: 10}}>
         <thead>
           <tr>
             <th></th>
             <th style={{ textAlign: 'center' }}>Tên tiêu ch</th>
             <th style={{ textAlign: 'center' }}>STT</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -99,6 +102,7 @@ export default function Drag() {
                 title={item.title}
                 score={item.score}
                 code={item.code}
+                pts={item.pts}
                 incrementScore={() => props.updateScore(index, 1)}
                 decrementScore={() => props.updateScore(index, -1)}
                 removeItem={() => props.removeItem(index)}
@@ -147,11 +151,9 @@ export default function Drag() {
   };
 
   const addItem = (type) => {
-    chosen && console.log(data.find(x => x.code == chosen).criteria.map(y => y.name))
-    console.log(chosen)
     let itemsCopy = type === 'criterion' ? items.slice() : itemsCriteria.slice()
     let truncatedString = (type === 'criterion' ? data.find(x => x.code == newCriterion).name : (chosen && data.find(x => x.code == chosen).criteria.find(y => y.code == newCriteria).name)); //data.find(x => x.code == value).name
-    itemsCopy.push({ "title": truncatedString, "score": 1, "code": type === 'criterion' ? newCriterion : newCriteria })
+    itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": type === 'criterion' ? newCriterion : newCriteria })
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
     })
@@ -162,6 +164,7 @@ export default function Drag() {
       setItemsCriteria(itemsCopy)
       setNewCriteria('')
     }
+    console.log(itemsCopy)
   }
 
   const updateScore = (index, val) => {
@@ -205,7 +208,7 @@ export default function Drag() {
           })}
         </Select>
       </FormControl>
-      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => addItem('criterion')}>Thêm tiêu ch</Button>
+      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => {newCriterion && addItem('criterion')}}>Thêm tiêu ch</Button>
       <PostList postList={items}
         updateScore={updateScore}
         removeItem={removeItem}
@@ -241,7 +244,7 @@ export default function Drag() {
                 })}
               </Select>
             </FormControl>
-            <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => addItem('criteria')}>Thêm tiêu ch</Button>
+            <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => {newCriteria && addItem('criteria')}}>Thêm tiêu ch</Button>
             <PostList postList={itemsCriteria}
               updateScore={updateScore}
               removeItem={removeItem}

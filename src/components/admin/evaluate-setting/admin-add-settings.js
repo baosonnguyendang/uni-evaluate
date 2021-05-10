@@ -469,7 +469,7 @@ export default function AddSettings() {
                                           <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
                                         )}
                                       />
-                                      <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={() => handleCloseUnit()}>Xong</Button>
+                                      <Button style={{ marginTop: '10px', marginRight: 10 }} variant="contained" color="primary" onClick={() => handleCloseUnit()}>Xong</Button>
                                       <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={() => setOpenUnit(false)}>Thoát</Button>
                                     </div>
                                   </Fade>

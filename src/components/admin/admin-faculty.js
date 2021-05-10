@@ -168,9 +168,23 @@ export default function Criterion() {
     setPage(0);
   };
 
-  //open modal
+  //open modal, khi nay lay ds don vi cha tu be luon
   const [open, setOpen] = React.useState(false);
+  const [units, setUnits] = React.useState([])
   const handleOpen = () => {
+    axios.get('admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
+    .then(res => {
+      console.log(res.data.parents)
+      setUnits(res.data.parents)
+      // setNewUnit(res.data.parents)
+      // res.data.parents.map(x => {
+      //   setUnits(units => [...units, createData(x.name, x.department_code)])
+      // })
+      
+    })
+    .catch(e => {
+      console.log(e)
+    })
     setOpen(true);
   };
   const handleClose = () => {
@@ -189,7 +203,7 @@ export default function Criterion() {
   //chon don vi cha khi them don vi moi
   const [newUnit, setNewUnit] = React.useState('');
   const handleChangeUnit = (event) => {
-    setNewUnit(event.target.value); 
+    setNewUnit(event.target.value);
   };
 
   return (
@@ -198,7 +212,7 @@ export default function Criterion() {
         <div>
           <Typography component="h1" variant="h5" color="inherit" noWrap>
             DANH SÁCH ĐƠN VỊ
-      </Typography>
+          </Typography>
           <Paper className={classes.root}>
             <Table className={classes.table} aria-label="caption table">
               <TableHead>
@@ -271,10 +285,10 @@ export default function Criterion() {
               <div>
                 <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                   Thêm đơn vị
-            </Button>
+                </Button>
                 <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                   import file
-            </Button>
+                </Button>
               </div>
               <Modal
                 aria-labelledby="transition-modal-title"
@@ -306,9 +320,11 @@ export default function Criterion() {
                           onChange={handleChangeUnit}
                         >
                           <option aria-label="None" value="" />
-                          <option value={10}>Phòng Đào tạo</option>
-                          <option value={20}>Khoa Máy tính</option>
-                          <option value={30}>Phòng Y tế</option>
+                          {units.map(unit => {
+                            return (
+                              <option key={unit._id} value={unit.department_code}>{unit.name}</option>
+                            )
+                          })}
                         </Select>
                       </FormControl>
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
