@@ -191,6 +191,25 @@ export default function Criterion() {
     setOpen(false);
   };
 
+  //
+  const submitAddDepartment = () =>{
+    console.log(id, name, head, newUnit);
+    
+    const body = {
+      department_code: id,
+      name,
+      manager: head,
+      parent: newUnit
+    }
+    axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res=>{
+        console.log(res.data);
+      })
+      .catch(error=>{
+        console.log(error);
+      })
+  }
+
   //get data from new criterion
   const [id, setId] = React.useState('')
   const [name, setName] = React.useState('')
@@ -327,7 +346,7 @@ export default function Criterion() {
                         </Select>
                       </FormControl>
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddDepartment}>Tạo</Button>
                         <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                       </div>
                     </form>
