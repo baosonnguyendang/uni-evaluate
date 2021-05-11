@@ -189,7 +189,21 @@ export default function Criteria() {
 
   //sumbit form tao tieu chi
   const submitAddCriteria = ()=>{
-    console.log(name, code, description, point, type);
+    console.log(code, name,  description, type);
+    const body = {
+      name,
+      code,
+      description,
+      type
+    }
+    axios.post(`/admin/standard/${id}/criteria/add`, body, config)
+      .then(res => {
+        console.log(res.data);
+        handleClose();
+      })
+      .catch(e => {
+        console.log(e);
+      })
   }
 
   //get data from new criterion
