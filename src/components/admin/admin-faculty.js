@@ -314,7 +314,6 @@ export default function Criterion() {
                         <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
                         <Select
                           native
-                          required
                           value={newUnit}
                           label='Đơn vị'
                           onChange={handleChangeUnit}
