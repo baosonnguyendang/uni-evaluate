@@ -37,6 +37,7 @@ export default function Drag() {
   //cái này là để mở cái modal chỉnh tiêu chí
   const [openCriteria, setOpenCriteria] = React.useState(false);
   const handleCloseCriteria = () => {
+    console.log(itemsCriteria)
     setOpenCriteria(false);
   }
 
@@ -77,20 +78,30 @@ export default function Drag() {
     return (
       <tr>
         <td><PostButton label='x' handleClick={props.removeItem} /></td>
-        <td><span type='button' onClick={() => { handleOpen(props.code)}}><PostText text={props.title} /></span></td>
+        <td><span type={!openCriteria && 'button'} onClick={() => { !openCriteria && handleOpen(props.code) }}><PostText text={props.title} /></span></td>
         <td style={style}>
           <PostButton label='+' handleClick={props.incrementScore} />
           <PostText score={true} text={props.score} style={{ lineHeight: 30 }} />
           <PostButton label='-' handleClick={props.decrementScore} />
         </td>
-        <td><TextField defaultValue={openCriteria ? '5' : (items.find(x => x.code === props.code).pts)} onChange={e => setPoint(e.target.value)} id="outlined-basic" type='number' label="Điểm tối đa" variant="outlined" size='small'/></td>
+        <td>
+          <TextField 
+            defaultValue={
+              openCriteria ? (
+                itemsCriteria.filter(x => x.code == props.code).length > 0 ? (itemsCriteria.find(x => x.code === props.code).pts) : (5)
+              ) : (
+                items.filter(x => x.code == props.code).length > 0 ? items.find(x => x.code === props.code).pts : 5
+              )} 
+            onChange={e => setPoint(e.target.value)} 
+            id="outlined-basic" type='number' label="Điểm tối đa" variant="outlined" size='small' />
+        </td>
       </tr>
     );
   }
 
   const PostList = (props) => {
     return (
-      <table style={{marginTop: 10}}>
+      <table style={{ marginTop: 10 }}>
         <thead>
           <tr>
             <th></th>
@@ -152,7 +163,6 @@ export default function Drag() {
   const [newCriteria, setNewCriteria] = React.useState('');
   const handleChangeCriteria = (event) => {
     setNewCriteria(event.target.value);
-    console.log(itemsCriteria, newCriteria)
   };
 
   const addItem = (type) => {
@@ -212,7 +222,7 @@ export default function Drag() {
           })}
         </Select>
       </FormControl>
-      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => {newCriterion && addItem('criterion')}}>Thêm tiêu chuẩn</Button>
+      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => { newCriterion && addItem('criterion') }}>Thêm tiêu chuẩn</Button>
       <PostList postList={items}
         updateScore={updateScore}
         removeItem={removeItem}
@@ -248,7 +258,7 @@ export default function Drag() {
                 })}
               </Select>
             </FormControl>
-            <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => {newCriteria && addItem('criteria'); console.log(itemsCriteria)}}>Thêm tiêu chí</Button>
+            <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => { newCriteria && addItem('criteria') }}>Thêm tiêu chí</Button>
             <PostList postList={itemsCriteria}
               updateScore={updateScore}
               removeItem={removeItem}
