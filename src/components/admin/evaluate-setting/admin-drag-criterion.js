@@ -34,6 +34,9 @@ const useStyles = makeStyles(theme => ({
 export default function Drag() {
   const classes = useStyles()
 
+  //phai an luu form 1 lan moi co the vao them tieu chi dc
+  const [bool, setBool] = React.useState(false)
+
   //cái này là để mở cái modal chỉnh tiêu chí
   const [openCriteria, setOpenCriteria] = React.useState(false);
   const handleCloseCriteria = () => {
@@ -78,7 +81,7 @@ export default function Drag() {
     return (
       <tr>
         <td><PostButton label='x' handleClick={props.removeItem} /></td>
-        <td><span type={!openCriteria && 'button'} onClick={() => { !openCriteria && handleOpen(props.code) }}><PostText text={props.title} /></span></td>
+        <td><span type={!openCriteria && 'button'} onClick={() => { bool && !openCriteria && handleOpen(props.code) }}><PostText text={props.title} /></span></td>
         <td style={style}>
           <PostButton label='+' handleClick={props.incrementScore} />
           <PostText score={true} text={props.score} style={{ lineHeight: 30 }} />
@@ -183,7 +186,7 @@ export default function Drag() {
 
   const updateScore = (index, val) => {
     let itemsCopy = openCriteria ? itemsCriteria.slice() : items.slice();
-    if ((itemsCopy[index].score < items.length && val > 0) || (itemsCopy[index].score > 1 && val < 0)) {
+    if ((itemsCopy[index].score <= items.length && val > 0) || (itemsCopy[index].score > 1 && val < 0)) {
       itemsCopy[index].score += val
     }
     itemsCopy.sort((a, b) => {
@@ -267,7 +270,7 @@ export default function Drag() {
           </div>
         </Fade>
       </Modal>
-      <Button variant='contained' color='secondary' onClick={() => console.log('point')}>Lưu Form</Button>
+      <Button style={{position: 'absolute', right: 10, bottom: 10}} variant='contained' color='secondary' onClick={() => setBool(true)}>Lưu Form</Button>
     </div>
   );
 }
