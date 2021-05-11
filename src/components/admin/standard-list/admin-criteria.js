@@ -198,10 +198,13 @@ export default function Criteria() {
     }
     axios.post(`/admin/standard/${id}/criteria/add`, body, config)
       .then(res => {
+        // chỗ này success thì fe tạo bảng
         console.log(res.data);
         handleClose();
+        // bỏ cái tạo bảng vô đây
       })
       .catch(e => {
+        // lỗi thì ko
         console.log(e);
       })
   }
