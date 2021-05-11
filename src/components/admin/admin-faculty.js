@@ -203,7 +203,8 @@ export default function Criterion() {
     }
     axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res=>{
-        console.log(res.data);
+        //console.log(res.data);
+        handleClose();
       })
       .catch(error=>{
         console.log(error);

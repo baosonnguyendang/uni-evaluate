@@ -187,6 +187,11 @@ export default function Criteria() {
     setOpen(false);
   };
 
+  //sumbit form tao tieu chi
+  const submitAddCriteria = ()=>{
+    console.log(name, code, description, point, type);
+  }
+
   //get data from new criterion
   const [name, setName] = React.useState('')
   const [code, setCode] = React.useState('')
@@ -296,13 +301,13 @@ export default function Criteria() {
                           onChange={handleChangeType}
                         >
                           <option aria-label="None" value="" />
-                          <option value={'Checkbox'}>Checkbox</option>
-                          <option value={'Radio'}>Radio</option>
-                          <option value={'Input'}>Input</option>
+                          <option value={'checkbox'}>Checkbox</option>
+                          <option value={'radio'}>Radio</option>
+                          <option value={'input'}>Input</option>
                         </Select>
                       </FormControl>
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddCriteria}>Tạo</Button>
                         <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                       </div>
                     </form>
