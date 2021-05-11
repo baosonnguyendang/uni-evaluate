@@ -70,16 +70,20 @@ export default function Drag() {
       setOpenCriteria(true)
     }
 
+    const setPoint = (e) => {
+      openCriteria ? (itemsCriteria.find(x => x.code === props.code).pts = e) : (items.find(x => x.code === props.code).pts = e)
+    }
+
     return (
       <tr>
         <td><PostButton label='x' handleClick={props.removeItem} /></td>
-        <td><span type='button' onClick={() => { handleOpen(props.code) }}><PostText text={props.title} /></span></td>
+        <td><span type='button' onClick={() => { handleOpen(props.code); console.log(itemsCriteria, newCriteria) }}><PostText text={props.title} /></span></td>
         <td style={style}>
           <PostButton label='+' handleClick={props.incrementScore} />
           <PostText score={true} text={props.score} style={{ lineHeight: 30 }} />
           <PostButton label='-' handleClick={props.decrementScore} />
         </td>
-        <td><TextField value={props.pts} id="outlined-basic" type='number' label="Điểm tối đa" variant="outlined" size='small'/></td>
+        <td><TextField defaultValue={openCriteria ? (itemsCriteria.find(x => x.code === props.code).pts) : (items.find(x => x.code === props.code).pts)} onChange={e => setPoint(e.target.value)} id="outlined-basic" type='number' label="Điểm tối đa" variant="outlined" size='small'/></td>
       </tr>
     );
   }
@@ -90,7 +94,7 @@ export default function Drag() {
         <thead>
           <tr>
             <th></th>
-            <th style={{ textAlign: 'center' }}>Tên tiêu ch</th>
+            <th style={{ textAlign: 'center' }}>Tên tiêu chuẩn</th>
             <th style={{ textAlign: 'center' }}>STT</th>
             <th></th>
           </tr>
@@ -102,10 +106,10 @@ export default function Drag() {
                 title={item.title}
                 score={item.score}
                 code={item.code}
-                pts={item.pts}
                 incrementScore={() => props.updateScore(index, 1)}
                 decrementScore={() => props.updateScore(index, -1)}
                 removeItem={() => props.removeItem(index)}
+                point={() => props.point(index)}
               />
             ))
           }
@@ -148,12 +152,13 @@ export default function Drag() {
   const [newCriteria, setNewCriteria] = React.useState('');
   const handleChangeCriteria = (event) => {
     setNewCriteria(event.target.value);
+    console.log(itemsCriteria, newCriteria)
   };
 
   const addItem = (type) => {
     let itemsCopy = type === 'criterion' ? items.slice() : itemsCriteria.slice()
     let truncatedString = (type === 'criterion' ? data.find(x => x.code == newCriterion).name : (chosen && data.find(x => x.code == chosen).criteria.find(y => y.code == newCriteria).name)); //data.find(x => x.code == value).name
-    itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": type === 'criterion' ? newCriterion : newCriteria })
+    itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": type === 'criterion' ? newCriterion : newCriteria, "pts": 5 })
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
     })
@@ -208,7 +213,7 @@ export default function Drag() {
           })}
         </Select>
       </FormControl>
-      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => {newCriterion && addItem('criterion')}}>Thêm tiêu ch</Button>
+      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => {newCriterion && addItem('criterion'); console.log(items)}}>Thêm tiêu chuẩn</Button>
       <PostList postList={items}
         updateScore={updateScore}
         removeItem={removeItem}
@@ -244,7 +249,7 @@ export default function Drag() {
                 })}
               </Select>
             </FormControl>
-            <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => {newCriteria && addItem('criteria')}}>Thêm tiêu ch</Button>
+            <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => {newCriteria && addItem('criteria')}}>Thêm tiêu chí</Button>
             <PostList postList={itemsCriteria}
               updateScore={updateScore}
               removeItem={removeItem}
@@ -253,6 +258,7 @@ export default function Drag() {
           </div>
         </Fade>
       </Modal>
+      <Button variant='contained' color='secondary' onClick={() => console.log('point')}>Lưu Form</Button>
     </div>
   );
 }
