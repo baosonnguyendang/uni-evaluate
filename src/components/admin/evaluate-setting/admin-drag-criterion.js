@@ -168,6 +168,9 @@ export default function Drag() {
     setNewCriteria(event.target.value);
   };
 
+  //thung rac, tieu chuan nao them vo roi thi bo vo day, khong hien thi trong selection nua
+  const [bin, setBin] = React.useState([])
+
   const addItem = (type) => {
     let itemsCopy = type === 'criterion' ? items.slice() : itemsCriteria.slice()
     let truncatedString = (type === 'criterion' ? data.find(x => x.code == newCriterion).name : (chosen && data.find(x => x.code == chosen).criteria.find(y => y.code == newCriteria).name)); //data.find(x => x.code == value).name
@@ -177,6 +180,11 @@ export default function Drag() {
     })
     if (type === 'criterion') {
       setItems(itemsCopy)
+      let temp = data.find(x => x.code == newCriterion)
+      // setBin(x => x.concat([temp]))
+      setBin(x => [...x, temp])
+      // bin.push(data.find(x => x.code == newCriterion))
+      data.splice(data.indexOf(data.find(x => x.code == newCriterion)),1)
       setNewCriterion('')
     } else {
       setItemsCriteria(itemsCopy)
@@ -203,8 +211,22 @@ export default function Drag() {
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
     });
-    openCriteria ? setItemsCriteria(itemsCopy) : setItems(itemsCopy)
+    if (openCriteria){
+      setItemsCriteria(itemsCopy)
+    } else {
+      setItems(itemsCopy)
+      console.log(bin)
+      console.log(itemsCopy)
+      // itemsCopy.map(x => x.code)
+    }
+    // openCriteria ? setItemsCriteria(itemsCopy) : setItems(itemsCopy)
     // this.setState({ items: itemsCopy });
+  }
+
+  //luu nhe cai form
+  const save = () => {
+    new Set(items.map(x => x.score)).size !== items.map(x => x.score).length && alert('Xem lại STT')
+    setBool(true)
   }
 
   return (
@@ -270,7 +292,7 @@ export default function Drag() {
           </div>
         </Fade>
       </Modal>
-      <Button style={{position: 'absolute', right: 10, bottom: 10}} variant='contained' color='secondary' onClick={() => setBool(true)}>Lưu Form</Button>
+      <Button style={{position: 'absolute', right: 10, bottom: 10}} variant='contained' color='secondary' onClick={save}>Lưu Form</Button>
     </div>
   );
 }

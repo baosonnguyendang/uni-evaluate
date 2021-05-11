@@ -203,7 +203,7 @@ export default function AddSettings() {
       .catch(e => {
         console.log(e)
       })
-    
+
   };
 
   const [unitChosen, setUnitChosen] = React.useState([])
@@ -225,7 +225,7 @@ export default function AddSettings() {
         let _id = res.data.formDepartments.filter(x => (x.level === 1 || x.level === 0)).map(x => x.department_id.department_code)
         _id.map(x => {
           units.map(y => {
-            if (y.id === x){
+            if (y.id === x) {
               y.check = true
             }
           })
@@ -348,6 +348,7 @@ export default function AddSettings() {
                           <h2>Trưởng đơn vị</h2>
                           <form>
                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                              <TextField onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required fullWidth variant="outlined" className={classes.field} />
                               <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu và thoát</Button>
                               <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseHead}>Thoát</Button>
                             </div>
