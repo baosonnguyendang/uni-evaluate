@@ -188,8 +188,9 @@ export default function Criteria() {
   };
 
   //sumbit form tao tieu chi
-  const submitAddCriteria = ()=>{
-    console.log(code, name,  description, type);
+  const submitAddCriteria = (e) => {
+    console.log(code, name, description, type);
+    e.preventDefault()
     const body = {
       name,
       code,
@@ -201,11 +202,13 @@ export default function Criteria() {
         // chỗ này success thì fe tạo bảng
         console.log(res.data);
         handleClose();
+        setRows(rows => [...rows, createData(name, code, description, point, type)])
         // bỏ cái tạo bảng vô đây
       })
       .catch(e => {
         // lỗi thì ko
         console.log(e);
+        alert('Lỗi khi thêm tiêu chí')
       })
   }
 
@@ -216,7 +219,7 @@ export default function Criteria() {
   const [point, setP] = React.useState(0)
   const [type, setType] = React.useState('');
   const handleChangeType = (event) => {
-    setType(event.target.value); 
+    setType(event.target.value);
   };
   const submit = e => {
     e.preventDefault()
@@ -304,7 +307,7 @@ export default function Criteria() {
                 <Fade in={open}>
                   <div className={classes.paper1}>
                     <h2 id="transition-modal-title">Thêm tiêu chí</h2>
-                    <form onSubmit={submit}>
+                    <form onSubmit={submitAddCriteria}>
                       <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth className={classes.field} />
                       <TextField onChange={e => setName(e.target.value)} id="name" required label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} />
                       <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" className={classes.field} />

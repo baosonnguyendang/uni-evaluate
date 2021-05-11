@@ -217,6 +217,8 @@ export default function Drag() {
       setItems(itemsCopy)
       console.log(bin)
       console.log(itemsCopy)
+      console.log(bin.map(x => x.code).filter(e => !itemsCopy.map(y => y.code).includes(e)) );
+      setData(data => [...data, bin.find(x => x.code == bin.map(x => x.code).filter(e => !itemsCopy.map(y => y.code).includes(e)) )])
       // itemsCopy.map(x => x.code)
     }
     // openCriteria ? setItemsCriteria(itemsCopy) : setItems(itemsCopy)
