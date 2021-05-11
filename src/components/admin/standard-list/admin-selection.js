@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
 import { useParams } from 'react-router-dom';
@@ -24,6 +24,12 @@ import Modal from '@material-ui/core/Modal';
 import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import axios from "axios";
+
+//token
+const token = localStorage.getItem('token');
+const config = { headers: { "Authorization": `Bearer ${token}` } };
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -101,12 +107,26 @@ const CustomTableCell = ({ row, name, onChange }) => {
 
 export default function Selection() {
   const [rows, setRows] = React.useState([
-    createData("Định mức giờ chuẩn hoàn thành", '00101', 'BÙm bùm bùm bùm', 5),
-    createData("Kết quả khảo sát chất lượng dịch vụ", '00102', 'Mô tảaaaaaaaaaaaaaaaaaaaaaa', 7),
-    createData("Hình thức giảng dạy khác", '00103', 'Description', 10)
+    // createData("Định mức giờ chuẩn hoàn thành", '00101', 'BÙm bùm bùm bùm', 5),
+    // createData("Kết quả khảo sát chất lượng dịch vụ", '00102', 'Mô tảaaaaaaaaaaaaaaaaaaaaaa', 7),
+    // createData("Hình thức giảng dạy khác", '00103', 'Description', 10)
   ]);
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
+  const { id } = useParams();
+
+  const fetchSelection = () => {
+    axios.get(`/admin/criteria/${id}/option`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        const selections = res.data.criteriaOptions;
+        setRows(selections.map(op=>createData(op.code, op.name, op.description, op.max_point)))
+        setPrevious([...rows])
+        // setIsLoading(false)
+      })
+  }
+  useEffect(() => {
+    fetchSelection()
+  }, [])
 
   const onToggleEditMode = id => {
     setRows(state => {
@@ -125,7 +145,7 @@ export default function Selection() {
     }
     const value = e.target.value;
     const name = e.target.name;
-    const { id } = row;
+    let { id } = row;
     const newRows = rows.map(row => {
       if (row.id === id) {
         return { ...row, [name]: value };
@@ -164,6 +184,25 @@ export default function Selection() {
     setOpen(false);
   };
 
+  // Tạo lựa chọn
+  const submitAddSelection = () =>{
+    console.log(code, name, description, point);
+    const body = {
+      code,
+      name,
+      max_point: point,
+      description
+    }
+    axios.post(`/admin/criteria/${id}/addCriteriaOption`, body, config)
+    .then(res=>{
+      console.log(res.data);
+      handleClose();
+    })
+    .catch(e=>{
+      console.error(e);
+    })
+  }
+
   //get data from new criterion
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
@@ -171,7 +210,7 @@ export default function Selection() {
   const [point, setP] = React.useState(0)
   const submit = e => {
     e.preventDefault()
-    setRows(rows => [...rows, createData(name, code, description, point)])
+    setRows(rows => [...rows, createData(code, name, description, point)])
   }
 
   function User() {
@@ -190,8 +229,8 @@ export default function Selection() {
         <Table className={classes.table} aria-label="caption table">
           <TableHead>
             <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-              <TableCell className={classes.name} >Lựa chọn </TableCell>
               <TableCell className={classes.number} >Mã </TableCell>
+              <TableCell className={classes.name} >Lựa chọn </TableCell>
               <TableCell >Mô tả</TableCell>
               <TableCell >Điểm</TableCell>
               <TableCell />
@@ -261,12 +300,12 @@ export default function Selection() {
               <div className={classes.paper1}>
                 <h2 id="transition-modal-title">Thêm lựa chọn</h2>
                 <form onSubmit={submit}>
-                  <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setC(e.target.value)} id="code" label="Mã" variant="outlined" fullWidth className={classes.field} />
+                  <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
                   <TextField onChange={e => setP(e.target.value)} id="point" label="Điểm" type="number" variant="outlined" className={classes.field} />
                   <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                    <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                    <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddSelection}>Tạo</Button>
                     <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                   </div>
                 </form>
