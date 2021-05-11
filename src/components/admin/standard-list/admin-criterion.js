@@ -193,6 +193,7 @@ export default function Criterion() {
         handleClose()
         handleOpenToast("Tạo tiêu chuẩn thành công", 'success')
         setRows(rows => [...rows, data])
+        setOpen(false);
       })
       .catch(e => {
         handleOpenToast("Mã tiêu chuẩn đã tồn tại", 'error')

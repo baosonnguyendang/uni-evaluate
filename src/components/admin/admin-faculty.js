@@ -173,18 +173,18 @@ export default function Criterion() {
   const [units, setUnits] = React.useState([])
   const handleOpen = () => {
     axios.get('admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
-    .then(res => {
-      console.log(res.data.parents)
-      setUnits(res.data.parents)
-      // setNewUnit(res.data.parents)
-      // res.data.parents.map(x => {
-      //   setUnits(units => [...units, createData(x.name, x.department_code)])
-      // })
-      
-    })
-    .catch(e => {
-      console.log(e)
-    })
+      .then(res => {
+        console.log(res.data.parents)
+        setUnits(res.data.parents)
+        // setNewUnit(res.data.parents)
+        // res.data.parents.map(x => {
+        //   setUnits(units => [...units, createData(x.name, x.department_code)])
+        // })
+
+      })
+      .catch(e => {
+        console.log(e)
+      })
     setOpen(true);
   };
   const handleClose = () => {
@@ -192,9 +192,9 @@ export default function Criterion() {
   };
 
   //
-  const submitAddDepartment = () =>{
+  const submitAddDepartment = (e) => {
     console.log(id, name, head, newUnit);
-    
+
     const body = {
       department_code: id,
       name,
@@ -202,11 +202,15 @@ export default function Criterion() {
       parent: newUnit
     }
     axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
-      .then(res=>{
+      .then(res => {
         //console.log(res.data);
+
+        e.preventDefault()
+        setRows(rows => [...rows, createData(id, name, null, head, newUnit)])
+        
         handleClose();
       })
-      .catch(error=>{
+      .catch(error => {
         console.log(error);
       })
   }
@@ -325,7 +329,7 @@ export default function Criterion() {
                 <Fade in={open}>
                   <div className={classes.paper1}>
                     <h2 id="transition-modal-title">Thêm đơn vị</h2>
-                    <form onSubmit={submit}>
+                    <form onSubmit={submitAddDepartment}>
                       <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
                       <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
                       <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" className={classes.field} />
