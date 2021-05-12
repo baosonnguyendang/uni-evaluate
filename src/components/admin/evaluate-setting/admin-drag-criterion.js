@@ -240,12 +240,11 @@ export default function Drag(props) {
           order: item.score
         }
       }),
-      removeStandards: []
     }
     if (new Set(items.map(x => x.score)).size !== items.map(x => x.score).length) {
       alert('Kiểm tra lại STT')
     } else {
-      /*
+      
       axios.post(`/admin/form/${fcode}/addFormStandard`, body, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setBool(true);
@@ -254,7 +253,7 @@ export default function Drag(props) {
         .catch(err=>{
 
         })
-      */
+      
     }
 
   }
