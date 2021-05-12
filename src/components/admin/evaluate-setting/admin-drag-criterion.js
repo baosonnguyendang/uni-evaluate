@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper1: {
     position: 'absolute',
-    width: 600,
+    width: 700,
     backgroundColor: theme.palette.background.paper,
     border: '1px solid #000',
     boxShadow: theme.shadows[5],
@@ -41,8 +41,8 @@ export default function Drag() {
   //cái này là để mở cái modal chỉnh tiêu chí
   const [openCriteria, setOpenCriteria] = React.useState(false);
   const handleCloseCriteria = () => {
-    console.log(itemsCriteria)
     setOpenCriteria(false);
+    items.find(x => x.code == chosen).criteria = itemsCriteria
   }
 
   const PostButton = (props) => {
@@ -72,6 +72,8 @@ export default function Drag() {
 
     const handleOpen = (x) => {
       setChosen(x)
+      console.log(itemsCriteria)
+      setItemsCriteria(items.find(item => item.code == x).criteria)
       setOpenCriteria(true)
     }
 
@@ -109,7 +111,7 @@ export default function Drag() {
         <thead>
           <tr>
             <th></th>
-            <th style={{ textAlign: 'center' }}>Tên tiêu chuẩn</th>
+            <th style={{ textAlign: 'center' }}>{openCriteria? 'Tên tiêu chí' : 'Tên tiêu chuẩn'}</th>
             <th style={{ textAlign: 'center' }}>STT</th>
             <th></th>
           </tr>
@@ -145,7 +147,6 @@ export default function Drag() {
       .then(res => {
         let temp = res.data.standards.map(x => createData(x))
         setData(temp)
-
       })
       .catch(e => {
         console.log(e)
@@ -177,7 +178,13 @@ export default function Drag() {
   const addItem = (type) => {
     let itemsCopy = type === 'criterion' ? items.slice() : itemsCriteria.slice()
     let truncatedString = (type === 'criterion' ? data.find(x => x.code == newCriterion).name : (chosen && data.find(x => x.code == chosen).criteria.find(y => y.code == newCriteria).name)); //data.find(x => x.code == value).name
-    itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": type === 'criterion' ? newCriterion : newCriteria, "pts": 5 })
+    //itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": type === 'criterion' ? newCriterion : newCriteria, "pts": 5 })
+    if (type === 'criterion') {
+      itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriterion, "pts": 5, "criteria": [] })
+    } else {
+      itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriteria, "pts": 5 })
+    }
+
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
     })
@@ -185,11 +192,8 @@ export default function Drag() {
       data.find(x => x.code == newCriterion).clicked = true
       setItems(itemsCopy)
       setNewCriterion('')
-      console.log(data)
     } else {
       setItemsCriteria(itemsCopy)
-      console.log(itemsCopy.map(x => x.code))
-      console.log(data.find(x => x.code == chosen).criteria.map(y => y.code))
       setNewCriteria('')
     }
   }
@@ -203,7 +207,6 @@ export default function Drag() {
       return a.score - b.score;
     })
     openCriteria ? setItemsCriteria(itemsCopy) : setItems(itemsCopy)
-    console.log(data)
     // this.setState({ items: itemsCopy });
   }
 
@@ -215,12 +218,12 @@ export default function Drag() {
     });
     if (openCriteria) {
       setItemsCriteria(itemsCopy)
-      console.log(itemsCopy)
     } else {
       setItems(itemsCopy)
       let temp = data.filter(x => x.clicked == true).map(y => y.code).filter(e => !itemsCopy.map(z => z.code).includes(e));
-      console.log(data.find(x => x.code == temp))
-      data.find(x => x.code == temp).clicked = false
+      if (data.find(x => x.code == temp)) {
+        data.find(x => x.code == temp).clicked = false
+      }
       // itemsCopy.map(x => x.code)
     }
   }
@@ -234,7 +237,7 @@ export default function Drag() {
   return (
     <div>
       <FormControl variant="outlined" >
-        <InputLabel >Tiêu chuẩn</InputLabel>
+        <InputLabel >Tiêu chuẩn </InputLabel>
         <Select
           native
           value={newCriterion}
@@ -254,8 +257,6 @@ export default function Drag() {
         removeItem={removeItem}
       />
       <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
         className={classes.modal}
         open={openCriteria}
         onClose={handleCloseCriteria}
@@ -269,7 +270,7 @@ export default function Drag() {
           <div className={classes.paper1}>
             <h4 id="transition-modal-title">Thêm tiêu chí cho tiêu chuẩn {chosen}</h4>
             <FormControl variant="outlined" >
-              <InputLabel >Tiêu chí</InputLabel>
+              <InputLabel >Tiêu chí </InputLabel>
               <Select
                 native
                 value={newCriteria}
