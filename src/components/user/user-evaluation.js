@@ -72,7 +72,7 @@ export default class Evaluation extends React.Component {
       </Button>
     )
     return (
-      <div>
+      <div style={{ paddingTop: '45px' }}>
         {this.state.listOfEvaluation.map(item => (
           <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
             <CardContent>
