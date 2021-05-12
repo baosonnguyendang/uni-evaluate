@@ -223,8 +223,6 @@ export default function Drag() {
       data.find(x => x.code == temp).clicked = false
       // itemsCopy.map(x => x.code)
     }
-    // openCriteria ? setItemsCriteria(itemsCopy) : setItems(itemsCopy)
-    // this.setState({ items: itemsCopy });
   }
 
   //luu nhe cai form
