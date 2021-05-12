@@ -14,6 +14,7 @@ import Fade from '@material-ui/core/Fade';
 import TextField from '@material-ui/core/TextField'
 
 import { makeStyles } from '@material-ui/core/styles';
+import { useParams } from 'react-router';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -32,9 +33,10 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function Drag() {
-  const classes = useStyles()
-
+export default function Drag(props) {
+  // mã form
+  const {fcode} = props;
+  const classes = useStyles();
   //phai an luu form 1 lan moi co the vao them tieu chi dc
   const [bool, setBool] = React.useState(false)
 
@@ -229,19 +231,32 @@ export default function Drag() {
   }
 
   //luu nhe cai form
-  const token = localStorage.getItem('token')
   const save = () => {
+    const body = {
+      standards_code: items.map(item => {
+        return {
+          code: item.code,
+          point: item.pts,
+          order: item.score
+        }
+      }),
+      removeStandards: []
+    }
     if (new Set(items.map(x => x.score)).size !== items.map(x => x.score).length) {
-      alert('Xem lại STT')
+      alert('Kiểm tra lại STT')
     } else {
-      setBool(true)
-      axios.post(``, items, { headers: { "Authorization": `Bearer ${token}` } })
+      /*
+      axios.post(`/admin/form/${fcode}/addFormStandard`, body, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
+          setBool(true);
+          console.log(res.data);
+        })
+        .catch(err=>{
 
         })
+      */
     }
 
-    console.log(items)
   }
 
   return (

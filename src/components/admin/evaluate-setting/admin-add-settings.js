@@ -415,7 +415,7 @@ export default function AddSettings() {
                           case 1:
                             return (
                               <div>
-                                <Drag />
+                                <Drag fcode={code}/>
                               </div>
                             )
                           // case 1:
