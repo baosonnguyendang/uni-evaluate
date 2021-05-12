@@ -111,7 +111,7 @@ export default function Drag() {
         <thead>
           <tr>
             <th></th>
-            <th style={{ textAlign: 'center' }}>{openCriteria? 'Tên tiêu chí' : 'Tên tiêu chuẩn'}</th>
+            <th style={{ textAlign: 'center' }}>{openCriteria ? 'Tên tiêu chí' : 'Tên tiêu chuẩn'}</th>
             <th style={{ textAlign: 'center' }}>STT</th>
             <th></th>
           </tr>
@@ -229,9 +229,19 @@ export default function Drag() {
   }
 
   //luu nhe cai form
+  const token = localStorage.getItem('token')
   const save = () => {
-    new Set(items.map(x => x.score)).size !== items.map(x => x.score).length && alert('Xem lại STT')
-    setBool(true)
+    if (new Set(items.map(x => x.score)).size !== items.map(x => x.score).length) {
+      alert('Xem lại STT')
+    } else {
+      setBool(true)
+      axios.post(``, items, { headers: { "Authorization": `Bearer ${token}` } })
+        .then(res => {
+
+        })
+    }
+
+    console.log(items)
   }
 
   return (
@@ -246,7 +256,7 @@ export default function Drag() {
           <option value="" disabled />
           {data.filter(x => x.clicked == false).map(x => {
             return (
-              <option  key={x._id} value={x.code}>{x.name}</option >
+              <option key={x._id} value={x.code}>{x.name}</option >
             )
           })}
         </Select>
@@ -279,7 +289,7 @@ export default function Drag() {
               >
                 <option value="" disabled />
                 {chosen && data.find(x => x.code == chosen).criteria.map(y => {
-                  if (!itemsCriteria.map(z => z.code).includes(y.code)){
+                  if (!itemsCriteria.map(z => z.code).includes(y.code)) {
                     return (
                       <option key={y._id} value={y.code}>{y.name}</option>
                     )
