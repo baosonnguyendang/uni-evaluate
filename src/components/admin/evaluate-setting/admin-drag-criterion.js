@@ -5,6 +5,7 @@ import axios from 'axios';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
@@ -88,14 +89,14 @@ export default function Drag() {
           <PostButton label='-' handleClick={props.decrementScore} />
         </td>
         <td>
-          <TextField 
+          <TextField
             defaultValue={
               openCriteria ? (
                 itemsCriteria.filter(x => x.code == props.code).length > 0 ? (itemsCriteria.find(x => x.code === props.code).pts) : (5)
               ) : (
                 items.filter(x => x.code == props.code).length > 0 ? items.find(x => x.code === props.code).pts : 5
-              )} 
-            onChange={e => setPoint(e.target.value)} 
+              )}
+            onChange={e => setPoint(e.target.value)}
             id="outlined-basic" type='number' label="Điểm tối đa" variant="outlined" size='small' />
         </td>
       </tr>
@@ -135,11 +136,16 @@ export default function Drag() {
   //lấy nhẹ data tiêu chuẩn từ db
   const [data, setData] = React.useState([])
 
+  //them 1 cai thuoc tinh cho tieuchuan, true thi tuc la duoc chon de them vao form
+  const createData = (x) => ({ ...x, clicked: false })
+
   const token = localStorage.getItem('token')
   const fetchCriterion = () => {
     axios.get('admin/standard/criteria', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        setData(res.data.standards)
+        let temp = res.data.standards.map(x => createData(x))
+        setData(temp)
+
       })
       .catch(e => {
         console.log(e)
@@ -168,9 +174,6 @@ export default function Drag() {
     setNewCriteria(event.target.value);
   };
 
-  //thung rac, tieu chuan nao them vo roi thi bo vo day, khong hien thi trong selection nua
-  const [bin, setBin] = React.useState([])
-
   const addItem = (type) => {
     let itemsCopy = type === 'criterion' ? items.slice() : itemsCriteria.slice()
     let truncatedString = (type === 'criterion' ? data.find(x => x.code == newCriterion).name : (chosen && data.find(x => x.code == chosen).criteria.find(y => y.code == newCriteria).name)); //data.find(x => x.code == value).name
@@ -179,15 +182,14 @@ export default function Drag() {
       return a.score - b.score;
     })
     if (type === 'criterion') {
+      data.find(x => x.code == newCriterion).clicked = true
       setItems(itemsCopy)
-      let temp = data.find(x => x.code == newCriterion)
-      // setBin(x => x.concat([temp]))
-      setBin(x => [...x, temp])
-      // bin.push(data.find(x => x.code == newCriterion))
-      data.splice(data.indexOf(data.find(x => x.code == newCriterion)),1)
       setNewCriterion('')
+      console.log(data)
     } else {
       setItemsCriteria(itemsCopy)
+      console.log(itemsCopy.map(x => x.code))
+      console.log(data.find(x => x.code == chosen).criteria.map(y => y.code))
       setNewCriteria('')
     }
   }
@@ -211,12 +213,14 @@ export default function Drag() {
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
     });
-    if (openCriteria){
+    if (openCriteria) {
       setItemsCriteria(itemsCopy)
+      console.log(itemsCopy)
     } else {
       setItems(itemsCopy)
-      console.log(bin)
-      console.log(itemsCopy)
+      let temp = data.filter(x => x.clicked == true).map(y => y.code).filter(e => !itemsCopy.map(z => z.code).includes(e));
+      console.log(data.find(x => x.code == temp))
+      data.find(x => x.code == temp).clicked = false
       // itemsCopy.map(x => x.code)
     }
     // openCriteria ? setItemsCriteria(itemsCopy) : setItems(itemsCopy)
@@ -236,13 +240,12 @@ export default function Drag() {
         <Select
           native
           value={newCriterion}
-          label='Đơn vị'
           onChange={handleChangeCriterion}
         >
-          <option aria-label="None" value="" />
-          {data.map(x => {
+          <option value="" disabled />
+          {data.filter(x => x.clicked == false).map(x => {
             return (
-              <option key={x._id} value={x.code}>{x.name}</option>
+              <option  key={x._id} value={x.code}>{x.name}</option >
             )
           })}
         </Select>
@@ -275,11 +278,13 @@ export default function Drag() {
                 label='Đơn vị'
                 onChange={handleChangeCriteria}
               >
-                <option aria-label="None" value="" />
+                <option value="" disabled />
                 {chosen && data.find(x => x.code == chosen).criteria.map(y => {
-                  return (
-                    <option key={y._id} value={y.code}>{y.name}</option>
-                  )
+                  if (!itemsCriteria.map(z => z.code).includes(y.code)){
+                    return (
+                      <option key={y._id} value={y.code}>{y.name}</option>
+                    )
+                  }
                 })}
               </Select>
             </FormControl>
@@ -292,7 +297,7 @@ export default function Drag() {
           </div>
         </Fade>
       </Modal>
-      <Button style={{position: 'absolute', right: 10, bottom: 10}} variant='contained' color='secondary' onClick={save}>Lưu Form</Button>
+      <Button style={{ position: 'absolute', right: 10, bottom: 10 }} variant='contained' color='secondary' onClick={save}>Lưu Form</Button>
     </div>
   );
 }
