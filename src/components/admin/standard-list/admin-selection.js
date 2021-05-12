@@ -185,7 +185,7 @@ export default function Selection() {
   };
 
   // Tạo lựa chọn
-  const submitAddSelection = () =>{
+  const submitAddSelection = (e) =>{
     console.log(code, name, description, point);
     const body = {
       code,
@@ -196,6 +196,8 @@ export default function Selection() {
     axios.post(`/admin/criteria/${id}/addCriteriaOption`, body, config)
     .then(res=>{
       console.log(res.data);
+      e.preventDefault()
+      setRows(rows => [...rows, createData(code, name, description, point)])
       handleClose();
     })
     .catch(e=>{
@@ -299,7 +301,7 @@ export default function Selection() {
             <Fade in={open}>
               <div className={classes.paper1}>
                 <h2 id="transition-modal-title">Thêm lựa chọn</h2>
-                <form onSubmit={submit}>
+                <form onSubmit={submitAddSelection}>
                   <TextField onChange={e => setC(e.target.value)} id="code" label="Mã" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth className={classes.field} />
                   <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />

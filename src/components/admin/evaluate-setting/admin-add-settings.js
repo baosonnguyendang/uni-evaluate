@@ -380,7 +380,7 @@ export default function AddSettings() {
                                 label='Đơn vị'
                                 onChange={handleChangeUnit}
                               >
-                                <option aria-label="None" value="" />
+                                <option value="" disabled />
                                 <option value={10}>Khoa học máy tính</option>
                                 <option value={20}>Hệ thống và Mạng</option>
                                 <option value={30}>Hệ thống thông tin</option>
