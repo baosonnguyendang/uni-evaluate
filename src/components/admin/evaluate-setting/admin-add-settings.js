@@ -402,7 +402,7 @@ export default function AddSettings() {
                     <Typography component="h1" variant="h5" color="inherit" noWrap>
                       {name} (Mã Form: {code})
                     </Typography>
-                    <Paper style={{ padding: 10 }} className={classes.paper}>
+                    <Paper style={{ padding: '10px 10px 50px 10px' }} className={classes.paper}>
                       {/* <AppBar position="static"> */}
                       <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
                         <Tab className={classes.tab} label="Cấu hình đơn vị" />

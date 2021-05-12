@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Drag(props) {
   // mã form
-  const {fcode} = props;
+  const { fcode } = props;
   const classes = useStyles();
   //phai an luu form 1 lan moi co the vao them tieu chi dc
   const [bool, setBool] = React.useState(false)
@@ -143,12 +143,30 @@ export default function Drag(props) {
   //them 1 cai thuoc tinh cho tieuchuan, true thi tuc la duoc chon de them vao form
   const createData = (x) => ({ ...x, clicked: false })
 
+  //cai tren la ds tieu chuan, cai duoi la ds tieu chi
+  const [items, setItems] = useState([])
+  const [itemsCriteria, setItemsCriteria] = useState([])
+
   const token = localStorage.getItem('token')
   const fetchCriterion = () => {
     axios.get('admin/standard/criteria', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         let temp = res.data.standards.map(x => createData(x))
-        setData(temp)
+        axios.get(`/admin/form/${fcode}/getFormStandard`, { headers: { "Authorization": `Bearer ${token}` } })
+          .then(res => {
+            console.log(res.data.formStandards)
+            let temp2 = []
+            res.data.formStandards.map(x => {
+              let obj = { "title": x.standard_id.name, "score": x.standard_order, "code": x.standard_id.code, "pts": x.standard_point, "criteria": [] }
+              temp.find(x => x.code == obj.code).clicked = true
+              temp2.push(obj)
+            })
+            setData(temp)
+            setItems(temp2)
+          })
+          .catch(e => {
+            console.log(e)
+          })
       })
       .catch(e => {
         console.log(e)
@@ -160,10 +178,6 @@ export default function Drag(props) {
       fetchCriterion()
     }
   })
-
-  //cai tren la ds tieu chuan, cai duoi la ds tieu chi
-  const [items, setItems] = useState([])
-  const [itemsCriteria, setItemsCriteria] = useState([])
 
   //chon tieu chuan
   const [newCriterion, setNewCriterion] = React.useState('');
@@ -244,16 +258,16 @@ export default function Drag(props) {
     if (new Set(items.map(x => x.score)).size !== items.map(x => x.score).length) {
       alert('Kiểm tra lại STT')
     } else {
-      
+
       axios.post(`/admin/form/${fcode}/addFormStandard`, body, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setBool(true);
           console.log(res.data);
         })
-        .catch(err=>{
+        .catch(err => {
 
         })
-      
+
     }
 
   }
