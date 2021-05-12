@@ -38,7 +38,10 @@ export default function Drag(props) {
   const { fcode } = props;
   const classes = useStyles();
   //phai an luu form 1 lan moi co the vao them tieu chi dc
-  const [bool, setBool] = React.useState(false)
+  const [disabled, setDisabled] = React.useState(true)
+
+  //cai nay la de luu tam data, data thay doi thi moi an luu duoc, tranh lam kho backend
+  const [luuTam, setLuuTam] = React.useState([])
 
   //cái này là để mở cái modal chỉnh tiêu chí
   const [openCriteria, setOpenCriteria] = React.useState(false);
@@ -74,7 +77,6 @@ export default function Drag(props) {
 
     const handleOpen = (x) => {
       setChosen(x)
-      console.log(itemsCriteria)
       setItemsCriteria(items.find(item => item.code == x).criteria)
       setOpenCriteria(true)
     }
@@ -86,7 +88,7 @@ export default function Drag(props) {
     return (
       <tr>
         <td><PostButton label='x' handleClick={props.removeItem} /></td>
-        <td><span type={!openCriteria && 'button'} onClick={() => { bool && !openCriteria && handleOpen(props.code) }}><PostText text={props.title} /></span></td>
+        <td><span type={!openCriteria && 'button'} onClick={() => { disabled && !openCriteria && handleOpen(props.code) }}><PostText text={props.title} /></span></td>
         <td style={style}>
           <PostButton label='+' handleClick={props.incrementScore} />
           <PostText score={true} text={props.score} style={{ lineHeight: 30 }} />
@@ -154,7 +156,6 @@ export default function Drag(props) {
         let temp = res.data.standards.map(x => createData(x))
         axios.get(`/admin/form/${fcode}/getFormStandard`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
-            console.log(res.data.formStandards)
             let temp2 = []
             res.data.formStandards.map(x => {
               let obj = { "title": x.standard_id.name, "score": x.standard_order, "code": x.standard_id.code, "pts": x.standard_point, "criteria": [] }
@@ -163,6 +164,7 @@ export default function Drag(props) {
             })
             setData(temp)
             setItems(temp2)
+            setLuuTam(temp2)
           })
           .catch(e => {
             console.log(e)
@@ -176,6 +178,14 @@ export default function Drag(props) {
   useEffect(() => {
     if (data.length === 0) {
       fetchCriterion()
+    }
+    if (items == luuTam){
+      console.log(items)
+      console.log(luuTam)
+      setDisabled(true)
+    }
+    else {
+      setDisabled(false)
     }
   })
 
@@ -261,8 +271,8 @@ export default function Drag(props) {
 
       axios.post(`/admin/form/${fcode}/addFormStandard`, body, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
-          setBool(true);
-          console.log(res.data);
+          setDisabled(true);
+          setLuuTam(items)
         })
         .catch(err => {
 
@@ -334,7 +344,7 @@ export default function Drag(props) {
           </div>
         </Fade>
       </Modal>
-      <Button style={{ position: 'absolute', right: 10, bottom: 10 }} variant='contained' color='secondary' onClick={save}>Lưu Form</Button>
+      <Button style={{ position: 'absolute', right: 10, bottom: 10 }} variant='contained' disabled={disabled} color='secondary' onClick={save}>Lưu Form</Button>
     </div>
   );
 }
