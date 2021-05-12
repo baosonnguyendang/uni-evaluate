@@ -4,7 +4,7 @@ import AppBar from './user-appbar'
 import Main from './user-main'
 import Info from './user-info'
 import TableEvaluation from './element/user-table'
-import Profile from './user-profile'
+import Profile from './user-profile/user-profile'
 import Evaluation from './user-evaluation';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Container } from '@material-ui/core'
