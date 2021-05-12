@@ -406,24 +406,24 @@ export default function AddSettings() {
                       {/* <AppBar position="static"> */}
                       <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
                         <Tab className={classes.tab} label="Cấu hình đơn vị" />
+                        {/* <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" /> */}
                         <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
-                        <Tab className={classes.tab} label="Lưu Form" />
                       </Tabs>
                       {/* </AppBar> */}
                       {(() => {
                         switch (value) {
-                          case 2:
+                          case 1:
                             return (
                               <div>
                                 <Drag />
                               </div>
                             )
-                          case 1:
-                            return (
-                              <div>
-                                <SelectCriterion />
-                              </div>
-                            )
+                          // case 1:
+                          //   return (
+                          //     <div>
+                          //       <SelectCriterion />
+                          //     </div>
+                          //   )
                           case 0:
                             return (
                               <div>
