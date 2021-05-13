@@ -50,6 +50,29 @@ export default function Drag(props) {
     items.find(x => x.code == chosen).criteria = itemsCriteria
   }
 
+  // thêm tiêu chí vào tiêu chuẩn thuộc form
+  const submitAddFormCriteria = () =>{
+    const scode = chosen //mã tiêu chuẩn
+    //request body
+    const body = {
+        criterions: itemsCriteria.map(item => {
+          return {
+            code: item.code, //mã tiêu chí
+            point: item.pts, // điểm tối đa
+            order: item.score // stt
+          }
+        }),
+    }
+    axios.post(`/admin/form/${fcode}/standard/${scode}/addFormCriteria`, body, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res=>{
+        
+        handleCloseCriteria(); // tắt modal
+      })
+      .catch(err =>{
+
+      })
+  }
+
   const PostButton = (props) => {
     let style = {
       margin: 10,
@@ -378,7 +401,7 @@ export default function Drag(props) {
               updateScore={updateScore}
               removeItem={removeItem}
             />
-            <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
+            <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={submitAddFormCriteria}>Xong</Button>
           </div>
         </Fade>
       </Modal>
