@@ -36,7 +36,10 @@ const useStyles = makeStyles(theme => ({
 export default function Drag(props) {
   // mã form
   const { fcode } = props;
+
+  //css
   const classes = useStyles();
+
   //phai an luu form 1 lan moi co the vao them tieu chi dc
   const [disabled, setDisabled] = React.useState(true)
 
@@ -47,7 +50,7 @@ export default function Drag(props) {
   const [openCriteria, setOpenCriteria] = React.useState(false);
   const handleCloseCriteria = () => {
     setOpenCriteria(false);
-    items.find(x => x.code == chosen).criteria = itemsCriteria
+    // items.find(x => x.code == chosen).criteria = itemsCriteria
   }
 
   // thêm tiêu chí vào tiêu chuẩn thuộc form
@@ -64,11 +67,11 @@ export default function Drag(props) {
         }),
     }
     axios.post(`/admin/form/${fcode}/standard/${scode}/addFormCriteria`, body, { headers: { "Authorization": `Bearer ${token}` } })
-      .then(res=>{
+      .then(res => {
         
         handleCloseCriteria(); // tắt modal
       })
-      .catch(err =>{
+      .catch(err => {
 
       })
   }
@@ -100,8 +103,7 @@ export default function Drag(props) {
 
     const handleOpen = (x) => {
       setChosen(x)
-      setItemsCriteria(items.find(item => item.code == x).criteria) //items la ds tieu chuan da dc chon roi
-      setOpenCriteria(true)
+      //setItemsCriteria(items.find(item => item.code == x).criteria) 
       axios.get(`/admin/form/${fcode}/standard/${x}/getFormCriteria`, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           console.log(res.data.formCriteria)
@@ -112,6 +114,7 @@ export default function Drag(props) {
           })
           setItemsCriteria(temp)
           console.log(itemsCriteria)
+          setOpenCriteria(true)
         })
         .catch(err => {
 
@@ -258,7 +261,7 @@ export default function Drag(props) {
     let truncatedString = (type === 'criterion' ? data.find(x => x.code == newCriterion).name : (chosen && data.find(x => x.code == chosen).criteria.find(y => y.code == newCriteria).name)); //data.find(x => x.code == value).name
     //itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": type === 'criterion' ? newCriterion : newCriteria, "pts": 5 })
     if (type === 'criterion') {
-      itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriterion, "pts": 5, "criteria": [] })
+      itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriterion, "pts": 5 })
     } else {
       itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriteria, "pts": 5 })
       console.log(itemsCopy)
@@ -325,6 +328,7 @@ export default function Drag(props) {
         }
       }),
     }
+    console.log(items)
     if (new Set(items.map(x => x.score)).size !== items.map(x => x.score).length) {
       alert('Kiểm tra lại STT')
     } else {
@@ -338,9 +342,12 @@ export default function Drag(props) {
         .catch(err => {
 
         })
-
     }
+  }
 
+  //huy sua tieu chi, ve lai nhu cu luc moi mo 
+  const cancel = () => {
+    handleCloseCriteria()
   }
 
   return (
@@ -348,6 +355,7 @@ export default function Drag(props) {
       <FormControl variant="outlined" >
         <InputLabel >Tiêu chuẩn </InputLabel>
         <Select
+          style={{minWidth: '300px'}}
           native
           value={newCriterion}
           onChange={handleChangeCriterion}
@@ -381,6 +389,7 @@ export default function Drag(props) {
             <FormControl variant="outlined" >
               <InputLabel >Tiêu chí </InputLabel>
               <Select
+                style={{minWidth: '300px'}}
                 native
                 value={newCriteria}
                 label='Đơn vị'
@@ -401,7 +410,10 @@ export default function Drag(props) {
               updateScore={updateScore}
               removeItem={removeItem}
             />
-            <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={submitAddFormCriteria}>Xong</Button>
+            <div style={{ marginTop: '10px', textAlign: 'center' }} >
+              <Button variant="contained" color="primary" onClick={submitAddFormCriteria}>Lưu và thoát</Button>
+              <Button style={{marginLeft: 10}} variant="contained" color="secondary" onClick={cancel}>Thoát</Button>
+            </div>
           </div>
         </Fade>
       </Modal>
