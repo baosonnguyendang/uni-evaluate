@@ -77,8 +77,22 @@ export default function Drag(props) {
 
     const handleOpen = (x) => {
       setChosen(x)
-      setItemsCriteria(items.find(item => item.code == x).criteria)
+      setItemsCriteria(items.find(item => item.code == x).criteria) //items la ds tieu chuan da dc chon roi
       setOpenCriteria(true)
+      axios.get(`/admin/form/${fcode}/standard/${x}/getFormCriteria`, { headers: { "Authorization": `Bearer ${token}` } })
+        .then(res => {
+          console.log(res.data.formCriteria)
+          let temp = []
+          res.data.formCriteria.map(x => {
+            let obj = {'code': x.criteria_id.code, 'score': parseInt(x.criteria_order), 'pts': x.point, 'title': x.criteria_id.name}
+            temp.push(obj)
+          })
+          setItemsCriteria(temp)
+          console.log(itemsCriteria)
+        })
+        .catch(err => {
+
+        })
     }
 
     const setPoint = (e) => {
@@ -145,7 +159,7 @@ export default function Drag(props) {
   //them 1 cai thuoc tinh cho tieuchuan, true thi tuc la duoc chon de them vao form
   const createData = (x) => ({ ...x, clicked: false })
 
-  //cai tren la ds tieu chuan, cai duoi la ds tieu chi
+  //cai tren la ds tieu chuan, cai duoi la ds tieu chi duoc chon de them vao form
   const [items, setItems] = useState([])
   const [itemsCriteria, setItemsCriteria] = useState([])
 
@@ -164,18 +178,18 @@ export default function Drag(props) {
             })
             function dynamicSort(property) {
               var sortOrder = 1;
-              if(property[0] === "-") {
-                  sortOrder = -1;
-                  property = property.substr(1);
+              if (property[0] === "-") {
+                sortOrder = -1;
+                property = property.substr(1);
               }
-              return function (a,b) {
-                  /* next line works with strings and numbers, 
-                   * and you may want to customize it to your needs
-                   */
-                  var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-                  return result * sortOrder;
+              return function (a, b) {
+                /* next line works with strings and numbers, 
+                 * and you may want to customize it to your needs
+                 */
+                var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                return result * sortOrder;
               }
-          }
+            }
 
             temp2.sort(dynamicSort('score'))
             setData(temp)
@@ -215,6 +229,7 @@ export default function Drag(props) {
     setNewCriteria(event.target.value);
   };
 
+  //them tieu chuan (tieu chi) vao form
   const addItem = (type) => {
     let itemsCopy = type === 'criterion' ? items.slice() : itemsCriteria.slice()
     let truncatedString = (type === 'criterion' ? data.find(x => x.code == newCriterion).name : (chosen && data.find(x => x.code == chosen).criteria.find(y => y.code == newCriteria).name)); //data.find(x => x.code == value).name
@@ -223,6 +238,7 @@ export default function Drag(props) {
       itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriterion, "pts": 5, "criteria": [] })
     } else {
       itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriteria, "pts": 5 })
+      console.log(itemsCopy)
     }
 
     itemsCopy.sort((a, b) => {
@@ -234,6 +250,7 @@ export default function Drag(props) {
       setNewCriterion('')
     } else {
       setItemsCriteria(itemsCopy)
+      console.log(itemsCopy)
       setNewCriteria('')
     }
   }
