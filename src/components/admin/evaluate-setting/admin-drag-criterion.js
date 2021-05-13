@@ -162,6 +162,22 @@ export default function Drag(props) {
               temp.find(x => x.code == obj.code).clicked = true
               temp2.push(obj)
             })
+            function dynamicSort(property) {
+              var sortOrder = 1;
+              if(property[0] === "-") {
+                  sortOrder = -1;
+                  property = property.substr(1);
+              }
+              return function (a,b) {
+                  /* next line works with strings and numbers, 
+                   * and you may want to customize it to your needs
+                   */
+                  var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                  return result * sortOrder;
+              }
+          }
+
+            temp2.sort(dynamicSort('score'))
             setData(temp)
             setItems(temp2)
             setLuuTam(temp2)
@@ -179,9 +195,7 @@ export default function Drag(props) {
     if (data.length === 0) {
       fetchCriterion()
     }
-    if (items == luuTam){
-      console.log(items)
-      console.log(luuTam)
+    if (items == luuTam) {
       setDisabled(true)
     }
     else {
@@ -254,6 +268,12 @@ export default function Drag(props) {
     }
   }
 
+  //reset nhe cai form
+  // const undo = () => {
+  //   setItems(luuTam)
+  //   setDisabled(true)
+  // }
+
   //luu nhe cai form
   const save = () => {
     const body = {
@@ -271,6 +291,7 @@ export default function Drag(props) {
 
       axios.post(`/admin/form/${fcode}/addFormStandard`, body, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
+          console.log(items)
           setDisabled(true);
           setLuuTam(items)
         })
@@ -344,7 +365,10 @@ export default function Drag(props) {
           </div>
         </Fade>
       </Modal>
-      <Button style={{ position: 'absolute', right: 10, bottom: 10 }} variant='contained' disabled={disabled} color='secondary' onClick={save}>Lưu Form</Button>
+      <div style={{ position: 'absolute', right: 10, bottom: 10 }}>
+        {/* <Button style={{ marginRight: 10 }} variant='contained' color='primary' onClick={undo}>Undo</Button> */}
+        <Button variant='contained' disabled={disabled} color='secondary' onClick={save}>Lưu Form</Button>
+      </div>
     </div>
   );
 }
