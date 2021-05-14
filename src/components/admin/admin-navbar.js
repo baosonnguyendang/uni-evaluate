@@ -19,15 +19,6 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { MainListItems } from './admin-listItems';
-import UserTable from "./admin-user"
-import Faculty from "./admin-faculty"
-import EvaluateList from './admin-evaluate'
-import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
-import AddSettings from './evaluate-setting/admin-add-settings'
-import Criteria from './standard-list/admin-criteria'
-import Criterion from './standard-list/admin-criterion'
-import Results from './evaluate-setting/admin-results'
-import Sub from './admin-sub'
 import logo from '../../img/logo.png'
 import { BrowserRouter as Router, Switch, Route, Redirect, NavLink } from "react-router-dom";
 import { useDispatch } from 'react-redux'

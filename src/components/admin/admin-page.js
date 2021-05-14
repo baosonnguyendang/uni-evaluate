@@ -8,7 +8,7 @@ import AddSettings from './evaluate-setting/admin-add-settings'
 import Criteria from './standard-list/admin-criteria'
 import Criterion from './standard-list/admin-criterion'
 import Selection from './standard-list/admin-selection'
-import Results from './evaluate-setting/admin-results'
+import ResultsList from './results/admin-results-list'
 import { Switch, Route, Redirect, NavLink } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Sub from './admin-sub'
@@ -65,7 +65,7 @@ const AdminPage = () => {
               <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
               <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />
               {/* <Route exact path='/admin/evaluate-settings/:id/:id1/:id2' children={<AddSettings />} /> */}
-              <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<Results />} />
+              <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<ResultsList />} />
               <Route exact path='/admin/criterion' children={<Criterion />} />
               <Route exact path='/admin/criteria/' children={<Sub />} />
               <Route exact path='/admin/criterion/:id' children={<Criteria />} />
