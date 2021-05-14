@@ -44,16 +44,21 @@ export default function UserSettings(props) {
     filterType: 'checkbox',
     selectableRows: true,
     selectableRowsOnClick: true,
-    onRowClick: (rowData, rowState) => {
-      //What can I add here?
-      console.log(rowData, rowState);
-    },
+    onRowsDelete: (rowsDeleted) => {
+      const idsToDelete = rowsDeleted.data.map(item => item.dataIndex) // đây là mảng lưu index bị xóa
+      console.log(data)
+      let temp = data.slice()
+      console.log(temp)
+      let tempp = temp.splice(0, 1)
+      console.log(tempp)
+    }
   };
 
   const onDelete = (x) => {
     console.log(x)
     console.log(props.data.indexOf(x))
     props.data.splice(props.data.indexOf(x), 1)
+    console.log(data.splice(data.indexOf(x), 1))
     setData(data => data.splice(data.indexOf(x), 1))
   }
 

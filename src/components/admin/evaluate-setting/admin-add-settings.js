@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import SelectCriterion from './admin-select-criterion'
 import UserSettings from './admin-user-settings'
 import Drag from './admin-drag-criterion'
 
@@ -78,18 +77,12 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-var listOfSelection = new Array('')
-
 const createData = (name, id) => {
   return { name, id, check: false }
 }
 
 // const units = [
 //   createData('Khoa Máy tính', '0001'),
-//   createData('Khoa Cơ khí', '0002'),
-//   createData('Phòng Đào tạo', '0011'),
-//   createData('Phòng Y tế', '0012'),
-//   createData('Ban Giám hiệu', '0020'),
 // ]
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -186,6 +179,9 @@ export default function AddSettings() {
   //cai nay la de sau khi check hoac uncheck se render lai luon
   const [state, setState] = React.useState(true);
 
+  //danh sach nguoi trong khoa
+  const [unitMember, setUnitMember] = useState([])
+
   const group = 1
 
   //open modal them don vi
@@ -197,7 +193,6 @@ export default function AddSettings() {
     setUnitChosen(units.filter(unit => unit.check === true))
     axios.post(`/admin/form/${code}/addFormDepartments`, { dcodes: units.filter(unit => unit.check === true).map(x => x.id) }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        console.log(unitChosen)
         setOpenUnit(false);
       })
       .catch(e => {
@@ -217,7 +212,17 @@ export default function AddSettings() {
 
     const openUnit = (x) => {
       unit = x
-      setShowResults(true)
+      axios.get(`/admin/form/${code}/${x}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
+        .then(res => {
+          let temp = []
+          res.data.formUser.map(x => {
+            let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
+            temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
+          })
+          setUnitMember(temp)
+          setShowResults(true)
+        })
+        .catch(err => console.log(err))
     }
 
     axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -258,16 +263,6 @@ export default function AddSettings() {
     setValue(newValue);
   };
 
-  //danh sach nguoi trong khoa
-  const [unitMember, setUnitMember] = useState([
-    ["Joe James", "1712970", "Khoa học máy tính"],
-    ["John Walsh", "1712972", "Hệ thống và Mạng"],
-    ["James Tarkowski", "1712973", "Hệ thống thông tin"],
-    ["James Houston", "1712974", "Công nghệ phần mềm"],
-    ["James Rodriguez", "1712975", "Kỹ thuật máy tính"],
-    ["James Bond", "1712976", "Công nghệ phần mềm"],
-  ])
-
   //chon truong don vi
   const [openHead, setOpenHead] = React.useState(false);
   const handleOpenHead = () => {
@@ -287,13 +282,7 @@ export default function AddSettings() {
     setOpenAdd(false);
   };
   const submitAdd = (e) => {
-    e.preventDefault()
-    if (id1 !== '03') {
-      setUnitMember(unitMember => [...unitMember, ['null', idd, 'null']])
-    } else {
-
-    }
-
+    setUnitMember(unitMember => [...unitMember, ['null', idd, 'null']])
     handleCloseAdd()
   }
   const [newUnit, setNewUnit] = React.useState('');
@@ -415,15 +404,9 @@ export default function AddSettings() {
                           case 1:
                             return (
                               <div>
-                                <Drag fcode={code}/>
+                                <Drag fcode={code} />
                               </div>
                             )
-                          // case 1:
-                          //   return (
-                          //     <div>
-                          //       <SelectCriterion />
-                          //     </div>
-                          //   )
                           case 0:
                             return (
                               <div>
@@ -479,10 +462,6 @@ export default function AddSettings() {
                             )
                         }
                       })()}
-
-                      {/* <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-              Thêm tiêu chuẩn vào Form
-            </Button> */}
                     </Paper>
                   </div >
                 )
