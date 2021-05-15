@@ -72,7 +72,12 @@ export default function UserSettings(props) {
         temp[x] = null
       })
       temp = temp.filter(x => x != null)
-      axios.post(``, bin, { headers: { "Authorization": `Bearer ${token}` } })
+      const fcode = props.fcode;
+      const dcode = props.unit;
+      const body ={
+        delete_users: bin
+      }
+      axios.post(`/admin/form/${fcode}/${dcode}/removeFormUser`, body, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setData(temp)
         })
