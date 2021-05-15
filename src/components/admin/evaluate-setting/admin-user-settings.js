@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import axios from 'axios'
 
@@ -34,11 +34,30 @@ export default function UserSettings(props) {
   // const data = [
   //   ["Joe James", "1712970", "Khoa học máy tính"],
   // ];
-
-  const [data, setData] = React.useState(props.data)
-
+  console.log(props.unit, props.type, props.fcode)
   //fe to be
   const token = localStorage.getItem('token')
+
+  const [data, setData] = React.useState([])
+
+  const [fetched, setFetched] = React.useState(false)
+
+  useEffect(() => {
+    if (fetched == false) {
+      setFetched(true)
+      axios.get(`/admin/form/${props.fcode}/${props.unit}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        let temp = []
+        res.data.formUser.map(x => {
+          let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
+          temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
+        })
+        console.log(temp)
+        setData(temp)
+      })
+      .catch(err => console.log(err))
+    }
+  })
 
   const options = {
     filterType: 'checkbox',
@@ -53,7 +72,7 @@ export default function UserSettings(props) {
         temp[x] = null
       })
       temp = temp.filter(x => x != null)
-      axios.post(``, bin, { headers: { "Authorization": `Bearer ${token}` } } )
+      axios.post(``, bin, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setData(temp)
         })
@@ -74,7 +93,7 @@ export default function UserSettings(props) {
       {type !== '03' ? (
         <MUIDataTable
           title={"Các thành viên tham gia đánh giá"}
-          data={props.data}
+          data={data}
           columns={columns}
           options={options}
         />

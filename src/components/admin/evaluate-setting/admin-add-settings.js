@@ -212,17 +212,18 @@ export default function AddSettings() {
 
     const openUnitt = (x) => {
       unit = x
-      axios.get(`/admin/form/${code}/${x}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
-        .then(res => {
-          let temp = []
-          res.data.formUser.map(x => {
-            let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
-            temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
-          })
-          setUnitMember(temp)
-          setShowResults(true)
-        })
-        .catch(err => console.log(err))
+      setShowResults(true)
+      // axios.get(`/admin/form/${code}/${x}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
+      //   .then(res => {
+      //     let temp = []
+      //     res.data.formUser.map(x => {
+      //       let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
+      //       temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
+      //     })
+      //     setUnitMember(temp)
+      //     setShowResults(true)
+      //   })
+      //   .catch(err => console.log(err))
     }
 
     axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -309,7 +310,7 @@ export default function AddSettings() {
                       Nhóm 0{group} - {units.find(x => x.id == unit).name}
                     </Typography>
                     <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
-                      <UserSettings data={unitMember} type={id1} />
+                      <UserSettings unit={unit} type={id1} fcode={code} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                         <Button variant="contained" style={{ marginRight: 10, width: 200 }} onClick={() => { handleOpenHead() }}>
                           Trưởng đơn vị
