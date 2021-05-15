@@ -210,7 +210,7 @@ export default function AddSettings() {
     let bool = false;
     let { url } = useRouteMatch();
 
-    const openUnit = (x) => {
+    const openUnitt = (x) => {
       unit = x
       axios.get(`/admin/form/${code}/${x}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
@@ -246,7 +246,7 @@ export default function AddSettings() {
             if (unit.check) {
               bool = true;
               return (
-                <li key={unit.id} id={unit.id} style={{ marginBottom: 10 }} type='button' onClick={() => openUnit(unit.id)}>- {unit.name}</li>
+                <li key={unit.id} id={unit.id} style={{ marginBottom: 10 }} type='button' onClick={() => openUnitt(unit.id)}>- {unit.name}</li>
               )
             }
           })}
@@ -311,10 +311,10 @@ export default function AddSettings() {
                     <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
                       <UserSettings data={unitMember} type={id1} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
-                        <Button variant="contained" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenHead() }}>
+                        <Button variant="contained" style={{ marginRight: 10, width: 200 }} onClick={() => { handleOpenHead() }}>
                           Trưởng đơn vị
                         </Button>
-                        <Button variant="contained" color="primary" style={{ marginRight: 10, width: 235.38 }} onClick={() => { handleOpenAdd() }}>
+                        <Button variant="contained" color="primary" style={{ marginRight: 10, width: 200 }} onClick={() => { handleOpenAdd() }}>
                           Thêm GV/VC
                         </Button>
                         <Button variant="contained" color="secondary" onClick={() => { setShowResults(false) }}>

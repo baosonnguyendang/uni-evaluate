@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import axios from 'axios'
+
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -31,26 +33,33 @@ export default function UserSettings(props) {
   const type = props.type
   // const data = [
   //   ["Joe James", "1712970", "Khoa học máy tính"],
-  //   ["John Walsh", "1712972", "Hệ thống và Mạng"],
-  //   ["Bob Herm", "1712973", "Hệ thống thông tin"],
-  //   ["James Houston", "1712974", "Công nghệ phần mềm"],
-  //   ["James Rodriguez", "1712975", "Kỹ thuật máy tính"],
-  //   ["James Bond", "1712976", "Công nghệ phần mềm"],
   // ];
 
   const [data, setData] = React.useState(props.data)
+
+  //fe to be
+  const token = localStorage.getItem('token')
 
   const options = {
     filterType: 'checkbox',
     selectableRows: true,
     selectableRowsOnClick: true,
     onRowsDelete: (rowsDeleted) => {
-      const idsToDelete = rowsDeleted.data.map(item => item.dataIndex) // đây là mảng lưu index bị xóa
-      console.log(data)
+      const idsToDelete = rowsDeleted.data.map(item => item.dataIndex)
       let temp = data.slice()
+      let bin = []
+      idsToDelete.map(x => {
+        bin.push(temp[x])
+        temp[x] = null
+      })
+      console.log(bin)
+      temp = temp.filter(x => x != null)
       console.log(temp)
-      let tempp = temp.splice(0, 1)
-      console.log(tempp)
+      axios.post(``, bin, { headers: { "Authorization": `Bearer ${token}` } } )
+        .then(res => {
+          setData(temp)
+        })
+        .catch(err => console.log(err))
     }
   };
 
