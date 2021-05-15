@@ -49,12 +49,10 @@ export default function UserSettings(props) {
       let temp = data.slice()
       let bin = []
       idsToDelete.map(x => {
-        bin.push(temp[x])
+        bin.push(temp[x][1])
         temp[x] = null
       })
-      console.log(bin)
       temp = temp.filter(x => x != null)
-      console.log(temp)
       axios.post(``, bin, { headers: { "Authorization": `Bearer ${token}` } } )
         .then(res => {
           setData(temp)

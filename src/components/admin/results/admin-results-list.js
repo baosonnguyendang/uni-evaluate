@@ -54,7 +54,7 @@ const group = 1
 export default function ResultsList(props) {
   const classes = useStyles()
 
-  const { id, id1 } = useParams() 
+  const { id, id1 } = useParams()
 
   //qua trang
   const [page, setPage] = React.useState(0);
@@ -74,7 +74,9 @@ export default function ResultsList(props) {
         Đợt {id} - Nhóm {id1}
       </Typography>
       <Paper className={classes.paper}>
-        Các đơn vị tham gia đánh giá
+        <Typography component="h4" variant="h6" color="inherit" noWrap>
+          Các đơn vị tham gia đánh giá
+        </Typography>
       </Paper>
     </div>
   )
