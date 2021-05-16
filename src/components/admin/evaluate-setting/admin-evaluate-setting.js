@@ -59,21 +59,6 @@ export default function EvaluateSetting(props) {
                 </TableRow>
               )
             })}
-            {/* <TableRow>
-              <TableCell align="center"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/01`}>01</Link></TableCell>
-              <TableCell align="left"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/01`}>Giảng viên, Nghiên cứu viên, Kỹ sư phục vụ giảng dạy</Link></TableCell>
-              <TableCell align="left"><Link to={`${url}/01/results`}>Xem kết quả đánh giá</Link></TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell align="center"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/02`}>02</Link></TableCell>
-              <TableCell align="left"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/02`}>Nhân viên hành chính, kỹ thuật, phục vụ, bảo vệ</Link></TableCell>
-              <TableCell align="left">Xem kết quả đánh giá</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell align="center"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/03`}>03</Link></TableCell>
-              <TableCell align="left"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/03`}>Viên chức quản lý</Link></TableCell>
-              <TableCell align="left">Xem kết quả đánh giá</TableCell>
-            </TableRow> */}
           </TableBody>
         </Table>
       </Paper>

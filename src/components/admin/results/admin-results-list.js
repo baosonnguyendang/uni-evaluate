@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import axios from 'axios'
+
 import { Link, useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,47 +28,30 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function createData(name, id, unit) {
-  return { name, id, unit, link: 'Kết quả' }
-}
-
-const CustomTableCell = ({ row, name }) => {
-  if (name === 'id') {
-    return (
-      <TableCell style={{ textAlign: 'center' }}>{row[name]}</TableCell>
-    )
-  }
-  else {
-    return (
-      <TableCell>
-        {name === 'link' ? (<Link to={'/admin/criteria/' + row.id} >{row[name]}</Link>) : (row[name])}
-      </TableCell>
-    )
-  }
-};
-
-const rows = [
-  createData('Nguyễn Phú Trọng', '1712970', 'Quốc hội'),
-];
-
-const group = 1
-
 export default function ResultsList(props) {
   const classes = useStyles()
 
   const { id, id1 } = useParams()
 
-  //qua trang
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  const token = localStorage.getItem('token')
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  // axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+  //   .then(res => {
+  //     console.log(res)
+  //   })
+  //   .catch(e => console.log(e))
+
+  // axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
+  //   .then(res => {
+  //     // (res.data) && (setInit(false))
+  //     if (res.data.form) {
+  //       code = res.data.form.code
+  //       name = res.data.form.name
+  //     }
+  //   })
+  //   .catch(e => {
+  //     console.log(e)
+  //   })
 
   return (
     <div>
