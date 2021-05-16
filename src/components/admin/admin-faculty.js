@@ -332,7 +332,7 @@ export default function Criterion() {
                     <form onSubmit={submitAddDepartment}>
                       <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required className={classes.field} />
                       <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth required className={classes.field} />
-                      <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth required variant="outlined" className={classes.field} />
+                      <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" className={classes.field} />
                       {/* <TextField onChange={e => setN(e.target.value)} id="unit" label="Đơn vị" variant="outlined" fullWidth className={classes.field} /> */}
                       <FormControl variant="outlined" fullWidth className={classes.formControl}>
                         <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>

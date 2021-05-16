@@ -46,18 +46,18 @@ export default function UserSettings(props) {
     if (fetched == false) {
       setFetched(true)
       axios.get(`/admin/form/${props.fcode}/${props.unit}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
-      .then(res => {
-        let temp = []
-        res.data.formUser.map(x => {
-          let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
-          temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
+        .then(res => {
+          let temp = []
+          res.data.formUser.map(x => {
+            let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
+            temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
+          })
+          console.log(temp)
+          setData(temp)
         })
-        console.log(temp)
-        setData(temp)
-      })
-      .catch(err => console.log(err))
+        .catch(err => console.log(err))
     }
-  })
+  }, [])
 
   const options = {
     filterType: 'checkbox',
@@ -74,7 +74,7 @@ export default function UserSettings(props) {
       temp = temp.filter(x => x != null)
       const fcode = props.fcode;
       const dcode = props.unit;
-      const body ={
+      const body = {
         delete_users: bin
       }
       axios.post(`/admin/form/${fcode}/${dcode}/removeFormUser`, body, { headers: { "Authorization": `Bearer ${token}` } })
