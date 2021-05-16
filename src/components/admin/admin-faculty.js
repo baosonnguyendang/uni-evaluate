@@ -1,8 +1,5 @@
-import React, { useEffect } from "react";
-import ReactDOM from "react-dom";
-
-import { Link } from 'react-router-dom';
-
+import React, { useState, useEffect } from "react";
+import ButtonCustom from '../common/ButtonCustom'
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -190,28 +187,31 @@ export default function Criterion() {
   const handleClose = () => {
     setOpen(false);
   };
-
+  //
+  const [loadingButton, setLoadingButton] = useState(false)
   //
   const submitAddDepartment = (e) => {
     console.log(id, name, head, newUnit);
-
+    e.preventDefault()
+    setLoadingButton(true)
     const body = {
       department_code: id,
       name,
       manager: head,
       parent: newUnit
     }
+    console.log(body)
     axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         //console.log(res.data);
 
-        e.preventDefault()
         setRows(rows => [...rows, createData(id, name, null, head, newUnit)])
-        
+        setLoadingButton(false)
         handleClose();
       })
       .catch(error => {
         console.log(error);
+        setLoadingButton(false)
       })
   }
 
@@ -330,9 +330,9 @@ export default function Criterion() {
                   <div className={classes.paper1}>
                     <h2 id="transition-modal-title">Thêm đơn vị</h2>
                     <form onSubmit={submitAddDepartment}>
-                      <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                      <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                      <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" className={classes.field} />
+                      <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required className={classes.field} />
+                      <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth required className={classes.field} />
+                      <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth required variant="outlined" className={classes.field} />
                       {/* <TextField onChange={e => setN(e.target.value)} id="unit" label="Đơn vị" variant="outlined" fullWidth className={classes.field} /> */}
                       <FormControl variant="outlined" fullWidth className={classes.formControl}>
                         <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
@@ -341,6 +341,7 @@ export default function Criterion() {
                           value={newUnit}
                           label='Đơn vị'
                           onChange={handleChangeUnit}
+                          required
                         >
                           <option aria-label="None" value="" />
                           {units.map(unit => {
@@ -350,9 +351,11 @@ export default function Criterion() {
                           })}
                         </Select>
                       </FormControl>
-                      <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddDepartment}>Tạo</Button>
-                        <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                      <div style={{ justifyContent: 'center', marginTop: '10px', display:"flex" }}>
+                        {/* <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddDepartment}>Tạo</Button> */}
+                        <ButtonCustom loading={loadingButton} type="submit" variant="contained" color="primary">Tạo</ButtonCustom>
+                        <ButtonCustom handleButtonClick={handleClose} type="submit" variant="contained" color="primary">Thoát</ButtonCustom>
+                        {/* <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button> */}
                       </div>
                     </form>
                   </div>
