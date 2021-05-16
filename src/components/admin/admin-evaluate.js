@@ -11,7 +11,7 @@ import {
 } from '@material-ui/pickers';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
-import DatePicker from 'react-datepicker';
+import Skeleton from '../common/skeleton';
 
 import Button from '@material-ui/core/Button';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EvaluateList() {
   const classes = useStyles();
-
+  const [loading, setLoading] = useState(true)
   //open modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -118,6 +118,7 @@ export default function EvaluateList() {
       .then(res => {
         // console.log(res.data);
         setNumber(res.data.reviews)
+        setLoading(false)
         // setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
         // setPrevious([...rows])
         // setIsLoading(false)
@@ -168,7 +169,8 @@ export default function EvaluateList() {
   const [selectedDate, handleDateChange] = useState(new Date());
 
   return (
-    <div>
+    <>
+      { loading ? <Skeleton /> : <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
         DANH SÁCH ĐỢT ĐÁNH GIÁ
       </Typography>
@@ -255,6 +257,7 @@ export default function EvaluateList() {
           </Fade>
         </Modal>
       </Paper>
-    </div>
+    </div>}
+    </>
   )
 }
