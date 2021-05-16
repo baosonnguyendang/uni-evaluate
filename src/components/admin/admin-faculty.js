@@ -354,7 +354,7 @@ export default function Criterion() {
                       <div style={{ justifyContent: 'center', marginTop: '10px', display:"flex" }}>
                         {/* <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddDepartment}>Tạo</Button> */}
                         <ButtonCustom loading={loadingButton} type="submit" variant="contained" color="primary">Tạo</ButtonCustom>
-                        <ButtonCustom handleButtonClick={handleClose} type="submit" variant="contained" color="primary">Thoát</ButtonCustom>
+                        <ButtonCustom handleButtonClick={handleClose} onClick={handleClose}  variant="contained" color="primary">Thoát</ButtonCustom>
                         {/* <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button> */}
                       </div>
                     </form>
