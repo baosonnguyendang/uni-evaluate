@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { Link, useParams } from 'react-router-dom';
-
+import ButtonCustom from '../../common/ButtonCustom'
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -93,7 +93,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
 };
 
 export default function Criterion() {
-  const [rows, setRows] = React.useState([]);
+  const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
   const token = localStorage.getItem('token')
   const config = { headers: { "Authorization": `Bearer ${token}` } }
@@ -186,10 +186,14 @@ export default function Criterion() {
   const [code, setC] = React.useState('')
   const [description, setD] = React.useState('')
   let data = { code, name, description }
+  // loading lúc click button Tạo
+  const [loadingButton, setLoadingButton] = useState(false)
   const submit = e => {
     e.preventDefault()
+    setLoadingButton(true)
     axios.post('/admin/standard/add', data, config)
       .then(res => {
+        setLoadingButton(false)
         handleClose()
         handleOpenToast("Tạo tiêu chuẩn thành công", 'success')
         setRows(rows => [...rows, data])
@@ -197,6 +201,7 @@ export default function Criterion() {
       })
       .catch(e => {
         handleOpenToast("Mã tiêu chuẩn đã tồn tại", 'error')
+        setLoadingButton(false)
       })
   }
 
@@ -291,9 +296,10 @@ export default function Criterion() {
                     <form onSubmit={submit}>
                       <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
                       <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
-                      <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
-                        <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                      <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />                  
+                      <div style={{ justifyContent: 'center', marginTop: '10px', display: 'flex' }}>
+                        <ButtonCustom loading={loadingButton} type="submit" variant="contained" color="primary">Tạo</ButtonCustom>
+                        <ButtonCustom handleButtonClick={handleClose} onClick={handleClose}  variant="contained" color="primary">Thoát</ButtonCustom>
                       </div>
                     </form>
                   </div>
