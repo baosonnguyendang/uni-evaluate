@@ -19,8 +19,6 @@ import Fade from '@material-ui/core/Fade';
 import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
 import AppBar from '@material-ui/core/AppBar';
@@ -295,7 +293,7 @@ export default function AddSettings() {
     <div>
       {(() => {
         switch (init) {
-          case 0:
+          default:
             return null
           case 1:
             return (
@@ -461,6 +459,8 @@ export default function AddSettings() {
                                 </Modal>
                               </div>
                             )
+                          default:
+                            return null
                         }
                       })()}
                     </Paper>

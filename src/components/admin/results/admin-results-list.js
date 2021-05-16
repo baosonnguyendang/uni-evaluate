@@ -7,6 +7,8 @@ import { Link, useParams, useRouteMatch } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles(theme => ({
@@ -19,6 +21,11 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     padding: '10px'
   },
+  tab: {
+    backgroundColor: '#abcdef',
+    padding: 0,
+    width: '100%',
+  }
 }))
 
 export default function ResultsList(props) {
@@ -31,27 +38,29 @@ export default function ResultsList(props) {
 
   //mã form
   const [code, setCode] = useState()
-  
+
+  //change tab
+  const [value, setValue] = React.useState(0);
 
   //lấy mã form
-  useEffect(()=> {
+  useEffect(() => {
     axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
-    .then(res => {
-      if (res.data.form) {
-        // setCode(res.data.form.code)
-        setCode(res.data.form.code)
-        //lấy các đơn vị cha nằm trong đợt đánh giá
-        axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
-          .then(res => {
-            let temp = res.data.formDepartments.filter(x => (x.level === 1 || x.level === 0)).map(y => y.department_id)
-            setUnits(temp)
-          })
-          .catch(e => console.log(e))
-      }
-    })
-    .catch(e => {
-      console.log(e)
-    })
+      .then(res => {
+        if (res.data.form) {
+          // setCode(res.data.form.code)
+          setCode(res.data.form.code)
+          //lấy các đơn vị cha nằm trong đợt đánh giá
+          axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => {
+              let temp = res.data.formDepartments.filter(x => (x.level === 1 || x.level === 0)).map(y => y.department_id)
+              setUnits(temp)
+            })
+            .catch(e => console.log(e))
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
   }, [])
 
   return (
@@ -60,18 +69,37 @@ export default function ResultsList(props) {
         Đợt {id} - Nhóm {id1} - Mã Form: {code}
       </Typography>
       <Paper className={classes.paper}>
-        <Typography component="h4" variant="h6" color="inherit" noWrap>
-          Các đơn vị tham gia đánh giá
-        </Typography>
-        <div>
-          <ul>
-            {units.map(unit => {
+        <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={(event, newValue) => { setValue(newValue) }}>
+          <Tab className={classes.tab} label="Thống kê chung" />
+          <Tab className={classes.tab} label="Kết quả chi tiết" />
+        </Tabs>
+        {(() => {
+          switch (value) {
+            case 0:
               return (
-                <li key={unit._id} ><Link to={`${url}/${unit.department_code}`}>{unit.name}</Link></li>
+                <p>Chung</p>
               )
-            })}
-          </ul>
-        </div>
+            case 1:
+              return (
+                <div>
+                  <Typography component="h4" variant="h6" color="inherit" noWrap>
+                    Các đơn vị tham gia đánh giá
+                  </Typography>
+                  <div>
+                    <ul>
+                      {units.map(unit => {
+                        return (
+                          <li key={unit._id} ><Link to={`${url}/${unit.department_code}`}>{unit.name}</Link></li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              )
+            default:
+              return null
+          }
+        })()}
       </Paper>
     </div>
   )
