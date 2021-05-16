@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-import { Link } from 'react-router-dom';
+import axios from 'axios'
+
+import { Link, useParams } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -19,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center'
   },
   paper: {
-    minHeight: 440,
+    minHeight: 400,
     marginTop: 24,
     position: 'relative',
   },
@@ -44,19 +46,41 @@ const CustomTableCell = ({ row, name }) => {
   }
 };
 
-const rows = [
-  createData('Nguyễn Phú Trọng', '1712970', 'Quốc hội'),
-  createData('Phạm Minh Chính', '1712971', 'Chính phủ'),
-  createData('Nguyễn Xuân Phúc', '1712972', 'Chính phủ'),
-  createData('Vương Đình Huệ', '1712973', 'Quốc hội'),
-  createData('Vũ Đức Đam', '1712974', 'Quốc hội'),
-  createData('Đặng Thị Ngọc Thịnh', '1712975', 'Quốc hội'),
-];
 
-const group = 1
+
 
 export default function Results(props) {
   const classes = useStyles()
+  const token = localStorage.getItem('token')
+  const { id, id1, id2 } = useParams()
+  var code
+
+  const [rows, setRows] = useState([]);
+
+  //lấy mã form and then ds gv/vc thuộc đơn vị
+  useEffect(() => {
+    axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        if (res.data.form) {
+          // setCode(res.data.form.code)
+          code = res.data.form.code
+          axios.get(`/admin/form/${code}/${id2}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
+          .then(res => {
+            let temp = []
+            console.log(res.data.formUser)
+            res.data.formUser.map(x => {
+              temp.push(createData(x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, x.user_id.department.length > 0 ? x.user_id.department[0].name : null))
+            })
+            console.log(temp)
+            setRows(temp)
+          })
+          .catch(err => console.log(err))
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  }, [])
 
   //qua trang
   const [page, setPage] = React.useState(0);
@@ -73,7 +97,7 @@ export default function Results(props) {
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
-        Kết quả đánh giá nhóm 0{group}
+        Kết quả đánh giá nhóm {id1}
       </Typography>
       <Paper className={classes.paper}>
         <TableContainer>
