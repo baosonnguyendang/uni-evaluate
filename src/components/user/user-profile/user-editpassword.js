@@ -1,9 +1,11 @@
 import React from 'react'
 import { TextField, Grid, Button } from '@material-ui/core';
+import ButtonCustom from '../../common/ButtonCustom'
 
 const EditUserForm = ({ setEditPassword }) => {
     return (
-        <Grid container alignItems="center" spacing={3} md={6} style={{ paddingTop: '30px' }} >
+        <form>
+        <Grid container alignItems="center" spacing={3} md={6} style={{ paddingTop: '30px', margin: 'auto'}} >
             <Grid item xs={12} >
                 <TextField required label="Mật khẩu cũ" defaultValue="" type='password' fullWidth />
             </Grid>
@@ -17,11 +19,12 @@ const EditUserForm = ({ setEditPassword }) => {
                 <Button variant="contained" style={{ marginRight: '20px' }} onClick={() => setEditPassword()}>
                     Huỷ
                 </Button>
-                <Button variant="contained" color="primary">
+                <Button type='submit' variant="contained" color="primary">
                     Lưu
                 </Button>
             </Grid>
         </Grid>
+        </form>
     )
 }
 

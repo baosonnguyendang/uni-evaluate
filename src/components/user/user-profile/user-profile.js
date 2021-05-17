@@ -10,8 +10,8 @@ import EditUserForm from './user-editprofile'
 import EditPassword from './user-editpassword'
 const useStyles = makeStyles(theme => ({
   avatar: {
-    width: 150,
-    height: 150,
+    width: 250,
+    height: 250,
     margin: 'auto'
   },
   tabs: {
@@ -63,12 +63,12 @@ const Profile = () => {
 
   return (
     <>
-      <Grid container justify='center' md={10} style={{ margin: 'auto', marginTop: 30 }} >
-        <Grid container item xs={12} md={10} style={{ marginBottom: 25 }}>
-          <Grid item xs>
-            <Avatar className={classes.avatar} alt='avatar' src='https://revelogue.com/wp-content/uploads/2019/12/Takaki-va-akari-trong-phim-e1576160716613.jpg' ></Avatar>
-          </Grid>
-          <Grid item xs >
+      <Grid container justify='center' md={10} style={{ margin: 'auto', marginTop: 30 }} direction="column" >
+        <Grid item >
+          <Avatar className={classes.avatar} alt='avatar' src='https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg' ></Avatar>
+        </Grid>
+        {!edit &&
+          <Grid item style={{ paddingTop: '30px', margin: 'auto' }} >
             <Typography variant='h6' style={{ marginBottom: 15 }} >Nguyễn Văn A
             </Typography>
             <Typography>
@@ -83,12 +83,15 @@ const Profile = () => {
 
             <Typography>0914387749</Typography>
             <Typography>testA@gmail.com</Typography>
-            <Button style={{ marginTop: 30, marginRight: 20}} variant="outlined" size="small" onClick={onEdit}>Chỉnh sửa</Button>
+            <Button style={{ marginTop: 30, marginRight: 20 }} variant="outlined" size="small" onClick={onEdit}>Chỉnh sửa</Button>
             <Button style={{ marginTop: 30 }} variant="outlined" size="small" onClick={onEditPassword}>Đổi mật khẩu</Button>
-          </Grid>
-        </Grid>
+          </Grid>}
         {edit && <EditUserForm setEdit={() => setEdit(false)} />}
-        {editPassword && <EditPassword setEditPassword={() => setEditPassword(false)}/>}
+        {editPassword && <EditPassword setEditPassword={() => setEditPassword(false)} />}
+
+
+
+
       </Grid>
 
     </>

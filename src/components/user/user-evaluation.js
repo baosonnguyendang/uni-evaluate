@@ -73,6 +73,31 @@ export default class Evaluation extends React.Component {
     )
     return (
       <div style={{ paddingTop: '45px' }}>
+        <Typography variant='h6' gutterBottom >Mẫu đánh giá cá nhân</Typography>
+        {this.state.listOfEvaluation.map(item => (
+          <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+            <CardContent>
+              <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+                {item.name}
+              </Typography>
+              <span>[{item.numOfCriteria} Tiêu chuẩn, {item.numOfCriterion} Tiêu chí] </span>
+              <br />
+              <span>Từ ngày: {item.startDate.format('DD/MM/YYYY')}</span>
+              <br />
+              <span>Đến ngày: {item.endDate.format('DD/MM/YYYY')}</span>
+            </CardContent>
+            <CardActions>
+              {this.state.today.isAfter(item.startDate) && this.state.today.isBefore(item.endDate) ?
+                <Link to={'/user/evaluate/' + item.id}>
+                  <Button size="small" color='secondary'>
+                    Thực hiện khảo sát
+                    </Button>
+                </Link> :
+                NotInTime}
+            </CardActions>
+          </Card>
+        ))}
+        <Typography variant='h6' gutterBottom >Mẫu đánh giá cá nhân khác</Typography>
         {this.state.listOfEvaluation.map(item => (
           <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
             <CardContent>
