@@ -3,13 +3,18 @@ import Navbar from './admin-navbar'
 import UserTable from "./admin-user"
 import Faculty from "./admin-faculty"
 import EvaluateList from './admin-evaluate'
+
 import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
 import AddSettings from './evaluate-setting/admin-add-settings'
+
 import Criteria from './standard-list/admin-criteria'
 import Criterion from './standard-list/admin-criterion'
 import Selection from './standard-list/admin-selection'
+
 import ResultsList from './results/admin-results-list'
-import Results from './results/admin-results-detailed'
+import Results from './results/admin-results-unit'
+import ResultsDetailed from './results/admin-results-detailed'
+
 import { Switch, Route, Redirect, NavLink } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Sub from './admin-sub'
@@ -66,6 +71,7 @@ const AdminPage = () => {
               <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
               <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />
               <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2' children={<Results />} />
+              <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2/:id3' children={<ResultsDetailed />} />
               <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<ResultsList />} />
               <Route exact path='/admin/criterion' children={<Criterion />} />
               <Route exact path='/admin/criteria/' children={<Sub />} />

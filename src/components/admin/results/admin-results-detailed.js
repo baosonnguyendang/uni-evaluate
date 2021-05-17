@@ -1,139 +1,114 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react'
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, makeStyles, Paper, Grid, Radio, Button } from "@material-ui/core";
 
-import axios from 'axios'
+const TAX_RATE = 0.07;
 
-import { Link, useParams } from 'react-router-dom';
-
-import { makeStyles } from '@material-ui/core/styles';
-
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography'
-
-const useStyles = makeStyles(theme => ({
-  number: {
-    textAlign: 'center'
+const useStyles = makeStyles({
+  table: {
+    minWidth: 700,
   },
-  paper: {
-    minHeight: 400,
-    marginTop: 24,
-    position: 'relative',
-  },
-}))
+});
 
-function createData(name, id, unit) {
-  return { name, id, unit, link: 'Kết quả' }
+function ccyFormat(num) {
+  return `${num.toFixed(2)}`;
 }
 
-const CustomTableCell = ({ row, name }) => {
-  if (name === 'id') {
-    return (
-      <TableCell style={{ textAlign: 'center' }}>{row[name]}</TableCell>
-    )
-  }
-  else {
-    return (
-      <TableCell>
-        {name === 'link' ? (<Link to={'/admin/criteria/' + row.id} >{row[name]}</Link>) : (row[name])}
-      </TableCell>
-    )
-  }
-};
+function priceRow(qty, unit) {
+  return qty * unit;
+}
 
+function createRow(desc, qty, unit) {
+  const price = priceRow(qty, unit);
+  return { desc, qty, unit, price };
+}
 
+function subtotal(items) {
+  return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+}
 
+const rows = [
+  createRow('1', 100, 1.15),
+  createRow('2', 10, 45.99),
+  createRow('3', 2, 17.99),
+];
 
-export default function Results(props) {
-  const classes = useStyles()
-  const token = localStorage.getItem('token')
-  const { id, id1, id2 } = useParams()
-  var code
+const invoiceSubtotal = subtotal(rows);
+const invoiceTaxes = TAX_RATE * invoiceSubtotal;
+const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
-  const [rows, setRows] = useState([]);
-
-  //lấy mã form and then ds gv/vc thuộc đơn vị
-  useEffect(() => {
-    axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
-      .then(res => {
-        if (res.data.form) {
-          // setCode(res.data.form.code)
-          code = res.data.form.code
-          axios.get(`/admin/form/${code}/${id2}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
-          .then(res => {
-            let temp = []
-            console.log(res.data.formUser)
-            res.data.formUser.map(x => {
-              temp.push(createData(x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, x.user_id.department.length > 0 ? x.user_id.department[0].name : null))
-            })
-            console.log(temp)
-            setRows(temp)
-          })
-          .catch(err => console.log(err))
-        }
-      })
-      .catch(e => {
-        console.log(e)
-      })
-  }, [])
-
-  //qua trang
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+export default function ResultsDetailed(){
+  const classes = useStyles();
 
   return (
-    <div>
-      <Typography component="h1" variant="h5" color="inherit" noWrap>
-        Kết quả đánh giá nhóm {id1}
-      </Typography>
-      <Paper className={classes.paper}>
-        <TableContainer>
-          <Table stickyHeader aria-label="sticky table" id='table'>
-            <TableHead>
-              <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-                <TableCell align="center">Mã viên chức</TableCell>
-                <TableCell>Tên viên chức</TableCell>
-                <TableCell>Đơn vị</TableCell>
-                <TableCell ></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                return (
-                  <TableRow key={row.id}>
-                    <CustomTableCell {...{ row, name: "id" }} />
-                    <CustomTableCell {...{ row, name: "name" }} />
-                    <CustomTableCell {...{ row, name: "unit" }} />
-                    <CustomTableCell {...{ row, name: "link" }} />
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 20]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
+    <Grid container xs={12} justify='center' style={{ paddingTop: '45px' }}>
+      <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
+        <Table className={classes.table} >
+          <TableHead>
+            <TableRow>
+              <TableCell rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
+              <TableCell rowSpan={2}>Nội dung</TableCell>
+              <TableCell rowSpan={2}>Điểm quy định</TableCell>
+              <TableCell colSpan={3} align="center">Điểm đánh giá</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center">Cá nhân tự chấm</TableCell>
+              <TableCell align="center">Trưởng bộ môn</TableCell>
+              <TableCell align="center">Hội đồng nhà trường</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>1</TableCell>
+              <TableCell>Hoạt động giảng dạy</TableCell>
+              <TableCell>42.0</TableCell>
+              <TableCell />
+              <TableCell />
+              <TableCell />
+            </TableRow>
+            <TableRow>
+              <TableCell rowSpan={5}>1.1</TableCell>
+              <TableCell>Hoàn thành từ 110% định mức giờ chuẩn trên lớp</TableCell>
+              <TableCell>26.0</TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Hoàn thành từ 90% đến dưới 110% định mức giờ chuẩn trên lớp</TableCell>
+              <TableCell>22.0</TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Hoàn thành từ 70% đến dưới 90% định mức giờ chuẩn trên lớp</TableCell>
+              <TableCell>18.0</TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Hoàn thành từ 50% đến dưới 70% định mức giờ chuẩn trên lớp</TableCell>
+              <TableCell>16.0</TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Hoàn thành từ 30% đến dưới 50% định mức giờ chuẩn trên lớp</TableCell>
+              <TableCell>14.0</TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+              <TableCell align='center' colSpan={1}><Radio /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>1.2</TableCell>
+              <TableCell>Hoàn thành từ 30% đến dưới 50% định mức giờ chuẩn trên lớp</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Grid>
   )
 }
+

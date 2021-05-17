@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import Charts from './admin-charts'
+
 import axios from 'axios'
 
 import { Link, useParams, useRouteMatch } from 'react-router-dom';
@@ -7,8 +9,7 @@ import { Link, useParams, useRouteMatch } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles(theme => ({
@@ -66,22 +67,33 @@ export default function ResultsList(props) {
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
-        Đợt {id} - Nhóm {id1} - Mã Form: {code}
+        Đợt {id} - Nhóm {id1} - Mã Form: {code} - {value == 0 ? 'Thống kê chung' : 'Kết quả chi tiết'}
       </Typography>
-      <Paper className={classes.paper}>
+      {/* <Paper className={classes.paper}>
         <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={(event, newValue) => { setValue(newValue) }}>
           <Tab className={classes.tab} label="Thống kê chung" />
           <Tab className={classes.tab} label="Kết quả chi tiết" />
-        </Tabs>
-        {(() => {
-          switch (value) {
-            case 0:
-              return (
-                <p>Chung</p>
-              )
-            case 1:
-              return (
-                <div>
+        </Tabs> */}
+      {(() => {
+        switch (value) {
+          case 0:
+            return (
+              <div>
+                <div style={{margin: '24px 10px 10px 0'}}>
+                  <Paper style={{ width: '30%', padding: '10px', display: 'inline-block' }}>
+                    <Charts type={2} />
+                  </Paper>
+                  <Paper style={{ marginLeft: '10px', width: '30%', padding: '10px', display: 'inline-block'}}>
+                    <Charts type={1} />
+                  </Paper>
+                </div>
+                <Button onClick={() => { setValue(1) }} variant="contained" color="primary">Nhấn vào đây để xem kết quả chi tiết</Button>
+              </div>
+            )
+          case 1:
+            return (
+              <div>
+                <Paper className={classes.paper}>
                   <Typography component="h4" variant="h6" color="inherit" noWrap>
                     Các đơn vị tham gia đánh giá
                   </Typography>
@@ -94,13 +106,14 @@ export default function ResultsList(props) {
                       })}
                     </ul>
                   </div>
-                </div>
-              )
-            default:
-              return null
-          }
-        })()}
-      </Paper>
+                  <Button onClick={() => { setValue(0) }}>A</Button>
+                </Paper>
+              </div>
+            )
+          default:
+            return null
+        }
+      })()}
     </div>
   )
 }
