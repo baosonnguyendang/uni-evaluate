@@ -182,6 +182,21 @@ const TableEvaluation = () => {
       }
     ]
   }
+  function dynamicSort(property) {
+    var sortOrder = 1;
+    if (property[0] === "-") {
+      sortOrder = -1;
+      property = property.substr(1);
+    }
+    return function (a, b) {
+      /* next line works with strings and numbers, 
+       * and you may want to customize it to your needs
+       */
+      var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+      return result * sortOrder;
+    }
+  }
+  data.formStandards.sort(dynamicSort('standard_order'))
   return (
     <Grid container xs={12} justify='center' style={{ paddingTop: '45px' }}>
       <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
@@ -200,33 +215,33 @@ const TableEvaluation = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            { data.formStandards.map(standard => ( 
-            <>
-            <TableRow>
-              <TableCell>{standard.standard_order}</TableCell>
-              <TableCell>{standard.standard_id.name}</TableCell>
-              <TableCell>{standard.point}</TableCell>
-              <TableCell />
-              <TableCell />
-              <TableCell />
-            </TableRow>
-
-            { standard.formCriteria.map( criteria => (
+            {data.formStandards.map(standard => (
               <>
-              {criteria.options.map( (option,index) => (
                 <TableRow>
-                {index === 0 && <TableCell rowSpan={criteria.options.length} >{standard.standard_order}.{criteria.criteria_order}</TableCell>}
-                <TableCell>{option.name}</TableCell>
-                <TableCell>{option.max_point}</TableCell>
-                <TableCell align='center' colSpan={1}><Radio /></TableCell>
-                <TableCell align='center' colSpan={1}><Radio /></TableCell>
-                <TableCell align='center' colSpan={1}><Radio /></TableCell>
-              </TableRow>
+                  <TableCell>{standard.standard_order}</TableCell>
+                  <TableCell>{standard.standard_id.name}</TableCell>
+                  <TableCell align='center' >{standard.standard_point}</TableCell>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                </TableRow>
+
+                {standard.formCriteria.map(criteria => (
+                  <>
+                    {criteria.options.map((option, index) => (
+                      <TableRow>
+                        {index === 0 && <TableCell rowSpan={criteria.options.length} >{standard.standard_order}.{criteria.criteria_order}</TableCell>}
+                        <TableCell>{option.name}</TableCell>
+                        <TableCell align='center' >{option.max_point}</TableCell>
+                        <TableCell align='center' colSpan={1}><Radio /></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio /></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio /></TableCell>
+                      </TableRow>
+                    ))}
+                  </>
                 ))}
-                </>
-            ))}
-            
-            </>
+
+              </>
             ))}
             {/* <TableRow>
               <TableCell>1</TableCell>

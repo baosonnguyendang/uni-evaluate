@@ -1,27 +1,27 @@
 import React from 'react'
 import { TextField, Grid, Button } from '@material-ui/core';
-
-const EditUserForm = ({ setEdit }) => {
+import moment from 'moment'
+const EditUserForm = ({ setEdit, infoUser }) => {
     return (
         <form>
             <Grid item container alignItems="center" spacing={3} md={6} style={{ paddingTop: '30px', margin: 'auto' }} >
                 <Grid item xs={12} >
-                    <TextField required label="Họ và tên lót" defaultValue="Nguyễn Văn" fullWidth />
+                    <TextField required label="Họ và tên lót" defaultValue={infoUser.lastname} fullWidth />
                 </Grid>
                 <Grid item xs={12} >
-                    <TextField required label="Tên" defaultValue="A" fullWidth />
+                    <TextField required label="Tên" defaultValue={infoUser.firstname} fullWidth />
                 </Grid>
                 <Grid item xs={12} >
-                    <TextField label="Ngày sinh" defaultValue="19/5/1985" fullWidth />
+                    <TextField label="Ngày sinh" defaultValue={moment(infoUser.birthday).format('DD/MM/yyyy')} fullWidth />
                 </Grid>
                 <Grid item xs={12} >
-                    <TextField required label="Mã nhân viên" defaultValue="MT-003" fullWidth disabled />
+                    <TextField required label="Mã nhân viên" defaultValue={infoUser.staff_id} fullWidth disabled />
                 </Grid>
                 <Grid item xs={12} >
-                    <TextField label="Số điện thoại" defaultValue="0914387749" fullWidth />
+                    <TextField label="Số điện thoại" defaultValue={infoUser.phone} fullWidth />
                 </Grid>
                 <Grid item xs={12} >
-                    <TextField required label="Email" defaultValue="testA@gmail.com" fullWidth disabled />
+                    <TextField required label="Email" defaultValue={infoUser.email} fullWidth disabled />
                 </Grid>
                 <Grid item container xs={12} justify="flex-end">
                     <Button variant="contained" style={{ marginRight: '20px' }} onClick={() => setEdit()}>
