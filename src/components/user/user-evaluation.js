@@ -82,7 +82,7 @@ export default function Evaluation() {
             <span>Đến ngày: {item.endDate}</span>
           </CardContent>
           <CardActions>
-            {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
+            {today.isAfter(item.startDate) || today.isBefore(item.endDate) ?
               <Link to={'/user/evaluate/' + item.code}>
                 <Button size="small" color='secondary'>
                   Thực hiện khảo sát
