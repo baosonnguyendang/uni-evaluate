@@ -41,8 +41,8 @@ export default function Charts(props) {
   return (
     <div>
       <div className="App">
-        <h5>Số GV/VC tham gia trong đợt</h5>
-        <Chart type={props.type} chartData={chartData} displayLegend={false} />
+        <h5>{props.title}</h5>
+        <Chart type={props.type} chartData={props.data} displayLegend={false} />
       </div>
     </div>
   )

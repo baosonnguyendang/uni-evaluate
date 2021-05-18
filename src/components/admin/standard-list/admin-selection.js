@@ -307,7 +307,7 @@ export default function Selection() {
                   <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
                   <TextField onChange={e => setP(e.target.value)} id="point" label="Điểm" type="number" variant="outlined" className={classes.field} />
                   <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                    <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddSelection}>Tạo</Button>
+                    <Button style={{ marginRight: '10px' }} variant="contained" color="primary" onClick={submitAddSelection}>Tạo</Button>
                     <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                   </div>
                 </form>

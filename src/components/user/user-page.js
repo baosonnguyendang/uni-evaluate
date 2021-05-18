@@ -4,10 +4,12 @@ import AppBar from './user-appbar'
 import Main from './user-main'
 import Info from './user-info'
 import TableEvaluation from './element/user-table'
+import FormList from './user-form-list'
 import Profile from './user-profile/user-profile'
 import Evaluation from './user-evaluation';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Container } from '@material-ui/core'
+
 const UserPage = () => {
     let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
     return (
@@ -23,6 +25,9 @@ const UserPage = () => {
                 <Evaluation />
             </Route>
             <Route path='/user/evaluate/:id' exact>
+                <FormList />
+            </Route>
+            <Route path='/user/evaluate/:id/:id1' exact>
                 <TableEvaluation />
             </Route>
             </Container>
