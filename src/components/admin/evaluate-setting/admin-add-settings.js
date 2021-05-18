@@ -224,7 +224,8 @@ export default function AddSettings() {
       //   .catch(err => console.log(err))
     }
 
-    axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+    useEffect(() => {
+      axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         let _id = res.data.formDepartments.filter(x => (x.level === 1 || x.level === 0)).map(x => x.department_id.department_code)
         _id.map(x => {
@@ -237,6 +238,7 @@ export default function AddSettings() {
         setUnitChosen(units.filter(unit => unit.check === true))
       })
       .catch(e => console.log(e))
+    }, [])
 
     return (
       <div>

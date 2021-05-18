@@ -44,7 +44,7 @@ export default function Evaluation() {
 
   return (
     <div style={{ paddingTop: '45px' }}>
-      <Typography variant='h6' gutterBottom >Form đánh giá cá nhân</Typography>
+      <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá cá nhân</Typography>
       {list.map(item => (
         <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
           <CardContent>
