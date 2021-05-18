@@ -82,3 +82,4 @@ react-calendar;
 jsonwebtoken;
 mui-datatables;
 react-drag-reorder;
+react-chartjs-2
