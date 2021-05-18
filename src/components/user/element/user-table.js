@@ -51,12 +51,15 @@ const TableEvaluation = () => {
 
   console.log(id1)
 
-  axios.get(`/form/v2/${id1}`, { headers: { "Authorization": `Bearer ${token}` } })
-    .then(res => {
-      console.log(res.data.formStandards)
-      setData(res.data.formStandards)
-    })
-    .catch(err => console.log(err))
+  useEffect(() => {
+    axios.get(`/form/v2/${id1}`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data.formStandards)
+        setData(res.data.formStandards)
+      })
+      .catch(err => console.log(err))
+  }, [])
+
 
   // const data = {
   //   "formStandards": [
@@ -224,28 +227,34 @@ const TableEvaluation = () => {
               <>
                 <TableRow>
                   <TableCell>{standard.standard_order}</TableCell>
-                  <TableCell>{standard.standard_id.name}</TableCell>
+                  <TableCell><b>{standard.standard_id.name}</b></TableCell>
                   <TableCell>{standard.standard_point}</TableCell>
                   <TableCell />
                   <TableCell />
                   <TableCell />
                 </TableRow>
 
-                {standard.formCriteria.map(criteria => (
+                {standard.formCriteria.map((criteria, index) => (
                   <>
+                    <TableRow>
+                      <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
+                      <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
+                      <TableCell>{criteria.point}</TableCell>
+                      <TableCell align='center'>{criteria.options.length > 0 ? null : <Radio/>}</TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
                     {criteria.options.map((option, index) => (
                       <TableRow>
-                        {index === 0 && <TableCell rowSpan={criteria.options.length} >{standard.standard_order}.{criteria.criteria_order}</TableCell>}
                         <TableCell>{option.name}</TableCell>
                         <TableCell>{option.max_point}</TableCell>
-                        <TableCell align='center' colSpan={1}><Radio /></TableCell>
-                        <TableCell align='center' colSpan={1}><Radio /></TableCell>
-                        <TableCell align='center' colSpan={1}><Radio /></TableCell>
+                        <TableCell align='center' colSpan={1}></TableCell>
+                        <TableCell align='center' colSpan={1}></TableCell>
+                        <TableCell align='center' colSpan={1}></TableCell>
                       </TableRow>
                     ))}
                   </>
                 ))}
-
               </>
             ))}
             {/* <TableRow>
