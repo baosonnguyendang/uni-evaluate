@@ -124,14 +124,17 @@ export default function ResultsList(props) {
             return (
               <div>
                 <div style={{ margin: '24px 10px 10px 0' }}>
-                  <Paper style={{ width: '30%', padding: '10px', display: 'inline-block' }}>
+                  <Paper style={{ width: '23%', padding: '10px', display: 'inline-block' }}>
                     <Charts data={chartData} type={2} title={'Số GV/VC đánh giá'} />
                   </Paper>
-                  <Paper style={{ marginLeft: '10px', width: '56.7%', padding: '10px', display: 'inline-block' }}>
+                  <Paper style={{ margin: '0 10px', padding: '10px', display: 'inline-block' }}>
                     <Charts data={chartData2} type={0} title={'Phân bố điểm'} />
                   </Paper>
+                  <Paper style={{ width: '23%', padding: '10px', display: 'inline-block' }}>
+                    <Charts data={chartData} type={2} title={'Số GV/VC đánh giá'} />
+                  </Paper>
                 </div>
-                <Button onClick={() => { setValue(1) }} variant="contained" color="primary">Nhấn vào đây để xem kết quả chi tiết</Button>
+                <Button onClick={() => { setValue(1) }} variant="contained" color="primary"> Nhấn vào đây để xem kết quả chi tiết</Button>
               </div>
             )
           case 1:
@@ -150,7 +153,7 @@ export default function ResultsList(props) {
                       })}
                     </ul>
                   </div>
-                  <Button onClick={() => { setValue(0) }}>A</Button>
+                  <Button style={{position: 'absolute', bottom: '10px'}} variant="contained" color="secondary" onClick={() => { setValue(0) }}>Trở lại trang thống kê chung</Button>
                 </Paper>
               </div>
             )
