@@ -241,7 +241,7 @@ export default function Drag(props) {
     else {
       setDisabled(false)
     }
-  })
+  }, [])
 
   //chon tieu chuan
   const [newCriterion, setNewCriterion] = React.useState('');
