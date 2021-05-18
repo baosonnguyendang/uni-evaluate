@@ -43,8 +43,57 @@ export default function ResultsList(props) {
   //change tab
   const [value, setValue] = React.useState(0);
 
+  //lấy ít data vẽ lên biểu đồ
+  const [chartData, setChartData] = useState({})
+  const [chartData2, setChartData2] = useState({})
+
+  const getChartData = () => {
+    setChartData({
+      labels: [
+        'Đã đánh giá',
+        'Chưa đánh giá',
+      ],
+      datasets: [
+        {
+          data: [70, 3],
+          //backgroundColor:'green',
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+          ]
+        }
+      ]
+    })
+    setChartData2({
+      labels: [
+        '< 50',
+        '50-59',
+        '60-69',
+        '70-79',
+        '80-89',
+        '90-100'
+      ],
+      datasets: [
+        {
+          label: 'Số GV/VC',
+          data: [1, 9, 25, 15, 10, 10],
+          //backgroundColor:'green',
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 205, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(153, 102, 255, 0.2)'
+          ]
+        }
+      ]
+    })
+  }
+
   //lấy mã form
   useEffect(() => {
+    getChartData()
     axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         if (res.data.form) {
@@ -69,22 +118,17 @@ export default function ResultsList(props) {
       <Typography component="h1" variant="h5" color="inherit" noWrap>
         Đợt {id} - Nhóm {id1} - Mã Form: {code} - {value == 0 ? 'Thống kê chung' : 'Kết quả chi tiết'}
       </Typography>
-      {/* <Paper className={classes.paper}>
-        <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={(event, newValue) => { setValue(newValue) }}>
-          <Tab className={classes.tab} label="Thống kê chung" />
-          <Tab className={classes.tab} label="Kết quả chi tiết" />
-        </Tabs> */}
       {(() => {
         switch (value) {
           case 0:
             return (
               <div>
-                <div style={{margin: '24px 10px 10px 0'}}>
+                <div style={{ margin: '24px 10px 10px 0' }}>
                   <Paper style={{ width: '30%', padding: '10px', display: 'inline-block' }}>
-                    <Charts type={2} />
+                    <Charts data={chartData} type={2} title={'Số GV/VC đánh giá'} />
                   </Paper>
-                  <Paper style={{ marginLeft: '10px', width: '30%', padding: '10px', display: 'inline-block'}}>
-                    <Charts type={1} />
+                  <Paper style={{ marginLeft: '10px', width: '56.7%', padding: '10px', display: 'inline-block' }}>
+                    <Charts data={chartData2} type={0} title={'Phân bố điểm'} />
                   </Paper>
                 </div>
                 <Button onClick={() => { setValue(1) }} variant="contained" color="primary">Nhấn vào đây để xem kết quả chi tiết</Button>

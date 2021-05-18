@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Bar, Line, Pie } from 'react-chartjs-2'
+import { Bar, Line, Pie, Doughnut  } from 'react-chartjs-2'
 
 export default function Chart(props) {
   return (
@@ -12,11 +12,6 @@ export default function Chart(props) {
               <Bar
                 data={props.chartData}
                 options={{
-                  title: {
-                    display: props.displayTitle,
-                    text: 'Largest Cities in Massachusetts',
-                    fontSize: 25
-                  },
                   legend: {
                     display: props.displayLegend,
                     position: props.legendPosition,
@@ -49,7 +44,7 @@ export default function Chart(props) {
             )
           case 2:
             return (
-              <Pie
+              <Doughnut
                 data={props.chartData}
                 options={{
                   title: {
