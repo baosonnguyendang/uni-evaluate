@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+import axios from 'axios'
 
 import Moment from 'moment';
 
@@ -10,118 +12,206 @@ import Typography from '@material-ui/core/Typography';
 
 import { Link } from 'react-router-dom';
 
-export default class Evaluation extends React.Component {
-  constructor(props) {
-    super(props)
+const token = localStorage.getItem('token')
 
-    this.setNumOfCriterion = this.setNumOfCriterion.bind(this)
-    this.setNumOfCriteria = this.setNumOfCriteria.bind(this)
-    this.setStartDate = this.setStartDate.bind(this)
-    this.setEndDate = this.setEndDate.bind(this)
+var today = Moment()
 
-    this.state = {
-      today: Moment(),
-      listOfEvaluation: [
-        {
-          name: 'Đợt đánh giá lần 1 năm 2021',
-          id: 1,
-          numOfCriterion: 5,
-          numOfCriteria: 11,
-          startDate: Moment('2021-1-14'),
-          endDate: Moment('2021-2-13'),
-        },
-        {
-          name: 'Đợt đánh giá lần 2 năm 2021',
-          id: 2,
-          numOfCriterion: 0,
-          numOfCriteria: 0,
-          startDate: Moment('2021-1-13'),
-          endDate: Moment('2021-12-13'),
-        }
-      ],
-    }
-  }
+export default function Evaluation() {
+  const [list, setList] = useState([])
+  
+  useEffect(() => {
+    axios.get('/form/review', { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data)
+        let temp = []
+        res.data.reviews.map(x => {
+          let obj = {name: x.name, code: x.code, startDate: x.start_date, endDate: x.end_date}
+          temp.push(obj)
+        })
+        console.log(temp)
+        setList(temp)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, [])
 
-  setNumOfCriterion = () => {
+  const NotInTime = (
+    <Button size="small" color='secondary' onClick={() => alert('Ngoài thời gian thực hiện khảo sát')}>
+      Thực hiện khảo sát
+    </Button>
+  )
 
-  }
-
-  setNumOfCriteria = () => {
-
-  }
-
-  setStartDate = () => {
-
-  }
-
-  setEndDate = () => {
-    alert('danh dz')
-  }
-
-  render() {
-    // const InTime = (
-    //   <Link to={'/user/evaluate/' + '1'}>
-    //     <Button size="small" color='secondary'>
-    //       Thực hiện khảo sát
-    //     </Button>
-    //   </Link>
-    // )
-    const NotInTime = (
-      <Button size="small" color='secondary' onClick={() => alert('Ngoài thời gian thực hiện khảo sát')}>
-        Thực hiện khảo sát
-      </Button>
-    )
-    return (
-      <div style={{ paddingTop: '45px' }}>
-        <Typography variant='h6' gutterBottom >Mẫu đánh giá cá nhân</Typography>
-        {this.state.listOfEvaluation.map(item => (
-          <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
-            <CardContent>
-              <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
-                {item.name}
-              </Typography>
-              <span>[{item.numOfCriteria} Tiêu chuẩn, {item.numOfCriterion} Tiêu chí] </span>
-              <br />
-              <span>Từ ngày: {item.startDate.format('DD/MM/YYYY')}</span>
-              <br />
-              <span>Đến ngày: {item.endDate.format('DD/MM/YYYY')}</span>
-            </CardContent>
-            <CardActions>
-              {this.state.today.isAfter(item.startDate) && this.state.today.isBefore(item.endDate) ?
-                <Link to={'/user/evaluate/' + item.id}>
-                  <Button size="small" color='secondary'>
-                    Thực hiện khảo sát
-                    </Button>
-                </Link> :
-                NotInTime}
-            </CardActions>
-          </Card>
-        ))}
-        <Typography variant='h6' gutterBottom >Mẫu đánh giá cá nhân khác</Typography>
-        {this.state.listOfEvaluation.map(item => (
-          <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
-            <CardContent>
-              <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
-                {item.name}
-              </Typography>
-              <span>[{item.numOfCriteria} Tiêu chuẩn, {item.numOfCriterion} Tiêu chí] </span>
-              <br />
-              <span>Từ ngày: {item.startDate.format('DD/MM/YYYY')}</span>
-              <br />
-              <span>Đến ngày: {item.endDate.format('DD/MM/YYYY')}</span>
-            </CardContent>
-            <CardActions>
-              {this.state.today.isAfter(item.startDate) && this.state.today.isBefore(item.endDate) ?
-                <Link to={'/user/evaluate/' + item.id}>
-                  <Button size="small" color='secondary'>
-                    Thực hiện khảo sát
-                    </Button>
-                </Link> :
-                NotInTime}
-            </CardActions>
-          </Card>
-        ))}
-      </div>
-    )
-  }
+  return (
+    <div style={{ paddingTop: '45px' }}>
+      <Typography variant='h6' gutterBottom >Form đánh giá cá nhân</Typography>
+      {list.map(item => (
+        <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+          <CardContent>
+            <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+              {item.name}
+            </Typography>
+            <br />
+            <span>Từ ngày: {item.startDate}</span>
+            {/* .format('DD/MM/YYYY') */}
+            <br />
+            <span>Đến ngày: {item.endDate}</span>
+          </CardContent>
+          <CardActions>
+            {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
+              <Link to={'/user/evaluate/' + item.code}>
+                <Button size="small" color='secondary'>
+                  Thực hiện khảo sát
+                  </Button>
+              </Link> :
+              NotInTime}
+          </CardActions>
+        </Card>
+      ))}
+      <Typography variant='h6' gutterBottom >Form đánh giá cá nhân khác</Typography>
+      {list.map(item => (
+        <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+          <CardContent>
+            <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+              {item.name}
+            </Typography>
+            <br />
+            <span>Từ ngày: {item.startDate}</span>
+            {/* .format('DD/MM/YYYY') */}
+            <br />
+            <span>Đến ngày: {item.endDate}</span>
+          </CardContent>
+          <CardActions>
+            {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
+              <Link to={'/user/evaluate/' + item.code}>
+                <Button size="small" color='secondary'>
+                  Thực hiện khảo sát
+                  </Button>
+              </Link> :
+              NotInTime}
+          </CardActions>
+        </Card>
+      ))}
+    </div>
+  )
 }
+// export default class Evaluation extends React.Component {
+//   constructor(props) {
+//     super(props)
+
+//     this.setStartDate = this.setStartDate.bind(this)
+//     this.setEndDate = this.setEndDate.bind(this)
+
+//     this.state = {
+//       today: Moment(),
+//       listOfEvaluation: [
+//         {
+//           name: 'Đợt đánh giá lần 1 năm 2021',
+//           id: 1,
+//           startDate: Moment('2021-1-14'),
+//           endDate: Moment('2021-2-13'),
+//         },
+//         {
+//           name: 'Đợt đánh giá lần 2 năm 2021',
+//           id: 2,
+//           startDate: Moment('2021-1-13'),
+//           endDate: Moment('2021-12-13'),
+//         }
+//       ],
+//     }
+//   }
+
+//   setNumOfCriterion = () => {
+
+//   }
+
+//   setNumOfCriteria = () => {
+
+//   }
+
+//   setStartDate = () => {
+
+//   }
+
+//   setEndDate = () => {
+//     alert('danh dz')
+//   }
+
+//   componentWillMount() {
+//     axios.get('/form/review', { headers: { "Authorization": `Bearer ${token}` } })
+//       .then(res => {
+//         console.log(res.data)
+//         res.data.map(x => {
+
+//         })
+//       })
+//       .catch(err => {
+//         console.log(err)
+//       })
+//   }
+
+//   render() {
+//     // const InTime = (
+//     //   <Link to={'/user/evaluate/' + '1'}>
+//     //     <Button size="small" color='secondary'>
+//     //       Thực hiện khảo sát
+//     //     </Button>
+//     //   </Link>
+//     // )
+//     const NotInTime = (
+//       <Button size="small" color='secondary' onClick={() => alert('Ngoài thời gian thực hiện khảo sát')}>
+//         Thực hiện khảo sát
+//       </Button>
+//     )
+//     return (
+//       <div style={{ paddingTop: '45px' }}>
+//         <Typography variant='h6' gutterBottom >Mẫu đánh giá cá nhân</Typography>
+//         {this.state.listOfEvaluation.map(item => (
+//           <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+//             <CardContent>
+//               <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+//                 {item.name}
+//               </Typography>
+//               <br />
+//               <span>Từ ngày: {item.startDate.format('DD/MM/YYYY')}</span>
+//               <br />
+//               <span>Đến ngày: {item.endDate.format('DD/MM/YYYY')}</span>
+//             </CardContent>
+//             <CardActions>
+//               {this.state.today.isAfter(item.startDate) && this.state.today.isBefore(item.endDate) ?
+//                 <Link to={'/user/evaluate/' + item.id}>
+//                   <Button size="small" color='secondary'>
+//                     Thực hiện khảo sát
+//                     </Button>
+//                 </Link> :
+//                 NotInTime}
+//             </CardActions>
+//           </Card>
+//         ))}
+//         <Typography variant='h6' gutterBottom >Mẫu đánh giá cá nhân khác</Typography>
+//         {this.state.listOfEvaluation.map(item => (
+//           <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+//             <CardContent>
+//               <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+//                 {item.name}
+//               </Typography>
+//               <br />
+//               <span>Từ ngày: {item.startDate.format('DD/MM/YYYY')}</span>
+//               <br />
+//               <span>Đến ngày: {item.endDate.format('DD/MM/YYYY')}</span>
+//             </CardContent>
+//             <CardActions>
+//               {this.state.today.isAfter(item.startDate) && this.state.today.isBefore(item.endDate) ?
+//                 <Link to={'/user/evaluate/' + item.id}>
+//                   <Button size="small" color='secondary'>
+//                     Thực hiện khảo sát
+//                     </Button>
+//                 </Link> :
+//                 NotInTime}
+//             </CardActions>
+//           </Card>
+//         ))}
+//       </div>
+//     )
+//   }
+// }

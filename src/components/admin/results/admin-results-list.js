@@ -8,11 +8,18 @@ import { Link, useParams, useRouteMatch } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    marginTop: '24px',
+    display: 'inline-block',
+  },
   number: {
     textAlign: 'center'
   },
@@ -123,15 +130,44 @@ export default function ResultsList(props) {
           case 0:
             return (
               <div>
-                <div style={{ margin: '24px 10px 10px 0' }}>
-                  <Paper style={{ width: '23%', padding: '10px', display: 'inline-block' }}>
+                <div style={{width: '90%', display: 'inline-flex', justifyContent: 'space-between'}}>
+                  <Card className={classes.root}>
+                    <CardContent>
+                      <Typography color="textSecondary" gutterBottom>
+                        Word of the Day
+                      </Typography>
+                      <Typography variant="body2" component="p">
+                        well meaning and kindly.
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                  <Card className={classes.root}>
+                    <CardContent>
+                      <Typography color="textSecondary" gutterBottom>
+                        Word of the Day
+                      </Typography>
+                      <Typography variant="body2" component="p">
+                        well meaning and kindly.
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                  <Card className={classes.root}>
+                    <CardContent>
+                      <Typography color="textSecondary" gutterBottom>
+                        Word of the Day
+                      </Typography>
+                      <Typography variant="body2" component="p">
+                        well meaning and kindly.
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div style={{ margin: '10px 10px 10px 0', width: '90%' }}>
+                  <Paper style={{ width: '34%', padding: '10px', display: 'inline-block' }}>
                     <Charts data={chartData} type={2} title={'Số GV/VC đánh giá'} />
                   </Paper>
-                  <Paper style={{ margin: '0 10px', padding: '10px', display: 'inline-block' }}>
+                  <Paper style={{ width: '64.3%', height: '100%', float: 'right', padding: '10px', display: 'inline-block' }}>
                     <Charts data={chartData2} type={0} title={'Phân bố điểm'} />
-                  </Paper>
-                  <Paper style={{ width: '23%', padding: '10px', display: 'inline-block' }}>
-                    <Charts data={chartData} type={2} title={'Số GV/VC đánh giá'} />
                   </Paper>
                 </div>
                 <Button onClick={() => { setValue(1) }} variant="contained" color="primary"> Nhấn vào đây để xem kết quả chi tiết</Button>
@@ -153,7 +189,7 @@ export default function ResultsList(props) {
                       })}
                     </ul>
                   </div>
-                  <Button style={{position: 'absolute', bottom: '10px'}} variant="contained" color="secondary" onClick={() => { setValue(0) }}>Trở lại trang thống kê chung</Button>
+                  <Button style={{ position: 'absolute', bottom: '10px' }} variant="contained" color="secondary" onClick={() => { setValue(0) }}>Trở lại trang thống kê chung</Button>
                 </Paper>
               </div>
             )

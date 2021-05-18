@@ -1,5 +1,9 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, makeStyles, Paper, Grid, Radio, Button } from "@material-ui/core";
+
+import axios from 'axios'
+
+import { useParams } from 'react-router-dom'
 
 const TAX_RATE = 0.07;
 
@@ -38,6 +42,18 @@ const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
 const TableEvaluation = () => {
   const classes = useStyles();
+
+  // const [data, setData] = useState({})
+  const token = localStorage.getItem('token')
+  const { id1 } = useParams()
+  console.log(id1)
+
+  axios.get(`/form/v2/${id1}`, { headers: { "Authorization": `Bearer ${token}` } })
+    .then(res => {
+      console.log(res.data)
+    })
+    .catch(err => console.log(err))
+
   const data = {
     "formStandards": [
       {
