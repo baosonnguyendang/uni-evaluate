@@ -46,7 +46,7 @@ export default function FormList() {
               <Link style={{textDecoration: 'none', color: 'white'}} key={x.code} to={`${url}/${x.id}`}>Đánh giá cá nhân</Link>
             </Button>
             <Button variant='contained' color='secondary'>
-              <Link style={{textDecoration: 'none', color: 'white'}} key={x.code} to={`${url}/${x.id}`}>Đánh giá với tư cách trưởng đơn vị</Link>
+              <Link style={{textDecoration: 'none', color: 'white'}} key={x.code} to={`${url}/${x.id}/employee`}>Đánh giá với tư cách trưởng đơn vị</Link>
             </Button>
           </CardActions>
         </Card>
