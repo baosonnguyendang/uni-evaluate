@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import { Card, CardActions, CardContent, Typography } from '@material-ui/core'
+import { Card, CardActions, CardContent, Typography, Button } from '@material-ui/core'
 
 import { Link, useRouteMatch, useParams } from 'react-router-dom'
 
@@ -32,7 +32,7 @@ export default function FormList() {
   return (
     list.map(x => {
       return (
-        <Card style={{marginTop: '24px'}}>
+        <Card style={{ marginTop: '24px' }}>
           <CardContent>
             <Typography variant="h5" component="h2">
               Tên Form: {x.name}
@@ -41,8 +41,13 @@ export default function FormList() {
               Mô tả:
             </Typography>
           </CardContent>
-          <CardActions style={{paddingLeft: '16px'}}>
-            <Link key={x.code} to={`${url}/${x.id}`}>Bấm vào đây để thực hiện đánh giá..</Link>
+          <CardActions style={{ paddingLeft: '16px' }}>
+            <Button variant='contained' color='primary'>
+              <Link style={{textDecoration: 'none', color: 'white'}} key={x.code} to={`${url}/${x.id}`}>Đánh giá cá nhân</Link>
+            </Button>
+            <Button variant='contained' color='secondary'>
+              <Link style={{textDecoration: 'none', color: 'white'}} key={x.code} to={`${url}/${x.id}`}>Đánh giá với tư cách trưởng đơn vị</Link>
+            </Button>
           </CardActions>
         </Card>
       )
