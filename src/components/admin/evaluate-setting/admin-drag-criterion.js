@@ -234,16 +234,20 @@ export default function Drag(props) {
   }
 
   useEffect(() => {
+    console.log(items)
+    console.log(luuTam)
     if (data.length === 0) {
       fetchCriterion()
     }
-    if (items == luuTam) {
-      setDisabled(true)
-    }
     else {
-      setDisabled(false)
+      if (items === luuTam) {
+        setDisabled(true)
+      }
+      else {
+        setDisabled(false)
+      }
     }
-  })
+  }, [])
 
   //chon tieu chuan
   const [newCriterion, setNewCriterion] = React.useState('');
@@ -312,12 +316,6 @@ export default function Drag(props) {
       // itemsCopy.map(x => x.code)
     }
   }
-
-  //reset nhe cai form
-  // const undo = () => {
-  //   setItems(luuTam)
-  //   setDisabled(true)
-  // }
 
   //luu nhe cai form
   const save = () => {
