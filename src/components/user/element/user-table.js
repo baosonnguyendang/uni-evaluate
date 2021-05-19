@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, makeStyles, Paper, Grid, Radio, Button } from "@material-ui/core";
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, makeStyles, Paper, Grid, Radio, Button, Checkbox } from "@material-ui/core";
 
 import axios from 'axios'
 
@@ -240,7 +240,7 @@ const TableEvaluation = () => {
                       <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
                       <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                       <TableCell>{criteria.point}</TableCell>
-                      <TableCell align='center'>{criteria.options.length > 0 ? null : <Radio/>}</TableCell>
+                      <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox/>}</TableCell>
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                     </TableRow>
