@@ -13,7 +13,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import TextField from '@material-ui/core/TextField'
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, LinearProgress } from '@material-ui/core';
 import { useParams } from 'react-router';
 import Loading from '../../common/CircleLoading'
 const useStyles = makeStyles(theme => ({
@@ -36,7 +36,8 @@ const useStyles = makeStyles(theme => ({
 export default function Drag(props) {
   // mã form
   const { fcode } = props;
-
+  // Loading chi tiết tiêu chuẩn
+  const [loadingItem ,setLoadingItem] = React.useState(false)
   //css
   const classes = useStyles();
 
@@ -103,6 +104,7 @@ export default function Drag(props) {
 
     const handleOpen = (x) => {
       setChosen(x)
+      setLoadingItem(true)
       //setItemsCriteria(items.find(item => item.code == x).criteria) 
       axios.get(`/admin/form/${fcode}/standard/${x}/getFormCriteria`, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
@@ -115,9 +117,10 @@ export default function Drag(props) {
           setItemsCriteria(temp)
           console.log(itemsCriteria)
           setOpenCriteria(true)
+          setLoadingItem(false)
         })
         .catch(err => {
-
+          setLoadingItem(false)
         })
     }
 
@@ -351,9 +354,10 @@ export default function Drag(props) {
   }
 
   return (
-    <div>
+    <div style={{position:'relative'}}>
       { loading ? <Loading /> : (
         <>
+        {loadingItem && <LinearProgress style={{position:"absolute", width:"100%" }} />}
         <FormControl variant="outlined" >
         <InputLabel >Tiêu chuẩn </InputLabel>
         <Select

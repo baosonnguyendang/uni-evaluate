@@ -80,7 +80,7 @@ const SignInSide = () => {
   const error = useSelector(state => state.error.msg)
   return (
     <>
-      {isLoading &&<LinearProgress style={{position:"absolute", width:"100%" }} />}
+      {isLoading && <LinearProgress style={{position:"absolute", width:"100%" }} />}
     <Grid container component="main" className={classes.root}>
       {
           isLogged && (localStorage.getItem('role') === 'admin' ? <Redirect to='/admin/user' /> : <Redirect to='/user' />)
