@@ -6,10 +6,9 @@ import Moment from 'moment';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+import { CardContent, LinearProgress } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
 import { Link } from 'react-router-dom';
 
 const token = localStorage.getItem('token')
@@ -18,21 +17,24 @@ var today = Moment()
 
 export default function Evaluation() {
   const [list, setList] = useState([])
-  
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
+    setLoading(true)
     axios.get('/form/review', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
         let temp = []
         res.data.reviews.map(x => {
-          let obj = {name: x.name, code: x.code, startDate: x.start_date, endDate: x.end_date}
+          let obj = { name: x.name, code: x.code, startDate: x.start_date, endDate: x.end_date }
           temp.push(obj)
         })
         console.log(temp)
         setList(temp)
+        setLoading(false)
       })
       .catch(err => {
         console.log(err)
+        setLoading(false)
       })
   }, [])
 
@@ -43,8 +45,10 @@ export default function Evaluation() {
   )
 
   return (
-    <div style={{ paddingTop: '45px' }}>
-      <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá cá nhân</Typography>
+    <>
+      {loading ? <LinearProgress style={{position:"absolute", width:"100%" }} /> : 
+      <div style={{ paddingTop: '45px' }}>
+        <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá cá nhân</Typography>
       {list.map(item => (
         <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
           <CardContent>
@@ -52,10 +56,10 @@ export default function Evaluation() {
               {item.name}
             </Typography>
             <br />
-            <span>Từ ngày: {item.startDate}</span>
+            <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
             {/* .format('DD/MM/YYYY') */}
             <br />
-            <span>Đến ngày: {item.endDate}</span>
+            <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
           </CardContent>
           <CardActions>
             {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
@@ -76,10 +80,10 @@ export default function Evaluation() {
               {item.name}
             </Typography>
             <br />
-            <span>Từ ngày: {item.startDate}</span>
+            <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
             {/* .format('DD/MM/YYYY') */}
             <br />
-            <span>Đến ngày: {item.endDate}</span>
+            <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
           </CardContent>
           <CardActions>
             {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
@@ -92,7 +96,9 @@ export default function Evaluation() {
           </CardActions>
         </Card>
       ))}
-    </div>
+      </div>}
+      
+    </>
   )
 }
 // export default class Evaluation extends React.Component {
