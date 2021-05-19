@@ -248,7 +248,7 @@ const TableEvaluation = () => {
                       <TableRow>
                         <TableCell>{option.name}</TableCell>
                         <TableCell>{option.max_point}</TableCell>
-                        <TableCell align='center' colSpan={1}></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
                         <TableCell align='center' colSpan={1}></TableCell>
                         <TableCell align='center' colSpan={1}></TableCell>
                       </TableRow>
