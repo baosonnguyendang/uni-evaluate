@@ -317,6 +317,8 @@ export default function SelectCriterion() {
                       <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Xong</Button>
                     </div>
                   )
+                default:
+                  return null
               }
             })()}
           </div>

@@ -123,22 +123,24 @@ export default function AddSettings() {
 
   //khoi tao Form, check form da duoc tao hay chua
   const [init, setInit] = React.useState(0)
-  axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
-    .then(res => {
-      // (res.data) && (setInit(false))
-      setLoading(false)
-      if (res.data.form) {
-        code = res.data.form.code
-        name = res.data.form.name
-        setInit(2)
-      }
-      else {
-        setInit(1)
-      }
-    })
-    .catch(e => {
-      console.log(e)
-    })
+  useEffect(() => {
+    axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        // (res.data) && (setInit(false))
+        setLoading(false)
+        if (res.data.form) {
+          code = res.data.form.code
+          name = res.data.form.name
+          setInit(2)
+        }
+        else {
+          setInit(1)
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  }, [])
 
   const Init = () => {
     const handleSubmitInit = (e) => {
@@ -229,19 +231,19 @@ export default function AddSettings() {
 
     useEffect(() => {
       axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
-      .then(res => {
-        let _id = res.data.formDepartments.filter(x => (x.level === 1 || x.level === 0)).map(x => x.department_id.department_code)
-        _id.map(x => {
-          units.map(y => {
-            if (y.id === x) {
-              y.check = true
-            }
+        .then(res => {
+          let _id = res.data.formDepartments.filter(x => (x.level === 1 || x.level === 0)).map(x => x.department_id.department_code)
+          _id.map(x => {
+            units.map(y => {
+              if (y.id === x) {
+                y.check = true
+              }
+            })
           })
+          setUnitChosen(units.filter(unit => unit.check === true))
+          setLoading(false)
         })
-        setUnitChosen(units.filter(unit => unit.check === true))
-        setLoading(false)
-      })
-      .catch(e => console.log(e))
+        .catch(e => console.log(e))
     }, [])
 
     return (

@@ -189,7 +189,12 @@ export default function Criterion() {
   };
   //
   const [loadingButton, setLoadingButton] = useState(false)
-  //
+
+  //get data from new criterion
+  const [id, setId] = React.useState('')
+  const [name, setName] = React.useState('')
+  const [head, setHead] = React.useState('')
+
   const submitAddDepartment = (e) => {
     console.log(id, name, head, newUnit);
     e.preventDefault()
@@ -215,10 +220,6 @@ export default function Criterion() {
       })
   }
 
-  //get data from new criterion
-  const [id, setId] = React.useState('')
-  const [name, setName] = React.useState('')
-  const [head, setHead] = React.useState('')
   const submit = e => {
     e.preventDefault()
     setRows(rows => [...rows, createData(id, name, null, head, newUnit)])
@@ -341,7 +342,6 @@ export default function Criterion() {
                           value={newUnit}
                           label='Đơn vị'
                           onChange={handleChangeUnit}
-                          required
                         >
                           <option aria-label="None" value="" />
                           {units.map(unit => {
