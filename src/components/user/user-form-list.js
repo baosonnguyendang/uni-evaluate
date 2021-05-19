@@ -34,7 +34,7 @@ export default function FormList() {
       return (
         <Card style={{marginTop: '24px'}}>
           <CardContent>
-            <Typography>
+            <Typography variant="h5" component="h2">
               Tên Form: {x.name}
             </Typography>
             <Typography>
