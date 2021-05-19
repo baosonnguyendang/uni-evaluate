@@ -48,7 +48,7 @@ export default function Evaluation() {
     <>
       {loading ? <LinearProgress style={{position:"absolute", width:"100%" }} /> : 
       <div style={{ paddingTop: '45px' }}>
-        <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá cá nhân</Typography>
+        <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá </Typography>
       {list.map(item => (
         <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
           <CardContent>
@@ -72,7 +72,7 @@ export default function Evaluation() {
           </CardActions>
         </Card>
       ))}
-      <Typography variant='h6' gutterBottom >Form đánh giá cá nhân khác</Typography>
+      {/* <Typography variant='h6' gutterBottom >Form đánh giá cá nhân khác</Typography>
       {list.map(item => (
         <Card style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
           <CardContent>
@@ -81,7 +81,6 @@ export default function Evaluation() {
             </Typography>
             <br />
             <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
-            {/* .format('DD/MM/YYYY') */}
             <br />
             <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
           </CardContent>
@@ -95,7 +94,7 @@ export default function Evaluation() {
               NotInTime}
           </CardActions>
         </Card>
-      ))}
+      ))} */}
       </div>}
       
     </>
