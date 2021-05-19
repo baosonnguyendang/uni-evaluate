@@ -15,7 +15,7 @@ import TextField from '@material-ui/core/TextField'
 
 import { makeStyles } from '@material-ui/core/styles';
 import { useParams } from 'react-router';
-
+import Loading from '../../common/CircleLoading'
 const useStyles = makeStyles(theme => ({
   modal: {
     display: 'flex',
@@ -178,7 +178,8 @@ export default function Drag(props) {
       </table >
     )
   }
-
+  //loading dữ liệu
+  const [loading, setLoading] = useState(true)
   //lấy nhẹ data tiêu chuẩn từ db
   const [data, setData] = React.useState([])
 
@@ -221,6 +222,7 @@ export default function Drag(props) {
             setData(temp)
             setItems(temp2)
             setLuuTam(temp2)
+            setLoading(false)
           })
           .catch(e => {
             console.log(e)
@@ -352,7 +354,9 @@ export default function Drag(props) {
 
   return (
     <div>
-      <FormControl variant="outlined" >
+      { loading ? <Loading /> : (
+        <>
+        <FormControl variant="outlined" >
         <InputLabel >Tiêu chuẩn </InputLabel>
         <Select
           style={{minWidth: '300px'}}
@@ -421,6 +425,9 @@ export default function Drag(props) {
         {/* <Button style={{ marginRight: 10 }} variant='contained' color='primary' onClick={undo}>Undo</Button> */}
         <Button variant='contained' disabled={disabled} color='secondary' onClick={save}>Lưu Form</Button>
       </div>
+        </>
+      )}
+      
     </div>
   );
 }

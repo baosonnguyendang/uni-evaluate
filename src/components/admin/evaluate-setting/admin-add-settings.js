@@ -27,7 +27,7 @@ import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
 import { useRouteMatch } from 'react-router-dom'
-
+import Skeleton from '../../common/skeleton'
 import MUIDataTable from "mui-datatables";
 
 const useStyles = makeStyles(theme => ({
@@ -95,6 +95,7 @@ export default function AddSettings() {
   let { url } = useRouteMatch()
   let { id, id1 } = useParams();
   let history = useHistory();
+  const [loading, setLoading] = useState(true)
   //check form da duoc tao hay chua
 
   //ds don vi va ma don vi
@@ -108,6 +109,7 @@ export default function AddSettings() {
         // console.log(res.data.parents)
         res.data.parents.map(x => {
           setUnits(units => [...units, createData(x.name, x.department_code)])
+
         })
       })
       .catch(e => {
@@ -124,6 +126,7 @@ export default function AddSettings() {
   axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
     .then(res => {
       // (res.data) && (setInit(false))
+      setLoading(false)
       if (res.data.form) {
         code = res.data.form.code
         name = res.data.form.name
@@ -235,6 +238,7 @@ export default function AddSettings() {
           })
         })
         setUnitChosen(units.filter(unit => unit.check === true))
+        setLoading(false)
       })
       .catch(e => console.log(e))
 
@@ -291,7 +295,7 @@ export default function AddSettings() {
 
   return (
     <div>
-      {(() => {
+      { loading ? <Skeleton /> : (() => {
         switch (init) {
           default:
             return null

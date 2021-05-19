@@ -9,6 +9,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from '@material-ui/core/Typography';
+import Skeleton from '../../common/skeleton'
 
 import axios from "axios";
 
@@ -16,7 +17,7 @@ export default function EvaluateSetting(props) {
   const name = props.name
   var { url } = useRouteMatch();
   let { id } = useParams();
-
+  const [loading, setLoading] = useState(true)
   //be to fe
   const [rows, setRows] = React.useState([])
   const token = localStorage.getItem('token')
@@ -25,6 +26,7 @@ export default function EvaluateSetting(props) {
       .then(res => {
         console.log(res.data);
         setRows(res.data.formTypeList)
+        setLoading(false)
         // setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
         // setPrevious([...rows])
         // setIsLoading(false)
@@ -34,9 +36,9 @@ export default function EvaluateSetting(props) {
     fetchFormType()
   }, [])
 
-  return (
-    <div>
-      {console.log(rows)}
+  return (<>
+    { loading ? <Skeleton /> : 
+      <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
         Các nhóm tham gia đánh giá {name}
       </Typography>
@@ -63,5 +65,7 @@ export default function EvaluateSetting(props) {
         </Table>
       </Paper>
     </div>
+    }
+    </>
   )
 }
