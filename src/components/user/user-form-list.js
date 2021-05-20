@@ -12,12 +12,16 @@ export default function FormList() {
   const { url } = useRouteMatch()
 
   const [list, setList] = useState([])
+  const [isHeadUnit, setIsHeadUnit] = useState(false)
 
   useEffect(() => {
     console.log(id)
     axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
+        if (res.data.formDepartment.length > 0) {
+          setIsHeadUnit(true)
+        }
       })
       .catch(err => {
         console.log(err)
@@ -38,27 +42,35 @@ export default function FormList() {
   }, [])
 
   return (
-    list.map(x => {
-      return (
-        <Card key={x.code} style={{ marginTop: '24px' }}>
-          <CardContent>
-            <Typography variant="h5" component="h2">
-              Tên Form: {x.name}
-            </Typography>
-            <Typography>
-              Mô tả:
-            </Typography>
-          </CardContent>
-          <CardActions style={{ paddingLeft: '16px' }}>
-            <Button variant='contained' color='primary'>
-              <Link style={{textDecoration: 'none', color: 'white'}} key={x.code} to={`${url}/${x.id}`}>Đánh giá cá nhân</Link>
-            </Button>
-            <Button variant='contained' color='secondary'>
-              <Link style={{textDecoration: 'none', color: 'white'}} key={x.code} to={`${url}/${x.id}/employee`}>Đánh giá với tư cách trưởng đơn vị</Link>
-            </Button>
-          </CardActions>
-        </Card>
-      )
-    })
+    <div>
+      <Typography variant="h5" component="h2" style={{ marginTop: '24px' }}>
+        Danh sách các Form đánh giá:
+      </Typography>
+      {
+        list.map(x => {
+          return (
+            <Card key={x.code} style={{ marginTop: '24px' }}>
+              <CardContent>
+                <Typography variant="h6" component="h5">
+                  Tên Form: {x.name}
+                </Typography>
+                <Typography>
+                  Mã Form: {x.code}
+                </Typography>
+              </CardContent>
+              <CardActions style={{ paddingLeft: '16px' }}>
+                <Button variant='contained' color='primary'>
+                  <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}`}>Đánh giá cá nhân</Link>
+                </Button>
+                {isHeadUnit &&
+                  <Button variant='contained' color='secondary'>
+                    <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}/employee`}>Đánh giá với tư cách trưởng đơn vị</Link>
+                  </Button>}
+              </CardActions>
+            </Card>
+          )
+        })
+      }
+    </div>
   )
 }
