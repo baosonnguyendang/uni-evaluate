@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function FormEvaluation (props) {
+export default function FormEvaluation(props) {
   const classes = useStyles();
   const [loading, setLoading] = useState(false)
   // const [data, setData] = useState({})
@@ -33,7 +33,6 @@ export default function FormEvaluation (props) {
     setLoading(true)
     axios.get(`/form/v2/${id1}`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        console.log(res.data.formStandards)
         setData(res.data.formStandards)
         setLoading(false)
       })
@@ -43,7 +42,7 @@ export default function FormEvaluation (props) {
       })
     let temp = []
     data.map(standard => {
-      let o = {name: standard.standard_id.code, list: []}
+      let o = { name: standard.standard_id.code, list: [] }
       standard.formCriteria.map(criteria => {
         let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type == 'checkbox' ? 0 : null }
         o.list.push(obj)
@@ -59,7 +58,6 @@ export default function FormEvaluation (props) {
     let temp = sent.slice()
 
     temp.find(x => x.list.some(y => y.name === event.target.name)).list.find(z => z.name === event.target.name).value = event.target.checked ? event.target.value : 0
-    console.log(temp)
     setSent(temp)
     // console.log('name: ' + event.target.name + ', điểm: ' + event.target.value + ', checked:' + event.target.checked)
   };
@@ -67,23 +65,22 @@ export default function FormEvaluation (props) {
   const handleCheckRadio = (event) => {
     let temp = sent.slice()
     temp.find(x => x.list.some(y => y.name === event.target.name)).list.find(z => z.name === event.target.name).value = event.target.value
-    console.log(temp)
     setSent(temp)
   }
 
   const sendNude = () => {
     let list = []
     sent.filter(x => x.list.some(y => y.value === null)).map(x => {
-      list.push(data.find(y => y.standard_id.code === x.name).standard_id.name) 
+      list.push(data.find(y => y.standard_id.code === x.name).standard_id.name)
     })
-    if (list.length === 0){
+    if (list.length === 0) {
       axios.post(`/user/submitForm`, sent, { headers: { "Authorization": `Bearer ${token}` } })
-      .then(res => {
-        alert(res)
-      })
-      .catch(err => {
-        alert(err)
-      })
+        .then(res => {
+          alert(res)
+        })
+        .catch(err => {
+          alert(err)
+        })
     }
     else {
       let noti = 'Các tiêu chuẩn sau chưa hoàn thành đánh giá:'
@@ -130,16 +127,16 @@ export default function FormEvaluation (props) {
                           <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                           <TableCell>{criteria.point}</TableCell>
                           <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox onChange={handleCheck} name={criteria.criteria_id.code} value={criteria.point} />}</TableCell>
-                          <TableCell></TableCell>
-                          <TableCell></TableCell>
+                          <TableCell>{props.level > 1 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
+                          <TableCell>{props.level > 2 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
                         </TableRow>
                         {criteria.options.map((option, index) => (
                           <TableRow>
                             <TableCell>{option.name}</TableCell>
                             <TableCell>{option.max_point}</TableCell>
                             <TableCell align='center' colSpan={1}><input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code} value={option.max_point} /></TableCell>
-                            <TableCell align='center' colSpan={1}></TableCell>
-                            <TableCell align='center' colSpan={1}></TableCell>
+                            <TableCell align='center' colSpan={1}>{props.level > 1 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
+                            <TableCell align='center' colSpan={1}>{props.level > 2 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
                           </TableRow>
                         ))}
                       </>

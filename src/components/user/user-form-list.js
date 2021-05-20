@@ -13,6 +13,7 @@ export default function FormList() {
 
   const [list, setList] = useState([])
   const [isHeadUnit, setIsHeadUnit] = useState(false)
+  const [unit, setUnit] = useState()
 
   useEffect(() => {
     console.log(id)
@@ -21,6 +22,7 @@ export default function FormList() {
         console.log(res.data)
         if (res.data.formDepartment.length > 0) {
           setIsHeadUnit(true)
+          setUnit(res.data.formDepartment[0].department_id.department_code)
         }
       })
       .catch(err => {
@@ -64,7 +66,7 @@ export default function FormList() {
                 </Button>
                 {isHeadUnit &&
                   <Button variant='contained' color='secondary'>
-                    <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}/employee`}>Đánh giá với tư cách trưởng đơn vị</Link>
+                    <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}/${unit}`}>Đánh giá với tư cách trưởng đơn vị</Link>
                   </Button>}
               </CardActions>
             </Card>

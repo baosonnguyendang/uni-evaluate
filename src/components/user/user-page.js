@@ -7,7 +7,9 @@ import TableEvaluation from './element/user-table';
 import FormList from './user-form-list';
 import Profile from './user-profile/user-profile';
 import Evaluation from './user-evaluation';
-import EmployeeList from './user-employee-list';
+
+import EmployeeList from './user-head-unit/user-employee-list';
+import EmployeeForm from './user-head-unit/user-employee-form';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Container } from '@material-ui/core';
@@ -32,8 +34,11 @@ const UserPage = () => {
             <Route path='/user/evaluate/:id/:id1' exact>
                 <TableEvaluation />
             </Route>
-            <Route path='/user/evaluate/:id/:id1/employee' exact>
+            <Route path='/user/evaluate/:id/:id1/:id2' exact>
                 <EmployeeList />
+            </Route>
+            <Route path='/user/evaluate/:id/:id1/:id2/:id3' exact>
+                <EmployeeForm />
             </Route>
             </Container>
         </Switch>
