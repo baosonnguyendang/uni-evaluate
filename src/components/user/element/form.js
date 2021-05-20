@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   },
 });
 
-const TableEvaluation = () => {
+export default function FormEvaluation (props) {
   const classes = useStyles();
   const [loading, setLoading] = useState(false)
   // const [data, setData] = useState({})
@@ -160,4 +160,3 @@ const TableEvaluation = () => {
   )
 }
 
-export default TableEvaluation
