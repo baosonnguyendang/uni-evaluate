@@ -14,6 +14,14 @@ export default function FormList() {
   const [list, setList] = useState([])
 
   useEffect(() => {
+    console.log(id)
+    axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
     axios.get(`/form/review/${id}/form`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         let temp = []
@@ -32,7 +40,7 @@ export default function FormList() {
   return (
     list.map(x => {
       return (
-        <Card style={{ marginTop: '24px' }}>
+        <Card key={x.code} style={{ marginTop: '24px' }}>
           <CardContent>
             <Typography variant="h5" component="h2">
               Tên Form: {x.name}
