@@ -106,7 +106,7 @@ const TableEvaluation = () => {
                       <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
                       <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                       <TableCell>{criteria.point}</TableCell>
-                      <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox/>}</TableCell>
+                      <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox name={criteria.criteria_id.name} value={criteria.point}/>}</TableCell>
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                     </TableRow>
@@ -114,7 +114,7 @@ const TableEvaluation = () => {
                       <TableRow>
                         <TableCell>{option.name}</TableCell>
                         <TableCell>{option.max_point}</TableCell>
-                        <TableCell align='center' colSpan={1}><Radio/></TableCell>
+                        <TableCell align='center' colSpan={1}><Radio name={criteria.criteria_id.name} value={option.max_point}/></TableCell>
                         <TableCell align='center' colSpan={1}></TableCell>
                         <TableCell align='center' colSpan={1}></TableCell>
                       </TableRow>
