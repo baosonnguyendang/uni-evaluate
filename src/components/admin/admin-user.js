@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from '@material-ui/core/FormControl';
@@ -107,17 +107,18 @@ export default function ListUser() {
   const token = localStorage.getItem('token')
   const [previous, setPrevious] = React.useState([]);
   const fetchUser = () => {
-    axios.get('/admin/user', { headers: {"Authorization" : `Bearer ${token}`} })
-          .then(res => {
-              console.log(res.data.users);
-              setRows(res.data.users.map(user => ({...user,department:user.department.map(dep=>dep.name).join(", "),isEditMode:false})))
-              setPrevious([...rows])
-              setIsLoading(false)
-  })}
+    axios.get('/admin/user', { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data.users);
+        setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
+        setPrevious([...rows])
+        setIsLoading(false)
+      })
+  }
   useEffect(() => {
     fetchUser()
   }, [])
-  
+
   console.log(previous)
   const classes = useStyles();
 
@@ -182,124 +183,130 @@ export default function ListUser() {
   const [lname, setName] = React.useState('')
   const [fname, setC] = React.useState('')
   const [email, setD] = React.useState('')
-  const [role, setP] = React.useState('')
   const submit = e => {
     e.preventDefault()
-    setRows(rows => [...rows, createData(id, lname, fname, email, newUnit, role)])
+    axios.post('/admin/user/add', { id, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        setRows(rows => [...rows, createData(id, lname, fname, email, '', '')])
+        handleClose()
+      })
+      .catch(err => {
+        alert(err)
+      })
   }
 
   //chon don vi trong modal
-  const [newUnit, setNewUnit] = React.useState('');
-  const handleChangeUnit = (event) => {
-    setNewUnit(event.target.value); 
-  };
+  // const [newUnit, setNewUnit] = React.useState('');
+  // const handleChangeUnit = (event) => {
+  //   setNewUnit(event.target.value); 
+  // };
   const [isLoading, setIsLoading] = React.useState(true)
   return (<>
-   { isLoading ? <Skeleton /> : (
-     <div>
-     <Typography component="h1" variant="h5" color="inherit" noWrap>
-       DANH SÁCH NGƯỜI DÙNG
+    { isLoading ? <Skeleton /> : (
+      <div>
+        <Typography component="h1" variant="h5" color="inherit" noWrap>
+          DANH SÁCH NGƯỜI DÙNG
      </Typography>
-     <Paper className={classes.root}>
-       <Table className={classes.table} aria-label="caption table">
-         <TableHead>
-           <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-             <TableCell align="left">ID</TableCell>
-             <TableCell align="left">Họ và tên đệm</TableCell>
-             <TableCell align="left">Tên</TableCell>
-             <TableCell align="left">Email</TableCell>
-             <TableCell align="left">Đơn vị</TableCell>
-             <TableCell align="left">Chức vụ</TableCell>
-             <TableCell align="left" />
-           </TableRow>
-         </TableHead>
-         <TableBody>
-           {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-             return (
-               <TableRow key={row._id}>
-                 <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange }} />
-                 <CustomTableCell className={classes.name} {...{ row, name: "lastname", onChange }} />
-                 <CustomTableCell {...{ row, name: "firstname", onChange }} />
-                 <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
-                 <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
-                 <CustomTableCell className={classes.name} {...{ row, name: "roles", onChange }} />
-                 <TableCell className={classes.selectTableCell}>
-                   {row.isEditMode ? (
-                     <>
-                       <IconButton
-                         aria-label="done"
-                         onClick={() => onToggleEditMode(row._id)}
-                       >
-                         <DoneIcon />
-                       </IconButton>
-                       <IconButton
-                         aria-label="revert"
-                         onClick={() => onRevert(row._id)}
-                       >
-                         <RevertIcon />
-                       </IconButton>
-                     </>
-                   ) : (
-                     <>
-                       <IconButton
-                         aria-label="delete"
-                         onClick={() => onToggleEditMode(row._id)}
-                       >
-                         <EditIcon />
-                       </IconButton>
-                       <IconButton
-                         aria-label="delete"
-                         onClick={() => onDelete(row._id)}
-                       >
-                         <DeleteIcon />
-                       </IconButton>
-                     </>
-                   )}
-                 </TableCell>
-               </TableRow>
-             )
-           })}
-         </TableBody>
-       </Table>
-       <TablePagination
-         rowsPerPageOptions={[5, 10, 20]}
-         component="div"
-         count={rows.length}
-         rowsPerPage={rowsPerPage}
-         page={page}
-         onChangePage={handleChangePage}
-         onChangeRowsPerPage={handleChangeRowsPerPage}
-       />
-       <div style={{ margin: '10px', textAlign: 'right' }}>
-         <div>
-           <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-             Thêm người dùng
+        <Paper className={classes.root}>
+          <Table className={classes.table} aria-label="caption table">
+            <TableHead>
+              <TableRow style={{ backgroundColor: '#f4f4f4' }}>
+                <TableCell align="left">ID</TableCell>
+                <TableCell align="left">Họ và tên đệm</TableCell>
+                <TableCell align="left">Tên</TableCell>
+                <TableCell align="left">Email</TableCell>
+                <TableCell align="left">Đơn vị</TableCell>
+                <TableCell align="left">Chức vụ</TableCell>
+                <TableCell align="left" />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                return (
+                  <TableRow key={row._id}>
+                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "lastname", onChange }} />
+                    <CustomTableCell {...{ row, name: "firstname", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "roles", onChange }} />
+                    <TableCell className={classes.selectTableCell}>
+                      {row.isEditMode ? (
+                        <>
+                          <IconButton
+                            aria-label="done"
+                            onClick={() => onToggleEditMode(row._id)}
+                          >
+                            <DoneIcon />
+                          </IconButton>
+                          <IconButton
+                            aria-label="revert"
+                            onClick={() => onRevert(row._id)}
+                          >
+                            <RevertIcon />
+                          </IconButton>
+                        </>
+                      ) : (
+                        <>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onToggleEditMode(row._id)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onDelete(row._id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 20]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+          <div style={{ margin: '10px', textAlign: 'right' }}>
+            <div>
+              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                Thêm người dùng
            </Button>
-           <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-             import file
+              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                import file
            </Button>
-         </div>
-         <Modal
-           aria-labelledby="transition-modal-title"
-           aria-describedby="transition-modal-description"
-           className={classes.modal}
-           open={open}
-           onClose={handleClose}
-           closeAfterTransition
-           BackdropComponent={Backdrop}
-           BackdropProps={{
-             timeout: 500,
-           }}
-         >
-           <Fade in={open}>
-             <div className={classes.paper1}>
-               <h2 id="transition-modal-title">Thêm người dùng</h2>
-               <form onSubmit={submit}>
-                 <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                 <TextField onChange={e => setName(e.target.value)} id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
-                 <TextField onChange={e => setC(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                 <TextField onChange={e => setD(e.target.value)} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
-                 <FormControl variant="outlined" fullWidth className={classes.formControl}>
+            </div>
+            <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              className={classes.modal}
+              open={open}
+              onClose={handleClose}
+              closeAfterTransition
+              BackdropComponent={Backdrop}
+              BackdropProps={{
+                timeout: 500,
+              }}
+            >
+              <Fade in={open}>
+                <div className={classes.paper1}>
+                  <h2 id="transition-modal-title">Thêm người dùng</h2>
+                  <form onSubmit={submit}>
+                    <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setName(e.target.value)} id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setC(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setD(e.target.value)} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                    {/* <FormControl variant="outlined" fullWidth className={classes.formControl}>
                    <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
                    <Select
                      native
@@ -314,19 +321,19 @@ export default function ListUser() {
                      <option value={30}>Phòng Y tế</option>
                    </Select>
                  </FormControl>
-                 <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth className={classes.field} />
-                 <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                   <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
-                   <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
-                 </div>
-               </form>
-             </div>
-           </Fade>
-         </Modal>
-       </div>
-     </Paper>
-   </div>
-   )}
-   </>
-    )
+                 <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth className={classes.field} /> */}
+                    <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                      <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                      <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                    </div>
+                  </form>
+                </div>
+              </Fade>
+            </Modal>
+          </div>
+        </Paper>
+      </div>
+    )}
+  </>
+  )
 }

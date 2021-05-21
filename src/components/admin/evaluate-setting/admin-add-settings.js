@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import UserSettings from './admin-user-settings'
 import Drag from './admin-drag-criterion'
+import Council from './admin-init-council'
 
 import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink, useParams, useHistory } from "react-router-dom";
 
@@ -401,20 +402,20 @@ export default function AddSettings() {
                     <Paper style={{ padding: '10px 10px 50px 10px' }} className={classes.paper}>
                       {/* <AppBar position="static"> */}
                       <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
+                        <Tab className={classes.tab} label="Lập HĐĐG cấp Trường" />
                         <Tab className={classes.tab} label="Cấu hình đơn vị" />
-                        {/* <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" /> */}
                         <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
                       </Tabs>
                       {/* </AppBar> */}
                       {(() => {
                         switch (value) {
-                          case 1:
+                          case 2:
                             return (
                               <div>
                                 <Drag fcode={code} />
                               </div>
                             )
-                          case 0:
+                          case 1:
                             return (
                               <div>
                                 <Typography component="h3" variant="h5" color="inherit">
@@ -466,6 +467,10 @@ export default function AddSettings() {
                                   </Fade>
                                 </Modal>
                               </div>
+                            )
+                          case 0:
+                            return (
+                              <Council />
                             )
                           default:
                             return null

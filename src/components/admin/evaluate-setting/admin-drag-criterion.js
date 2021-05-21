@@ -423,7 +423,7 @@ export default function Drag(props) {
           </div>
         </Fade>
       </Modal>
-      <div style={{ position: 'absolute', right: 10, bottom: 10 }}>
+      <div style={{ position: 'absolute', right: 10}}>
         {/* <Button style={{ marginRight: 10 }} variant='contained' color='primary' onClick={undo}>Undo</Button> */}
         <Button variant='contained' disabled={disabled} color='secondary' onClick={save}>Lưu Form</Button>
       </div>
