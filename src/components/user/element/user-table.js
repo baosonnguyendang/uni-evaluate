@@ -168,8 +168,12 @@ import axios from 'axios';
 
 import FormEvaluation from '../element/form.js'
 
+import { Typography } from '@material-ui/core'
+
 export default function EmployeeForm(){
   return (
-    <FormEvaluation level={1} />
+    <div>
+      <FormEvaluation level={1} />
+    </div>
   )
 }

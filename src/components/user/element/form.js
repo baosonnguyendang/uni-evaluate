@@ -4,7 +4,8 @@ import {
   TableHead, TableRow, TableCell,
   TableBody, makeStyles, Paper, Grid,
   Radio, Button, Checkbox,
-  LinearProgress
+  LinearProgress,
+  Typography
 } from "@material-ui/core";
 
 import axios from 'axios'
@@ -44,11 +45,12 @@ export default function FormEvaluation(props) {
     data.map(standard => {
       let o = { name: standard.standard_id.code, list: [] }
       standard.formCriteria.map(criteria => {
-        let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type == 'checkbox' ? 0 : null }
+        let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type == 'radio' ? null : 0 }
         o.list.push(obj)
       })
       temp.push(o)
     })
+    console.log(temp)
     setSent(temp)
   }, [])
 
@@ -56,7 +58,7 @@ export default function FormEvaluation(props) {
   const handleCheck = (event) => {
     // setChecked(event.target.checked);
     let temp = sent.slice()
-
+    console.log(temp)
     temp.find(x => x.list.some(y => y.name === event.target.name)).list.find(z => z.name === event.target.name).value = event.target.checked ? event.target.value : 0
     setSent(temp)
     // console.log('name: ' + event.target.name + ', điểm: ' + event.target.value + ', checked:' + event.target.checked)
@@ -64,6 +66,7 @@ export default function FormEvaluation(props) {
 
   const handleCheckRadio = (event) => {
     let temp = sent.slice()
+    console.log(temp)
     temp.find(x => x.list.some(y => y.name === event.target.name)).list.find(z => z.name === event.target.name).value = event.target.value
     setSent(temp)
   }
@@ -92,7 +95,7 @@ export default function FormEvaluation(props) {
   return (
     < >
       { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
-        <Grid container xs={12} justify='center' style={{ margin: '45px 0px' }}>
+        <Grid container xs={12} justify='center' style={{ margin: '30px 0px' }}>
           <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
             <Table className={classes.table} >
               <TableHead>
@@ -127,8 +130,8 @@ export default function FormEvaluation(props) {
                           <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                           <TableCell>{criteria.point}</TableCell>
                           <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox onChange={handleCheck} name={criteria.criteria_id.code} value={criteria.point} />}</TableCell>
-                          <TableCell>{props.level > 1 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
-                          <TableCell>{props.level > 2 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
+                          <TableCell align='center'>{props.level > 1 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
+                          <TableCell align='center'>{props.level > 2 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
                         </TableRow>
                         {criteria.options.map((option, index) => (
                           <TableRow>

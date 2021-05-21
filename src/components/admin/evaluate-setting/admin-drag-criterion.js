@@ -69,7 +69,6 @@ export default function Drag(props) {
     }
     axios.post(`/admin/form/${fcode}/standard/${scode}/addFormCriteria`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        
         handleCloseCriteria(); // tắt modal
       })
       .catch(err => {
