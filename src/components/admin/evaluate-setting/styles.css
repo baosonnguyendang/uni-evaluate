@@ -1,0 +1,6 @@
+#list li {
+  width: 30%;
+  position: relative;
+  display: inline-block;
+  margin-right: 20%;
+}

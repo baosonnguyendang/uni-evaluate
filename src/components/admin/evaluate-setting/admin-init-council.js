@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 
 import axios from 'axios'
 
+import './styles.css';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import ButtonCustom from '../../common/ButtonCustom'
@@ -25,6 +27,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
   list: {
+    display: 'contents',
     width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
@@ -65,7 +68,7 @@ export default function Council() {
 
   const [council, setCouncil] = useState([
     { id: '1111', name: 'Mai Thanh Phong', role: 'Hiệu trưởng' },
-    { id: '1112', name: 'Bùi Hoài Thắng', role: 'Trưởng Phòng Đào tạo' }
+    { id: '1112', name: 'Bùi Hoài Thắng', role: 'Phòng Đào tạo' }
   ])
 
   const remove = (id) => {
@@ -90,13 +93,14 @@ export default function Council() {
 
   return (
     <div>
-      <Typography component="h3" variant="h5" color="inherit">
+      <Typography component="h3" variant="h5" color="inherit" >
         Danh sách Hội đồng đánh giá cấp Trường:
       </Typography>
-      <List className={classes.list}>
+      <Button onClick={handleOpen} className={classes.btn} variant="contained" color="primary">Thêm thành viên vào HĐĐG</Button>
+      <List id='list' className={classes.list}>
         {council.map(x => {
           return (
-            <ListItem key={x.id}>
+            <ListItem key={x.id} className={classes.item}>
               <ListItemAvatar>
                 <Avatar>
                   <PersonIcon />
@@ -112,7 +116,6 @@ export default function Council() {
           )
         })}
       </List>
-      <Button onClick={handleOpen} className={classes.btn} variant="contained" color="primary">Thêm thành viên vào HĐĐG</Button>
       <Modal
         className={classes.modal}
         open={open}
