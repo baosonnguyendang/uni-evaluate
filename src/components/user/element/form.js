@@ -28,12 +28,13 @@ export default function FormEvaluation(props) {
 
   const [data, setData] = useState([]) //data đầu vào
   const [sent, setSent] = useState([]) //data đầu ra
-
-  console.log(id1)
+  const [luuTam, setLuuTam] = useState([]) //lưu tạm
+  const [disabled, setDisabled] = useState(true) //true thì không lưu tạm được, có chỉnh sửa mới lưu tạm được
+  const [disableEdit, setDisableEdit] = useState(false) //ấn hoàn thành rồi thì ko lưu được nữa
 
   useEffect(() => {
     setLoading(true)
-    axios.get(`/form/v2/${id1}`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/form/${id1}`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setData(res.data.formStandards)
         console.log(res.data.formStandards)
@@ -48,6 +49,7 @@ export default function FormEvaluation(props) {
           temp.push(o)
         })
         setSent(temp)
+        setLuuTam(temp)
       })
       .catch(err => {
         console.log(err)
@@ -63,8 +65,18 @@ export default function FormEvaluation(props) {
     //   temp.push(o)
     // })
     // setSent(temp)
+    console.log(sent)
+    console.log(luuTam)
   }, [])
 
+  const compare = (x) => {
+    if (x != luuTam) {
+      setDisabled(false)
+    }
+    else {
+      setDisabled(true)
+    }
+  }
 
   const handleCheck = (event) => {
     // setChecked(event.target.checked);
@@ -72,6 +84,7 @@ export default function FormEvaluation(props) {
     console.log(temp)
     temp.find(x => x.list.some(y => y.name === event.target.name)).list.find(z => z.name === event.target.name).value = event.target.checked ? event.target.value : 0
     setSent(temp)
+    compare(temp)
     // console.log('name: ' + event.target.name + ', điểm: ' + event.target.value + ', checked:' + event.target.checked)
   };
 
@@ -80,6 +93,7 @@ export default function FormEvaluation(props) {
     console.log(temp)
     temp.find(x => x.list.some(y => y.name === event.target.name)).list.find(z => z.name === event.target.name).value = event.target.value
     setSent(temp)
+    compare(temp)
   }
 
   const sendNude = () => {
@@ -92,6 +106,7 @@ export default function FormEvaluation(props) {
       axios.post(`/user/submitForm`, sent, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
+          setDisableEdit(true)
         })
         .catch(err => {
           alert(err)
@@ -103,8 +118,14 @@ export default function FormEvaluation(props) {
       alert(noti)
     }
   }
+  const temporary = () => {
+    setDisabled(true)
+    setLuuTam(sent)
+    axios.post(`/user/submitForm`, sent, { headers: { "Authorization": `Bearer ${token}` } })
+  }
 
-  const [status, setStatus] = useState(true)
+
+  const [status, setStatus] = useState(true)//hoàn thành đánh giá thì chuyển qua UI hoàn thành đánh giá
 
   const again = () => {
     setStatus(true)
@@ -149,7 +170,7 @@ export default function FormEvaluation(props) {
                               <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
                               <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                               <TableCell>{criteria.point}</TableCell>
-                              <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == criteria.point)))} onChange={handleCheck} name={criteria.criteria_id.code} value={criteria.point} />}</TableCell>
+                              <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox disabled={disableEdit} defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == criteria.point)))} onChange={handleCheck} name={criteria.criteria_id.code} value={criteria.point} />}</TableCell>
                               <TableCell align='center'>{props.level > 1 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
                               <TableCell align='center'>{props.level > 2 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
                             </TableRow>
@@ -157,7 +178,7 @@ export default function FormEvaluation(props) {
                               <TableRow>
                                 <TableCell>{option.name}</TableCell>
                                 <TableCell>{option.max_point}</TableCell>
-                                <TableCell align='center' colSpan={1}><input onChange={handleCheckRadio} defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == option.max_point)))} type="radio" name={criteria.criteria_id.code} value={option.max_point} /></TableCell>
+                                <TableCell align='center' colSpan={1}><input onChange={handleCheckRadio} disabled={disableEdit} defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == option.max_point)))} type="radio" name={criteria.criteria_id.code} value={option.max_point} /></TableCell>
                                 <TableCell align='center' colSpan={1}>{props.level > 1 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
                                 <TableCell align='center' colSpan={1}>{props.level > 2 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
                               </TableRow>
@@ -169,9 +190,19 @@ export default function FormEvaluation(props) {
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Button variant="contained" color="primary" onClick={sendNude}>
-                Hoàn thành đánh giá
-            </Button>
+              <div>
+                {
+                  !disableEdit &&
+                  <div>
+                    <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
+                      Lưu tạm
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={sendNude} style={{ marginLeft: '10px' }}>
+                      Hoàn thành đánh giá
+                    </Button>
+                  </div>
+                }
+              </div>
             </Grid>
           )}
         </div>

@@ -66,7 +66,7 @@ export default function Evaluation() {
               <Link to={'/user/evaluate/' + item.code}>
                 <Button size="small" color='secondary'>
                   Thực hiện khảo sát
-                  </Button>
+                </Button>
               </Link> :
               NotInTime}
           </CardActions>

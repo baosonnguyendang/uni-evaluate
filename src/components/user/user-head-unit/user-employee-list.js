@@ -18,7 +18,19 @@ const useStyles = makeStyles({
 export default function EmployeeList() {
   const classes = useStyles();
   
+  const {id1, id2} = useParams()
   const { url } = useRouteMatch()
+  const token = localStorage.getItem('token')
+
+  useEffect(() => {
+    axios.get(`/admin/form/${id1}/${id2}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  })
 
   const [data, setData] = useState([
     { code: '1234', name: 'A Văn B', unit: 'Bảo vệ', status: true },

@@ -62,11 +62,11 @@ export default function FormList() {
               </CardContent>
               <CardActions style={{ paddingLeft: '16px' }}>
                 <Button variant='contained' color='primary'>
-                  <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}`}>Đánh giá cá nhân</Link>
+                  <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.code}`}>Đánh giá cá nhân</Link>
                 </Button>
                 {isHeadUnit &&
                   <Button variant='contained' color='secondary'>
-                    <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}/${unit}`}>Đánh giá với tư cách trưởng đơn vị</Link>
+                    <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.code}/${unit}`}>Đánh giá với tư cách trưởng đơn vị</Link>
                   </Button>}
               </CardActions>
             </Card>
