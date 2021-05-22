@@ -35,23 +35,33 @@ export default function FormEvaluation(props) {
     axios.get(`/form/v2/${id1}`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setData(res.data.formStandards)
+        console.log(res.data.formStandards)
         setLoading(false)
+        let temp = []
+        res.data.formStandards.map(standard => {
+          let o = { name: standard.standard_id.code, list: [] }
+          standard.formCriteria.map(criteria => {
+            let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type == 'radio' ? null : 0 }
+            o.list.push(obj)
+          })
+          temp.push(o)
+        })
+        setSent(temp)
       })
       .catch(err => {
         console.log(err)
         setLoading(false)
       })
-    let temp = []
-    data.map(standard => {
-      let o = { name: standard.standard_id.code, list: [] }
-      standard.formCriteria.map(criteria => {
-        let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type == 'radio' ? null : 0 }
-        o.list.push(obj)
-      })
-      temp.push(o)
-    })
-    console.log(temp)
-    setSent(temp)
+    // let temp = []
+    // data.map(standard => {
+    //   let o = { name: standard.standard_id.code, list: [] }
+    //   standard.formCriteria.map(criteria => {
+    //     let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type == 'radio' ? null : 0 }
+    //     o.list.push(obj)
+    //   })
+    //   temp.push(o)
+    // })
+    // setSent(temp)
   }, [])
 
 
@@ -80,6 +90,7 @@ export default function FormEvaluation(props) {
       axios.post(`/user/submitForm`, sent, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           alert(res)
+          props.setVal(1)
         })
         .catch(err => {
           alert(err)

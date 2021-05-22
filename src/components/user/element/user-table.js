@@ -162,18 +162,28 @@
 
 // export default TableEvaluation
 
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
 import FormEvaluation from '../element/form.js'
 
-import { Typography } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 
-export default function EmployeeForm(){
+export default function EmployeeForm() {
+  const [val, setVal] = useState(0)
   return (
     <div>
-      <FormEvaluation level={1} />
-    </div>
+      {/* {val == 0 ? <p>A</p> : <p>B</p>} */}
+      { val === 0 ? (
+        <FormEvaluation setVal={setVal} level={1} />
+      ) : (
+        <div>
+          <Typography>Bạn đã hoàn thành đánh giá.</Typography>
+          <Button color='primary' onClick={() => { setVal(0) }}>Xem lại đánh giá</Button>
+        </div >
+      )
+      }
+    </div >
   )
 }
