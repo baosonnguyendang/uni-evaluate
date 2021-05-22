@@ -114,7 +114,7 @@ const Profile = () => {
           <Button style={{ marginTop: 30 }} variant="outlined" size="small" onClick={onEditPassword}>Đổi mật khẩu</Button>
         </Grid>}
       {edit && <EditUserForm setEdit={() => setEdit(false)} infoUser={infoUser} />}
-      {editPassword && <EditPassword setEditPassword={() => setEditPassword(false)} />}
+      {editPassword && <EditPassword setDisableEditPassword={() => setEditPassword(false)} />}
     </Grid>}
       
 

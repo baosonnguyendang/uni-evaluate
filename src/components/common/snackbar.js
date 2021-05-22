@@ -10,7 +10,7 @@ function Alert(props) {
 const Toast = ({toast, handleClose}) => {
     return (
         <>
-    <Snackbar open={toast.open} autoHideDuration={toast.time} onClose={handleClose}>
+    <Snackbar anchorOrigin={{vertical: 'bottom', horizontal : 'right' }} open={toast.open} autoHideDuration={toast.time} onClose={handleClose}>
         <Alert onClose={handleClose} severity={toast.severity}>
           {toast.message}
         </Alert>
