@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper1: {
     position: 'absolute',
-    width: 700,
+    width: 900,
     backgroundColor: theme.palette.background.paper,
     border: '1px solid #000',
     boxShadow: theme.shadows[5],
@@ -145,7 +145,7 @@ export default function Drag(props) {
                 items.filter(x => x.code == props.code).length > 0 ? items.find(x => x.code === props.code).pts : 5
               )}
             onChange={e => setPoint(e.target.value)}
-            id="outlined-basic" type='number' label="Điểm tối đa" variant="outlined" size='small' />
+            id="outlined-basic" type='number' label={openCriteria ? "Điểm" : "Điểm tối đa"} variant="outlined" size='small' />
         </td>
       </tr>
     );

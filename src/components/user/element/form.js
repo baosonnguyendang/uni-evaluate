@@ -11,6 +11,7 @@ import {
 import axios from 'axios'
 
 import { useParams } from 'react-router-dom'
+import { ArrowRightAltOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   table: {
@@ -86,11 +87,11 @@ export default function FormEvaluation(props) {
     sent.filter(x => x.list.some(y => y.value === null)).map(x => {
       list.push(data.find(y => y.standard_id.code === x.name).standard_id.name)
     })
+    console.log(sent)
     if (list.length === 0) {
       axios.post(`/user/submitForm`, sent, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
-          alert(res)
-          props.setVal(1)
+          setStatus(false)
         })
         .catch(err => {
           alert(err)
@@ -103,67 +104,82 @@ export default function FormEvaluation(props) {
     }
   }
 
+  const [status, setStatus] = useState(true)
+
+  const again = () => {
+    setStatus(true)
+  }
+
   return (
     < >
-      { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
-        <Grid container xs={12} justify='center' style={{ margin: '30px 0px' }}>
-          <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
-            <Table className={classes.table} >
-              <TableHead>
-                <TableRow>
-                  <TableCell rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
-                  <TableCell rowSpan={2}>Nội dung</TableCell>
-                  <TableCell rowSpan={2}>Điểm quy định</TableCell>
-                  <TableCell colSpan={3} align="center">Điểm đánh giá</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="center">Cá nhân tự chấm</TableCell>
-                  <TableCell align="center">Trưởng bộ môn</TableCell>
-                  <TableCell align="center">Hội đồng nhà trường</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.map(standard => (
-                  <>
+      {status ? (
+        <div>
+          { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
+            <Grid container xs={12} justify='center' style={{ margin: '30px 0px' }}>
+              <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
+                <Table className={classes.table} >
+                  <TableHead>
                     <TableRow>
-                      <TableCell>{standard.standard_order}</TableCell>
-                      <TableCell><b>{standard.standard_id.name}</b></TableCell>
-                      <TableCell>{standard.standard_point}</TableCell>
-                      <TableCell />
-                      <TableCell />
-                      <TableCell />
+                      <TableCell rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
+                      <TableCell rowSpan={2}>Nội dung</TableCell>
+                      <TableCell rowSpan={2}>Điểm quy định</TableCell>
+                      <TableCell colSpan={3} align="center">Điểm đánh giá</TableCell>
                     </TableRow>
-
-                    {standard.formCriteria.map((criteria, index) => (
+                    <TableRow>
+                      <TableCell align="center">Cá nhân tự chấm</TableCell>
+                      <TableCell align="center">Trưởng bộ môn</TableCell>
+                      <TableCell align="center">Hội đồng nhà trường</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data.map(standard => (
                       <>
                         <TableRow>
-                          <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
-                          <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
-                          <TableCell>{criteria.point}</TableCell>
-                          <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox onChange={handleCheck} name={criteria.criteria_id.code} value={criteria.point} />}</TableCell>
-                          <TableCell align='center'>{props.level > 1 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
-                          <TableCell align='center'>{props.level > 2 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
+                          <TableCell>{standard.standard_order}</TableCell>
+                          <TableCell><b>{standard.standard_id.name}</b></TableCell>
+                          <TableCell>{standard.standard_point}</TableCell>
+                          <TableCell />
+                          <TableCell />
+                          <TableCell />
                         </TableRow>
-                        {criteria.options.map((option, index) => (
-                          <TableRow>
-                            <TableCell>{option.name}</TableCell>
-                            <TableCell>{option.max_point}</TableCell>
-                            <TableCell align='center' colSpan={1}><input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code} value={option.max_point} /></TableCell>
-                            <TableCell align='center' colSpan={1}>{props.level > 1 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
-                            <TableCell align='center' colSpan={1}>{props.level > 2 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
-                          </TableRow>
+
+                        {standard.formCriteria.map((criteria, index) => (
+                          <>
+                            <TableRow>
+                              <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
+                              <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
+                              <TableCell>{criteria.point}</TableCell>
+                              <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == criteria.point)))} onChange={handleCheck} name={criteria.criteria_id.code} value={criteria.point} />}</TableCell>
+                              <TableCell align='center'>{props.level > 1 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
+                              <TableCell align='center'>{props.level > 2 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
+                            </TableRow>
+                            {criteria.options.map((option, index) => (
+                              <TableRow>
+                                <TableCell>{option.name}</TableCell>
+                                <TableCell>{option.max_point}</TableCell>
+                                <TableCell align='center' colSpan={1}><input onChange={handleCheckRadio} defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == option.max_point)))} type="radio" name={criteria.criteria_id.code} value={option.max_point} /></TableCell>
+                                <TableCell align='center' colSpan={1}>{props.level > 1 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
+                                <TableCell align='center' colSpan={1}>{props.level > 2 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
+                              </TableRow>
+                            ))}
+                          </>
                         ))}
                       </>
                     ))}
-                  </>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Button variant="contained" color="primary" onClick={sendNude}>
-            Hoàn thành đánh giá
-          </Button>
-        </Grid>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Button variant="contained" color="primary" onClick={sendNude}>
+                Hoàn thành đánh giá
+            </Button>
+            </Grid>
+          )}
+        </div>
+      ) : (
+        <div>
+          <Typography style={{ marginTop: '24px' }}>Bạn đã hoàn thành đánh giá.</Typography>
+          <Button color='primary' onClick={() => { again() }}>Xem lại đánh giá</Button>
+        </div >
       )}
 
     </>

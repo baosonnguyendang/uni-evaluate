@@ -171,19 +171,8 @@ import FormEvaluation from '../element/form.js'
 import { Button, Typography } from '@material-ui/core'
 
 export default function EmployeeForm() {
-  const [val, setVal] = useState(0)
+
   return (
-    <div>
-      {/* {val == 0 ? <p>A</p> : <p>B</p>} */}
-      { val === 0 ? (
-        <FormEvaluation setVal={setVal} level={1} />
-      ) : (
-        <div>
-          <Typography>Bạn đã hoàn thành đánh giá.</Typography>
-          <Button color='primary' onClick={() => { setVal(0) }}>Xem lại đánh giá</Button>
-        </div >
-      )
-      }
-    </div >
+    <FormEvaluation level={1} />
   )
 }
