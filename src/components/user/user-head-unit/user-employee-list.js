@@ -54,7 +54,7 @@ export default function EmployeeList() {
       .catch(err => {
         console.log(err)
       })
-  })
+  }, [])
 
   return (
     <div style={{ marginTop: '24px' }}>

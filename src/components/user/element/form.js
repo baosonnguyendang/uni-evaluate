@@ -128,7 +128,7 @@ export default function FormEvaluation(props) {
   const temporary = () => {
     setDisabled(true)
     setLuuTam(sent)
-    axios.post(`/user/submitForm`, sent, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/form/${id1}/saveForm`, sent, { headers: { "Authorization": `Bearer ${token}` } })
   }
 
 
