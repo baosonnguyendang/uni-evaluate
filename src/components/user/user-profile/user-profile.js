@@ -99,7 +99,9 @@ const Profile = () => {
             {infoUser.lastname} {infoUser.firstname}
           </Typography>
           <Typography>
-            {infoUser.gender === 'Female' ? 'Nam' : 'Nữ'}
+            {infoUser.gender === 'Male' && 'Nam'}
+            {infoUser.gender === 'Female' && 'Nữ'}
+            {infoUser.gender === 'Other' && 'Khác'}
           </Typography>
           <Typography style={{ marginBottom: 25 }}>
             {moment(infoUser.birthday).format('DD/MM/yyyy')}
