@@ -25,6 +25,7 @@ export default function FormEvaluation(props) {
   // const [data, setData] = useState({})
   const token = localStorage.getItem('token')
   const { id1 } = useParams()
+  var level = props.level
 
   const [data, setData] = useState([]) //data đầu vào
   const [sent, setSent] = useState([]) //data đầu ra
@@ -33,6 +34,10 @@ export default function FormEvaluation(props) {
   const [disableEdit, setDisableEdit] = useState(false) //ấn hoàn thành rồi thì ko lưu được nữa
 
   useEffect(() => {
+    axios.get('/user', { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data)
+      })
     setLoading(true)
     axios.get(`/form/${id1}`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
@@ -103,7 +108,9 @@ export default function FormEvaluation(props) {
     })
     console.log(sent)
     if (list.length === 0) {
-      axios.post(`/user/submitForm`, sent, { headers: { "Authorization": `Bearer ${token}` } })
+      var data = {sent, level}
+      console.log(data)
+      axios.post(`/user/${id1}/submitform`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
           setDisableEdit(true)
