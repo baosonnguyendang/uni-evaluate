@@ -31,8 +31,8 @@ export default function FormList() {
     axios.get(`/form/review/${id}/form`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         let temp = []
-        console.log(res.data.formUser)
-        res.data.formUser.map(x => {
+        console.log(res.data)
+        res.data.formUsers.map(x => {
           let obj = { code: x.form_id.code, name: x.form_id.name, id: x.form_id._id }
           temp.push(obj)
         })
