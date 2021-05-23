@@ -39,7 +39,7 @@ export default function FormEvaluation(props) {
         console.log(res.data)
       })
     setLoading(true)
-    axios.get(`/form/${id1}`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/form/${id1}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setData(res.data.formStandards)
         console.log(res.data.formStandards)
