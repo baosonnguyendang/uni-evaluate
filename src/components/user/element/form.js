@@ -108,7 +108,7 @@ export default function FormEvaluation(props) {
     })
     console.log(sent)
     if (list.length === 0) {
-      var data = {sent, level}
+      let data = {sent, level}
       console.log(data)
       axios.post(`/user/${id1}/submitform`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
@@ -128,7 +128,9 @@ export default function FormEvaluation(props) {
   const temporary = () => {
     setDisabled(true)
     setLuuTam(sent)
-    axios.post(`/form/${id1}/saveForm`, sent, { headers: { "Authorization": `Bearer ${token}` } })
+    console.log(id1)
+    let data = {sent, level}
+    axios.post(`/form/${id1}/saveForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
   }
 
 
