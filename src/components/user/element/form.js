@@ -24,7 +24,7 @@ export default function FormEvaluation(props) {
   const [loading, setLoading] = useState(false)
   // const [data, setData] = useState({})
   const token = localStorage.getItem('token')
-  const { id1 } = useParams()
+  const { id1, id3 } = useParams()
   var level = props.level
 
   const [data, setData] = useState([]) //data đầu vào
@@ -39,7 +39,8 @@ export default function FormEvaluation(props) {
         console.log(res.data)
       })
     setLoading(true)
-    axios.get(`/form/${id1}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
+    let variable = props.level == 1 ? id1 : id3
+    axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setData(res.data.formStandards)
         console.log(res.data.formStandards)
@@ -70,8 +71,6 @@ export default function FormEvaluation(props) {
     //   temp.push(o)
     // })
     // setSent(temp)
-    console.log(sent)
-    console.log(luuTam)
   }, [])
 
   const compare = (x) => {
@@ -110,7 +109,7 @@ export default function FormEvaluation(props) {
     if (list.length === 0) {
       let data = {sent, level}
       console.log(data)
-      axios.post(`/user/${id1}/submitform`, data, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/form/${id1}/submitForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
           setDisableEdit(true)
@@ -128,9 +127,15 @@ export default function FormEvaluation(props) {
   const temporary = () => {
     setDisabled(true)
     setLuuTam(sent)
-    console.log(id1)
     let data = {sent, level}
+    console.log(data)
     axios.post(`/form/${id1}/saveForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
 

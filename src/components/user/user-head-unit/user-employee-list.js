@@ -23,19 +23,21 @@ export default function EmployeeList() {
   const token = localStorage.getItem('token')
 
   const displayStatus = (status) => {
+    let display = ''
     switch (status) {
       case -1:
-        return 'Chưa đánh giá'
+        display = 'Chưa đánh giá'
         break;
       case 0:
-        return 'Đang đánh giá (Lưu tạm)'
+        display = 'Đang đánh giá'
         break;
       case 1:
-        return 'Đã đánh giá'
+        display = 'Đã đánh giá'
         break;
       default:
-        return 'Chưa đánh giá'
+        display = 'Chưa đánh giá'
     }
+    return display
   }
 
   const [data, setData] = useState([])
@@ -46,7 +48,7 @@ export default function EmployeeList() {
         console.log(res.data)
         let temp = []
         res.data.formUsers.map(user => {
-          let obj = { code: user.user_id.staff_id, name: user.user_id.lastname + ' ' + user.user_id.firstname, unit: user.user_id.department.length > 0 ? user.user_id.department[0].name : '', status: user.userForm }
+          let obj = { id: user.evaluateForm ? user.evaluateForm.userForm._id : null, code: user.user_id.staff_id, name: user.user_id.lastname + ' ' + user.user_id.firstname, unit: user.user_id.department.length > 0 ? user.user_id.department[0].name : '', status: user.evaluateForm ? user.evaluateForm.status : null }
           temp.push(obj)
         })
         setData(temp)
@@ -68,7 +70,7 @@ export default function EmployeeList() {
             <TableCell><b>Tên GV/VC</b></TableCell>
             <TableCell><b>Bộ môn</b></TableCell>
             <TableCell align="center"><b>Trạng thái</b></TableCell>
-            <TableCell style={{minWidth: '200px'}}></TableCell>
+            <TableCell style={{ minWidth: '200px' }}></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -80,7 +82,7 @@ export default function EmployeeList() {
               <TableCell align="left">{row.name}</TableCell>
               <TableCell align="left">{row.unit}</TableCell>
               <TableCell align="center">{displayStatus(row.status)}</TableCell>
-              <TableCell align="center" style={{minWidth: '200px'}}> {row.status == 1 && <Link to={`${url}/${row.code}`}>Bấm vào đây để đánh giá GV/VC</Link>}</TableCell>
+              <TableCell align="center" style={{ minWidth: '200px' }}> {row.status == 1 && <Link to={`${url}/${row.id}`}>Bấm vào đây để đánh giá GV/VC</Link>}</TableCell>
             </TableRow>
           ))}
         </TableBody>
