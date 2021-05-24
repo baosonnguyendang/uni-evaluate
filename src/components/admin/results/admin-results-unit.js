@@ -29,8 +29,8 @@ const useStyles = makeStyles(theme => ({
 
 // var { url } = useRouteMatch();
 
-function createData(name, id, unit) {
-  return { name, id, unit, link: 'Kết quả' }
+function createData(name, id, unit, status, _id) {
+  return { name, id, unit, status, link: 'Kết quả', _id }
 }
 
 const CustomTableCell = ({ row, name }) => {
@@ -41,10 +41,10 @@ const CustomTableCell = ({ row, name }) => {
     )
   }
   else {
-    
+
     return (
       <TableCell>
-        {name === 'link' ? (<Link to={`${url}/` + row.id} >{row[name]}</Link>) : (row[name])}
+        {name === 'link' ? (row.status != 'Chưa đánh giá' ? (<Link to={`${url}/` + row._id} >{row[name]}</Link>) : null) : (row[name])}
       </TableCell>
     )
   }
@@ -54,10 +54,18 @@ export default function Results(props) {
   const classes = useStyles()
   const token = localStorage.getItem('token')
   const { id, id1, id2 } = useParams()
-  
+
   var code
 
   const [rows, setRows] = useState([]);
+
+  // const getStatus = (status) => {
+  //   let word = ''
+  //   switch(status){
+  //     case -1:
+  //       word = 'Đang trong quá trình đánh giá'
+  //   }
+  // }
 
   //lấy mã form and then ds gv/vc thuộc đơn vị
   useEffect(() => {
@@ -67,21 +75,32 @@ export default function Results(props) {
           // setCode(res.data.form.code)
           code = res.data.form.code
           axios.get(`/admin/form/${code}/${id2}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
-          .then(res => {
-            let temp = []
-            console.log(res.data.formUser)
-            res.data.formUser.map(x => {
-              temp.push(createData(x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, x.user_id.department.length > 0 ? x.user_id.department[0].name : null))
+            .then(res => {
+              let temp = []
+              console.log(res.data.formUser)
+              res.data.formUser.map(x => {
+                temp.push(createData(x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, x.user_id.department.length > 0 ? x.user_id.department[0].name : null, 'Chưa đánh giá', null))
+              })
+              axios.get(`/admin/form/${code}/${id2}/formuser/get`, { headers: { "Authorization": `Bearer ${token}` } })
+                .then(res => {
+                  console.log(res.data.formUsers)
+                  res.data.formUsers.map(user => {
+                    temp.find(x => x.id == user.user_id.staff_id).status = user.evaluateForm ? 'Đang đánh giá' : 'Chưa đánh giá'
+                    temp.find(x => x.id == user.user_id.staff_id)._id = user.evaluateForm ? user.evaluateForm.userForm._id : null
+                  })
+                  setRows(temp)
+                })
+                .catch(err => {
+                  console.log(err)
+                })
             })
-            console.log(temp)
-            setRows(temp)
-          })
-          .catch(err => console.log(err))
+            .catch(err => console.log(err))
         }
       })
       .catch(e => {
         console.log(e)
       })
+
   }, [])
 
   //qua trang
@@ -109,6 +128,7 @@ export default function Results(props) {
                 <TableCell align="center">Mã viên chức</TableCell>
                 <TableCell>Tên viên chức</TableCell>
                 <TableCell>Đơn vị</TableCell>
+                <TableCell>Trạng thái</TableCell>
                 <TableCell ></TableCell>
               </TableRow>
             </TableHead>
@@ -119,6 +139,7 @@ export default function Results(props) {
                     <CustomTableCell {...{ row, name: "id" }} />
                     <CustomTableCell {...{ row, name: "name" }} />
                     <CustomTableCell {...{ row, name: "unit" }} />
+                    <CustomTableCell {...{ row, name: "status" }} />
                     <CustomTableCell {...{ row, name: "link" }} />
                   </TableRow>
                 )
