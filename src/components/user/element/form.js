@@ -27,24 +27,23 @@ export default function FormEvaluation(props) {
   const { id1, id3 } = useParams()
   var level = props.level
 
+  const [loaded, setLoaded] = useState(false)
   const [data, setData] = useState([]) //data đầu vào
   const [sent, setSent] = useState([]) //data đầu ra
+  const [sent2, setSent2] = useState([]) //data đầu ra lv2
   const [luuTam, setLuuTam] = useState([]) //lưu tạm
   const [disabled, setDisabled] = useState(true) //true thì không lưu tạm được, có chỉnh sửa mới lưu tạm được
-  const [disableEdit, setDisableEdit] = useState(false) //ấn hoàn thành rồi thì ko lưu được nữa
+  const [disableEdit, setDisableEdit] = useState(props.level > 1 ? true : false) //ấn hoàn thành rồi thì ko lưu được nữa, cấp trên ko sửa bài cấp dưới đc 
 
-  useEffect(() => {
-    axios.get('/user', { headers: { "Authorization": `Bearer ${token}` } })
-      .then(res => {
-        console.log(res.data)
-      })
+  if (loaded === false) {
+    setLoaded(true)
     setLoading(true)
     let variable = props.level == 1 ? id1 : id3
+
+    //lấy Form
     axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setData(res.data.formStandards)
-        console.log(res.data.formStandards)
-        setLoading(false)
         let temp = []
         res.data.formStandards.map(standard => {
           let o = { name: standard.standard_id.code, list: [] }
@@ -54,13 +53,36 @@ export default function FormEvaluation(props) {
           })
           temp.push(o)
         })
-        setSent(temp)
+        // console.log(temp)
+        // setSent(temp)
         setLuuTam(temp)
+
+        //lấy dữ liệu đã làm nếu Form đã điền trước đó
+        axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
+          .then(res => {
+            setLoading(false)
+            console.log(res.data.evaluateForms)
+            if (res.data.evaluateForms.length > 0) {
+              res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
+                // console.log(temp.find(x => x.list.some(y => y.name === criteria.form_criteria.criteria_id.code)))
+                temp.find(x => x.list.some(y => y.name == criteria.form_criteria.criteria_id.code)).list.find(z => z.name == criteria.form_criteria.criteria_id.code).value = criteria.point
+              })
+              console.log(temp)
+            }
+            setSent(temp)
+            setSent2(temp)
+          })
+          .catch(err => {
+            console.log(err)
+          })
       })
       .catch(err => {
         console.log(err)
         setLoading(false)
       })
+  }
+
+  useEffect(() => {
     // let temp = []
     // data.map(standard => {
     //   let o = { name: standard.standard_id.code, list: [] }
@@ -71,6 +93,7 @@ export default function FormEvaluation(props) {
     //   temp.push(o)
     // })
     // setSent(temp)
+    console.log(sent2)
   }, [])
 
   const compare = (x) => {
@@ -86,28 +109,44 @@ export default function FormEvaluation(props) {
     // setChecked(event.target.checked);
     let temp = sent.slice()
     console.log(temp)
-    temp.find(x => x.list.some(y => y.name === event.target.name)).list.find(z => z.name === event.target.name).value = event.target.checked ? event.target.value : 0
+    temp.find(x => x.list.some(y => y.name == event.target.name)).list.find(z => z.name == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
     setSent(temp)
     compare(temp)
     // console.log('name: ' + event.target.name + ', điểm: ' + event.target.value + ', checked:' + event.target.checked)
   };
 
+  const handleCheck2 = (event) => {
+    let temp2 = sent2.slice()
+    console.log(event.target.checked)
+    temp2.find(x => x.list.some(y => y.name + '_2' == event.target.name)).list.find(z => z.name + '_2' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
+    setSent2(temp2)
+    compare(temp2)
+  };
+
   const handleCheckRadio = (event) => {
     let temp = sent.slice()
     console.log(temp)
-    temp.find(x => x.list.some(y => y.name === event.target.name)).list.find(z => z.name === event.target.name).value = event.target.value
+    temp.find(x => x.list.some(y => y.name == event.target.name)).list.find(z => z.name == event.target.name).value = event.target.value
     setSent(temp)
     compare(temp)
   }
 
+  const handleCheckRadio2 = (event) => {
+    let temp2 = sent2.slice()
+    console.log(sent)
+    temp2.find(x => x.list.some(y => y.name + '_2' == event.target.name)).list.find(z => z.name + '_2' == event.target.name).value = event.target.value
+    setSent2(temp2)
+    compare(temp2)
+  }
+
   const sendNude = () => {
     let list = []
-    sent.filter(x => x.list.some(y => y.value === null)).map(x => {
-      list.push(data.find(y => y.standard_id.code === x.name).standard_id.name)
+    sent.filter(x => x.list.some(y => y.value == null)).map(x => {
+      list.push(data.find(y => y.standard_id.code == x.name).standard_id.name)
     })
     console.log(sent)
     if (list.length === 0) {
-      let data = {sent, level}
+      let data = { sent, level }
       console.log(data)
       axios.post(`/form/${id1}/submitForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
@@ -127,7 +166,7 @@ export default function FormEvaluation(props) {
   const temporary = () => {
     setDisabled(true)
     setLuuTam(sent)
-    let data = {sent, level}
+    let data = { sent, level }
     console.log(data)
     axios.post(`/form/${id1}/saveForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
@@ -184,17 +223,57 @@ export default function FormEvaluation(props) {
                               <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
                               <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                               <TableCell>{criteria.point}</TableCell>
-                              <TableCell align='center'>{criteria.options.length > 0 ? null : <Checkbox disabled={disableEdit} defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == criteria.point)))} onChange={handleCheck} name={criteria.criteria_id.code} value={criteria.point} />}</TableCell>
-                              <TableCell align='center'>{props.level > 1 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
-                              <TableCell align='center'>{props.level > 2 && criteria.options.length == 0 ? <Checkbox onChange={handleCheck} name={criteria.criteria_id.code + '_' + props.level} value={criteria.point} /> : null}</TableCell>
+                              <TableCell align='center'>
+                                {criteria.options.length > 0 ? null : 
+                                  <input 
+                                    type="checkbox" 
+                                    disabled={disableEdit} 
+                                    defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == criteria.point)))} 
+                                    onChange={handleCheck} 
+                                    name={criteria.criteria_id.code} 
+                                    value={criteria.point} />}
+                              </TableCell>
+                              <TableCell align='center'>
+                                {props.level > 1 && criteria.options.length == 0 ?
+                                  <input
+                                    type="checkbox"
+                                    defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == criteria.point)))}
+                                    onChange={handleCheck2}
+                                    name={criteria.criteria_id.code + '_2'}
+                                    value={criteria.point}
+                                  />
+                                  : null}
+                              </TableCell>
+                              <TableCell align='center'>
+                                {props.level > 2 && criteria.options.length == 0 ? <input type="checkbox" onChange={null} name={criteria.criteria_id.code + '_' + 2} value={criteria.point} /> : null}
+                              </TableCell>
                             </TableRow>
                             {criteria.options.map((option, index) => (
                               <TableRow>
                                 <TableCell>{option.name}</TableCell>
                                 <TableCell>{option.max_point}</TableCell>
-                                <TableCell align='center' colSpan={1}><input onChange={handleCheckRadio} disabled={disableEdit} defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == option.max_point)))} type="radio" name={criteria.criteria_id.code} value={option.max_point} /></TableCell>
-                                <TableCell align='center' colSpan={1}>{props.level > 1 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
-                                <TableCell align='center' colSpan={1}>{props.level > 2 ? <input onChange={handleCheckRadio} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
+                                <TableCell align='center' colSpan={1}>
+                                  <input 
+                                    onChange={handleCheckRadio} 
+                                    disabled={disableEdit} 
+                                    defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == option.max_point)))} 
+                                    type="radio" 
+                                    name={criteria.criteria_id.code} 
+                                    value={option.max_point} 
+                                  />
+                                </TableCell>
+                                <TableCell align='center' colSpan={1}>
+                                  {props.level > 1 ? 
+                                    <input 
+                                      onChange={handleCheckRadio2} 
+                                      type="radio" 
+                                      defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == option.max_point)))} 
+                                      name={criteria.criteria_id.code + '_2'} 
+                                      value={option.max_point} 
+                                    /> : 
+                                  null}
+                                  </TableCell>
+                                <TableCell align='center' colSpan={1}>{props.level > 2 ? <input onChange={null} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
                               </TableRow>
                             ))}
                           </>
