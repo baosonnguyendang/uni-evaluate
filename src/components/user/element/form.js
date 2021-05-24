@@ -154,8 +154,19 @@ export default function FormEvaluation(props) {
   }
   const temporary = () => {
     setDisabled(true)
+    let dataToSend = []
+    switch(props.level){
+      case 1:
+        dataToSend = sent
+        break;
+      case 2:
+        dataToSend = sent2
+        break;
+      default:
+        break;
+    }
     setLuuTam(sent)
-    let data = { sent, level }
+    let data = { dataToSend, level }
     console.log(data)
     axios.post(`/form/${id1}/saveForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
@@ -274,7 +285,7 @@ export default function FormEvaluation(props) {
               </TableContainer>
               <div>
                 {
-                  !disableEdit &&
+                  (!disableEdit || (props.level > 1 && true)) &&
                   <div>
                     <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
                       Lưu tạm
