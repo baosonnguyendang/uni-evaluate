@@ -94,7 +94,6 @@ export default function FormEvaluation(props) {
   const handleCheck = (event) => {
     // setChecked(event.target.checked);
     let temp = sent.slice()
-    console.log(temp)
     temp.find(x => x.list.some(y => y.name + '_1' == event.target.name)).list.find(z => z.name + '_1' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
     setSent(temp)
     compare(temp)
@@ -103,7 +102,6 @@ export default function FormEvaluation(props) {
 
   const handleCheck2 = (event) => {
     let temp2 = sent2.slice()
-    console.log(event.target.checked)
     temp2.find(x => x.list.some(y => y.name + '_2' == event.target.name)).list.find(z => z.name + '_2' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
     setSent2(temp2)
     compare(temp2)
@@ -111,7 +109,6 @@ export default function FormEvaluation(props) {
 
   const handleCheckRadio = (event) => {
     let temp = sent.slice()
-    console.log(temp)
     temp.find(x => x.list.some(y => y.name + '_1' == event.target.name)).list.find(z => z.name + '_1' == event.target.name).value = parseInt(event.target.value)
     setSent(temp)
     compare(temp)
@@ -133,7 +130,6 @@ export default function FormEvaluation(props) {
     sent.filter(x => x.list.some(y => y.value == null)).map(x => {
       list.push(data.find(y => y.standard_id.code == x.name).standard_id.name)
     })
-    console.log(sent)
     if (list.length === 0) {
       let data = { sent, level }
       console.log(data)

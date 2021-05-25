@@ -161,6 +161,16 @@ export default function ResultsList(props) {
                       </Typography>
                     </CardContent>
                   </Card>
+                  <Card className={classes.root}>
+                    <CardContent>
+                      <Typography color="textSecondary" gutterBottom>
+                        Word of the Day
+                      </Typography>
+                      <Typography variant="body2" component="p">
+                        well meaning and kindly.
+                      </Typography>
+                    </CardContent>
+                  </Card>
                 </div>
                 <div style={{ margin: '10px 10px 10px 0', width: '90%' }}>
                   <Paper style={{ width: '34%', padding: '10px', display: 'inline-block' }}>

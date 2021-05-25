@@ -15,6 +15,8 @@ import ResultsList from './results/admin-results-list'
 import Results from './results/admin-results-unit'
 import ResultsDetailed from './results/admin-results-detailed'
 
+import NotFound from '../common/NotFound'
+
 import { Switch, Route, Redirect, NavLink } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Sub from './admin-sub'
@@ -55,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 const AdminPage = () => {
   const classes = useStyles()
 
-      let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
+  let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
   return (
     <div className={classes.root}>
       {isLogged ? (localStorage.getItem('role') === 'user' && <Redirect to='/user' />) : <Redirect to='/' />}
@@ -65,18 +67,21 @@ const AdminPage = () => {
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Route exact path='/admin/user' component={UserTable} />
-              <Route exact path='/admin/faculty' children={<Faculty />} />
-              <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
-              <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2' children={<Results />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2/:id3' children={<ResultsDetailed />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<ResultsList />} />
-              <Route exact path='/admin/criterion' children={<Criterion />} />
-              <Route exact path='/admin/criteria/' children={<Sub />} />
-              <Route exact path='/admin/criterion/:id' children={<Criteria />} />
-              <Route exact path='/admin/criterion/:id/:id' children={<Selection />} />
+              <Switch>
+                <Route exact path='/admin/user' component={UserTable} />
+                <Route exact path='/admin/faculty' children={<Faculty />} />
+                <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
+                <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2' children={<Results />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2/:id3' children={<ResultsDetailed />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<ResultsList />} />
+                <Route exact path='/admin/criterion' children={<Criterion />} />
+                <Route exact path='/admin/criteria/' children={<Sub />} />
+                <Route exact path='/admin/criterion/:id' children={<Criteria />} />
+                <Route exact path='/admin/criterion/:id/:id' children={<Selection />} />
+                <Route path="*" children={<NotFound />} />
+              </Switch>
             </Grid>
           </Grid>
         </Container>
