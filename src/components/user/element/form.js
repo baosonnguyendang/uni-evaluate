@@ -27,7 +27,7 @@ export default function FormEvaluation(props) {
   const { id1, id3 } = useParams()
   var level = props.level
 
-  const [loaded, setLoaded] = useState(false)
+  const [edited, setEdited] = useState(false)
   const [data, setData] = useState([]) //data đầu vào
   const [sent, setSent] = useState([]) //data đầu ra
   const [sent2, setSent2] = useState([]) //data đầu ra lv2
@@ -38,33 +38,28 @@ export default function FormEvaluation(props) {
   var variable = props.level === 1 ? id1 : id3
 
   useEffect(() => {
-    setLoaded(true)
     setLoading(true)
-    
+
     //lấy Form
     axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setData(res.data.formStandards)
         let temp = []
         res.data.formStandards.map(standard => {
-          let o = { name: standard.standard_id.code, list: [] }
           standard.formCriteria.map(criteria => {
             let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type == 'radio' ? null : 0 }
-
-            o.list.push(obj)
+            temp.push(obj)
           })
-          temp.push(o)
         })
-
         //lấy dữ liệu đã làm nếu Form đã điền trước đó
         axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
             //console.log(temp)
             setLoading(false)
+            console.log(res.data.evaluateForms)
             if (res.data.evaluateForms.length > 0) {
               res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
-                // console.log(temp.find(x => x.list.some(y => y.name === criteria.form_criteria.criteria_id.code)))
-                temp.find(x => x.list.some(y => y.name == criteria.form_criteria.criteria_id.code)).list.find(z => z.name == criteria.form_criteria.criteria_id.code).value = criteria.point
+                temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
               })
             }
             setSent([...temp])
@@ -79,8 +74,6 @@ export default function FormEvaluation(props) {
         console.log(err)
         setLoading(false)
       })
-    console.log(sent)
-    setSent2(sent.slice())
   }, [])
 
   const compare = (x) => {
@@ -95,35 +88,63 @@ export default function FormEvaluation(props) {
   const handleCheck = (event) => {
     // setChecked(event.target.checked);
     let temp = sent.slice()
-    temp.find(x => x.list.some(y => y.name + '_1' == event.target.name)).list.find(z => z.name + '_1' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
+    temp.find(z => z.name + '_1' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
     setSent(temp)
     compare(temp)
     // console.log('name: ' + event.target.name + ', điểm: ' + event.target.value + ', checked:' + event.target.checked)
   };
 
   const handleCheck2 = (event) => {
-    let temp2 = sent2.slice()
-    temp2.find(x => x.list.some(y => y.name + '_2' == event.target.name)).list.find(z => z.name + '_2' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
-    setSent2(temp2)
-    compare(temp2)
+    //console.log(event.target.value, event.target.name)
+    let tam = []
+    console.log(event.target.name)
+    console.log(sent)
+    console.log(edited)
+    if (edited === false){
+      sent.map(x => {
+        tam.push(x)
+      })
+      setEdited(true)
+    }
+    else {
+      sent2.map(x => {
+        tam.push(x)
+      })
+    }
+    tam.find(x => x.name + '_2' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
+    setSent2(tam)
+    compare(tam)
   };
 
   const handleCheckRadio = (event) => {
     let temp = sent.slice()
-    temp.find(x => x.list.some(y => y.name + '_1' == event.target.name)).list.find(z => z.name + '_1' == event.target.name).value = parseInt(event.target.value)
+    temp.find(z => z.name + '_1' == event.target.name).value = parseInt(event.target.value)
     setSent(temp)
     compare(temp)
   }
 
   const handleCheckRadio2 = (event) => {
-    let temp2 = sent2.slice()
-    //console.log(temp2.indexOf(temp2.find(x => x.list.some(y => y.name + '_2' == event.target.name)).list.find(z => z.name + '_2' == event.target.name)))
-    // temp2[].value = parseInt(event.target.value)
-    //temp2[index1].list[index2].value = parseInt(event.target.value)
-    temp2.find(x => x.list.some(y => y.name + '_2' === event.target.name)).list.find(z => z.name + '_2' === event.target.name).value = parseInt(event.target.value)
-    setSent2(temp2.slice())
-    compare(temp2)
-
+    console.log(event.target.value, event.target.name)
+    //compare(temp2)
+    let tam = []
+    console.log(event.target.name)
+    console.log(sent)
+    console.log(edited)
+    if (edited === false){
+      sent.map(x => {
+        tam.push(x)
+      })
+      setEdited(true)
+    }
+    else {
+      sent2.map(x => {
+        tam.push(x)
+      })
+    }
+    tam.find(x => x.name + '_2' == event.target.name).value = parseInt(event.target.value)
+    setSent2(tam)
+    console.log(tam)
+    compare(tam)
   }
 
   const sendNude = () => {
@@ -131,15 +152,21 @@ export default function FormEvaluation(props) {
     let toSend = []
     switch (level) {
       case 1:
-        sent.filter(x => x.list.some(y => y.value == null)).map(x => {
-          list.push(data.find(y => y.standard_id.code == x.name).standard_id.name)
-        })
+        let filter = sent.filter(y => y.value == null)
+        if (filter.length > 0){
+          filter.map(x => {
+            list.push(x.name)
+          })
+        }
         toSend = sent
         break;
       case 2:
-        sent2.filter(x => x.list.some(y => y.value == null)).map(x => {
-          list.push(data.find(y => y.standard_id.code == x.name).standard_id.name)
-        })
+        let filterr = sent2.filter(y => y.value == null)
+        if (filterr.length > 0){
+          filterr.map(x => {
+            list.push(x.name)
+          })
+        }
         toSend = sent2
         break;
       default:
@@ -148,7 +175,7 @@ export default function FormEvaluation(props) {
     if (list.length === 0) {
       let data = { toSend, level }
       console.log(data)
-      axios.post(`/form/${variable}/submitForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/form/${variable}/evaluation/test`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
           setDisableEdit(true)
@@ -180,7 +207,7 @@ export default function FormEvaluation(props) {
     setLuuTam(sent)
     let data = { dataToSend, level }
     console.log(data)
-    axios.post(`/form/${id1}/saveForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/form/${variable}/evaluation/test`, data, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res)
       })
@@ -240,8 +267,8 @@ export default function FormEvaluation(props) {
                                   <input
                                     type="checkbox"
                                     disabled={disableEdit}
-                                    defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == criteria.point)))}
-                                    onChange={handleCheck}
+                                    defaultChecked={sent.find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                    onClick={handleCheck}
                                     name={criteria.criteria_id.code + '_1'}
                                     value={criteria.point} />}
                               </TableCell>
@@ -249,8 +276,8 @@ export default function FormEvaluation(props) {
                                 {props.level > 1 && criteria.options.length == 0 ?
                                   <input
                                     type="checkbox"
-                                    defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == criteria.point)))}
-                                    onChange={handleCheck2}
+                                    defaultChecked={sent.find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                    onClick={handleCheck2}
                                     name={criteria.criteria_id.code + '_2'}
                                     value={criteria.point}
                                   />
@@ -266,9 +293,9 @@ export default function FormEvaluation(props) {
                                 <TableCell>{option.max_point}</TableCell>
                                 <TableCell align='center' colSpan={1}>
                                   <input
-                                    onChange={handleCheckRadio}
+                                    onClick={handleCheckRadio}
                                     disabled={disableEdit}
-                                    defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == option.max_point)))}
+                                    defaultChecked={sent.find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
                                     type="radio"
                                     name={criteria.criteria_id.code + '_1'}
                                     value={option.max_point}
@@ -277,9 +304,9 @@ export default function FormEvaluation(props) {
                                 <TableCell align='center' colSpan={1}>
                                   {props.level > 1 ?
                                     <input
-                                      onChange={handleCheckRadio2}
+                                      onClick={handleCheckRadio2}
                                       type="radio"
-                                      defaultChecked={sent.find(x => x.list.some(y => (y.name == criteria.criteria_id.code && y.value == option.max_point)))}
+                                      defaultChecked={sent.find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
                                       name={criteria.criteria_id.code + '_2'}
                                       value={option.max_point}
                                     /> :

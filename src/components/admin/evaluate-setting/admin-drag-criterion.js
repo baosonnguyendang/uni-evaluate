@@ -57,6 +57,7 @@ export default function Drag(props) {
   // thêm tiêu chí vào tiêu chuẩn thuộc form
   const submitAddFormCriteria = () =>{
     const scode = chosen //mã tiêu chuẩn
+    setDisabled(false)
     //request body
     const body = {
         criterions: itemsCriteria.map(item => {
