@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
 import Navbar from './admin-navbar'
 import UserTable from "./admin-user"
-import Faculty from "./admin-faculty"
+import Faculty from "./admin-faculty/admin-faculty"
+import UserOfFaculty from "./admin-faculty/admin-faculty-listuser"
+
 import EvaluateList from './admin-evaluate'
 
 import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
@@ -67,6 +69,7 @@ const AdminPage = () => {
             <Grid item xs={12}>
               <Route exact path='/admin/user' component={UserTable} />
               <Route exact path='/admin/faculty' children={<Faculty />} />
+              <Route exact path='/admin/faculty/:id' children={<UserOfFaculty />} />
               <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
               <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
               <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />

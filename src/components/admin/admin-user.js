@@ -268,7 +268,7 @@ export default function ListUser() {
               })}
             </TableBody>
           </Table>
-          <TablePagination
+          {(rows.length) ? <TablePagination
             rowsPerPageOptions={[5, 10, 20]}
             component="div"
             count={rows.length}
@@ -276,14 +276,15 @@ export default function ListUser() {
             page={page}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
+          /> : <Typography variant='body1'>Không tồn tại người dùng</Typography> }
+          
           <div style={{ margin: '10px', textAlign: 'right' }}>
             <div>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                 Thêm người dùng
            </Button>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-                import file
+                Import file
            </Button>
             </div>
             <Modal

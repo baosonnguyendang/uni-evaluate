@@ -62,7 +62,7 @@ const EditUserForm = ({ setEdit, infoUser }) => {
     const [loadingButton, setLoadingButton] = useState(false)
     return (
         <form onSubmit={handleSubmit(submit)}>
-            <Grid item container alignItems="center" xs={12} md={4} style={{ paddingTop: '30px', margin: 'auto' }} >
+            <Grid item container alignItems="center" xs={12} md={4} style={{ padding: '30px 0 ', margin: 'auto' }} >
                 <Grid item xs={12} >
                     <Controller
                         control={control}
