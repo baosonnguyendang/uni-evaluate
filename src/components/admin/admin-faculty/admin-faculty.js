@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-
-import ButtonCustom from '../common/ButtonCustom'
+import  { Link, useRouteMatch } from "react-router-dom";
+import ButtonCustom from '../../common/ButtonCustom'
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -27,9 +27,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import axios from 'axios'
-import Skeleton from '../common/skeleton'
-
-import { Link } from 'react-router-dom'
+import Skeleton from '../../common/skeleton'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -83,11 +81,11 @@ const createData = (id, name, head, headId, under) => ({
   id, name, head, headId, under, isEditMode: false
 })
 
-const CustomTableCell = ({ row, name, onChange }) => {
+const CustomTableCell = ({ row, name, onChange, ...rest }) => {
   const classes = useStyles();
   const { isEditMode } = row;
   return (
-    <TableCell align="left" className={classes.tableCell}>
+    <TableCell align="left" className={classes.tableCell} {...rest}>
       {isEditMode ? (
         <Input
           value={row[name]}
@@ -103,15 +101,16 @@ const CustomTableCell = ({ row, name, onChange }) => {
 };
 
 export default function Criterion() {
+  let { url } = useRouteMatch();
   const [rows, setRows] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true)
   const token = localStorage.getItem('token')
   const [previous, setPrevious] = React.useState([]);
   const fetchDepartment = () => {
-    axios.get('/admin/department', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('/admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        console.log(res.data.departments);
-        setRows(res.data.departments.map(dep => ({ ...dep, namemanager: (dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`), idmanager: dep?.manager?.staff_id, parent: dep?.parent?.name, isEditMode: false })))
+        console.log(res.data.parents);
+        setRows(res.data.parents.map(dep => ({ ...dep, namemanager: (dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`), idmanager: dep?.manager?.staff_id, parent: dep?.parent?.name, isEditMode: false })))
         setPrevious([...rows])
         setIsLoading(false)
       })
@@ -234,7 +233,7 @@ export default function Criterion() {
   const handleChangeUnit = (event) => {
     setNewUnit(event.target.value);
   };
-
+  
   return (
     <>
       { isLoading ? <Skeleton /> : (
@@ -259,7 +258,7 @@ export default function Criterion() {
                   return (
                     <TableRow key={row._id}>
                       <CustomTableCell className={classes.number} {...{ row, name: "department_code", onChange }} />
-                      <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
+                      <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} component = {Link} to={`${url}/${row.department_code}`}/>
                       <CustomTableCell className={classes.name} {...{ row, name: "namemanager", onChange }} />
                       <CustomTableCell className={classes.name} {...{ row, name: "idmanager", onChange }} />
                       <CustomTableCell className={classes.name} {...{ row, name: "parent", onChange }} />
@@ -333,13 +332,13 @@ export default function Criterion() {
               >
                 <Fade in={open}>
                   <div className={classes.paper1}>
-                    <h2 id="transition-modal-title">Thêm đơn vị</h2>
+                  <Typography variant='h4' gutterBottom id="transition-modal-title">Thêm đơn vị</Typography>
                     <form onSubmit={submitAddDepartment}>
                       <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required className={classes.field} />
                       <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth required className={classes.field} />
                       <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" className={classes.field} />
                       {/* <TextField onChange={e => setN(e.target.value)} id="unit" label="Đơn vị" variant="outlined" fullWidth className={classes.field} /> */}
-                      <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                      <FormControl variant="outlined" fullWidth className={classes.field}>
                         <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
                         <Select
                           native
@@ -355,11 +354,9 @@ export default function Criterion() {
                           })}
                         </Select>
                       </FormControl>
-                      <div style={{ justifyContent: 'center', marginTop: '10px', display:"flex" }}>
-                        {/* <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddDepartment}>Tạo</Button> */}
+                      <div style={{ justifyContent: 'center', marginTop: '10px', display: "flex" }}>
                         <ButtonCustom loading={loadingButton} type="submit" variant="contained" color="primary">Tạo</ButtonCustom>
-                        <ButtonCustom handleButtonClick={handleClose} onClick={handleClose}  variant="contained" color="primary">Thoát</ButtonCustom>
-                        {/* <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button> */}
+                        <ButtonCustom onClick={handleClose} variant="contained" color="primary">Thoát</ButtonCustom>
                       </div>
                     </form>
                   </div>
