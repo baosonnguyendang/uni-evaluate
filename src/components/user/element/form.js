@@ -35,16 +35,17 @@ export default function FormEvaluation(props) {
   const [disabled, setDisabled] = useState(true) //true thì không lưu tạm được, có chỉnh sửa mới lưu tạm được
   const [disableEdit, setDisableEdit] = useState(props.level > 1 ? true : false) //ấn hoàn thành rồi thì ko lưu được nữa, cấp trên ko sửa bài cấp dưới đc 
 
+  var variable = props.level === 1 ? id1 : id3
+
   useEffect(() => {
     setLoaded(true)
     setLoading(true)
-    let variable = props.level === 1 ? id1 : id3
-
+    
     //lấy Form
     axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setData(res.data.formStandards)
-        var temp = []
+        let temp = []
         res.data.formStandards.map(standard => {
           let o = { name: standard.standard_id.code, list: [] }
           standard.formCriteria.map(criteria => {
@@ -66,8 +67,8 @@ export default function FormEvaluation(props) {
                 temp.find(x => x.list.some(y => y.name == criteria.form_criteria.criteria_id.code)).list.find(z => z.name == criteria.form_criteria.criteria_id.code).value = criteria.point
               })
             }
-            setSent(temp)
-            setLuuTam(temp)
+            setSent([...temp])
+            setLuuTam([...temp])
             console.log('a')
           })
           .catch(err => {
@@ -127,13 +128,27 @@ export default function FormEvaluation(props) {
 
   const sendNude = () => {
     let list = []
-    sent.filter(x => x.list.some(y => y.value == null)).map(x => {
-      list.push(data.find(y => y.standard_id.code == x.name).standard_id.name)
-    })
+    let toSend = []
+    switch (level) {
+      case 1:
+        sent.filter(x => x.list.some(y => y.value == null)).map(x => {
+          list.push(data.find(y => y.standard_id.code == x.name).standard_id.name)
+        })
+        toSend = sent
+        break;
+      case 2:
+        sent2.filter(x => x.list.some(y => y.value == null)).map(x => {
+          list.push(data.find(y => y.standard_id.code == x.name).standard_id.name)
+        })
+        toSend = sent2
+        break;
+      default:
+        break;
+    }
     if (list.length === 0) {
-      let data = { sent, level }
+      let data = { toSend, level }
       console.log(data)
-      axios.post(`/form/${id1}/submitForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/form/${variable}/submitForm`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
           setDisableEdit(true)
@@ -148,10 +163,11 @@ export default function FormEvaluation(props) {
       alert(noti)
     }
   }
+
   const temporary = () => {
     setDisabled(true)
     let dataToSend = []
-    switch(props.level){
+    switch (props.level) {
       case 1:
         dataToSend = sent
         break;
