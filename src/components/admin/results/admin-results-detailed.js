@@ -114,6 +114,7 @@ export default function ResultsDetailed() {
                               {criteria.options.length > 0 ? null :
                                 <input
                                   disabled
+                                  checked={data.length > 1 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                   type="checkbox"
                                   name={criteria.criteria_id.code + '_2'}
                                   value={criteria.point} />}
@@ -122,6 +123,7 @@ export default function ResultsDetailed() {
                               {criteria.options.length > 0 ? null :
                                 <input
                                   disabled
+                                  checked={data.length > 2 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                   type="checkbox"
                                   name={criteria.criteria_id.code + '_3'}
                                   value={criteria.point} />}
@@ -144,6 +146,7 @@ export default function ResultsDetailed() {
                                 <input
                                   disabled
                                   type="radio"
+                                  checked={data.length > 1 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                   name={criteria.criteria_id.code + '_2'}
                                   value={option.max_point}
                                 />
@@ -151,7 +154,7 @@ export default function ResultsDetailed() {
                               <TableCell align='center' colSpan={1}>
                                 <input
                                   disabled
-                                  onChange={null}
+                                  checked={data.length > 2 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                   type="radio"
                                   name={criteria.criteria_id.code + '_3'}
                                   value={option.max_point}
