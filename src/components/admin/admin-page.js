@@ -17,6 +17,8 @@ import ResultsList from './results/admin-results-list'
 import Results from './results/admin-results-unit'
 import ResultsDetailed from './results/admin-results-detailed'
 
+import NotFound from '../common/NotFound'
+
 import { Switch, Route, Redirect, NavLink } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Sub from './admin-sub'
@@ -57,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 const AdminPage = () => {
   const classes = useStyles()
 
-      let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
+  let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
   return (
     <div className={classes.root}>
       {isLogged ? (localStorage.getItem('role') === 'user' && <Redirect to='/user' />) : <Redirect to='/' />}
