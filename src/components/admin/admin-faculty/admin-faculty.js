@@ -39,7 +39,8 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   selectTableCell: {
-    width: 120,
+    display:'flex',
+    justifyContent:'flex-end',
     paddingRight: 0,
   },
   tableCell: {
@@ -49,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     height: 40
   },
   name: {
-    width: '20%',
+    width: '30%',
     height: 40,
   },
   number: {
@@ -249,7 +250,6 @@ export default function Criterion() {
                   <TableCell className={classes.name} align="left">Tên đơn vị</TableCell>
                   <TableCell className={classes.name} align="left">Trưởng đơn vị</TableCell>
                   <TableCell className={classes.name} align="left">ID Trưởng đơn vị</TableCell>
-                  <TableCell className={classes.name} align="left">Trực thuộc</TableCell>
                   <TableCell align="left" />
                 </TableRow>
               </TableHead>
@@ -261,7 +261,6 @@ export default function Criterion() {
                       <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} component = {Link} to={`${url}/${row.department_code}`}/>
                       <CustomTableCell className={classes.name} {...{ row, name: "namemanager", onChange }} />
                       <CustomTableCell className={classes.name} {...{ row, name: "idmanager", onChange }} />
-                      <CustomTableCell className={classes.name} {...{ row, name: "parent", onChange }} />
                       <TableCell className={classes.selectTableCell}>
                         {row.isEditMode ? (
                           <>

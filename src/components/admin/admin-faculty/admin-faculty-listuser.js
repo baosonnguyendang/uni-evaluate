@@ -114,7 +114,7 @@ const UserOfFaculty = () => {
     const [isLoading, setIsLoading] = React.useState(true)
     const classes = useStyles();
     // tên đơn vị
-    const [nameDept, setNameDept] = useState('')
+    const [nameDept, setLNameDept] = useState('')
     const [children, setChildren] = useState([])
     const fetchChildren = () => {
         axios.get(`/admin/department/${id}/children`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -122,7 +122,7 @@ const UserOfFaculty = () => {
                 console.log(res.data);
                 // setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
                 // setPrevious([...rows])
-                setNameDept(res.data.parent.name)
+                setLNameDept(res.data.parent.name)
                 setChildren(res.data.children)
                 setIsLoading(false)
             })
@@ -226,7 +226,7 @@ const UserOfFaculty = () => {
             <Fade in={open}>
                 <div className={classes.paper1}>
                     <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm người dùng có sẵn</Typography>
-                    <form onSubmit={submit}>
+                    <form onSubmit={submitExistUser}>
                         <TextField onChange={e => setIduser(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
                         <div style={{ textAlign: 'center', marginTop: '10px' }}>
                             <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
@@ -237,20 +237,32 @@ const UserOfFaculty = () => {
             </Fade>
         </Modal>
     )
-    //get data from new criterion
-    const [iduser, setIduser] = React.useState('')
-    const [lname, setName] = React.useState('')
-    const [fname, setC] = React.useState('')
-    const [email, setD] = React.useState('')
-    const submit = e => {
+    const submitExistUser = (e) => {
         e.preventDefault()
-        axios.post('/admin/user/add', { id, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/department/${id}/user/add`, iduser, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
-                setRows(rows => [...rows, createData(id, lname, fname, email, '', '')])
+                console.log(res.data)
                 handleClose()
             })
             .catch(err => {
-                alert(err)
+                console.log(err)
+            })
+    }
+
+    //get data from new criterion
+    const [iduser, setIduser] = React.useState('')
+    const [lname, setLName] = React.useState('')
+    const [fname, setFName] = React.useState('')
+    const [email, setEmail] = React.useState('')
+    const submitNewUser = e => {
+        e.preventDefault()
+        axios.post(`/admin/department/${id}/user/create`, { id:iduser, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => {
+                console.log(res.data)
+                handleClose()
+            })
+            .catch(err => {
+                console.log(err)
             })
     }
     return (
@@ -353,11 +365,11 @@ const UserOfFaculty = () => {
                                 <Fade in={open}>
                                     <div className={classes.paper1}>
                                         <Typography gutterBottom variant='h5' id="transition-modal">Tạo người dùng</Typography>
-                                        <form onSubmit={submit}>
+                                        <form onSubmit={submitNewUser}>
                                             <TextField onChange={e => setIduser(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                                            <TextField onChange={e => setName(e.target.value)} id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
-                                            <TextField onChange={e => setC(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                                            <TextField onChange={e => setD(e.target.value)} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                                            <TextField onChange={e => setLName(e.target.value)} id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
+                                            <TextField onChange={e => setFName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
+                                            <TextField onChange={e => setEmail(e.target.value)} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
                                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
                                                 <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                                                 <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
