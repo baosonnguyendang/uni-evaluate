@@ -27,6 +27,7 @@ export default function FormEvaluation(props) {
   const { id1, id3 } = useParams()
   var level = props.level
 
+  const [point, setPoint] = useState(0)
   const [all, setAll] = useState()
   const [edited, setEdited] = useState(false)
   const [data, setData] = useState([]) //data đầu vào
@@ -89,6 +90,14 @@ export default function FormEvaluation(props) {
         setLoading(false)
       })
   }, [])
+
+  useEffect(() => {
+    let pts = 0
+    sent.map(x => {
+      pts += parseInt(x.value)
+    })
+    setPoint(pts)
+  })
 
   const compare = (x) => {
     if (x != luuTam) {
@@ -163,7 +172,7 @@ export default function FormEvaluation(props) {
 
   const sendNude = () => {
     let list = []
-    let toSend = []
+    let dataToSend = []
     switch (level) {
       case 1:
         let filter = sent.filter(y => y.value == null)
@@ -172,7 +181,7 @@ export default function FormEvaluation(props) {
             list.push(x.name)
           })
         }
-        toSend = sent
+        dataToSend = sent
         break;
       case 2:
         let filterr = sent2.filter(y => y.value == null)
@@ -181,13 +190,13 @@ export default function FormEvaluation(props) {
             list.push(x.name)
           })
         }
-        toSend = sent2
+        dataToSend = sent2
         break;
       default:
         break;
     }
     if (list.length === 0) {
-      let data = { toSend, level }
+      let data = { dataToSend, level }
       console.log(data)
       axios.post(`/form/${variable}/evaluation/test`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
@@ -338,14 +347,19 @@ export default function FormEvaluation(props) {
               </TableContainer>
               <div>
                 {
-                  (!disableEdit || (props.level > 1 && true)) &&
                   <div>
-                    <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
-                      Lưu tạm
-                    </Button>
-                    <Button variant="contained" color="primary" onClick={sendNude} style={{ marginLeft: '10px' }}>
-                      Hoàn thành đánh giá
-                    </Button>
+                    <h5>Tổng điểm tự đánh giá: {point}</h5>
+                    {
+                      (!disableEdit || (props.level > 1 && true)) &&
+                      <div>
+                        <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
+                          Lưu tạm
+                        </Button>
+                        <Button variant="contained" color="primary" onClick={sendNude} style={{ marginLeft: '10px' }}>
+                          Hoàn thành đánh giá
+                        </Button>
+                      </div>
+                    }
                   </div>
                 }
               </div>
