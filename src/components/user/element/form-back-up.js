@@ -27,7 +27,6 @@ export default function FormEvaluation(props) {
   const { id1, id3 } = useParams()
   var level = props.level
 
-  const [all, setAll] = useState()
   const [edited, setEdited] = useState(false)
   const [data, setData] = useState([]) //data đầu vào
   const [sent, setSent] = useState([]) //data đầu ra
@@ -56,26 +55,13 @@ export default function FormEvaluation(props) {
         axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
             //console.log(temp)
+            setLoading(false)
             console.log(res.data.evaluateForms)
             if (res.data.evaluateForms.length > 0) {
               res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
                 temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
               })
-              let d = res.data.evaluateForms
-              let list = []
-              d.map(level => {
-                let inside = []
-                level.evaluateCriteria.map(criteria => {
-                  //inside.push(temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point)
-                  inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point })
-                })
-                list.push(inside)
-              })
-              console.log(list)
-              setAll([...list])
-              setLoading(false)
             }
-            console.log(temp)
             setSent([...temp])
             setLuuTam([...temp])
             console.log('a')
@@ -114,7 +100,7 @@ export default function FormEvaluation(props) {
     console.log(event.target.name)
     console.log(sent)
     console.log(edited)
-    if (edited === false) {
+    if (edited === false){
       sent.map(x => {
         tam.push(x)
       })
@@ -144,7 +130,7 @@ export default function FormEvaluation(props) {
     console.log(event.target.name)
     console.log(sent)
     console.log(edited)
-    if (edited === false) {
+    if (edited === false){
       sent.map(x => {
         tam.push(x)
       })
@@ -167,7 +153,7 @@ export default function FormEvaluation(props) {
     switch (level) {
       case 1:
         let filter = sent.filter(y => y.value == null)
-        if (filter.length > 0) {
+        if (filter.length > 0){
           filter.map(x => {
             list.push(x.name)
           })
@@ -176,7 +162,7 @@ export default function FormEvaluation(props) {
         break;
       case 2:
         let filterr = sent2.filter(y => y.value == null)
-        if (filterr.length > 0) {
+        if (filterr.length > 0){
           filterr.map(x => {
             list.push(x.name)
           })
@@ -221,7 +207,7 @@ export default function FormEvaluation(props) {
     setLuuTam(sent)
     let data = { dataToSend, level }
     console.log(data)
-    axios.post(`/form/${variable}/saveForm/v2`, data, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/form/${variable}/evaluation/test`, data, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res)
       })
@@ -281,7 +267,7 @@ export default function FormEvaluation(props) {
                                   <input
                                     type="checkbox"
                                     disabled={disableEdit}
-                                    defaultChecked={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                    defaultChecked={sent.find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                     onClick={handleCheck}
                                     name={criteria.criteria_id.code + '_1'}
                                     value={criteria.point} />}
@@ -290,7 +276,7 @@ export default function FormEvaluation(props) {
                                 {props.level > 1 && criteria.options.length == 0 ?
                                   <input
                                     type="checkbox"
-                                    defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                    defaultChecked={sent.find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                     onClick={handleCheck2}
                                     name={criteria.criteria_id.code + '_2'}
                                     value={criteria.point}
@@ -309,7 +295,7 @@ export default function FormEvaluation(props) {
                                   <input
                                     onClick={handleCheckRadio}
                                     disabled={disableEdit}
-                                    defaultChecked={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
+                                    defaultChecked={sent.find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
                                     type="radio"
                                     name={criteria.criteria_id.code + '_1'}
                                     value={option.max_point}
@@ -320,7 +306,7 @@ export default function FormEvaluation(props) {
                                     <input
                                       onClick={handleCheckRadio2}
                                       type="radio"
-                                      defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
+                                      defaultChecked={sent.find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
                                       name={criteria.criteria_id.code + '_2'}
                                       value={option.max_point}
                                     /> :
