@@ -21,34 +21,26 @@ export default function ResultsDetailed() {
   const [data, setData] = useState([]) //đổ dữ liệu đã đánh giá vào form
   const [loading, setLoading] = useState(false)
 
-  var total = []
-
   useEffect(() => {
     setLoading(true)
     axios.get(`/admin/userForm/${id3}/get`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
+        console.log(res.data)
         setForm(res.data.formStandards)
-        let temp = []
-        res.data.formStandards.map(standard => {
-          standard.formCriteria.map(criteria => {
-            let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type == 'radio' ? null : 0 }
-            temp.push(obj)
-          })
-        })
         axios.get(`/admin/userForm/${id3}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
-            //console.log(res.data.evaluateForms)
+            console.log(res.data)
             if (res.data.evaluateForms) {
+              let total = []
               res.data.evaluateForms.map(level => {
+                let arr = []
                 level.evaluateCriteria.map(criteria => {
-                  // console.log(temp.find(x => x.list.some(y => y.name === criteria.form_criteria.criteria_id.code)))
-                  temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
+                  arr.push({name: criteria.form_criteria.criteria_id.code, value: criteria.point})
                 })
-                total.push(temp)
+                total.push(arr)
               })
+              setData(total.slice())
             }
-            console.log(total)
-            setData(total.slice())
             setLoading(false)
           })
           .catch(err => {
@@ -62,13 +54,10 @@ export default function ResultsDetailed() {
 
   return (
     <div>
-      <Typography>
-        Kết quả
-      </Typography>
       <div>
         {loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
-          <Grid container xs={12} justify='center' style={{ margin: '30px 0px' }}>
-            <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
+          <Grid container xs={12} justify='center' style={{ marginTop: '30px' }}>
+            <TableContainer component={Paper} >
               <Table className={classes.table} >
                 <TableHead>
                   <TableRow>
@@ -114,7 +103,7 @@ export default function ResultsDetailed() {
                               {criteria.options.length > 0 ? null :
                                 <input
                                   disabled
-                                  checked={data.length > 1 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                  checked={data.length > 1 && data[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                   type="checkbox"
                                   name={criteria.criteria_id.code + '_2'}
                                   value={criteria.point} />}
@@ -137,7 +126,7 @@ export default function ResultsDetailed() {
                                 <input
                                   type="radio"
                                   disabled
-                                  checked={data.length > 0 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                  checked={data.length > 0 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
                                   name={criteria.criteria_id.code + '_1'}
                                   value={option.max_point}
                                 />
@@ -146,7 +135,7 @@ export default function ResultsDetailed() {
                                 <input
                                   disabled
                                   type="radio"
-                                  checked={data.length > 1 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                  checked={data.length > 1 && data[1].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
                                   name={criteria.criteria_id.code + '_2'}
                                   value={option.max_point}
                                 />
@@ -172,6 +161,7 @@ export default function ResultsDetailed() {
           </Grid>
         )}
       </div>
+      <h5 style={{ marginTop: '30px' }}>Điểm đánh giá: 0</h5>
     </div>
   )
 }

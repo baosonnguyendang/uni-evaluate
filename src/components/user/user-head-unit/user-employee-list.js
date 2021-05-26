@@ -59,7 +59,7 @@ export default function EmployeeList() {
   }, [])
 
   return (
-    <div style={{ marginTop: '24px' }}>
+    <div style={{ margin: '24px' }}>
       <Typography component="h3" variant="h5" color="inherit">
         Danh sách các GV/VC đánh giá:
       </Typography>

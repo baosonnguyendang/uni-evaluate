@@ -109,7 +109,8 @@ export default function ResultsList(props) {
           //lấy các đơn vị cha nằm trong đợt đánh giá
           axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
-              let temp = res.data.formDepartments.filter(x => (x.level === 1 || x.level === 0)).map(y => y.department_id)
+              console.log(res.data)
+              let temp = res.data.formDepartments.map(y => y.department_id)
               setUnits(temp)
             })
             .catch(e => console.log(e))

@@ -21,13 +21,14 @@ const useStyles = makeStyles({
 
 export default function FormEvaluation(props) {
   const classes = useStyles();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   // const [data, setData] = useState({})
   const token = localStorage.getItem('token')
   const { id1, id3 } = useParams()
   var level = props.level
 
-  const [point, setPoint] = useState(0)
+  const [point, setPoint] = useState(0) //điểm tự đánh giá
+  const [point2, setPoint2] = useState(0) //điểm trưởng khoa đánh giá
   const [all, setAll] = useState([])
   const [edited, setEdited] = useState(false)
   const [data, setData] = useState([]) //data đầu vào
@@ -41,7 +42,6 @@ export default function FormEvaluation(props) {
   var variable = props.level === 1 ? id1 : id3
 
   useEffect(() => {
-    setLoading(true)
 
     //lấy Form
     axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -64,10 +64,10 @@ export default function FormEvaluation(props) {
                 temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
               })
               let d = res.data.evaluateForms
-              if (d[0].status === 1){
+              if (d[0].status === 1) {
                 setDisableEdit(true)
               }
-              if (d[1].status === 1){
+              if (d[1].status === 1) {
                 setDisableEdit2(true)
               }
               let list = []
@@ -103,10 +103,33 @@ export default function FormEvaluation(props) {
 
   useEffect(() => {
     let pts = 0
-    sent.map(x => {
-      pts += parseInt(x.value)
-    })
-    setPoint(pts)
+    let pts2 = 0
+    if (loading === false){
+      if (props.level == 1){
+        sent.map(x => {
+          pts += parseInt(x.value)
+        })
+        setPoint(pts)
+      }
+      else {
+        all[0].map(x => {
+          pts += parseInt(x.value)
+        })
+        setPoint(pts)
+        if (sent2.length > 0){
+          sent2.map(x => {
+            pts2 += parseInt(x.value)
+          })
+          setPoint2(pts2)
+        }
+        else {
+          all[1].map(x => {
+            pts2 += parseInt(x.value)
+          })
+          setPoint2(pts2)
+        }
+      }
+    }
   })
 
   const compare = (x) => {
@@ -247,11 +270,11 @@ export default function FormEvaluation(props) {
   const [status, setStatus] = useState(true)//hoàn thành đánh giá thì chuyển qua UI hoàn thành đánh giá
 
   const again = () => {
-    if (level == 1){
+    if (level == 1) {
       all[0] = [...sent]
       setDisableEdit(true)
     }
-    if (level == 2){
+    if (level == 2) {
       all[1] = [...sent2]
       setDisableEdit2(true)
     }
@@ -261,111 +284,116 @@ export default function FormEvaluation(props) {
   return (
     < >
       {status ? (
-        <div>
+        <div style={{ margin: '0 30px' }}>
           { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
-            <Grid container justify='center' style={{ margin: '30px 0px' }}>
-              <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
-                <Table className={classes.table} >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
-                      <TableCell rowSpan={2}>Nội dung</TableCell>
-                      <TableCell rowSpan={2}>Điểm quy định</TableCell>
-                      <TableCell colSpan={3} align="center">Điểm đánh giá</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell align="center">Cá nhân tự chấm</TableCell>
-                      <TableCell align="center">Trưởng bộ môn</TableCell>
-                      <TableCell align="center">Hội đồng nhà trường</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data.map(standard => (
-                      <>
-                        <TableRow>
-                          <TableCell>{standard.standard_order}</TableCell>
-                          <TableCell><b>{standard.standard_id.name}</b></TableCell>
-                          <TableCell>{standard.standard_point}</TableCell>
-                          <TableCell />
-                          <TableCell />
-                          <TableCell />
-                        </TableRow>
+            <div>
+              <Grid container justify='center' style={{ marginTop: '30px' }}>
+                <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
+                  <Table className={classes.table} >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
+                        <TableCell rowSpan={2}>Nội dung</TableCell>
+                        <TableCell rowSpan={2}>Điểm quy định</TableCell>
+                        <TableCell colSpan={3} align="center">Điểm đánh giá</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="center">Cá nhân tự chấm</TableCell>
+                        <TableCell align="center">Trưởng bộ môn</TableCell>
+                        <TableCell align="center">Hội đồng nhà trường</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data.map(standard => (
+                        <>
+                          <TableRow>
+                            <TableCell>{standard.standard_order}</TableCell>
+                            <TableCell><b>{standard.standard_id.name}</b></TableCell>
+                            <TableCell>{standard.standard_point}</TableCell>
+                            <TableCell />
+                            <TableCell />
+                            <TableCell />
+                          </TableRow>
 
-                        {standard.formCriteria.map((criteria, index) => (
-                          <>
-                            <TableRow>
-                              <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
-                              <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
-                              <TableCell>{criteria.point}</TableCell>
-                              <TableCell align='center'>
-                                {criteria.options.length > 0 ? null :
-                                  <input
-                                    type="checkbox"
-                                    disabled={disableEdit}
-                                    defaultChecked={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
-                                    onClick={handleCheck}
-                                    name={criteria.criteria_id.code + '_1'}
-                                    value={criteria.point} />}
-                              </TableCell>
-                              <TableCell align='center'>
-                                {props.level > 1 && criteria.options.length == 0 ?
-                                  <input
-                                    type="checkbox"
-                                    disabled={disableEdit2}
-                                    defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
-                                    onClick={handleCheck2}
-                                    name={criteria.criteria_id.code + '_2'}
-                                    value={criteria.point}
-                                  />
-                                  : null}
-                              </TableCell>
-                              <TableCell align='center'>
-                                {props.level > 2 && criteria.options.length == 0 ? <input type="checkbox" onChange={null} name={criteria.criteria_id.code + '_' + 2} value={criteria.point} /> : null}
-                              </TableCell>
-                            </TableRow>
-                            {criteria.options.map((option, index) => (
+                          {standard.formCriteria.map((criteria, index) => (
+                            <>
                               <TableRow>
-                                <TableCell>{option.name}</TableCell>
-                                <TableCell>{option.max_point}</TableCell>
-                                <TableCell align='center' colSpan={1}>
-                                  <input
-                                    onClick={handleCheckRadio}
-                                    disabled={disableEdit}
-                                    defaultChecked={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
-                                    type="radio"
-                                    name={criteria.criteria_id.code + '_1'}
-                                    value={option.max_point}
-                                  />
-                                </TableCell>
-                                <TableCell align='center' colSpan={1}>
-                                  {props.level > 1 ?
+                                <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
+                                <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
+                                <TableCell>{criteria.point}</TableCell>
+                                <TableCell align='center'>
+                                  {criteria.options.length > 0 ? null :
                                     <input
-                                      onClick={handleCheckRadio2}
-                                      type="radio"
-                                      disabled={disableEdit2}
-                                      defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
-                                      name={criteria.criteria_id.code + '_2'}
-                                      value={option.max_point}
-                                    /> :
-                                    null}
+                                      type="checkbox"
+                                      disabled={disableEdit}
+                                      defaultChecked={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                      onClick={handleCheck}
+                                      name={criteria.criteria_id.code + '_1'}
+                                      value={criteria.point} />}
                                 </TableCell>
-                                <TableCell align='center' colSpan={1}>{props.level > 2 ? <input onChange={null} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
+                                <TableCell align='center'>
+                                  {props.level > 1 && criteria.options.length == 0 ?
+                                    <input
+                                      type="checkbox"
+                                      disabled={disableEdit2}
+                                      defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                      onClick={handleCheck2}
+                                      name={criteria.criteria_id.code + '_2'}
+                                      value={criteria.point}
+                                    />
+                                    : null}
+                                </TableCell>
+                                <TableCell align='center'>
+                                  {props.level > 2 && criteria.options.length == 0 ? <input type="checkbox" onChange={null} name={criteria.criteria_id.code + '_' + 2} value={criteria.point} /> : null}
+                                </TableCell>
                               </TableRow>
-                            ))}
-                          </>
-                        ))}
-                      </>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                              {criteria.options.map((option, index) => (
+                                <TableRow>
+                                  <TableCell>{option.name}</TableCell>
+                                  <TableCell>{option.max_point}</TableCell>
+                                  <TableCell align='center' colSpan={1}>
+                                    <input
+                                      onClick={handleCheckRadio}
+                                      disabled={disableEdit}
+                                      defaultChecked={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
+                                      type="radio"
+                                      name={criteria.criteria_id.code + '_1'}
+                                      value={option.max_point}
+                                    />
+                                  </TableCell>
+                                  <TableCell align='center' colSpan={1}>
+                                    {props.level > 1 ?
+                                      <input
+                                        onClick={handleCheckRadio2}
+                                        type="radio"
+                                        disabled={disableEdit2}
+                                        defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
+                                        name={criteria.criteria_id.code + '_2'}
+                                        value={option.max_point}
+                                      /> :
+                                      null}
+                                  </TableCell>
+                                  <TableCell align='center' colSpan={1}>{props.level > 2 ? <input onChange={null} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
+                                </TableRow>
+                              ))}
+                            </>
+                          ))}
+                        </>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
               <div>
                 {
                   <div>
-                    <h5>Tổng điểm tự đánh giá: {point}</h5>
+                    <div style={{margin: '10px 0'}}>
+                      <h5>Tổng điểm tự đánh giá: {point}</h5>
+                      <h5>{props.level > 1 && `Tổng điểm trưởng Khoa đánh giá: ${point2}`}</h5>
+                    </div>
                     {
                       (!disableEdit || (props.level > 1 && true)) &&
-                      <div>
+                      <div style={{ textAlign: 'center', margin: '24px 0' }}>
                         <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
                           Lưu tạm
                         </Button>
@@ -377,7 +405,7 @@ export default function FormEvaluation(props) {
                   </div>
                 }
               </div>
-            </Grid>
+            </div>
           )}
         </div>
       ) : (
