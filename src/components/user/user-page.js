@@ -22,7 +22,6 @@ const UserPage = () => {
     <>
       {isLogged ? (localStorage.getItem('role') === 'admin' && <Redirect to='/admin/user' />) : <Redirect to='/' />}
       <AppBar />
-      <Container>
         <Switch>
           <Route path='/user/profile' >
             <Profile />
@@ -46,7 +45,6 @@ const UserPage = () => {
             <NotFound />
           </Route>
         </Switch>
-      </Container>
     </>
   )
 }

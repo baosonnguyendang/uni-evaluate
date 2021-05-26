@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { TextField, Grid, makeStyles, Typography, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { TextField, Grid, makeStyles, Typography, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core';
 import moment from 'moment'
 import ButtonCustom from '../../common/ButtonCustom'
 import { useForm, Controller } from 'react-hook-form'
@@ -136,12 +136,12 @@ const EditUserForm = ({ setEdit, infoUser }) => {
                     <TextField margin='normal' label="Email" defaultValue={infoUser.email} fullWidth disabled />
                 </Grid>
                 <Grid item container xs={12} justify="flex-end">
-                    <ButtonCustom variant="contained" style={{ marginRight: '20px' }} onClick={() => setEdit()}>
+                    <Button variant="contained" style={{ marginRight: '20px' }} onClick={() => setEdit()}>
                         Huỷ
-                </ButtonCustom>
-                    <ButtonCustom loading={loadingButton} type='submit' variant="contained" color="primary">
+                </Button>
+                    <Button type='submit' variant="contained" color="primary">
                         Lưu
-                </ButtonCustom>
+                </Button>
                 </Grid>
             </Grid>
         </form>

@@ -120,7 +120,7 @@ const SignInSide = () => {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            {error && <Alert severity="error">{error}</Alert>}
+            {error && <Alert severity="error">Tài khoản hoặc mật khẩu không đúng</Alert>}
               <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} >
                 Sign In
               </Button>

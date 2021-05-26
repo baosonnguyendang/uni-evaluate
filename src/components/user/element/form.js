@@ -242,7 +242,7 @@ export default function FormEvaluation(props) {
       {status ? (
         <div>
           { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
-            <Grid container xs={12} justify='center' style={{ margin: '30px 0px' }}>
+            <Grid container justify='center' style={{ margin: '30px 0px' }}>
               <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
                 <Table className={classes.table} >
                   <TableHead>

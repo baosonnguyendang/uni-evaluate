@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import { Card, CardActions, CardContent, Typography, Button } from '@material-ui/core'
+import { Card, CardActions, CardContent, Typography, Button, Container, LinearProgress } from '@material-ui/core'
 
 import { Link, useRouteMatch, useParams } from 'react-router-dom'
+import { PermDeviceInformationSharp } from '@material-ui/icons';
 
 export default function FormList() {
   const { id } = useParams()
@@ -15,8 +16,7 @@ export default function FormList() {
   const [isHeadUnit, setIsHeadUnit] = useState(false)
   const [unit, setUnit] = useState()
 
-  useEffect(() => {
-    console.log(id)
+  const fetchHeadForm = () => {
     axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
@@ -28,8 +28,12 @@ export default function FormList() {
       .catch(err => {
         console.log(err)
       })
+  }
+
+  const fetchForm = () => {
     axios.get(`/form/review/${id}/form`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
+        fetchHeadForm()
         let temp = []
         console.log(res.data)
         res.data.formUsers.map(x => {
@@ -41,10 +45,17 @@ export default function FormList() {
       .catch(err => {
         console.log(err)
       })
+  }
+
+  useEffect(() => {
+    fetchForm()
+
+
   }, [])
 
   return (
-    <div>
+    <>
+    {list.length !== 0 ? <Container>
       <Typography variant="h5" component="h2" style={{ marginTop: '24px' }}>
         Danh sách các Form đánh giá:
       </Typography>
@@ -73,6 +84,7 @@ export default function FormList() {
           )
         })
       }
-    </div>
+    </Container> : <LinearProgress style={{position:"absolute", width:"100%" }} />}
+    </>
   )
 }
