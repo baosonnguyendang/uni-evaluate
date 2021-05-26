@@ -28,7 +28,7 @@ export default function FormEvaluation(props) {
   var level = props.level
 
   const [point, setPoint] = useState(0)
-  const [all, setAll] = useState()
+  const [all, setAll] = useState([])
   const [edited, setEdited] = useState(false)
   const [data, setData] = useState([]) //data đầu vào
   const [sent, setSent] = useState([]) //data đầu ra
@@ -63,6 +63,9 @@ export default function FormEvaluation(props) {
                 temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
               })
               let d = res.data.evaluateForms
+              if (d[0].status === 1 && level === 1){
+                setDisableEdit(true)
+              }
               let list = []
               d.map(level => {
                 let inside = []
@@ -76,7 +79,9 @@ export default function FormEvaluation(props) {
               setAll([...list])
               setLoading(false)
             }
-            console.log(temp)
+            else {
+              setLoading(false)
+            }
             setSent([...temp])
             setLuuTam([...temp])
             console.log('a')
@@ -120,9 +125,6 @@ export default function FormEvaluation(props) {
   const handleCheck2 = (event) => {
     //console.log(event.target.value, event.target.name)
     let tam = []
-    console.log(event.target.name)
-    console.log(sent)
-    console.log(edited)
     if (edited === false) {
       sent.map(x => {
         tam.push(x)
@@ -147,7 +149,6 @@ export default function FormEvaluation(props) {
   }
 
   const handleCheckRadio2 = (event) => {
-    console.log(event.target.value, event.target.name)
     //compare(temp2)
     let tam = []
     console.log(event.target.name)
@@ -166,7 +167,6 @@ export default function FormEvaluation(props) {
     }
     tam.find(x => x.name + '_2' == event.target.name).value = parseInt(event.target.value)
     setSent2(tam)
-    console.log(tam)
     compare(tam)
   }
 
@@ -198,7 +198,7 @@ export default function FormEvaluation(props) {
     if (list.length === 0) {
       let data = { dataToSend, level }
       console.log(data)
-      axios.post(`/form/${variable}/evaluation/test`, data, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/form/${variable}/submitForm/v3`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
           setDisableEdit(true)
@@ -243,6 +243,12 @@ export default function FormEvaluation(props) {
   const [status, setStatus] = useState(true)//hoàn thành đánh giá thì chuyển qua UI hoàn thành đánh giá
 
   const again = () => {
+    if (level == 1){
+      all[0] = [...sent]
+    }
+    if (level == 2){
+      all[1] = [...sent2]
+    }
     setStatus(true)
   }
 
