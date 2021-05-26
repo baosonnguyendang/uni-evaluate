@@ -27,7 +27,8 @@ export default function FormEvaluation(props) {
   const { id1, id3 } = useParams()
   var level = props.level
 
-  const [all, setAll] = useState()
+  const [point, setPoint] = useState(0)
+  const [all, setAll] = useState([])
   const [edited, setEdited] = useState(false)
   const [data, setData] = useState([]) //data đầu vào
   const [sent, setSent] = useState([]) //data đầu ra
@@ -35,6 +36,7 @@ export default function FormEvaluation(props) {
   const [luuTam, setLuuTam] = useState([]) //lưu tạm
   const [disabled, setDisabled] = useState(true) //true thì không lưu tạm được, có chỉnh sửa mới lưu tạm được
   const [disableEdit, setDisableEdit] = useState(props.level > 1 ? true : false) //ấn hoàn thành rồi thì ko lưu được nữa, cấp trên ko sửa bài cấp dưới đc 
+  const [disableEdit2, setDisableEdit2] = useState(props.level > 2 ? true : false)
 
   var variable = props.level === 1 ? id1 : id3
 
@@ -62,6 +64,12 @@ export default function FormEvaluation(props) {
                 temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
               })
               let d = res.data.evaluateForms
+              if (d[0].status === 1){
+                setDisableEdit(true)
+              }
+              if (d[1].status === 1){
+                setDisableEdit2(true)
+              }
               let list = []
               d.map(level => {
                 let inside = []
@@ -75,13 +83,16 @@ export default function FormEvaluation(props) {
               setAll([...list])
               setLoading(false)
             }
-            console.log(temp)
+            else {
+              setLoading(false)
+            }
             setSent([...temp])
             setLuuTam([...temp])
             console.log('a')
           })
           .catch(err => {
             console.log(err)
+            setLoading(false)
           })
       })
       .catch(err => {
@@ -89,6 +100,14 @@ export default function FormEvaluation(props) {
         setLoading(false)
       })
   }, [])
+
+  useEffect(() => {
+    let pts = 0
+    sent.map(x => {
+      pts += parseInt(x.value)
+    })
+    setPoint(pts)
+  })
 
   const compare = (x) => {
     if (x != luuTam) {
@@ -111,9 +130,6 @@ export default function FormEvaluation(props) {
   const handleCheck2 = (event) => {
     //console.log(event.target.value, event.target.name)
     let tam = []
-    console.log(event.target.name)
-    console.log(sent)
-    console.log(edited)
     if (edited === false) {
       sent.map(x => {
         tam.push(x)
@@ -138,7 +154,6 @@ export default function FormEvaluation(props) {
   }
 
   const handleCheckRadio2 = (event) => {
-    console.log(event.target.value, event.target.name)
     //compare(temp2)
     let tam = []
     console.log(event.target.name)
@@ -157,13 +172,12 @@ export default function FormEvaluation(props) {
     }
     tam.find(x => x.name + '_2' == event.target.name).value = parseInt(event.target.value)
     setSent2(tam)
-    console.log(tam)
     compare(tam)
   }
 
   const sendNude = () => {
     let list = []
-    let toSend = []
+    let dataToSend = []
     switch (level) {
       case 1:
         let filter = sent.filter(y => y.value == null)
@@ -172,7 +186,7 @@ export default function FormEvaluation(props) {
             list.push(x.name)
           })
         }
-        toSend = sent
+        dataToSend = sent
         break;
       case 2:
         let filterr = sent2.filter(y => y.value == null)
@@ -181,18 +195,17 @@ export default function FormEvaluation(props) {
             list.push(x.name)
           })
         }
-        toSend = sent2
+        dataToSend = sent2
         break;
       default:
         break;
     }
     if (list.length === 0) {
-      let data = { toSend, level }
+      let data = { dataToSend, level }
       console.log(data)
-      axios.post(`/form/${variable}/evaluation/test`, data, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/form/${variable}/submitForm/v3`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
-          setDisableEdit(true)
         })
         .catch(err => {
           alert(err)
@@ -234,6 +247,14 @@ export default function FormEvaluation(props) {
   const [status, setStatus] = useState(true)//hoàn thành đánh giá thì chuyển qua UI hoàn thành đánh giá
 
   const again = () => {
+    if (level == 1){
+      all[0] = [...sent]
+      setDisableEdit(true)
+    }
+    if (level == 2){
+      all[1] = [...sent2]
+      setDisableEdit2(true)
+    }
     setStatus(true)
   }
 
@@ -290,6 +311,7 @@ export default function FormEvaluation(props) {
                                 {props.level > 1 && criteria.options.length == 0 ?
                                   <input
                                     type="checkbox"
+                                    disabled={disableEdit2}
                                     defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                     onClick={handleCheck2}
                                     name={criteria.criteria_id.code + '_2'}
@@ -320,6 +342,7 @@ export default function FormEvaluation(props) {
                                     <input
                                       onClick={handleCheckRadio2}
                                       type="radio"
+                                      disabled={disableEdit2}
                                       defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
                                       name={criteria.criteria_id.code + '_2'}
                                       value={option.max_point}
@@ -338,14 +361,19 @@ export default function FormEvaluation(props) {
               </TableContainer>
               <div>
                 {
-                  (!disableEdit || (props.level > 1 && true)) &&
                   <div>
-                    <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
-                      Lưu tạm
-                    </Button>
-                    <Button variant="contained" color="primary" onClick={sendNude} style={{ marginLeft: '10px' }}>
-                      Hoàn thành đánh giá
-                    </Button>
+                    <h5>Tổng điểm tự đánh giá: {point}</h5>
+                    {
+                      (!disableEdit || (props.level > 1 && true)) &&
+                      <div>
+                        <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
+                          Lưu tạm
+                        </Button>
+                        <Button variant="contained" color="primary" onClick={sendNude} style={{ marginLeft: '10px' }}>
+                          Hoàn thành đánh giá
+                        </Button>
+                      </div>
+                    }
                   </div>
                 }
               </div>
