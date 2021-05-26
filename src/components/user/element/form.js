@@ -36,6 +36,7 @@ export default function FormEvaluation(props) {
   const [luuTam, setLuuTam] = useState([]) //lưu tạm
   const [disabled, setDisabled] = useState(true) //true thì không lưu tạm được, có chỉnh sửa mới lưu tạm được
   const [disableEdit, setDisableEdit] = useState(props.level > 1 ? true : false) //ấn hoàn thành rồi thì ko lưu được nữa, cấp trên ko sửa bài cấp dưới đc 
+  const [disableEdit2, setDisableEdit2] = useState(props.level > 2 ? true : false)
 
   var variable = props.level === 1 ? id1 : id3
 
@@ -63,8 +64,11 @@ export default function FormEvaluation(props) {
                 temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
               })
               let d = res.data.evaluateForms
-              if (d[0].status === 1 && level === 1){
+              if (d[0].status === 1){
                 setDisableEdit(true)
+              }
+              if (d[1].status === 1){
+                setDisableEdit2(true)
               }
               let list = []
               d.map(level => {
@@ -88,6 +92,7 @@ export default function FormEvaluation(props) {
           })
           .catch(err => {
             console.log(err)
+            setLoading(false)
           })
       })
       .catch(err => {
@@ -201,7 +206,6 @@ export default function FormEvaluation(props) {
       axios.post(`/form/${variable}/submitForm/v3`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
-          setDisableEdit(true)
         })
         .catch(err => {
           alert(err)
@@ -245,9 +249,11 @@ export default function FormEvaluation(props) {
   const again = () => {
     if (level == 1){
       all[0] = [...sent]
+      setDisableEdit(true)
     }
     if (level == 2){
       all[1] = [...sent2]
+      setDisableEdit2(true)
     }
     setStatus(true)
   }
@@ -305,6 +311,7 @@ export default function FormEvaluation(props) {
                                 {props.level > 1 && criteria.options.length == 0 ?
                                   <input
                                     type="checkbox"
+                                    disabled={disableEdit2}
                                     defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                     onClick={handleCheck2}
                                     name={criteria.criteria_id.code + '_2'}
@@ -335,6 +342,7 @@ export default function FormEvaluation(props) {
                                     <input
                                       onClick={handleCheckRadio2}
                                       type="radio"
+                                      disabled={disableEdit2}
                                       defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
                                       name={criteria.criteria_id.code + '_2'}
                                       value={option.max_point}
