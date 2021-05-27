@@ -210,6 +210,9 @@ export default function FormEvaluation(props) {
             list.push(x.name)
           })
         }
+        let temp = [...all]
+        temp[0] = [...sent]
+        setAll([...temp])
         dataToSend = sent
         break;
       case 2:
