@@ -28,6 +28,7 @@ import axios from "axios";
 import Skeleton from '../common/skeleton'
 import Toast from '../common/snackbar'
 import Loading from '../common/Loading'
+import DialogConfirm from '../common/DialogConfirm'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -81,10 +82,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const createData = (id, lname, fname, email, unit, role) => ({
-  id, lname, fname, email, unit, role, isEditMode: false
-})
-
 const CustomTableCell = ({ row, name, onChange }) => {
   const classes = useStyles();
   const { isEditMode } = row;
@@ -107,34 +104,31 @@ const CustomTableCell = ({ row, name, onChange }) => {
 export default function ListUser() {
   const [rows, setRows] = React.useState([]);
   const token = localStorage.getItem('token')
-  const [previous, setPrevious] = React.useState([]);
   const fetchUser = () => {
     axios.get('/admin/user', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data.users);
-        setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
-        setPrevious([...rows])
+        setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
+        setFilterUser(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
+        console.log(rows)
         setIsLoading(false)
+      })
+  }
+  // Danh sách đơn vị
+  const [units, setUnits] = useState([])
+  const fetchAllDept = () => {
+    axios.get('/admin/department', { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        setUnits(res.data.departments)
       })
   }
   useEffect(() => {
     fetchUser()
+    fetchAllDept()
   }, [])
 
-  console.log(previous)
-  const classes = useStyles();
 
-  const onToggleEditMode = id => {
-    setPrevious([...rows])
-    setRows(state => {
-      return rows.map(row => {
-        if (row._id === id) {
-          return { ...row, isEditMode: !row.isEditMode };
-        }
-        return row;
-      });
-    });
-  };
+  const classes = useStyles();
 
   const onChange = (e, row) => {
     const value = e.target.value;
@@ -148,15 +142,20 @@ export default function ListUser() {
     });
     setRows(newRows);
   };
-
+  // modal xoá
+  const [statusDelete, setStatusDelete] = useState({ open: false })
   const onDelete = id => {
-    const newRows = rows.filter(row => row._id !== id)
-    setRows(newRows)
+    const deleteUser = (id) => {
+      const newRows = rows.filter(row => row._id !== id)
+      setRows(newRows)
+      closeDialog()
+    }
+    setStatusDelete({ open: true, onClick: () => deleteUser(id) })
   }
 
-  const onRevert = id => {
-    setRows([...previous]);
-  };
+  const closeDialog = () => {
+    setStatusDelete({ open: false })
+  }
 
   //qua trang
   const [page, setPage] = React.useState(0);
@@ -209,24 +208,41 @@ export default function ListUser() {
       })
   }
 
-  //chon don vi trong modal
-  // const [newUnit, setNewUnit] = React.useState('');
-  // const handleChangeUnit = (event) => {
-  //   setNewUnit(event.target.value); 
-  // };
+  // chon don vi trong modal
+  const [newUnit, setNewUnit] = React.useState('');
+  const handleChangeUnit = (event) => {
+    setNewUnit(event.target.value);
+  };
   const [isLoading, setIsLoading] = React.useState(true)
   // handle toast 
   const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
   const handleCloseToast = () => setToast({ ...toast, open: false })
   const [loading, setLoading] = useState(false)
+  // filter user
+  const [filterUser, setFilterUser] = useState([])
+  // search người dùng
+  const searchUser = (e) => {
+    const value = e.target.value.toLowerCase()
+    const temp = rows.filter(r => (r.firstname.toLowerCase().includes(value) ||
+      r.lastname.toLowerCase().includes(value)
+    ))
+    console.log(temp)
+    setFilterUser(temp)
+
+  }
   return (<>
     { isLoading ? <Skeleton /> : (
-      <div>
+      <>
+        <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
         <Toast toast={toast} handleClose={handleCloseToast} />
         <Loading open={loading} />
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography component="h1" variant="h5" color="inherit" noWrap>
           DANH SÁCH NGƯỜI DÙNG
-     </Typography>
+        </Typography>
+        <TextField id="standard-basic" label="Tìm kiếm" onChange={searchUser} />
+        </div>
+        
         <Paper className={classes.root}>
           <Table className={classes.table} aria-label="caption table">
             <TableHead>
@@ -241,7 +257,8 @@ export default function ListUser() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+              {filterUser.length === 0 && <Typography variant='body1' >Không tồn tại người dùng</Typography>}
+              {filterUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow key={row._id}>
                     <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange }} />
@@ -251,37 +268,18 @@ export default function ListUser() {
                     <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
                     <CustomTableCell className={classes.name} {...{ row, name: "roles", onChange }} />
                     <TableCell className={classes.selectTableCell}>
-                      {row.isEditMode ? (
-                        <>
-                          <IconButton
-                            aria-label="done"
-                            onClick={() => onToggleEditMode(row._id)}
-                          >
-                            <DoneIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="revert"
-                            onClick={() => onRevert(row._id)}
-                          >
-                            <RevertIcon />
-                          </IconButton>
-                        </>
-                      ) : (
-                        <>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => onToggleEditMode(row._id)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => onDelete(row._id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </>
-                      )}
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => { }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => onDelete(row._id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 )
@@ -321,28 +319,26 @@ export default function ListUser() {
             >
               <Fade in={open}>
                 <div className={classes.paper1}>
-                  <h2 id="transition-modal-title">Thêm người dùng</h2>
+                  <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm người dùng</Typography>
                   <form onSubmit={submit}>
-                    <TextField onChange={e => setId(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setId(e.target.value)} autoFocus required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
                     <TextField onChange={e => setName(e.target.value)} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
                     <TextField onChange={e => setC(e.target.value)} required id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
                     <TextField onChange={e => setD(e.target.value)} required id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
-                    {/* <FormControl variant="outlined" fullWidth className={classes.formControl}>
-                   <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
-                   <Select
-                     native
-                     required
-                     value={newUnit}
-                     label='Đơn vị'
-                     onChange={handleChangeUnit}
-                   >
-                     <option aria-label="None" value="" />
-                     <option value={10}>Phòng Đào tạo</option>
-                     <option value={20}>Khoa Máy tính</option>
-                     <option value={30}>Phòng Y tế</option>
-                   </Select>
-                 </FormControl>
-                 <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth className={classes.field} /> */}
+                    <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                      <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
+                      <Select
+                        native
+                        required
+                        value={newUnit}
+                        label='Đơn vị'
+                        onChange={handleChangeUnit}
+                      >
+                        <option aria-label="None" value="" />
+                        {units.map(u => <option key={u._id} value={u.department_code}>{u.name}</option>)}
+                      </Select>
+                    </FormControl>
+                    {/* <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth className={classes.field} /> */}
                     <div style={{ textAlign: 'center', marginTop: '10px' }}>
                       <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                       <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
@@ -353,7 +349,7 @@ export default function ListUser() {
             </Modal>
           </div>
         </Paper>
-      </div>
+      </>
     )}
   </>
   )

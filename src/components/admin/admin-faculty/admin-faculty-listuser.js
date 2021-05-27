@@ -30,6 +30,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { Link, useRouteMatch } from 'react-router-dom'
 import Toast from '../../common/snackbar'
 import Loading from '../../common/Loading'
+import DialogConfirm from '../../common/DialogConfirm'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -112,7 +113,6 @@ const UserOfFaculty = () => {
 
     const [rows, setRows] = React.useState([]);
     const token = localStorage.getItem('token')
-    const [previous, setPrevious] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true)
     const classes = useStyles();
     // tên đơn vị
@@ -135,8 +135,7 @@ const UserOfFaculty = () => {
         axios.get(`/admin/department/${id}/user`, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
                 console.log(res.data);
-                setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
-                setPrevious([...rows])
+                setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
                 fetchChildren()
             })
             .catch(err => {
@@ -149,18 +148,6 @@ const UserOfFaculty = () => {
         fetchUserOfFaculty()
     }, [id])
 
-    const onToggleEditMode = id => {
-        setPrevious([...rows])
-        setRows(state => {
-            return rows.map(row => {
-                if (row._id === id) {
-                    return { ...row, isEditMode: !row.isEditMode };
-                }
-                return row;
-            });
-        });
-    };
-
     const onChange = (e, row) => {
         const value = e.target.value;
         const name = e.target.name;
@@ -172,15 +159,6 @@ const UserOfFaculty = () => {
             return row;
         });
         setRows(newRows);
-    };
-
-    const onDelete = id => {
-        const newRows = rows.filter(row => row._id !== id)
-        setRows(newRows)
-    }
-
-    const onRevert = id => {
-        setRows([...previous]);
     };
 
     //qua trang
@@ -229,7 +207,7 @@ const UserOfFaculty = () => {
                         setToast({ open: true, time: 3000, message: 'Mã người dùng không đúng', severity: "error" })
                         break;
                     case 409:
-                        setToast({ open: true, time: 3000, message: 'Người dùng đã tồn tại', severity: "error" })    
+                        setToast({ open: true, time: 3000, message: 'Người dùng đã tồn tại', severity: "error" })
                 }
                 setLoading(false)
             })
@@ -255,7 +233,7 @@ const UserOfFaculty = () => {
             .catch(err => {
                 switch (err.response.status) {
                     case 409:
-                        setToast({ open: true, time: 3000, message: 'Người dùng đã tồn tại', severity: "error" })    
+                        setToast({ open: true, time: 3000, message: 'Người dùng đã tồn tại', severity: "error" })
                         break;
                     default:
                         setToast({ open: true, time: 3000, message: 'Thêm người dùng thất bại', severity: "error" })
@@ -266,8 +244,22 @@ const UserOfFaculty = () => {
     }
     // handle toast 
     const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-    const handleCloseToast = () => setToast({ ...toast, open:false })
+    const handleCloseToast = () => setToast({ ...toast, open: false })
     const [loading, setLoading] = useState(false)
+    // modal xoá
+    const [statusDelete, setStatusDelete] = useState({ open: false })
+    const onDelete = id => {
+        const deleteUser = (id) => {
+            const newRows = rows.filter(row => row._id !== id)
+            setRows(newRows)
+            closeDialog()
+        }
+        setStatusDelete({ open: true, onClick: () => deleteUser(id) })
+    }
+
+    const closeDialog = () => {
+        setStatusDelete({ open: false })
+    }
     return (
         <>
             { isLoading ? <Skeleton /> : (
@@ -298,37 +290,19 @@ const UserOfFaculty = () => {
                                             <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
                                             <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
                                             <TableCell className={classes.selectTableCell}>
-                                                {row.isEditMode ? (
-                                                    <>
-                                                        <IconButton
-                                                            aria-label="done"
-                                                            onClick={() => onToggleEditMode(row._id)}
-                                                        >
-                                                            <DoneIcon />
-                                                        </IconButton>
-                                                        <IconButton
-                                                            aria-label="revert"
-                                                            onClick={() => onRevert(row._id)}
-                                                        >
-                                                            <RevertIcon />
-                                                        </IconButton>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <IconButton
-                                                            aria-label="delete"
-                                                            onClick={() => onToggleEditMode(row._id)}
-                                                        >
-                                                            <EditIcon />
-                                                        </IconButton>
-                                                        <IconButton
-                                                            aria-label="delete"
-                                                            onClick={() => onDelete(row._id)}
-                                                        >
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </>
-                                                )}
+
+                                                <IconButton
+                                                    aria-label="update"
+                                                    onClick={() => {}}
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    aria-label="delete"
+                                                    onClick={() => onDelete(row._id)}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
                                             </TableCell>
                                         </TableRow>
                                     )
