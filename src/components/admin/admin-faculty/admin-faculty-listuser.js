@@ -85,25 +85,11 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const createData = (id, lname, fname, email, unit, role) => ({
-    id, lname, fname, email, unit, role, isEditMode: false
-})
-
 const CustomTableCell = ({ row, name, onChange }) => {
     const classes = useStyles();
-    const { isEditMode } = row;
     return (
         <TableCell align="left" className={classes.tableCell}>
-            {isEditMode ? (
-                <Input
-                    value={row[name]}
-                    name={name}
-                    onChange={e => onChange(e, row)}
-                    className={classes.input}
-                />
-            ) : (
-                (row[name])
-            )}
+            {row[name]}
         </TableCell>
     );
 };
@@ -132,20 +118,22 @@ const UserOfFaculty = () => {
             })
     }
     const fetchUserOfFaculty = () => {
-        axios.get(`/admin/department/${id}/user`, { headers: { "Authorization": `Bearer ${token}` } })
-            .then(res => {
-                console.log(res.data);
-                setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
-                fetchChildren()
-            })
-            .catch(err => {
-                console.log(err)
-                setIsLoading(false)
-            })
+        return axios.get(`/admin/department/${id}/user`, { headers: { "Authorization": `Bearer ${token}` } })
+                .then(res => {
+                    console.log(res.data);
+                    setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
+                    setIsLoading(false)
+                })
+                .catch(err => {
+                    console.log(err)
+                    setIsLoading(false)
+                })
+        
     }
     useEffect(() => {
         setIsLoading(true)
         fetchUserOfFaculty()
+        fetchChildren()
     }, [id])
 
     const onChange = (e, row) => {
@@ -196,13 +184,13 @@ const UserOfFaculty = () => {
         axios.post(`/admin/department/${id}/user/add`, { user_id: iduser }, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
                 fetchUserOfFaculty()
-                    .then(res => {
+                    .then(() => {
                         setToast({ open: true, time: 3000, message: 'Thêm người dùng thành công', severity: "success" })
                         setLoading(false)
                     })
             })
             .catch(err => {
-                switch (err.response.status) {
+                switch (err.response?.status) {
                     case 404:
                         setToast({ open: true, time: 3000, message: 'Mã người dùng không đúng', severity: "error" })
                         break;
@@ -224,19 +212,19 @@ const UserOfFaculty = () => {
         handleClose()
         axios.post(`/admin/department/${id}/user/create`, { id: iduser, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
-                fetchUserOfFaculty()
-                    .then(res => {
-                        setToast({ open: true, time: 3000, message: 'Thêm người dùng thành công', severity: "success" })
-                        setLoading(false)
-                    })
+                console.log(res.data)
+                fetchUserOfFaculty().then(res => {
+                    setToast({ open: true, time: 3000, message: 'Tạo người dùng thành công', severity: "success" })
+                    setLoading(false)
+                })
             })
             .catch(err => {
-                switch (err.response.status) {
+                switch (err.response?.status) {
                     case 409:
-                        setToast({ open: true, time: 3000, message: 'Người dùng đã tồn tại', severity: "error" })
+                        setToast({ open: true, time: 3000, message: 'Mã người dùng đã tồn tại', severity: "error" })
                         break;
                     default:
-                        setToast({ open: true, time: 3000, message: 'Thêm người dùng thất bại', severity: "error" })
+                        setToast({ open: true, time: 3000, message: 'Tạo người dùng thất bại', severity: "error" })
                         break;
                 }
                 setLoading(false)
@@ -248,14 +236,24 @@ const UserOfFaculty = () => {
     const [loading, setLoading] = useState(false)
     // modal xoá
     const [statusDelete, setStatusDelete] = useState({ open: false })
-    const onDelete = id => {
-        const deleteUser = (id) => {
-            const newRows = rows.filter(row => row._id !== id)
+    const deleteUserWithAPI = (iduser) => {
+        setLoading(true)
+        closeDialog()
+        axios.post(`/admin/department/${id}/user/${iduser}/delete`,{},{ headers: { "Authorization": `Bearer ${token}` } })
+          .then(res => {
+            const newRows = rows.filter(row => row.staff_id !== iduser)
             setRows(newRows)
-            closeDialog()
-        }
-        setStatusDelete({ open: true, onClick: () => deleteUser(id) })
-    }
+            setToast({ open: true, time: 3000, message: 'Xoá người dùng thành công', severity: 'success' })
+            setLoading(false)
+          })
+          .catch(err => {
+            console.log(err.response.status)
+            setLoading(false)
+          })
+      }
+    const onDelete = id => {
+        setStatusDelete({ open: true, onClick: () => deleteUserWithAPI(id) })
+      }
 
     const closeDialog = () => {
         setStatusDelete({ open: false })
@@ -264,6 +262,7 @@ const UserOfFaculty = () => {
         <>
             { isLoading ? <Skeleton /> : (
                 <>
+                    <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
                     <Toast toast={toast} handleClose={handleCloseToast} />
                     <Typography component="h1" variant="h5" color="inherit" noWrap>
                         DANH SÁCH NGƯỜI DÙNG ĐƠN VỊ {nameDept.toUpperCase()}
@@ -290,16 +289,9 @@ const UserOfFaculty = () => {
                                             <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
                                             <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
                                             <TableCell className={classes.selectTableCell}>
-
-                                                <IconButton
-                                                    aria-label="update"
-                                                    onClick={() => {}}
-                                                >
-                                                    <EditIcon />
-                                                </IconButton>
                                                 <IconButton
                                                     aria-label="delete"
-                                                    onClick={() => onDelete(row._id)}
+                                                    onClick={() => onDelete(row.staff_id)}
                                                 >
                                                     <DeleteIcon />
                                                 </IconButton>
@@ -347,7 +339,7 @@ const UserOfFaculty = () => {
                                             <TextField onChange={e => setIduser(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
                                             <TextField onChange={e => setLName(e.target.value)} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
                                             <TextField onChange={e => setFName(e.target.value)} required id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                                            <TextField onChange={e => setEmail(e.target.value)} required id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                                            <TextField onChange={e => setEmail(e.target.value)} required type='email' id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
                                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
                                                 <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                                                 <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>

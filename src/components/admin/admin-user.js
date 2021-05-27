@@ -105,14 +105,14 @@ export default function ListUser() {
   const [rows, setRows] = React.useState([]);
   const token = localStorage.getItem('token')
   const fetchUser = () => {
-    axios.get('/admin/user', { headers: { "Authorization": `Bearer ${token}` } })
-      .then(res => {
-        console.log(res.data.users);
-        setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
-        setFilterUser(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
-        console.log(rows)
-        setIsLoading(false)
-      })
+    return axios.get('/admin/user', { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => {
+              console.log(res.data.users);
+              setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
+              setFilterUser(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
+              console.log(rows)
+              setIsLoading(false)
+            })
   }
   // Danh sách đơn vị
   const [units, setUnits] = useState([])
@@ -144,13 +144,24 @@ export default function ListUser() {
   };
   // modal xoá
   const [statusDelete, setStatusDelete] = useState({ open: false })
+  // xoá user vs api
+  const deleteUserWithAPI = (id) => {
+    setLoading(true)
+    closeDialog()
+    axios.post(`/admin/user/${id}/delete`,{},{ headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        const newRows = rows.filter(row => row.staff_id !== id)
+        setRows(newRows)
+        setToast({ open: true, time: 3000, message: 'Xoá người dùng thành công', severity: 'success' })
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err.response.status)
+        setLoading(false)
+      })
+  }
   const onDelete = id => {
-    const deleteUser = (id) => {
-      const newRows = rows.filter(row => row._id !== id)
-      setRows(newRows)
-      closeDialog()
-    }
-    setStatusDelete({ open: true, onClick: () => deleteUser(id) })
+    setStatusDelete({ open: true, onClick: () => deleteUserWithAPI(id) })
   }
 
   const closeDialog = () => {
@@ -190,15 +201,17 @@ export default function ListUser() {
     handleClose()
     axios.post('/admin/user/add', { id, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        fetchUser().then(() => {
+        fetchUser().then((res) => {
           setToast({ open: true, time: 3000, message: 'Thêm người dùng thành công', severity: "success" })
           setLoading(false)
         })
       })
       .catch(err => {
-        switch (err.response.status) {
+        console.log(err)
+        console.log(err.response)
+        switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Người dùng đã tồn tại', severity: "error" })
+            setToast({ open: true, time: 3000, message: 'Mã người dùng đã tồn tại', severity: "error" })
             break;
           default:
             setToast({ open: true, time: 3000, message: 'Thêm người dùng thất bại', severity: "error" })
@@ -269,14 +282,14 @@ export default function ListUser() {
                     <CustomTableCell className={classes.name} {...{ row, name: "roles", onChange }} />
                     <TableCell className={classes.selectTableCell}>
                       <IconButton
-                        aria-label="delete"
+                        aria-label="update"
                         onClick={() => { }}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         aria-label="delete"
-                        onClick={() => onDelete(row._id)}
+                        onClick={() => onDelete(row.staff_id)}
                       >
                         <DeleteIcon />
                       </IconButton>
