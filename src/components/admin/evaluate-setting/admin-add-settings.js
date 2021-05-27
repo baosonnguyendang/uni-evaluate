@@ -107,11 +107,29 @@ export default function AddSettings() {
   const fetchUnits = () => {
     axios.get('admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        // console.log(res.data.parents)
+        console.log(res.data.parents)
+        let temp = []
         res.data.parents.map(x => {
-          setUnits(units => [...units, createData(x.name, x.department_code)])
-
+          temp.push(createData(x.name, x.department_code))
+          //setUnits(units => [...units, createData(x.name, x.department_code)])
         })
+        setUnits([...temp])
+        axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+          .then(res => {
+            console.log(res.data)
+            console.log(units)
+            let _id = res.data.formDepartments.map(x => x.department_id.department_code)
+            _id.map(x => {
+              temp.map(y => {
+                if (y.id === x) {
+                  y.check = true
+                }
+              })
+            })
+            setUnitChosen(units.filter(unit => unit.check === true))
+            setLoading(false)
+          })
+          .catch(e => console.log(e))
       })
       .catch(e => {
         console.log(e)
@@ -124,38 +142,24 @@ export default function AddSettings() {
     axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         // (res.data) && (setInit(false))
-        if (units.length == 0) {
-          fetchUnits();
-        }
-        
         if (res.data.form) {
           code = res.data.form.code
           name = res.data.form.name
-          axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
-            .then(res => {
-              console.log(res.data)
-              console.log(units)
-              let _id = res.data.formDepartments.map(x => x.department_id.department_code)
-              _id.map(x => {
-                units.map(y => {
-                  if (y.id === x) {
-                    y.check = true
-                  }
-                })
-              })
-              setUnitChosen(units.filter(unit => unit.check === true))
-              setLoading(false)
-            })
-            .catch(e => console.log(e))
+          fetchUnits();
+          // if (units.length == 0) {
+          //   fetchUnits();
+          // }
           setInit(2)
+          setLoading(false)
         }
         else {
           setInit(1)
+          setLoading(false)
         }
-        setLoading(false)
       })
       .catch(e => {
         console.log(e)
+        setLoading(false)
       })
   }, [])
 
