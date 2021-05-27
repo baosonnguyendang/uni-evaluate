@@ -23,7 +23,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <a color="inherit" href="https://material-ui.com/">
-        hehe
+        LVTN
             </a>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -122,7 +122,7 @@ const SignInSide = () => {
             />
             {error && <Alert severity="error">Tài khoản hoặc mật khẩu không đúng</Alert>}
               <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} >
-                Sign In
+                Đăng nhập
               </Button>
             <Grid container>
               <Grid item xs>

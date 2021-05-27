@@ -115,6 +115,7 @@ export default function AddSettings() {
         })
         axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
+            console.log(res.data)
             let _id = res.data.formDepartments.map(x => x.department_id.department_code)
             _id.map(x => {
               temp.map(y => {
@@ -125,6 +126,7 @@ export default function AddSettings() {
               console.log(temp)
             })
             setUnits([...temp])
+            console.log(temp)
             setUnitChosen(temp.filter(unit => unit.check === true))
             setLoading(false)
           })
@@ -217,7 +219,7 @@ export default function AddSettings() {
   const handleCloseUnit = () => {
     setUnitChosen(units.filter(unit => unit.check === true))
     console.log(units.filter(unit => unit.check === true).map(x => x.id))
-    axios.post(`/admin/form/${code}/addFormDepartments`, { dcodes: units.filter(unit => unit.check === true).map(x => x.id) }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${code}/addFormDepartments/v2`, { dcodes: units.filter(unit => unit.check === true).map(x => x.id) }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setOpenUnit(false);
       })
