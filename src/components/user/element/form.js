@@ -67,7 +67,7 @@ export default function FormEvaluation(props) {
               if (d[0].status === 1) {
                 setDisableEdit(true)
               }
-              if (d[1].status === 1) {
+              if (d[1] && d[1].status === 1) {
                 setDisableEdit2(true)
               }
               let list = []
@@ -104,11 +104,15 @@ export default function FormEvaluation(props) {
   useEffect(() => {
     let pts = 0
     let pts2 = 0
-    if (loading === false){
-      if (props.level == 1){
-        sent.map(x => {
-          pts += parseInt(x.value)
-        })
+    if (loading === false) {
+      if (props.level == 1) {
+        if (sent.length > 0) {
+          sent.map(x => {
+            if (x.value != null){
+              pts += parseInt(x.value)
+            }
+          })
+        }
         setPoint(pts)
       }
       else {
@@ -116,7 +120,7 @@ export default function FormEvaluation(props) {
           pts += parseInt(x.value)
         })
         setPoint(pts)
-        if (sent2.length > 0){
+        if (sent2.length > 0) {
           sent2.map(x => {
             pts2 += parseInt(x.value)
           })
@@ -179,9 +183,6 @@ export default function FormEvaluation(props) {
   const handleCheckRadio2 = (event) => {
     //compare(temp2)
     let tam = []
-    console.log(event.target.name)
-    console.log(sent)
-    console.log(edited)
     if (edited === false) {
       sent.map(x => {
         tam.push(x)
@@ -271,11 +272,9 @@ export default function FormEvaluation(props) {
 
   const again = () => {
     if (level == 1) {
-      all[0] = [...sent]
       setDisableEdit(true)
     }
     if (level == 2) {
-      all[1] = [...sent2]
       setDisableEdit2(true)
     }
     setStatus(true)
@@ -387,12 +386,12 @@ export default function FormEvaluation(props) {
               <div>
                 {
                   <div>
-                    <div style={{margin: '10px 0'}}>
+                    <div style={{ marginBottom: '24px' }}>
                       <h5>Tổng điểm tự đánh giá: {point}</h5>
                       <h5>{props.level > 1 && `Tổng điểm trưởng Khoa đánh giá: ${point2}`}</h5>
                     </div>
                     {
-                      (!disableEdit || (props.level > 1 && true)) &&
+                      ((!disableEdit && level == 1) || (level == 2 && !disableEdit2)) &&
                       <div style={{ textAlign: 'center', margin: '24px 0' }}>
                         <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
                           Lưu tạm
@@ -409,7 +408,7 @@ export default function FormEvaluation(props) {
           )}
         </div>
       ) : (
-        <div>
+        <div style={{ marginLeft: '30px' }}>
           <Typography style={{ marginTop: '24px' }}>Bạn đã hoàn thành đánh giá.</Typography>
           <Button color='primary' onClick={() => { again() }}>Xem lại đánh giá</Button>
         </div >
