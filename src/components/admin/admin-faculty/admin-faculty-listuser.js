@@ -28,6 +28,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Link, useRouteMatch } from 'react-router-dom'
+import Toast from '../../common/snackbar'
+import Loading from '../../common/Loading'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -120,8 +122,6 @@ const UserOfFaculty = () => {
         axios.get(`/admin/department/${id}/children`, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
                 console.log(res.data);
-                // setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
-                // setPrevious([...rows])
                 setLNameDept(res.data.parent.name)
                 setChildren(res.data.children)
                 setIsLoading(false)
@@ -210,42 +210,28 @@ const UserOfFaculty = () => {
     const handleOpenAddUser = () => {
         setOpenAddUser(true)
     }
-    const AddUserExist = ({ open }) => (
-        <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={open}
-            onClose={handleClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-                timeout: 500,
-            }}
-        >
-            <Fade in={open}>
-                <div className={classes.paper1}>
-                    <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm người dùng có sẵn</Typography>
-                    <form onSubmit={submitExistUser}>
-                        <TextField onChange={e => setIduser(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                        <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                            <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
-                            <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
-                        </div>
-                    </form>
-                </div>
-            </Fade>
-        </Modal>
-    )
+
     const submitExistUser = (e) => {
         e.preventDefault()
-        axios.post(`/admin/department/${id}/user/add`, iduser, { headers: { "Authorization": `Bearer ${token}` } })
+        setLoading(true)
+        handleClose()
+        axios.post(`/admin/department/${id}/user/add`, { user_id: iduser }, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
-                console.log(res.data)
-                handleClose()
+                fetchUserOfFaculty()
+                    .then(res => {
+                        setToast({ open: true, time: 3000, message: 'Thêm người dùng thành công', severity: "success" })
+                        setLoading(false)
+                    })
             })
             .catch(err => {
-                console.log(err)
+                switch (err.response.status) {
+                    case 404:
+                        setToast({ open: true, time: 3000, message: 'Mã người dùng không đúng', severity: "error" })
+                        break;
+                    case 409:
+                        setToast({ open: true, time: 3000, message: 'Người dùng đã tồn tại', severity: "error" })    
+                }
+                setLoading(false)
             })
     }
 
@@ -256,19 +242,37 @@ const UserOfFaculty = () => {
     const [email, setEmail] = React.useState('')
     const submitNewUser = e => {
         e.preventDefault()
-        axios.post(`/admin/department/${id}/user/create`, { id:iduser, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
+        setLoading(true)
+        handleClose()
+        axios.post(`/admin/department/${id}/user/create`, { id: iduser, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
-                console.log(res.data)
-                handleClose()
+                fetchUserOfFaculty()
+                    .then(res => {
+                        setToast({ open: true, time: 3000, message: 'Thêm người dùng thành công', severity: "success" })
+                        setLoading(false)
+                    })
             })
             .catch(err => {
-                console.log(err)
+                switch (err.response.status) {
+                    case 409:
+                        setToast({ open: true, time: 3000, message: 'Người dùng đã tồn tại', severity: "error" })    
+                        break;
+                    default:
+                        setToast({ open: true, time: 3000, message: 'Thêm người dùng thất bại', severity: "error" })
+                        break;
+                }
+                setLoading(false)
             })
     }
+    // handle toast 
+    const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
+    const handleCloseToast = () => setToast({ ...toast, open:false })
+    const [loading, setLoading] = useState(false)
     return (
         <>
             { isLoading ? <Skeleton /> : (
-                <div>
+                <>
+                    <Toast toast={toast} handleClose={handleCloseToast} />
                     <Typography component="h1" variant="h5" color="inherit" noWrap>
                         DANH SÁCH NGƯỜI DÙNG ĐƠN VỊ {nameDept.toUpperCase()}
                     </Typography>
@@ -366,10 +370,10 @@ const UserOfFaculty = () => {
                                     <div className={classes.paper1}>
                                         <Typography gutterBottom variant='h5' id="transition-modal">Tạo người dùng</Typography>
                                         <form onSubmit={submitNewUser}>
-                                            <TextField onChange={e => setIduser(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                                            <TextField onChange={e => setLName(e.target.value)} id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
-                                            <TextField onChange={e => setFName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                                            <TextField onChange={e => setEmail(e.target.value)} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                                            <TextField onChange={e => setIduser(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
+                                            <TextField onChange={e => setLName(e.target.value)} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
+                                            <TextField onChange={e => setFName(e.target.value)} required id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
+                                            <TextField onChange={e => setEmail(e.target.value)} required id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
                                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
                                                 <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                                                 <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
@@ -378,7 +382,34 @@ const UserOfFaculty = () => {
                                     </div>
                                 </Fade>
                             </Modal>
-                            <AddUserExist open={openAddUser} />
+
+                            <Modal
+                                aria-labelledby="transition-modal-title"
+                                aria-describedby="transition-modal-description"
+                                className={classes.modal}
+                                open={openAddUser}
+                                onClose={handleClose}
+                                closeAfterTransition
+                                BackdropComponent={Backdrop}
+                                BackdropProps={{
+                                    timeout: 500,
+                                }}
+                            >
+                                <Fade in={openAddUser}>
+                                    <div className={classes.paper1}>
+                                        <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm người dùng có sẵn</Typography>
+                                        <form onSubmit={submitExistUser}>
+                                            <TextField id="id" label="ID" required onChange={(e) => setIduser(e.target.value)} name='idexistuser' variant="outlined" fullWidth className={classes.field} />
+                                            <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                                                <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                                                <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </Fade>
+                            </Modal>
+                            <Loading open={loading} />
+
                         </div>
                     </Paper>
                     {children.length !== 0 && (
@@ -394,7 +425,7 @@ const UserOfFaculty = () => {
                                 ))}
                             </List>
                         </>)}
-                </div>
+                </>
             )}
         </>
     )

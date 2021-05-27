@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from '@material-ui/core/FormControl';
@@ -26,6 +26,8 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
 import Skeleton from '../common/skeleton'
+import Toast from '../common/snackbar'
+import Loading from '../common/Loading'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -185,13 +187,25 @@ export default function ListUser() {
   const [email, setD] = React.useState('')
   const submit = e => {
     e.preventDefault()
+    setLoading(true)
+    handleClose()
     axios.post('/admin/user/add', { id, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        setRows(rows => [...rows, createData(id, lname, fname, email, '', '')])
-        handleClose()
+        fetchUser().then(() => {
+          setToast({ open: true, time: 3000, message: 'Thêm người dùng thành công', severity: "success" })
+          setLoading(false)
+        })
       })
       .catch(err => {
-        alert(err)
+        switch (err.response.status) {
+          case 409:
+            setToast({ open: true, time: 3000, message: 'Người dùng đã tồn tại', severity: "error" })
+            break;
+          default:
+            setToast({ open: true, time: 3000, message: 'Thêm người dùng thất bại', severity: "error" })
+            break;
+        }
+        setLoading(false)
       })
   }
 
@@ -201,9 +215,15 @@ export default function ListUser() {
   //   setNewUnit(event.target.value); 
   // };
   const [isLoading, setIsLoading] = React.useState(true)
+  // handle toast 
+  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
+  const handleCloseToast = () => setToast({ ...toast, open: false })
+  const [loading, setLoading] = useState(false)
   return (<>
     { isLoading ? <Skeleton /> : (
       <div>
+        <Toast toast={toast} handleClose={handleCloseToast} />
+        <Loading open={loading} />
         <Typography component="h1" variant="h5" color="inherit" noWrap>
           DANH SÁCH NGƯỜI DÙNG
      </Typography>
@@ -276,8 +296,8 @@ export default function ListUser() {
             page={page}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
-          /> : <Typography variant='body1'>Không tồn tại người dùng</Typography> }
-          
+          /> : <Typography variant='body1'>Không tồn tại người dùng</Typography>}
+
           <div style={{ margin: '10px', textAlign: 'right' }}>
             <div>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
@@ -303,10 +323,10 @@ export default function ListUser() {
                 <div className={classes.paper1}>
                   <h2 id="transition-modal-title">Thêm người dùng</h2>
                   <form onSubmit={submit}>
-                    <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setName(e.target.value)} id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setC(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setD(e.target.value)} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setId(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setName(e.target.value)} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setC(e.target.value)} required id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setD(e.target.value)} required id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
                     {/* <FormControl variant="outlined" fullWidth className={classes.formControl}>
                    <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
                    <Select
