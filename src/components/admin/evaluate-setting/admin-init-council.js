@@ -54,6 +54,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Council() {
   const classes = useStyles();
 
+  const token = localStorage.getItem('token')
+
   //open modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -90,6 +92,19 @@ export default function Council() {
         handleClose()
       })
   }
+
+  useEffect(() => {
+    axios.get(`/admin/department/HDDG/user`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data.user)
+        res.data.user.map(x => {
+          
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, [])
 
   return (
     <div>

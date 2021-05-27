@@ -113,11 +113,8 @@ export default function AddSettings() {
           temp.push(createData(x.name, x.department_code))
           //setUnits(units => [...units, createData(x.name, x.department_code)])
         })
-        setUnits([...temp])
         axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
-            console.log(res.data)
-            console.log(units)
             let _id = res.data.formDepartments.map(x => x.department_id.department_code)
             _id.map(x => {
               temp.map(y => {
@@ -125,8 +122,10 @@ export default function AddSettings() {
                   y.check = true
                 }
               })
+              console.log(temp)
             })
-            setUnitChosen(units.filter(unit => unit.check === true))
+            setUnits([...temp])
+            setUnitChosen(temp.filter(unit => unit.check === true))
             setLoading(false)
           })
           .catch(e => console.log(e))
@@ -211,10 +210,13 @@ export default function AddSettings() {
   //open modal them don vi
   const [openUnit, setOpenUnit] = React.useState(false);
   const handleOpenUnit = () => {
+    console.log(units)
+    console.log(unitChosen)
     setOpenUnit(true);
   };
   const handleCloseUnit = () => {
     setUnitChosen(units.filter(unit => unit.check === true))
+    console.log(units.filter(unit => unit.check === true).map(x => x.id))
     axios.post(`/admin/form/${code}/addFormDepartments`, { dcodes: units.filter(unit => unit.check === true).map(x => x.id) }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setOpenUnit(false);
