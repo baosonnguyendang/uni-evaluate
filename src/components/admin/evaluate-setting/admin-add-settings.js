@@ -118,25 +118,41 @@ export default function AddSettings() {
       })
   }
 
-  if (units.length == 0) {
-    fetchUnits();
-  }
-
   //khoi tao Form, check form da duoc tao hay chua
   const [init, setInit] = React.useState(0)
   useEffect(() => {
     axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         // (res.data) && (setInit(false))
-        setLoading(false)
+        if (units.length == 0) {
+          fetchUnits();
+        }
+        
         if (res.data.form) {
           code = res.data.form.code
           name = res.data.form.name
+          axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => {
+              console.log(res.data)
+              console.log(units)
+              let _id = res.data.formDepartments.map(x => x.department_id.department_code)
+              _id.map(x => {
+                units.map(y => {
+                  if (y.id === x) {
+                    y.check = true
+                  }
+                })
+              })
+              setUnitChosen(units.filter(unit => unit.check === true))
+              setLoading(false)
+            })
+            .catch(e => console.log(e))
           setInit(2)
         }
         else {
           setInit(1)
         }
+        setLoading(false)
       })
       .catch(e => {
         console.log(e)
@@ -230,22 +246,22 @@ export default function AddSettings() {
       //   .catch(err => console.log(err))
     }
 
-    useEffect(() => {
-      axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
-        .then(res => {
-          let _id = res.data.formDepartments.filter(x => (x.level === 1 || x.level === 0)).map(x => x.department_id.department_code)
-          _id.map(x => {
-            units.map(y => {
-              if (y.id === x) {
-                y.check = true
-              }
-            })
-          })
-          setUnitChosen(units.filter(unit => unit.check === true))
-          setLoading(false)
-        })
-        .catch(e => console.log(e))
-    }, [])
+    // useEffect(() => {
+    //   axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+    //     .then(res => {
+    //       let _id = res.data.formDepartments.map(x => x.department_id.department_code)
+    //       _id.map(x => {
+    //         units.map(y => {
+    //           if (y.id === x) {
+    //             y.check = true
+    //           }
+    //         })
+    //       })
+    //       setUnitChosen(units.filter(unit => unit.check === true))
+    //       setLoading(false)
+    //     })
+    //     .catch(e => console.log(e))
+    // }, [])
 
     return (
       <div>

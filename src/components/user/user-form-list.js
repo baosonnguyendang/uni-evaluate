@@ -15,6 +15,7 @@ export default function FormList() {
   const [list, setList] = useState([])
   const [isHeadUnit, setIsHeadUnit] = useState(false)
   const [unit, setUnit] = useState()
+  const [loading, setLoading] = useState(true)
 
   const fetchHeadForm = () => {
     axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -41,9 +42,11 @@ export default function FormList() {
           temp.push(obj)
         })
         setList(temp)
+        setLoading(false)
       })
       .catch(err => {
         console.log(err)
+        setLoading(false)
       })
   }
 
@@ -55,7 +58,7 @@ export default function FormList() {
 
   return (
     <>
-    {list.length !== 0 ? <Container>
+    {!loading ? <Container>
       <Typography variant="h5" component="h2" style={{ marginTop: '24px' }}>
         Danh sách các Form đánh giá:
       </Typography>
