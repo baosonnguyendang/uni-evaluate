@@ -136,8 +136,8 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMyAccount}>My account</MenuItem>
-      <MenuItem onClick={redirecLogin}>Log out</MenuItem>
+      <MenuItem onClick={handleMyAccount}>Tài khoản</MenuItem>
+      <MenuItem onClick={redirecLogin}>Đăng xuất</MenuItem>
     </Menu>
   );
 

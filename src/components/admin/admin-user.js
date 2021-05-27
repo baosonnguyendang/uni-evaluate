@@ -211,7 +211,7 @@ export default function ListUser() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã người dùng đã tồn tại', severity: "error" })
+            setToast({ open: true, time: 3000, message: 'Mã người dùng hoặc email đã tồn tại', severity: "error" })
             break;
           default:
             setToast({ open: true, time: 3000, message: 'Thêm người dùng thất bại', severity: "error" })
@@ -302,7 +302,7 @@ export default function ListUser() {
           {(rows.length) ? <TablePagination
             rowsPerPageOptions={[5, 10, 20]}
             component="div"
-            count={rows.length}
+            count={filterUser.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onChangePage={handleChangePage}

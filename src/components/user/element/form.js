@@ -5,7 +5,7 @@ import {
   TableBody, makeStyles, Paper, Grid,
   Radio, Button, Checkbox,
   LinearProgress,
-  Typography
+  Typography, Container
 } from "@material-ui/core";
 
 import axios from 'axios'
@@ -286,9 +286,9 @@ export default function FormEvaluation(props) {
   return (
     < >
       {status ? (
-        <div style={{ margin: '0 30px' }}>
+        <div >
           { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
-            <div>
+            <Container>
               <Grid container justify='center' style={{ marginTop: '30px' }}>
                 <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
                   <Table className={classes.table} >
@@ -407,7 +407,7 @@ export default function FormEvaluation(props) {
                   </div>
                 }
               </div>
-            </div>
+            </Container>
           )}
         </div>
       ) : (
