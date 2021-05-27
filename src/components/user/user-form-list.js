@@ -15,9 +15,10 @@ export default function FormList() {
   const [list, setList] = useState([])
   const [isHeadUnit, setIsHeadUnit] = useState(false)
   const [unit, setUnit] = useState()
+  const [loading, setLoading] = useState(false)
 
   const fetchHeadForm = () => {
-    axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
+    return axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
         if (res.data.formDepartment.length > 0) {
@@ -31,9 +32,8 @@ export default function FormList() {
   }
 
   const fetchForm = () => {
-    axios.get(`/form/review/${id}/form`, { headers: { "Authorization": `Bearer ${token}` } })
+    return axios.get(`/form/review/${id}/form`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        fetchHeadForm()
         let temp = []
         console.log(res.data)
         res.data.formUsers.map(x => {
@@ -48,14 +48,17 @@ export default function FormList() {
   }
 
   useEffect(() => {
-    fetchForm()
-
+    setLoading(true)
+    Promise.all([fetchForm(),fetchHeadForm()])
+      .then((res)=> {
+        setLoading(false)
+      })
 
   }, [])
 
   return (
     <>
-    {list.length !== 0 ? <Container>
+    {loading ? <LinearProgress style={{position:"absolute", width:"100%" }} /> : <Container>
       <Typography variant="h5" component="h2" style={{ marginTop: '24px' }}>
         Danh sách các Form đánh giá:
       </Typography>
@@ -84,7 +87,7 @@ export default function FormList() {
           )
         })
       }
-    </Container> : <LinearProgress style={{position:"absolute", width:"100%" }} />}
+    </Container>}
     </>
   )
 }
