@@ -494,7 +494,7 @@ export default function AddSettings() {
                             )
                           case 0:
                             return (
-                              <Council />
+                              <Council fcode={code}/>
                             )
                           default:
                             return null
