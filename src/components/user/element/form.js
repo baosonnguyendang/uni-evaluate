@@ -46,6 +46,7 @@ export default function FormEvaluation(props) {
     //lấy Form
     axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
+        console.log(res.data.formStandards)
         setData(res.data.formStandards)
         let temp = []
         res.data.formStandards.map(standard => {
@@ -308,7 +309,7 @@ export default function FormEvaluation(props) {
                     <TableBody>
                       {data.map(standard => (
                         <>
-                          <TableRow>
+                          <TableRow key={standard.standard_id?._id}>
                             <TableCell>{standard.standard_order}</TableCell>
                             <TableCell><b>{standard.standard_id.name}</b></TableCell>
                             <TableCell>{standard.standard_point}</TableCell>
@@ -317,9 +318,9 @@ export default function FormEvaluation(props) {
                             <TableCell />
                           </TableRow>
 
-                          {standard.formCriteria.map((criteria, index) => (
+                          {standard.formCriteria.map((criteria) => (
                             <>
-                              <TableRow>
+                              <TableRow key={criteria._id}>
                                 <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
                                 <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                                 <TableCell>{criteria.point}</TableCell>
@@ -390,8 +391,8 @@ export default function FormEvaluation(props) {
                 {
                   <div>
                     <div style={{ marginBottom: '24px' }}>
-                      <h5>Tổng điểm tự đánh giá: {point}</h5>
-                      <h5>{props.level > 1 && `Tổng điểm trưởng Khoa đánh giá: ${point2}`}</h5>
+                      <Typography variant="h6">Tổng điểm tự đánh giá: {point}</Typography>
+                      <Typography variant="h6">{props.level > 1 && `Tổng điểm trưởng Khoa đánh giá: ${point2}`}</Typography>
                     </div>
                     {
                       ((!disableEdit && level == 1) || (level == 2 && !disableEdit2)) &&
