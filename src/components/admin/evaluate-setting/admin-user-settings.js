@@ -95,7 +95,7 @@ export default function UserSettings(props) {
 
   return (
     <div>
-      {type !== '03' ? (
+      {type !== '04' ? (
         <MUIDataTable
           title={"Các thành viên tham gia đánh giá"}
           data={data}

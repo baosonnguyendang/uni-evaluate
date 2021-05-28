@@ -27,6 +27,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 
 import PersonIcon from '@material-ui/icons/Person';
 import DeleteIcon from '@material-ui/icons/Delete';
+import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -71,6 +72,7 @@ export default function Council(props) {
   };
   const handleClose = () => {
     setOpen(false);
+    setInfo()
   };
 
   //open modal head
@@ -82,33 +84,53 @@ export default function Council(props) {
     setOpenHead(false);
   };
 
-  const [id, setId] = useState()
+  const [id, setId] = useState() //id cua nguoi duoc xoa
   const [loadingButton, setLoadingButton] = useState(false)
-  const [chose, setChose] = useState()
-  const [council, setCouncil] = useState()
-  const [unit, setUnit] = useState([])
-  const [head, setHead] = useState()
+  const [chose, setChose] = useState() //kiem tra form da co hddg chua
+  const [council, setCouncil] = useState() //dung de luu dvi hddg luc khoi tao form
+  const [unit, setUnit] = useState([]) //chon dvi hddg luc khoi tao form
+  const [head, setHead] = useState() //dai dien hddg
 
-  const [member, setMember] = useState([
-  ])
+  const [member, setMember] = useState([]) //cac thanh vien trong hddg dot nay
+  const [info, setInfo] = useState(null) //hien thi thong tin user sau khi bam tim kiem trong them user vao hddg
 
   const remove = (id) => {
     let item = member.slice()
     item = item.filter(x => x.id != id)
-    setMember(item)
+    axios.post(`/admin/form/${props.fcode}/HDDG/removeFormUser`, { delete_users: [id] }, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(item)
+        setMember(item)
+      })
+      .catch(err => console.log(err))
   }
 
   const submit = e => {
     e.preventDefault()
     let item = member.slice()
-    let obj = { id: id, name: 'name', role: null }
-    item.push(obj)
-    setMember(item)
+    console.log(id)
     //setLoadingButton(true)
-    axios.post()
+    axios.post(`/admin/form/${props.fcode}/HDDG/addFormUser`, { ucode: id }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        setLoadingButton(false)
-        handleClose()
+        axios.get(`admin/user/${id}/get`, { headers: { "Authorization": `Bearer ${token}` } })
+          .then(res => {
+            setInfo(res.data.user.lastname + ' ' + res.data.user.firstname)
+            let obj = { id: id, name: res.data.user.lastname + ' ' + res.data.user.firstname, role: null }
+            item.push(obj)
+            setMember(item)
+            setLoadingButton(false)
+            handleClose()
+          })
+          .catch(err => {
+            console.log(err)
+            setLoadingButton(false)
+            handleClose()
+          })
+        .catch(err => {
+          console.log(err)
+          setLoadingButton(false)
+          handleClose()
+        })
       })
   }
 
@@ -118,10 +140,12 @@ export default function Council(props) {
         let temp = [res.data.departments.find(x => x.department_code == 'HDDG')]
         setUnit([...temp])
       })
-    axios.get(`/admin/form/${props.fcode}/HDDG/checkCouncil`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/form/${props.fcode}/checkCouncil`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
         if (res.data.formDepartment.department_id) {
+          setHead(res.data.formDepartment.head.staff_id)
+          let h = res.data.formDepartment.head.staff_id
           axios.get(`/admin/form/${props.fcode}/HDDG/formuser/get`, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
               let man = []
@@ -130,6 +154,7 @@ export default function Council(props) {
                 let obj = { id: x.user_id.staff_id, name: x.user_id.lastname + ' ' + x.user_id.firstname, role: null }
                 man.push(obj)
               })
+              man.find(x => x.id == h).role = 'Đại diện HĐĐG'
               setMember([...man])
               setChose(true)
             })
@@ -147,24 +172,50 @@ export default function Council(props) {
       })
   }, [])
 
+  //chon don vi hoi dong danh gia luc moi khoi tao
   const handleChange = (event) => {
     const name = event.target.value;
     setCouncil(name)
     console.log(name)
   };
 
+  //select chon nguoi lam dai dien hddg
   const handleHead = (event) => {
     setHead(event.target.value)
     //member.find(x => x.id == event.target.value).role = 'Đại diện HĐĐG'
-    console.log(event.target.value)
   }
 
+  //xac nhan chon nguoi lam dai dien hddg
   const submitHead = () => {
-    member.map(x => x.role = null)
-    member.find(x => x.id == head).role = 'Đại diện HĐĐG'
-    handleCloseHead()
+    console.log(head)
+    let dcode = 'HDDG'
+    axios.post(`/admin/form/${props.fcode}/${dcode}/addHead`, {ucode: head}, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        member.map(x => x.role = null)
+        member.find(x => x.id == head).role = 'Đại diện HĐĐG'
+        handleCloseHead()
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
+  const [display, setDisplay] = useState('')
+
+  const getInfo = () => {
+    axios.get(`admin/user/${id}/get`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res)
+        setInfo(res.data.user.lastname + ' ' + res.data.user.firstname)
+        setDisplay('Tên: ' + res.data.user.lastname + ' ' + res.data.user.firstname)
+      })
+      .catch(err => {
+        console.log(err)
+        setDisplay('Không tồn tại mã GV/VC')
+      })
+  }
+
+  //luc moi khoi tao, bam vao se hoan tat viec chon dvi hddg, lay toan bo user trong dvi do bo vao hddg
   const setHDDG = () => {
     axios.post(`/admin/form/${props.fcode}/${council}/addcouncil`, {}, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
@@ -229,9 +280,15 @@ export default function Council(props) {
           >
             <Fade in={open}>
               <div className={classes.paper1}>
-                <h5 style={{ marginBottom: '10px' }}>Thêm thành viên vào Hội đồng:</h5>
+                <h5 style={{ marginBottom: '24px' }}>Thêm thành viên vào Hội đồng:</h5>
                 <form onSubmit={submit}>
-                  <TextField onChange={e => setId(e.target.value)} id="code" label="Mã GV/VC" variant="outlined" fullWidth />
+                  <div>
+                    <TextField size='small' style={{ width: '80%' }} onChange={e => setId(e.target.value)} id="code" label="Mã GV/VC" variant="outlined" />
+                    <IconButton variant='contained' color='primary' onClick={getInfo}>
+                      <SearchIcon />
+                    </IconButton>
+                    <h5 style={{ marginTop: '10px' }}>{display}</h5>
+                  </div>
                   <div style={{ justifyContent: 'center', marginTop: '10px', display: 'flex' }}>
                     <ButtonCustom loading={loadingButton} type="submit" variant="contained" color="primary">Thêm</ButtonCustom>
                     <ButtonCustom handleButtonClick={handleClose} onClick={handleClose} variant="contained" color="primary">Thoát</ButtonCustom>
@@ -282,6 +339,9 @@ export default function Council(props) {
         </div>
       ) : (
         <div>
+          <Typography component="h4" variant="h5" color="inherit" >
+            Thêm Hội đồng đánh giá cấp Trường:
+          </Typography>
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel htmlFor="outlined-age-native-simple">HĐĐG</InputLabel>
             <Select
