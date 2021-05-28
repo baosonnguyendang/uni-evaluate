@@ -123,10 +123,8 @@ export default function AddSettings() {
                   y.check = true
                 }
               })
-              console.log(temp)
             })
             setUnits([...temp])
-            console.log(temp)
             setUnitChosen(temp.filter(unit => unit.check === true))
             setLoading(false)
           })
@@ -274,7 +272,7 @@ export default function AddSettings() {
     return (
       <div>
         <ol style={{ marginTop: 10 }}>
-          {units.map(unit => {
+          {units.filter(x => x.id != 'HDDG').map(unit => {
             if (unit.check) {
               bool = true;
               return (

@@ -47,10 +47,15 @@ const useStyles = makeStyles((theme) => ({
   paper1: {
     position: 'absolute',
     width: '35vw',
+    minWidth: '400px',
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 300
   },
 }));
 
@@ -68,15 +73,23 @@ export default function Council(props) {
     setOpen(false);
   };
 
+  //open modal head
+  const [openHead, setOpenHead] = React.useState(false);
+  const handleOpenHead = () => {
+    setOpenHead(true);
+  };
+  const handleCloseHead = () => {
+    setOpenHead(false);
+  };
+
   const [id, setId] = useState()
   const [loadingButton, setLoadingButton] = useState(false)
-  const [chose, setChose] = useState(false)
+  const [chose, setChose] = useState()
   const [council, setCouncil] = useState()
   const [unit, setUnit] = useState([])
+  const [head, setHead] = useState()
 
   const [member, setMember] = useState([
-    { id: '1111', name: 'Mai Thanh Phong', role: 'Hiệu trưởng' },
-    { id: '1112', name: 'Bùi Hoài Thắng', role: 'Phòng Đào tạo' }
   ])
 
   const remove = (id) => {
@@ -88,10 +101,10 @@ export default function Council(props) {
   const submit = e => {
     e.preventDefault()
     let item = member.slice()
-    let obj = { id: id, name: 'name', role: 'role' }
+    let obj = { id: id, name: 'name', role: null }
     item.push(obj)
     setMember(item)
-    setLoadingButton(true)
+    //setLoadingButton(true)
     axios.post()
       .then(res => {
         setLoadingButton(false)
@@ -105,11 +118,29 @@ export default function Council(props) {
         let temp = [res.data.departments.find(x => x.department_code == 'HDDG')]
         setUnit([...temp])
       })
-    axios.get(`/admin/department/HDDG/user`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/form/${props.fcode}/HDDG/checkCouncil`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        res.data.user.map(x => {
-          console.log(x)
-        })
+        console.log(res.data)
+        if (res.data.formDepartment.department_id) {
+          axios.get(`/admin/form/${props.fcode}/HDDG/formuser/get`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => {
+              let man = []
+              console.log(res.data)
+              res.data.formUsers.map(x => {
+                let obj = { id: x.user_id.staff_id, name: x.user_id.lastname + ' ' + x.user_id.firstname, role: null }
+                man.push(obj)
+              })
+              setMember([...man])
+              setChose(true)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          setChose(true)
+        }
+        else {
+          setChose(false)
+        }
       })
       .catch(err => {
         console.log(err)
@@ -122,17 +153,34 @@ export default function Council(props) {
     console.log(name)
   };
 
+  const handleHead = (event) => {
+    setHead(event.target.value)
+    //member.find(x => x.id == event.target.value).role = 'Đại diện HĐĐG'
+    console.log(event.target.value)
+  }
+
+  const submitHead = () => {
+    member.map(x => x.role = null)
+    member.find(x => x.id == head).role = 'Đại diện HĐĐG'
+    handleCloseHead()
+  }
+
   const setHDDG = () => {
-    axios.post(`/admin/form/${props.fcode}/${council}/addcouncil`, {},{ headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${props.fcode}/${council}/addcouncil`, {}, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         axios.get(`/admin/form/${props.fcode}/${council}/formuser/get`, { headers: { "Authorization": `Bearer ${token}` } })
-        .then(res => {
-          console.log(res.data)
-          setChose(true)
-        })
-        .catch(err => {
-          console.log(err)
-        })
+          .then(res => {
+            let man = []
+            res.data.formUsers.map(x => {
+              let obj = { id: x.user_id.staff_id, name: x.user_id.lastname + ' ' + x.user_id.firstname, role: null }
+              man.push(obj)
+            })
+            setMember([...man])
+            setChose(true)
+          })
+          .catch(err => {
+            console.log(err)
+          })
       })
       .catch(err => {
         console.log(err)
@@ -145,8 +193,11 @@ export default function Council(props) {
         <div>
           <Typography component="h3" variant="h5" color="inherit" >
             Danh sách Hội đồng đánh giá cấp Trường:
-        </Typography>
-          <Button onClick={handleOpen} className={classes.btn} variant="contained" color="primary">Thêm thành viên vào HĐĐG</Button>
+          </Typography>
+          <div className={classes.btn} >
+            <Button onClick={handleOpen} style={{ marginRight: '10px' }} variant="contained" color="primary">Thêm thành viên vào HĐĐG</Button>
+            <Button onClick={handleOpenHead} variant="contained" color="secondary">Chọn Đại diện cho HĐĐG</Button>
+          </div>
           <List id='list' className={classes.list}>
             {member.map(x => {
               return (
@@ -186,6 +237,45 @@ export default function Council(props) {
                     <ButtonCustom handleButtonClick={handleClose} onClick={handleClose} variant="contained" color="primary">Thoát</ButtonCustom>
                   </div>
                 </form>
+              </div>
+            </Fade>
+          </Modal>
+          <Modal
+            className={classes.modal}
+            open={openHead}
+            onClose={handleCloseHead}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={openHead}>
+              <div className={classes.paper1}>
+                <h5 style={{ marginBottom: '15px' }}>Chọn Đại diện Hội đồng:</h5>
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel htmlFor="outlined-age-native-simple">Đại diện</InputLabel>
+                  <Select
+                    native
+                    value={head}
+                    onChange={handleHead}
+                    label="Đại diện"
+                    inputProps={{
+                      name: 'HĐĐG',
+                    }}
+                  >
+                    <option aria-label="None" value="" />
+                    {member.length > 0 && member.map(x => {
+                      return (
+                        <option key={x.id} value={x.id} >{x.name} ({x.id})</option>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+                <div style={{ justifyContent: 'center', display: 'flex' }}>
+                  <ButtonCustom loading={loadingButton} onClick={submitHead} variant="contained" color="primary">Thêm</ButtonCustom>
+                  <ButtonCustom handleButtonClick={handleCloseHead} onClick={handleCloseHead} variant="contained" color="primary">Thoát</ButtonCustom>
+                </div>
               </div>
             </Fade>
           </Modal>
