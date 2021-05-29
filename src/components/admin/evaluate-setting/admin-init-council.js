@@ -90,6 +90,7 @@ export default function Council(props) {
   const [council, setCouncil] = useState() //dung de luu dvi hddg luc khoi tao form
   const [unit, setUnit] = useState([]) //chon dvi hddg luc khoi tao form
   const [head, setHead] = useState() //dai dien hddg
+  const [code, setCode] = useState() //mã hddg
 
   const [member, setMember] = useState([]) //cac thanh vien trong hddg dot nay
   const [info, setInfo] = useState(null) //hien thi thong tin user sau khi bam tim kiem trong them user vao hddg
@@ -97,7 +98,7 @@ export default function Council(props) {
   const remove = (id) => {
     let item = member.slice()
     item = item.filter(x => x.id != id)
-    axios.post(`/admin/form/${props.fcode}/HDDG/removeFormUser`, { delete_users: [id] }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${props.fcode}/${code}/removeFormUser`, { delete_users: [id] }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(item)
         setMember(item)
@@ -110,7 +111,7 @@ export default function Council(props) {
     let item = member.slice()
     console.log(id)
     //setLoadingButton(true)
-    axios.post(`/admin/form/${props.fcode}/HDDG/addFormUser`, { ucode: id }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${props.fcode}/${code}/addFormUser`, { ucode: id }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         axios.get(`admin/user/${id}/get`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
@@ -143,10 +144,11 @@ export default function Council(props) {
     axios.get(`/admin/form/${props.fcode}/checkCouncil`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
+        setCode(res.data.formDepartment.department_id.department_code)
         if (res.data.formDepartment.department_id) {
           setHead(res.data.formDepartment.head.staff_id)
           let h = res.data.formDepartment.head.staff_id
-          axios.get(`/admin/form/${props.fcode}/HDDG/formuser/get`, { headers: { "Authorization": `Bearer ${token}` } })
+          axios.get(`/admin/form/${props.fcode}/${res.data.formDepartment.department_id.department_code}/formuser/get`, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
               let man = []
               console.log(res.data)

@@ -35,6 +35,9 @@ const UserPage = () => {
           <Route path='/user/evaluate/:id/:id1' exact>
             <TableEvaluation />
           </Route>
+          <Route path='/user/evaluate/:id/:id1/hddg' exact>
+            <Profile />
+          </Route>
           <Route path='/user/evaluate/:id/:id1/:id2' exact>
             <EmployeeList />
           </Route>
