@@ -83,60 +83,61 @@ export default function FormList() {
 
   return (
     <>
-      {loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : <Container>
-        <Typography variant="h5" component="h2" style={{ marginTop: '24px' }}>
-          Danh sách các Form đánh giá:
-      </Typography>
-        {
-          list.map(x => {
-            console.log(list)
-            return (
-              x.level < 3 ? (
-                <Card key={x.code} style={{ marginTop: '24px' }}>
-                  <CardContent>
-                    <Typography variant="h6" component="h5">
-                      Tên Form: {x.name}
-                    </Typography>
-                    <Typography>
-                      Mã Form: {x.code}
-                    </Typography>
-                  </CardContent>
-                  <CardActions style={{ paddingLeft: '16px' }}>
-                    <Button variant='contained' color='primary'>
-                      <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}`}>Đánh giá cá nhân</Link>
-                    </Button>
-                    {unit.some(y => y.unit == x.department) &&
-                      <Button variant='contained' color='secondary'>
-                        <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.code}/${x.department}`}>Đánh giá với tư cách trưởng đơn vị</Link>
-                      </Button>}
-                    {listH.some(y => y.code == x.code) &&
+      {loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> :
+        <Container>
+          <Typography variant="h5" component="h2" style={{ marginTop: '24px' }}>
+            Danh sách các Form đánh giá:
+        </Typography>
+          {
+            list.map(x => {
+              console.log(list)
+              return (
+                x.level < 3 ? (
+                  <Card key={x.code} style={{ marginTop: '24px' }}>
+                    <CardContent>
+                      <Typography variant="h6" component="h5">
+                        Tên Form: {x.name}
+                      </Typography>
+                      <Typography>
+                        Mã Form: {x.code}
+                      </Typography>
+                    </CardContent>
+                    <CardActions style={{ paddingLeft: '16px' }}>
+                      <Button variant='contained' color='primary'>
+                        <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}`}>Đánh giá cá nhân</Link>
+                      </Button>
+                      {unit.some(y => y.unit == x.department) &&
+                        <Button variant='contained' color='secondary'>
+                          <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.code}/${x.department}`}>Đánh giá với tư cách trưởng đơn vị</Link>
+                        </Button>}
+                      {listH.some(y => y.code == x.code) &&
+                        <Button variant='contained' color='default'>
+                          <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
+                        </Button>
+                      }
+                    </CardActions>
+                  </Card>
+                ) : (
+                  <Card key={x.code} style={{ marginTop: '24px' }}>
+                    <CardContent>
+                      <Typography variant="h6" component="h5">
+                        Tên Form: {x.name}
+                      </Typography>
+                      <Typography>
+                        Mã Form: {x.code}
+                      </Typography>
+                    </CardContent>
+                    <CardActions style={{ paddingLeft: '16px' }}>
                       <Button variant='contained' color='default'>
                         <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
                       </Button>
-                    }
-                  </CardActions>
-                </Card>
-              ) : (
-                <Card key={x.code} style={{ marginTop: '24px' }}>
-                  <CardContent>
-                    <Typography variant="h6" component="h5">
-                      Tên Form: {x.name}
-                    </Typography>
-                    <Typography>
-                      Mã Form: {x.code}
-                    </Typography>
-                  </CardContent>
-                  <CardActions style={{ paddingLeft: '16px' }}>
-                    <Button variant='contained' color='default'>
-                      <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/${unit}`}>Đánh giá với tư cách HDDG</Link>
-                    </Button>
-                  </CardActions>
-                </Card>
+                    </CardActions>
+                  </Card>
+                )
               )
-            )
-          })
-        }
-      </Container>}
+            })
+          }
+        </Container>}
     </>
   )
 }

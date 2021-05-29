@@ -11,6 +11,9 @@ import Evaluation from './user-evaluation';
 import EmployeeList from './user-head-unit/user-employee-list';
 import EmployeeForm from './user-head-unit/user-employee-form';
 
+import CouncilUnitList from './hddg/user-hddg-list'
+import CouncilEmployeeList from './hddg/user-hddg-employeelist'
+
 import NotFound from '../common/NotFound'
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -36,10 +39,13 @@ const UserPage = () => {
             <TableEvaluation />
           </Route>
           <Route path='/user/evaluate/:id/:id1/hddg' exact>
-            <Profile />
+            <CouncilUnitList />
           </Route>
           <Route path='/user/evaluate/:id/:id1/:id2' exact>
             <EmployeeList />
+          </Route>
+          <Route path='/user/evaluate/:id/:id1/hddg/:id2' exact>
+            <CouncilEmployeeList />
           </Route>
           <Route path='/user/evaluate/:id/:id1/:id2/:id3' exact>
             <EmployeeForm />
