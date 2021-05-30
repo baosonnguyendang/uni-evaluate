@@ -27,6 +27,7 @@ export default function FormEvaluation(props) {
   const { id1, id3 } = useParams()
   var level = props.level
 
+  const [info, setInfo] = useState(null)
   const [point, setPoint] = useState(0) //điểm tự đánh giá
   const [point2, setPoint2] = useState(0)
   const [point3, setPoint3] = useState(0) //điểm trưởng khoa đánh giá
@@ -49,7 +50,12 @@ export default function FormEvaluation(props) {
     //lấy Form
     axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        console.log(res.data.formStandards)
+        console.log(res.data)
+        setInfo({
+          name: res.data.user.lastname + ' ' + res.data.user.firstname,
+          id: res.data.user.staff_id,
+          unit: res.data.department.name
+        })
         setData(res.data.formStandards)
         let temp = []
         res.data.formStandards.map(standard => {
@@ -116,7 +122,7 @@ export default function FormEvaluation(props) {
       if (props.level == 1) {
         if (sent.length > 0) {
           sent.map(x => {
-            if (x.value != null){
+            if (x.value != null) {
               pts += parseInt(x.value)
             }
           })
@@ -386,6 +392,13 @@ export default function FormEvaluation(props) {
         <div >
           { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
             <Container>
+              {info != null && (
+                <div style={{display: 'flex', fontSize: '1.125rem',justifyContent: 'space-between', marginRight: '20%', marginTop: 30}}>
+                  <span><b>Tên: </b>{info.name}</span>
+                  <span><b>Mã GV/VC: </b>{info.id}</span>
+                  <span><b>Đơn vị: </b>{info.unit}</span>
+                </div>
+              )}
               <Grid container justify='center' style={{ marginTop: '30px' }}>
                 <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
                   <Table className={classes.table} >
@@ -443,15 +456,15 @@ export default function FormEvaluation(props) {
                                     : null}
                                 </TableCell>
                                 <TableCell align='center'>
-                                  {props.level > 2 && criteria.options.length == 0 ? 
-                                    <input 
-                                      type="checkbox" 
+                                  {props.level > 2 && criteria.options.length == 0 ?
+                                    <input
+                                      type="checkbox"
                                       disabled={disableEdit3}
                                       onChange={handleCheck3}
                                       defaultChecked={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
-                                      name={criteria.criteria_id.code + '_3'} 
-                                      value={criteria.point} 
-                                    /> 
+                                      name={criteria.criteria_id.code + '_3'}
+                                      value={criteria.point}
+                                    />
                                     : null}
                                 </TableCell>
                               </TableRow>
@@ -482,15 +495,15 @@ export default function FormEvaluation(props) {
                                       null}
                                   </TableCell>
                                   <TableCell align='center' colSpan={1}>
-                                    {props.level > 2 ? 
-                                      <input 
-                                        onChange={handleCheckRadio3} 
+                                    {props.level > 2 ?
+                                      <input
+                                        onChange={handleCheckRadio3}
                                         disabled={disableEdit3}
-                                        type="radio" 
+                                        type="radio"
                                         defaultChecked={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
-                                        name={criteria.criteria_id.code + '_3'} 
-                                        value={option.max_point} 
-                                      /> : 
+                                        name={criteria.criteria_id.code + '_3'}
+                                        value={option.max_point}
+                                      /> :
                                       null}
                                   </TableCell>
                                 </TableRow>
