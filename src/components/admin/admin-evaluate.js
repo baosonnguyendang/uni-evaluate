@@ -32,8 +32,9 @@ function ListItem(props) {
   return (
     // <li>{props.id}</li>
     <tr>
-      <td style={{ width: '30%', lineHeight: '50px', paddingLeft: 10 }}><Link to={'/admin/evaluate-settings/' + props.id}>{props.value}</Link></td>
+      <td style={{ lineHeight: '50px', paddingLeft: 10 }}><Link to={'/admin/evaluate-settings/' + props.id}>{props.value}</Link></td>
       <td style={{ textAlign: 'center', lineHeight: '50px' }}>{props.id}</td>
+      <td style={{ textAlign: 'center', lineHeight: '50px' }}>{props.description}</td>
       <td align='center'>{props.start.toString()}</td>
       <td align='center'>{props.end.toString()}</td>
     </tr>
@@ -45,15 +46,21 @@ function NumberList(props) {
   const listItems = numbers.map((item) =>
     // Correct! Key should be specified inside the array.
     // <Link to={'/admin/evaluate-settings/' + item.id}>
-    <ListItem key={item.code} id={item.code} value={item.name} start={moment(item.start_date).format("HH:mm DD/MM/yyyy")} end={moment(item.end_date).format("HH:mm DD/MM/yyyy")} />
+    <ListItem key={item.code} id={item.code}
+      value={item.name}
+      start={moment(item.start_date).format("HH:mm DD/MM/yyyy")}
+      end={moment(item.end_date).format("HH:mm DD/MM/yyyy")}
+      description={props.description}
+    />
     //</Link>
   );
   return (
     <table style={{ width: '100%', marginBottom: 10 }}>
       <thead style={{ backgroundColor: '#f4f4f4', lineHeight: '50px' }}>
         <tr>
-          <th style={{ width: '30%', paddingLeft: 10 }}>Tên đợt đánh giá</th>
+          <th style={{ width: '20%', paddingLeft: 10 }}>Tên đợt đánh giá</th>
           <th style={{ textAlign: 'center', }}>Mã đợt</th>
+          <th style={{ width: '30%', textAlign: 'center', }}>Mô tả</th>
           <th style={{ textAlign: 'center' }}>Ngày bắt đầu</th>
           <th style={{ textAlign: 'center' }}>Ngày kết thúc</th>
         </tr>
@@ -102,25 +109,15 @@ export default function EvaluateList() {
   //date picker
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const log = (e) => {
-    console.log(moment(e).toString())
-    console.log(e.format("HH:mm DD/MM/yyyy"))
-    setEndDate(e)
-  }
   //new Evaluation
-  const listEvaluate = [
-    { id: 1, name: 'Đợt 1 năm 2020', start: new Date('January 14 2021'), end: new Date('November 14 2021') },
-    { id: 2, name: 'Đợt 2 năm 2020', start: new Date('January 1 2021'), end: new Date('December 14 2021') },
-  ];
   const [number, setNumber] = useState(null);
-
 
   //fe to be
   const token = localStorage.getItem('token')
   const fetchReview = () => {
     axios.get('/admin/review/', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        // console.log(res.data);
+        console.log(res.data.reviews);
         setNumber(res.data.reviews)
         setLoading(false)
         // setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
@@ -146,13 +143,10 @@ export default function EvaluateList() {
     e.preventDefault()
     setLoading(true)
     handleClose()
-    setNumber(number => [...number, { code: id, name: evaluationName, start_date: startDate.format("HH:mm DD/MM/yyyy"), end_date: endDate.format("HH:mm DD/MM/yyyy") }])
-    axios.post('/admin/review/add', { code: id, name: evaluationName, start_date: startDate.toString(), end_date: endDate.toString() }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post('/admin/review/add', { code: id, name: evaluationName, start_date: startDate.toString(), end_date: endDate.toString(), description }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
-        
-        // handleOpenToast("Tạo tiêu chuẩn thành công", 'success')
-        // setRows(rows => [...rows, data])
+        setNumber(number => [...number, { code: id, name: evaluationName, start_date: moment(startDate).toString(), end_date: moment(endDate).toString(), description }])
         setToast({ open: true, time: 3000, message: 'Tạo đợt đánh giá thành công', severity: "success" })
         setLoading(false)
       })
@@ -251,13 +245,14 @@ export default function EvaluateList() {
                       ampm={false}
                       label="Kết thúc"
                       value={endDate}
-                      onChange={log}
+                      onChange={setEndDate}
                       onError={console.log}
                       disablePast
                       disableToolbar
                       format="HH:mm DD/MM/yyyy"
                       invalidDateMessage='Thời gian không hợp lệ'
                       minDate={startDate}
+                      minDateMessage='Thời gian kết thúc không hợp lệ'
                       fullWidth
                       margin="normal"
                     />

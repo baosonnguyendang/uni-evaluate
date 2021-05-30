@@ -43,7 +43,6 @@ const useStyles = makeStyles(theme => ({
         minWidth: 650
     },
     selectTableCell: {
-        width: 120,
         paddingRight: 0,
     },
     tableCell: {
@@ -276,7 +275,7 @@ const UserOfFaculty = () => {
                                     <TableCell align="left">Tên</TableCell>
                                     <TableCell align="left">Email</TableCell>
                                     <TableCell align="left">Đơn vị</TableCell>
-                                    <TableCell align="left" />
+                                    <TableCell align="right" />
                                 </TableRow>
                             </TableHead>
                             <TableBody>
