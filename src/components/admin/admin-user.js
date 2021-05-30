@@ -77,7 +77,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 10,
   },
   formControl: {
-    marginBottom: 8,
+    marginBottom: 10,
     minWidth: 120,
   },
 }));
@@ -87,16 +87,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
   const { isEditMode } = row;
   return (
     <TableCell align="left" className={classes.tableCell}>
-      {isEditMode ? (
-        <Input
-          value={row[name]}
-          name={name}
-          onChange={e => onChange(e, row)}
-          className={classes.input}
-        />
-      ) : (
-        (row[name])
-      )}
+      {row[name]}
     </TableCell>
   );
 };
@@ -167,6 +158,18 @@ export default function ListUser() {
   const closeDialog = () => {
     setStatusDelete({ open: false })
   }
+  const onEdit = id => {
+    filterUser.forEach(u => {
+      if (u.staff_id === id){
+        setId(id)
+        setFname(u.firstname)
+        setLname(u.lastname)
+        setEmail(u.email)
+        setRole(u.roles)
+      }
+    })
+    setOpen({open:true, id})
+  }
 
   //qua trang
   const [page, setPage] = React.useState(0);
@@ -182,24 +185,58 @@ export default function ListUser() {
   };
 
   //open modal
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState({open:false, id:''});
   const handleOpen = () => {
-    setOpen(true);
+    setOpen({open:true, id:''});
   };
   const handleClose = () => {
-    setOpen(false);
+    setOpen({...open,open:false});
+    setNewUnit('')
   };
 
   //get data from new criterion
   const [id, setId] = React.useState('')
-  const [lname, setName] = React.useState('')
-  const [fname, setC] = React.useState('')
-  const [email, setD] = React.useState('')
+  const [lname, setLname] = React.useState('')
+  const [fname, setFname] = React.useState('')
+  const [email, setEmail] = React.useState('')
+  const [role, setRole] = React.useState('')
+  const handleChangeRole = (e) => {
+    setRole(e.target.value)
+  }
+  // edit user
+  const submitEditUser = (e) => {
+    e.preventDefault()
+    const body = {fname, lname, email, roles:role}
+    setLoading(true)
+    handleClose()
+    axios.post(`/admin/user/${id}/edit`,body,{ headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        fetchUser().then((res) => {
+          setToast({ open: true, time: 3000, message: 'Cập nhật thông tin thành công', severity: "success" })
+          setLoading(false)
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        console.log(err.response)
+        switch (err.response?.status) {
+          case 409:
+            setToast({ open: true, time: 3000, message: 'Mã người dùng hoặc email đã tồn tại', severity: "error" })
+            break;
+          default:
+            setToast({ open: true, time: 3000, message: 'Cập nhật thông tin thất bại', severity: "error" })
+            break;
+        }
+        setLoading(false)
+      })
+  }
+  //create new user
   const submit = e => {
     e.preventDefault()
     setLoading(true)
+    const body = { id, lname, fname, email, dcode: newUnit }
     handleClose()
-    axios.post('/admin/user/add', { id, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post('/admin/user/add', body , { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         fetchUser().then((res) => {
           setToast({ open: true, time: 3000, message: 'Thêm người dùng thành công', severity: "success" })
@@ -241,7 +278,7 @@ export default function ListUser() {
     ))
     console.log(temp)
     setFilterUser(temp)
-
+    setPage(0);
   }
   return (<>
     { isLoading ? <Skeleton /> : (
@@ -265,7 +302,7 @@ export default function ListUser() {
                 <TableCell align="left">Tên</TableCell>
                 <TableCell align="left">Email</TableCell>
                 <TableCell align="left">Đơn vị</TableCell>
-                <TableCell align="left">Chức vụ</TableCell>
+                <TableCell align="left">Vai trò</TableCell>
                 <TableCell align="left" />
               </TableRow>
             </TableHead>
@@ -274,16 +311,16 @@ export default function ListUser() {
               {filterUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow key={row._id}>
-                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange, value :{fname} }} />
                     <CustomTableCell className={classes.name} {...{ row, name: "lastname", onChange }} />
-                    <CustomTableCell {...{ row, name: "firstname", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "firstname", onChange }} />
                     <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
                     <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
                     <CustomTableCell className={classes.name} {...{ row, name: "roles", onChange }} />
                     <TableCell className={classes.selectTableCell}>
                       <IconButton
                         aria-label="update"
-                        onClick={() => { }}
+                        onClick={() => onEdit(row.staff_id)}
                       >
                         <EditIcon />
                       </IconButton>
@@ -322,7 +359,7 @@ export default function ListUser() {
               aria-labelledby="transition-modal-title"
               aria-describedby="transition-modal-description"
               className={classes.modal}
-              open={open}
+              open={open.open}
               onClose={handleClose}
               closeAfterTransition
               BackdropComponent={Backdrop}
@@ -330,30 +367,47 @@ export default function ListUser() {
                 timeout: 500,
               }}
             >
-              <Fade in={open}>
+              <Fade in={open.open}>
                 <div className={classes.paper1}>
-                  <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm người dùng</Typography>
-                  <form onSubmit={submit}>
-                    <TextField onChange={e => setId(e.target.value)} autoFocus required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setName(e.target.value)} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setC(e.target.value)} required id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setD(e.target.value)} required id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                  <Typography variant='h5' gutterBottom id="transition-modal-title">{open.id ? 'Cập nhật thông tin' : 'Thêm người dùng'}</Typography>
+                  <form onSubmit={open.id ? submitEditUser : submit}>
+                    <TextField onChange={e => setId(e.target.value)} fullWidth defaultValue={open.id && id} autoFocus required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setLname(e.target.value)} defaultValue={open.id && lname} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setFname(e.target.value)} required defaultValue={open.id && fname} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setEmail(e.target.value)} required defaultValue={open.id && email} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                    
+                    {open.id ? 
                     <FormControl variant="outlined" fullWidth className={classes.formControl}>
-                      <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
+                      <InputLabel htmlFor="outlined-newUnit-native">Vai trò</InputLabel>
                       <Select
                         native
                         required
-                        value={newUnit}
-                        label='Đơn vị'
-                        onChange={handleChangeUnit}
+                        value={role}
+                        label='Vai trò'
+                        onChange={handleChangeRole}
                       >
-                        <option aria-label="None" value="" />
-                        {units.map(u => <option key={u._id} value={u.department_code}>{u.name}</option>)}
+                        <option aria-label="None" value="user">User</option>
+                        <option aria-label="None" value="admin">Admin</option>
                       </Select>
-                    </FormControl>
+                    </FormControl> : 
+                    <FormControl variant="outlined" fullWidth disabled={!!open.id} className={classes.formControl}>
+                    <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
+                    <Select
+                      native
+                      required
+                      value={newUnit}
+                      label='Đơn vị'
+                      onChange={handleChangeUnit}
+                    >
+                      <option aria-label="None" value="" />
+                      {units.map(u => <option key={u._id} value={u.department_code}>{u.name}</option>)}
+                    </Select>
+                  </FormControl>
+                  }
+                    
                     {/* <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth className={classes.field} /> */}
                     <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                      <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
+                      <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >{open.id ? 'Cập nhật' : 'Tạo'}</Button>
                       <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                     </div>
                   </form>

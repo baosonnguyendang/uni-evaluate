@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import  { Link, useRouteMatch } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import ButtonCustom from '../../common/ButtonCustom'
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -28,6 +28,8 @@ import Typography from '@material-ui/core/Typography';
 
 import axios from 'axios'
 import Skeleton from '../../common/skeleton'
+import Toast from '../../common/snackbar'
+import Loading from '../../common/Loading'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,8 +41,8 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   selectTableCell: {
-    display:'flex',
-    justifyContent:'flex-end',
+    display: 'flex',
+    justifyContent: 'flex-end',
     paddingRight: 0,
   },
   tableCell: {
@@ -82,24 +84,7 @@ const createData = (id, name, head, headId, under) => ({
   id, name, head, headId, under, isEditMode: false
 })
 
-const CustomTableCell = ({ row, name, onChange, ...rest }) => {
-  const classes = useStyles();
-  const { isEditMode } = row;
-  return (
-    <TableCell align="left" className={classes.tableCell} {...rest}>
-      {isEditMode ? (
-        <Input
-          value={row[name]}
-          name={name}
-          onChange={e => onChange(e, row)}
-          className={classes.input}
-        />
-      ) : (
-        (row[name])
-      )}
-    </TableCell>
-  );
-};
+
 
 export default function Criterion() {
   let { url } = useRouteMatch();
@@ -121,6 +106,13 @@ export default function Criterion() {
   }, [])
   const classes = useStyles();
 
+  const CustomTableCell = ({ row, name, onChange, ...rest }) => {
+    return (
+      <TableCell align="left" className={classes.tableCell} {...rest}>
+        {name === 'name' ? (<Link to={`${url}/${row.department_code}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])}
+      </TableCell>
+    );
+  };
   const onToggleEditMode = id => {
     setPrevious([...rows])
     console.log(rows)
@@ -191,8 +183,10 @@ export default function Criterion() {
   const handleClose = () => {
     setOpen(false);
   };
-  //
-  const [loadingButton, setLoadingButton] = useState(false)
+  // loading add unit
+  const [loading, setLoading] = useState(false)
+  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
+  const handleCloseToast = () => setToast({ ...toast, open: false })
 
   //get data from new criterion
   const [id, setId] = React.useState('')
@@ -202,7 +196,7 @@ export default function Criterion() {
   const submitAddDepartment = (e) => {
     console.log(id, name, head, newUnit);
     e.preventDefault()
-    setLoadingButton(true)
+    setLoading(true)
     const body = {
       department_code: id,
       name,
@@ -210,23 +204,27 @@ export default function Criterion() {
       parent: newUnit
     }
     console.log(body)
+    handleClose();
     axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         //console.log(res.data);
-
+        setToast({ open: true, time: 3000, message: 'Tạo đơn vị thành công', severity: "success" })
         setRows(rows => [...rows, createData(id, name, null, head, newUnit)])
-        setLoadingButton(false)
-        handleClose();
+        setLoading(false)
       })
-      .catch(error => {
-        console.log(error);
-        setLoadingButton(false)
+      .catch(err => {
+        console.log(err)
+        console.log(err.response)
+        switch (err.response?.status) {
+          case 409:
+            setToast({ open: true, time: 3000, message: 'Mã đơn vị đã tồn tại', severity: "error" })
+            break;
+          default:
+            setToast({ open: true, time: 3000, message: 'Tạo đơn vị thất bại', severity: "error" })
+            break;
+        }
+        setLoading(false)
       })
-  }
-
-  const submit = e => {
-    e.preventDefault()
-    setRows(rows => [...rows, createData(id, name, null, head, newUnit)])
   }
 
   //chon don vi cha khi them don vi moi
@@ -234,11 +232,13 @@ export default function Criterion() {
   const handleChangeUnit = (event) => {
     setNewUnit(event.target.value);
   };
-  
+
   return (
     <>
       { isLoading ? <Skeleton /> : (
         <div>
+          <Toast toast={toast} handleClose={handleCloseToast} />
+          <Loading open={loading} />
           <Typography component="h1" variant="h5" color="inherit" noWrap>
             DANH SÁCH ĐƠN VỊ
           </Typography>
@@ -256,29 +256,12 @@ export default function Criterion() {
               <TableBody>
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                   return (
-                    <TableRow key={row._id}>
+                    <TableRow key={row.department_code}>
                       <CustomTableCell className={classes.number} {...{ row, name: "department_code", onChange }} />
-                      <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} component = {Link} to={`${url}/${row.department_code}`}/>
+                      <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
                       <CustomTableCell className={classes.name} {...{ row, name: "namemanager", onChange }} />
                       <CustomTableCell className={classes.name} {...{ row, name: "idmanager", onChange }} />
                       <TableCell className={classes.selectTableCell}>
-                        {row.isEditMode ? (
-                          <>
-                            <IconButton
-                              aria-label="done"
-                              onClick={() => onToggleEditMode(row._id)}
-                            >
-                              <DoneIcon />
-                            </IconButton>
-                            <IconButton
-                              aria-label="revert"
-                              onClick={() => onRevert(row._id)}
-                            >
-                              <RevertIcon />
-                            </IconButton>
-                          </>
-                        ) : (
-                          <>
                             <IconButton
                               aria-label="delete"
                               onClick={() => onToggleEditMode(row._id)}
@@ -291,8 +274,6 @@ export default function Criterion() {
                             >
                               <DeleteIcon />
                             </IconButton>
-                          </>
-                        )}
                       </TableCell>
                     </TableRow>
                   )
@@ -331,18 +312,18 @@ export default function Criterion() {
               >
                 <Fade in={open}>
                   <div className={classes.paper1}>
-                  <Typography variant='h4' gutterBottom id="transition-modal-title">Thêm đơn vị</Typography>
+                    <Typography variant='h4' gutterBottom id="transition-modal-title">Thêm đơn vị</Typography>
                     <form onSubmit={submitAddDepartment}>
                       <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required className={classes.field} />
                       <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth required className={classes.field} />
                       <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" className={classes.field} />
                       {/* <TextField onChange={e => setN(e.target.value)} id="unit" label="Đơn vị" variant="outlined" fullWidth className={classes.field} /> */}
                       <FormControl variant="outlined" fullWidth className={classes.field}>
-                        <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
+                        <InputLabel htmlFor="outlined-newUnit-native">Thuộc đơn vị</InputLabel>
                         <Select
                           native
                           value={newUnit}
-                          label='Đơn vị'
+                          label='Thuộc đơn vị'
                           onChange={handleChangeUnit}
                         >
                           <option aria-label="None" value="" />
@@ -353,9 +334,9 @@ export default function Criterion() {
                           })}
                         </Select>
                       </FormControl>
-                      <div style={{ justifyContent: 'center', marginTop: '10px', display: "flex" }}>
-                        <ButtonCustom loading={loadingButton} type="submit" variant="contained" color="primary">Tạo</ButtonCustom>
-                        <ButtonCustom onClick={handleClose} variant="contained" color="primary">Thoát</ButtonCustom>
+                      <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">Tạo</Button>
+                        <Button style={{ marginLeft: '10px' }} onClick={handleClose} variant="contained" color="primary">Thoát</Button>
                       </div>
                     </form>
                   </div>

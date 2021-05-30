@@ -11,14 +11,12 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 
-
 var today = Moment()
 
 export default function Evaluation() {
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(false)
   const token = localStorage.getItem('token')
-  console.log(token)
   useEffect(() => {
     setLoading(true)
     axios.get('/form/review', { headers: { "Authorization": `Bearer ${token}` } })

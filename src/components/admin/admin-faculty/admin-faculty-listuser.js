@@ -380,7 +380,7 @@ const UserOfFaculty = () => {
                     </Paper>
                     {children.length !== 0 && (
                         <>
-                            <Typography component="h1" variant="h5" color="inherit" noWrap>
+                            <Typography component="h1" variant="h5" color="inherit" noWrap onClick={() => id=10}>
                                 DANH SÁCH ĐƠN VỊ TRỰC THUỘC
                             </Typography>
                             <List component="nav" aria-label="main mailbox folders">

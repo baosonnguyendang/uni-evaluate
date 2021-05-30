@@ -100,7 +100,6 @@ export default function PrimarySearchAppBar() {
   const dispatch = useDispatch()
 
   const handleProfileMenuOpen = (event) => {
-    console.log(event.currentTarget)
     setAnchorEl(event.currentTarget);
   };
 

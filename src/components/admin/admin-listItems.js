@@ -6,6 +6,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import PersonIcon from '@material-ui/icons/Person';
 import Divider from '@material-ui/core/Divider';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 import { Link, NavLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles((theme) => ({
@@ -44,7 +45,7 @@ export function MainListItems() {
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
-        <ListItemText primary="DS Đơn vị" />
+        <ListItemText primary="Đơn vị" />
       </ListItem>
       <ListItem button component={NavLink} to={'/admin/criteria'}>
         <ListItemIcon>
@@ -65,13 +66,13 @@ export function MainListItems() {
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
-        <ListItemText primary="DS Tiêu chuẩn" />
+        <ListItemText primary="Tiêu chuẩn" />
       </ListItem>
       <ListItem button component={Link} to={'/admin/evaluate-settings'}>
         <ListItemIcon>
-          <AssignmentIcon />
+          <AssessmentIcon />
         </ListItemIcon>
-        <ListItemText primary="DS Đợt đánh giá" />
+        <ListItemText primary="Đợt đánh giá" />
       </ListItem>
     </div>
   )

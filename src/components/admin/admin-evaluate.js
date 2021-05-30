@@ -102,7 +102,11 @@ export default function EvaluateList() {
   //date picker
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-
+  const log = (e) => {
+    console.log(moment(e).toString())
+    console.log(e.format("HH:mm DD/MM/yyyy"))
+    setEndDate(e)
+  }
   //new Evaluation
   const listEvaluate = [
     { id: 1, name: 'Đợt 1 năm 2020', start: new Date('January 14 2021'), end: new Date('November 14 2021') },
@@ -149,7 +153,7 @@ export default function EvaluateList() {
     // console.log(moment(endDate)._i)
     e.preventDefault()
     setNumber(number => [...number, { code: id, name: evaluation, start_date: startDate.format("HH:mm DD/MM/yyyy"), end_date: endDate.format("HH:mm DD/MM/yyyy") }])
-    axios.post('/admin/review/add', { code: id, name: evaluation, start_date: startDate, end_date: endDate }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post('/admin/review/add', { code: id, name: evaluation, start_date: startDate.toString(), end_date: endDate.toString() }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
         handleClose()
@@ -191,7 +195,7 @@ export default function EvaluateList() {
         >
           <Fade in={open}>
             <div className={classes.paper1}>
-              <h2 id="transition-modal-title">Thêm đợt đánh giá</h2>
+              <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm đợt đánh giá</Typography>
               <form onSubmit={submit}>
                 <TextField
                   variant="outlined"
@@ -225,7 +229,7 @@ export default function EvaluateList() {
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <KeyboardDateTimePicker
                     ampm={false}
-                    label="Ngày bắt đầu"
+                    label="Bắt đầu"
                     value={startDate}
                     onChange={setStartDate}
                     onError={console.log}
@@ -233,18 +237,22 @@ export default function EvaluateList() {
                     disableToolbar
                     format="HH:mm DD/MM/yyyy"
                     invalidDateMessage='Thời gian không hợp lệ'
+                    fullWidth
+                    margin="normal"
                   />
                   <KeyboardDateTimePicker
                     ampm={false}
-                    label="Ngày bắt đầu"
+                    label="Kết thúc"
                     value={endDate}
-                    onChange={setEndDate}
+                    onChange={log}
                     onError={console.log}
                     disablePast
                     disableToolbar
                     format="HH:mm DD/MM/yyyy"
                     invalidDateMessage='Thời gian không hợp lệ'
                     minDate={startDate}
+                    fullWidth
+                    margin="normal"
                   />
                 </MuiPickersUtilsProvider>
                 <br />
