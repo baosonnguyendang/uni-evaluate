@@ -26,8 +26,8 @@ import Typography from '@material-ui/core/Typography';
 import axios from "axios";
 import Toast from '../../common/snackbar'
 import Loading from '../../common/Loading'
-import Sleketon from '../../common/skeleton'
-import { TocSharp } from "@material-ui/icons";
+import Skeleton from '../../common/skeleton'
+import DialogConfirm from '../../common/DialogConfirm'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -143,22 +143,31 @@ export default function Criterion() {
   };
 
   const onDelete = id => {
+    setStatusDelete({ open: true, onClick: () => deleteStandardWithAPI(id) })
+  }
+
+  // xoá standard vs api
+  const deleteStandardWithAPI = (id) => {
     setLoading(true)
-    axios.post(`admin/standard/${id}/delete`, { id }, config)
+    closeDialog()
+    axios.post(`/admin/user/${id}/delete`,{},{ headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        console.log(res.data)
-        const newRows = rows.filter(row => row._id !== id)
+        const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
-        setToast({ open: true, time: 3000, message: 'Xoá tiêu chuẩn thành công', severity: "success" })
+        setToast({ open: true, time: 3000, message: 'Xoá tiêu chuẩn thành công', severity: 'success' })
         setLoading(false)
       })
       .catch(err => {
-        console.log(err.response)
-        setToast({ open: true, time: 3000, message: 'Xoá tiêu chuẩn thất bại', severity: "error" })
+        console.log(err.response.status)
+        setToast({ open: true, time: 3000, message: 'Xoá tiêu chuẩn thất bại', severity: 'error' })
+        setLoading(false)
       })
-    setLoading(false)
   }
-
+  // modal xoá
+  const [statusDelete, setStatusDelete] = useState({ open: false })
+  const closeDialog = () => {
+    setStatusDelete({ open: false })
+  }
   const onRevert = id => {
     setRows([...previous]);
 
@@ -191,12 +200,11 @@ export default function Criterion() {
   const [code, setC] = React.useState('')
   const [description, setD] = React.useState('')
   let data = { code, name, description }
-  // loading lúc click button Tạo
-  const [loadingButton, setLoadingButton] = useState(false)
+
   const submit = e => {
     e.preventDefault()
     handleClose()
-    setLoadingButton(true)
+    setLoading(true)
     axios.post('/admin/standard/add', data, config)
       .then(res => {
         fetchStandard()
@@ -224,8 +232,9 @@ export default function Criterion() {
 
   return (
     <>
-      { isLoading ? <Sleketon /> :
+      { isLoading ? <Skeleton /> :
         <div>
+          <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
           <Toast toast={toast} handleClose={handleCloseToast} />
           <Loading open={loading} />
           <Typography component="h1" variant="h5" color="inherit" noWrap>
@@ -274,7 +283,7 @@ export default function Criterion() {
                             </IconButton>
                             <IconButton
                               aria-label="delete"
-                              onClick={() => onDelete(row._id)}
+                              onClick={() => onDelete(row.code)}
                             >
                               <DeleteIcon />
                             </IconButton>

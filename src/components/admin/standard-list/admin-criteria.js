@@ -26,7 +26,10 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import axios from 'axios'
+import Toast from '../../common/snackbar'
+import Loading from '../../common/Loading'
 import Skeleton from '../../common/skeleton'
+import DialogConfirm from '../../common/DialogConfirm'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -160,10 +163,36 @@ export default function Criteria() {
     });
     setRows(newRows);
   };
+  // loading add criterion
+  const [loading, setLoading] = useState(false)
+  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
+  const handleCloseToast = () => setToast({ ...toast, open: false })
 
+  // modal xoá
+  const [statusDelete, setStatusDelete] = useState({ open: false })
+  const closeDialog = () => {
+    setStatusDelete({ open: false })
+  }
   const onDelete = id => {
-    const newRows = rows.filter(row => row._id !== id)
-    setRows(newRows)
+    setStatusDelete({ open: true, onClick: () => deleteCriteriaWithAPI(id) })
+  }
+
+  // xoá standard vs api
+  const deleteCriteriaWithAPI = (id) => {
+    setLoading(true)
+    closeDialog()
+    axios.post(`/admin/user/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        const newRows = rows.filter(row => row.code !== id)
+        setRows(newRows)
+        setToast({ open: true, time: 3000, message: 'Xoá tiêu chí thành công', severity: 'success' })
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err.response.status)
+        setToast({ open: true, time: 3000, message: 'Xoá tiêu chí thất bại', severity: 'error' })
+        setLoading(false)
+      })
   }
 
   const onRevert = id => {
@@ -233,6 +262,9 @@ export default function Criteria() {
     <>
       {isLoading ? <Skeleton /> : (
         <div>
+          <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
+          <Toast toast={toast} handleClose={handleCloseToast} />
+          <Loading open={loading} />
           <Typography component="h1" variant="h5" color="inherit" noWrap >
             Tiêu chuẩn {nameStandard} - DS Tiêu chí
           </Typography >
@@ -244,7 +276,7 @@ export default function Criteria() {
                   <TableCell className={classes.name} >Tên tiêu chí</TableCell>
                   <TableCell className={classes.description}>Mô tả</TableCell>
                   <TableCell >Kiểu đánh giá</TableCell>
-                  <TableCell  />
+                  <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -280,7 +312,7 @@ export default function Criteria() {
                           </IconButton>
                           <IconButton
                             aria-label="delete"
-                            onClick={() => onDelete(row._id)}
+                            onClick={() => onDelete(row.code)}
                           >
                             <DeleteIcon />
                           </IconButton>

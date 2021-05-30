@@ -104,6 +104,10 @@ export default function ListUser() {
               console.log(rows)
               setIsLoading(false)
             })
+            .catch(err => {
+              console.log(err.response)
+              setIsLoading(false)
+            })
   }
   // Danh sách đơn vị
   const [units, setUnits] = useState([])
@@ -148,6 +152,7 @@ export default function ListUser() {
       })
       .catch(err => {
         console.log(err.response.status)
+        setToast({ open: true, time: 3000, message: 'Xoá người dùng thất bại', severity: 'error' })
         setLoading(false)
       })
   }
@@ -204,17 +209,20 @@ export default function ListUser() {
     setRole(e.target.value)
   }
   // edit user
+  // open.id là id user đang được edit
   const submitEditUser = (e) => {
     e.preventDefault()
-    const body = {fname, lname, email, roles:role}
+    const body = {new_ucode: id,fname, lname, email, roles:role}
     setLoading(true)
+    console.log(open.id)
+
     handleClose()
-    axios.post(`/admin/user/${id}/edit`,body,{ headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/user/${open.id}/edit`,body,{ headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        fetchUser().then((res) => {
-          setToast({ open: true, time: 3000, message: 'Cập nhật thông tin thành công', severity: "success" })
-          setLoading(false)
-        })
+        setRows(rows.map(r => r.staff_id === open.id ? {...r, staff_id:id, firstname:fname, lastname: lname, roles: role, email} : r))
+        setFilterUser(rows.map(r => r.staff_id === open.id ? {...r, staff_id:id, firstname:fname, lastname: lname, roles: role, email} : r))
+        setToast({ open: true, time: 3000, message: 'Cập nhật thông tin thành công', severity: "success" })
+        setLoading(false)
       })
       .catch(err => {
         console.log(err)
@@ -307,7 +315,6 @@ export default function ListUser() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filterUser.length === 0 && <Typography variant='body1' >Không tồn tại người dùng</Typography>}
               {filterUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow key={row._id}>
