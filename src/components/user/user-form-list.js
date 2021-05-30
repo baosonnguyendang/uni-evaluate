@@ -106,11 +106,11 @@ export default function FormList() {
                       <Button variant='contained' color='primary'>
                         <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}`}>Đánh giá cá nhân</Link>
                       </Button>
-                      {unit.some(y => y.unit == x.department) &&
+                      {unit.length > 0 && unit.some(y => y.unit == x.department) &&
                         <Button variant='contained' color='secondary'>
                           <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.code}/${x.department}`}>Đánh giá với tư cách trưởng đơn vị</Link>
                         </Button>}
-                      {listH.some(y => y.code == x.code) &&
+                      {listH > 0 && listH.some(y => y.code == x.code) &&
                         <Button variant='contained' color='default'>
                           <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
                         </Button>
