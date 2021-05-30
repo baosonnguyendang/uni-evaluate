@@ -48,11 +48,14 @@ const useStyles = makeStyles(theme => ({
     height: 40
   },
   name: {
-    width: '30%',
+    width: '35%',
     height: 40,
   },
   number: {
     width: '10%'
+  },
+  description: {
+    width: '30%'
   },
   modal: {
     display: 'flex',
@@ -239,9 +242,9 @@ export default function Criteria() {
                 <TableRow style={{ backgroundColor: '#f4f4f4' }}>
                   <TableCell className={classes.number} >Mã tiêu chí</TableCell>
                   <TableCell className={classes.name} >Tên tiêu chí</TableCell>
-                  <TableCell >Mô tả</TableCell>
+                  <TableCell className={classes.description}>Mô tả</TableCell>
                   <TableCell >Kiểu đánh giá</TableCell>
-                  <TableCell align="left" />
+                  <TableCell  />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -306,12 +309,12 @@ export default function Criteria() {
               >
                 <Fade in={open}>
                   <div className={classes.paper1}>
-                    <h2 id="transition-modal-title">Thêm tiêu chí</h2>
+                    <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm tiêu chí</Typography>
                     <form onSubmit={submitAddCriteria}>
-                      <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth className={classes.field} />
+                      <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth autoFocus className={classes.field} />
                       <TextField onChange={e => setName(e.target.value)} id="name" required label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} />
                       <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" className={classes.field} />
-                      <FormControl fullWidth variant="outlined" >
+                      <FormControl fullWidth variant="outlined"  >
                         <InputLabel >Kiểu đánh giá</InputLabel>
                         <Select
                           native

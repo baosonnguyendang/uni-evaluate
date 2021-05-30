@@ -25,10 +25,9 @@ import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
+import Skeleton from '../../common/skeleton'
 
-//token
-const token = localStorage.getItem('token');
-const config = { headers: { "Authorization": `Bearer ${token}` } };
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -51,11 +50,14 @@ const useStyles = makeStyles(theme => ({
     height: 40
   },
   name: {
-    width: '30%',
+    width: '40%',
     height: 40,
   },
   number: {
     width: '10%'
+  },
+  description: {
+    width: '30%'
   },
   modal: {
     display: 'flex',
@@ -106,21 +108,20 @@ const CustomTableCell = ({ row, name, onChange }) => {
 // component={Link} href={window.location.href + '/a'}
 
 export default function Selection() {
-  const [rows, setRows] = React.useState([
-    // createData("Định mức giờ chuẩn hoàn thành", '00101', 'BÙm bùm bùm bùm', 5),
-    // createData("Kết quả khảo sát chất lượng dịch vụ", '00102', 'Mô tảaaaaaaaaaaaaaaaaaaaaaa', 7),
-    // createData("Hình thức giảng dạy khác", '00103', 'Description', 10)
-  ]);
+  const [rows, setRows] = React.useState(null);
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
   const { id } = useParams();
+  //token
+  const token = localStorage.getItem('token');
+  const config = { headers: { "Authorization": `Bearer ${token}` } };
 
   const fetchSelection = () => {
-    axios.get(`/admin/criteria/${id}/option`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/criteria/${id}/option`, config)
       .then(res => {
         const selections = res.data.criteriaOptions;
-        setRows(selections.map(op=>createData(op.code, op.name, op.description, op.max_point)))
-        setPrevious([...rows])
+        setRows(selections.map(op => createData(op.code, op.name, op.description, op.max_point)))
+        setPrevious(selections.map(op => createData(op.code, op.name, op.description, op.max_point)))
         // setIsLoading(false)
       })
   }
@@ -185,7 +186,7 @@ export default function Selection() {
   };
 
   // Tạo lựa chọn
-  const submitAddSelection = (e) =>{
+  const submitAddSelection = (e) => {
     console.log(code, name, description, point);
     const body = {
       code,
@@ -194,15 +195,15 @@ export default function Selection() {
       description
     }
     axios.post(`/admin/criteria/${id}/addCriteriaOption`, body, config)
-    .then(res=>{
-      console.log(res.data);
-      e.preventDefault()
-      setRows(rows => [...rows, createData(code, name, description, point)])
-      handleClose();
-    })
-    .catch(e=>{
-      console.error(e);
-    })
+      .then(res => {
+        console.log(res.data);
+        e.preventDefault()
+        setRows(rows => [...rows, createData(code, name, description, point)])
+        handleClose();
+      })
+      .catch(e => {
+        console.error(e);
+      })
   }
 
   //get data from new criterion
@@ -215,7 +216,7 @@ export default function Selection() {
     setRows(rows => [...rows, createData(code, name, description, point)])
   }
 
-  function User() {
+  function Criteria() {
     let { id } = useParams();
     return (
       < Typography component="h1" variant="h5" color="inherit" noWrap >
@@ -225,97 +226,101 @@ export default function Selection() {
   }
 
   return (
-    <div>
-      <User />
-      <Paper className={classes.root}>
-        <Table className={classes.table} aria-label="caption table">
-          <TableHead>
-            <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-              <TableCell className={classes.number} >Mã </TableCell>
-              <TableCell className={classes.name} >Lựa chọn </TableCell>
-              <TableCell >Mô tả</TableCell>
-              <TableCell >Điểm</TableCell>
-              <TableCell />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.id}>
-                <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
-                <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
-                <CustomTableCell {...{ row, name: "description", onChange }} />
-                <CustomTableCell {...{ row, name: "point", onChange }} />
-                <TableCell className={classes.selectTableCell}>
-                  {row.isEditMode ? (
-                    <>
-                      <IconButton
-                        aria-label="done"
-                        onClick={() => onToggleEditMode(row.id)}
-                      >
-                        <DoneIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="revert"
-                        onClick={() => onRevert(row.id)}
-                      >
-                        <RevertIcon />
-                      </IconButton>
-                    </>
-                  ) : (
-                    <>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => onToggleEditMode(row.id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => onDelete(row.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <div style={{ margin: '10px', textAlign: 'right' }}>
-          <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-            Thêm lựa chọn
+    <>
+      {!rows ? <Skeleton /> :
+        <div>
+          <Criteria />
+          <Paper className={classes.root}>
+            <Table className={classes.table} aria-label="caption table">
+              <TableHead>
+                <TableRow style={{ backgroundColor: '#f4f4f4' }}>
+                  <TableCell className={classes.number} >Mã </TableCell>
+                  <TableCell className={classes.name} >Lựa chọn </TableCell>
+                  <TableCell className={classes.description}>Mô tả</TableCell>
+                  <TableCell >Điểm</TableCell>
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map(row => (
+                  <TableRow key={row.id}>
+                    <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
+                    <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
+                    <CustomTableCell {...{ row, name: "description", onChange }} />
+                    <CustomTableCell {...{ row, name: "point", onChange }} />
+                    <TableCell className={classes.selectTableCell}>
+                      {row.isEditMode ? (
+                        <>
+                          <IconButton
+                            aria-label="done"
+                            onClick={() => onToggleEditMode(row.id)}
+                          >
+                            <DoneIcon />
+                          </IconButton>
+                          <IconButton
+                            aria-label="revert"
+                            onClick={() => onRevert(row.id)}
+                          >
+                            <RevertIcon />
+                          </IconButton>
+                        </>
+                      ) : (
+                        <>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onToggleEditMode(row.id)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onDelete(row.id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <div style={{ margin: '10px', textAlign: 'right' }}>
+              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                Thêm lựa chọn
           </Button>
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={open}
-            onClose={handleClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500,
-            }}
-          >
-            <Fade in={open}>
-              <div className={classes.paper1}>
-                <h2 id="transition-modal-title">Thêm lựa chọn</h2>
-                <form onSubmit={submitAddSelection}>
-                  <TextField onChange={e => setC(e.target.value)} id="code" label="Mã" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                  <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
-                  <TextField onChange={e => setP(e.target.value)} id="point" label="Điểm" type="number" variant="outlined" className={classes.field} />
-                  <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                    <Button style={{ marginRight: '10px' }} variant="contained" color="primary" onClick={submitAddSelection}>Tạo</Button>
-                    <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+              <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={open}
+                onClose={handleClose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}
+              >
+                <Fade in={open}>
+                  <div className={classes.paper1}>
+                    <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm lựa chọn</Typography>
+                    <form onSubmit={submitAddSelection}>
+                      <TextField onChange={e => setC(e.target.value)} id="code" label="Mã" variant="outlined" fullWidth autoFocus required className={classes.field} />
+                      <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth required className={classes.field} />
+                      <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" className={classes.field} />
+                      <TextField onChange={e => setP(e.target.value)} id="point" label="Điểm" type="number" fullWidth required variant="outlined" className={classes.field} />
+                      <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                        <Button style={{ marginRight: '10px' }} variant="contained" color="primary" onClick={submitAddSelection}>Tạo</Button>
+                        <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                      </div>
+                    </form>
                   </div>
-                </form>
-              </div>
-            </Fade>
-          </Modal>
+                </Fade>
+              </Modal>
+            </div>
+          </Paper>
         </div>
-      </Paper>
-    </div>
+      }
+    </>
   );
 }

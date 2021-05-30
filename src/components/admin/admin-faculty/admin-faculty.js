@@ -312,7 +312,7 @@ export default function Criterion() {
               >
                 <Fade in={open}>
                   <div className={classes.paper1}>
-                    <Typography variant='h4' gutterBottom id="transition-modal-title">Thêm đơn vị</Typography>
+                    <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm đơn vị</Typography>
                     <form onSubmit={submitAddDepartment}>
                       <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required className={classes.field} />
                       <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth required className={classes.field} />

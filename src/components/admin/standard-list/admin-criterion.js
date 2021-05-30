@@ -25,6 +25,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
 import Toast from '../../common/snackbar'
+import Loading from '../../common/Loading'
 import Sleketon from '../../common/skeleton'
 import { TocSharp } from "@material-ui/icons";
 
@@ -98,11 +99,14 @@ export default function Criterion() {
   const token = localStorage.getItem('token')
   const config = { headers: { "Authorization": `Bearer ${token}` } }
   const fetchStandard = () => {
-    axios.get('admin/standard', config)
+    return axios.get('admin/standard', config)
       .then(res => {
         console.log(res.data.standards)
         setRows(res.data.standards)
         setIsLoading(false)
+      })
+      .catch(e => {
+        console.log(e.response)
       })
   }
   useEffect(() => {
@@ -139,13 +143,20 @@ export default function Criterion() {
   };
 
   const onDelete = id => {
+    setLoading(true)
     axios.post(`admin/standard/${id}/delete`, { id }, config)
       .then(res => {
         console.log(res.data)
         const newRows = rows.filter(row => row._id !== id)
         setRows(newRows)
-        handleOpenToast("Xoá tiêu chuẩn thành công", "success")
+        setToast({ open: true, time: 3000, message: 'Xoá tiêu chuẩn thành công', severity: "success" })
+        setLoading(false)
       })
+      .catch(err => {
+        console.log(err.response)
+        setToast({ open: true, time: 3000, message: 'Xoá tiêu chuẩn thất bại', severity: "error" })
+      })
+    setLoading(false)
   }
 
   const onRevert = id => {
@@ -174,13 +185,7 @@ export default function Criterion() {
   const handleClose = () => {
     setOpen(false);
   };
-  const [toast, setToast] = useState({ open: false, time: 2000, message: '', severity: '' })
-  const handleOpenToast = (message, severity, time = 2000) => {
-    setToast({ ...toast, message, time, severity, open: true });
-  };
-  const handleCloseToast = () => {
-    setToast({ ...toast, open: false });
-  };
+
   //get data from new criterion
   const [name, setName] = React.useState('')
   const [code, setC] = React.useState('')
@@ -190,28 +195,42 @@ export default function Criterion() {
   const [loadingButton, setLoadingButton] = useState(false)
   const submit = e => {
     e.preventDefault()
+    handleClose()
     setLoadingButton(true)
     axios.post('/admin/standard/add', data, config)
       .then(res => {
-        setLoadingButton(false)
-        handleClose()
-        handleOpenToast("Tạo tiêu chuẩn thành công", 'success')
-        setRows(rows => [...rows, data])
-        setOpen(false);
+        fetchStandard()
+          .then(() => {
+            setToast({ open: true, time: 3000, message: 'Tạo tiêu chuẩn thành công', severity: "success" })
+            setLoading(false)
+          })
       })
-      .catch(e => {
-        handleOpenToast("Mã tiêu chuẩn đã tồn tại", 'error')
-        setLoadingButton(false)
+      .catch(err => {
+        switch (err.response?.status) {
+          case 409:
+            setToast({ open: true, time: 3000, message: 'Mã tiêu chuẩn đã tồn tại', severity: "error" })
+            break;
+          default:
+            setToast({ open: true, time: 3000, message: 'Tạo tiêu chuẩn thất bại', severity: "error" })
+            break;
+        }
+        setLoading(false)
       })
   }
+  // loading add criterion
+  const [loading, setLoading] = useState(false)
+  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
+  const handleCloseToast = () => setToast({ ...toast, open: false })
 
   return (
     <>
       { isLoading ? <Sleketon /> :
         <div>
+          <Toast toast={toast} handleClose={handleCloseToast} />
+          <Loading open={loading} />
           <Typography component="h1" variant="h5" color="inherit" noWrap>
             DANH SÁCH TIÊU CHUẨN
-        </Typography>
+          </Typography>
           <Paper className={classes.root}>
             <Table className={classes.table} aria-label="caption table">
               <TableHead>
@@ -292,14 +311,14 @@ export default function Criterion() {
               >
                 <Fade in={open}>
                   <div className={classes.paper1}>
-                    <h2>Thêm tiêu chuẩn</h2>
+                    <Typography variant="h5" gutterBottom color="inherit" noWrap>Thêm tiêu chuẩn</Typography>
                     <form onSubmit={submit}>
-                      <TextField onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
-                      <TextField onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
-                      <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />                  
-                      <div style={{ justifyContent: 'center', marginTop: '10px', display: 'flex' }}>
-                        <ButtonCustom loading={loadingButton} type="submit" variant="contained" color="primary">Tạo</ButtonCustom>
-                        <ButtonCustom handleButtonClick={handleClose} onClick={handleClose}  variant="contained" color="primary">Thoát</ButtonCustom>
+                      <TextField autoFocus required onChange={e => setC(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                      <TextField required onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} />
+                      <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} />
+                      <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">Tạo</Button>
+                        <Button style={{ marginRight: '10px' }} handleButtonClick={handleClose} onClick={handleClose} variant="contained" color="primary">Thoát</Button>
                       </div>
                     </form>
                   </div>
@@ -307,7 +326,6 @@ export default function Criterion() {
               </Modal>
             </div>
           </Paper>
-          <Toast toast={toast} handleClose={handleCloseToast} />
         </div>}
     </>
   );

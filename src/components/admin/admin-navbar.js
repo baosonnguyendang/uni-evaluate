@@ -166,7 +166,6 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        {/* <List>{mainListItems}</List> */}
         <List><MainListItems /></List>
       </Drawer>
 
