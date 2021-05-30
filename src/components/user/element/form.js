@@ -28,16 +28,19 @@ export default function FormEvaluation(props) {
   var level = props.level
 
   const [point, setPoint] = useState(0) //điểm tự đánh giá
-  const [point2, setPoint2] = useState(0) //điểm trưởng khoa đánh giá
+  const [point2, setPoint2] = useState(0)
+  const [point3, setPoint3] = useState(0) //điểm trưởng khoa đánh giá
   const [all, setAll] = useState([])
   const [edited, setEdited] = useState(false)
   const [data, setData] = useState([]) //data đầu vào
   const [sent, setSent] = useState([]) //data đầu ra
   const [sent2, setSent2] = useState([]) //data đầu ra lv2
+  const [sent3, setSent3] = useState([]) //data đầu ra lv2
   const [luuTam, setLuuTam] = useState([]) //lưu tạm
   const [disabled, setDisabled] = useState(true) //true thì không lưu tạm được, có chỉnh sửa mới lưu tạm được
   const [disableEdit, setDisableEdit] = useState(props.level > 1 ? true : false) //ấn hoàn thành rồi thì ko lưu được nữa, cấp trên ko sửa bài cấp dưới đc 
   const [disableEdit2, setDisableEdit2] = useState(props.level > 2 ? true : false)
+  const [disableEdit3, setDisableEdit3] = useState(false)
 
   var variable = props.level === 1 ? id1 : id3
 
@@ -70,6 +73,9 @@ export default function FormEvaluation(props) {
               }
               if (d[1] && d[1].status === 1) {
                 setDisableEdit2(true)
+              }
+              if (d[2] && d[2].status === 1) {
+                setDisableEdit3(true)
               }
               let list = []
               d.map(level => {
@@ -105,6 +111,7 @@ export default function FormEvaluation(props) {
   useEffect(() => {
     let pts = 0
     let pts2 = 0
+    let pts3 = 0
     if (loading === false) {
       if (props.level == 1) {
         if (sent.length > 0) {
@@ -116,23 +123,41 @@ export default function FormEvaluation(props) {
         }
         setPoint(pts)
       }
+      else if (props.level == 2) {
+        all[0].map(x => {
+          pts += parseInt(x.value)
+        })
+        setPoint(pts)
+        all[1].map(x => {
+          pts2 += parseInt(x.value)
+        })
+        setPoint2(pts2)
+        // if (edited == true) {
+        //   sent2.map(x => {
+        //     pts2 += parseInt(x.value)
+        //   })
+        //   setPoint2(pts2)
+        // }
+        // else {
+        //   all[1].map(x => {
+        //     pts2 += parseInt(x.value)
+        //   })
+        //   setPoint2(pts2)
+        // }
+      }
       else {
         all[0].map(x => {
           pts += parseInt(x.value)
         })
         setPoint(pts)
-        if (sent2.length > 0) {
-          sent2.map(x => {
-            pts2 += parseInt(x.value)
-          })
-          setPoint2(pts2)
-        }
-        else {
-          all[1].map(x => {
-            pts2 += parseInt(x.value)
-          })
-          setPoint2(pts2)
-        }
+        all[1].map(x => {
+          pts2 += parseInt(x.value)
+        })
+        setPoint2(pts2)
+        all[2].map(x => {
+          pts3 += parseInt(x.value)
+        })
+        setPoint3(pts3)
       }
     }
   })
@@ -158,21 +183,48 @@ export default function FormEvaluation(props) {
   const handleCheck2 = (event) => {
     //console.log(event.target.value, event.target.name)
     let tam = []
+    let tamm = []
     if (edited === false) {
+      setEdited(true)
       sent.map(x => {
         tam.push(x)
       })
-      setEdited(true)
     }
     else {
       sent2.map(x => {
         tam.push(x)
       })
     }
+    all[1].map(x => {
+      tamm.push(x)
+    })
     tam.find(x => x.name + '_2' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
+    tamm.find(x => x.name + '_2' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
     setSent2(tam)
+    let luu = []
+    all.map(x => {
+      luu.push(x)
+    })
+    luu[1] = tamm
+    setAll(luu)
     compare(tam)
   };
+
+  const handleCheck3 = (event) => {
+    let temp = []
+    all[2].map(x => {
+      temp.push(x)
+    })
+    temp.find(z => z.name + '_3' == event.target.name).value = event.target.checked ? parseInt(event.target.value) : 0
+    let luu = []
+    all.map(x => {
+      luu.push(x)
+    })
+    luu[2] = [...temp]
+    setSent3(temp)
+    setAll(luu)
+    compare(temp)
+  }
 
   const handleCheckRadio = (event) => {
     let temp = sent.slice()
@@ -184,20 +236,47 @@ export default function FormEvaluation(props) {
   const handleCheckRadio2 = (event) => {
     //compare(temp2)
     let tam = []
+    let tamm = []
     if (edited === false) {
+      setEdited(true)
       sent.map(x => {
         tam.push(x)
       })
-      setEdited(true)
     }
     else {
       sent2.map(x => {
         tam.push(x)
       })
     }
+    all[1].map(x => {
+      tamm.push(x)
+    })
     tam.find(x => x.name + '_2' == event.target.name).value = parseInt(event.target.value)
+    tamm.find(x => x.name + '_2' == event.target.name).value = parseInt(event.target.value)
     setSent2(tam)
+    let luu = []
+    all.map(x => {
+      luu.push(x)
+    })
+    luu[1] = tamm
+    setAll(luu)
     compare(tam)
+  }
+
+  const handleCheckRadio3 = (event) => {
+    let temp = []
+    all[2].map(x => {
+      temp.push(x)
+    })
+    temp.find(z => z.name + '_3' == event.target.name).value = parseInt(event.target.value)
+    let luu = []
+    all.map(x => {
+      luu.push(x)
+    })
+    luu[2] = [...temp]
+    setSent3(temp)
+    setAll(luu)
+    compare(temp)
   }
 
   const sendNude = () => {
@@ -223,7 +302,16 @@ export default function FormEvaluation(props) {
             list.push(x.name)
           })
         }
-        dataToSend = sent2
+        dataToSend = all[1]
+        break;
+      case 3:
+        let filterrr = sent3.filter(y => y.value == null)
+        if (filterrr.length > 0) {
+          filterrr.map(x => {
+            list.push(x.name)
+          })
+        }
+        dataToSend = all[2]
         break;
       default:
         break;
@@ -252,14 +340,19 @@ export default function FormEvaluation(props) {
     switch (props.level) {
       case 1:
         dataToSend = sent
+        setLuuTam(sent)
         break;
       case 2:
         dataToSend = sent2
+        setLuuTam(sent2)
+        break;
+      case 3:
+        dataToSend = sent3
+        setLuuTam(sent3)
         break;
       default:
         break;
     }
-    setLuuTam(sent)
     let data = { dataToSend, level }
     console.log(data)
     axios.post(`/form/${variable}/saveForm/v2`, data, { headers: { "Authorization": `Bearer ${token}` } })
@@ -280,6 +373,9 @@ export default function FormEvaluation(props) {
     }
     if (level == 2) {
       setDisableEdit2(true)
+    }
+    if (level == 3) {
+      setDisableEdit3(true)
     }
     setStatus(true)
   }
@@ -347,7 +443,16 @@ export default function FormEvaluation(props) {
                                     : null}
                                 </TableCell>
                                 <TableCell align='center'>
-                                  {props.level > 2 && criteria.options.length == 0 ? <input type="checkbox" onChange={null} name={criteria.criteria_id.code + '_' + 2} value={criteria.point} /> : null}
+                                  {props.level > 2 && criteria.options.length == 0 ? 
+                                    <input 
+                                      type="checkbox" 
+                                      disabled={disableEdit3}
+                                      onChange={handleCheck3}
+                                      defaultChecked={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                      name={criteria.criteria_id.code + '_3'} 
+                                      value={criteria.point} 
+                                    /> 
+                                    : null}
                                 </TableCell>
                               </TableRow>
                               {criteria.options.map((option, index) => (
@@ -376,7 +481,18 @@ export default function FormEvaluation(props) {
                                       /> :
                                       null}
                                   </TableCell>
-                                  <TableCell align='center' colSpan={1}>{props.level > 2 ? <input onChange={null} type="radio" name={criteria.criteria_id.code + '_' + props.level} value={option.max_point} /> : null}</TableCell>
+                                  <TableCell align='center' colSpan={1}>
+                                    {props.level > 2 ? 
+                                      <input 
+                                        onChange={handleCheckRadio3} 
+                                        disabled={disableEdit3}
+                                        type="radio" 
+                                        defaultChecked={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
+                                        name={criteria.criteria_id.code + '_3'} 
+                                        value={option.max_point} 
+                                      /> : 
+                                      null}
+                                  </TableCell>
                                 </TableRow>
                               ))}
                             </>
@@ -393,9 +509,10 @@ export default function FormEvaluation(props) {
                     <div style={{ marginBottom: '24px' }}>
                       <Typography variant="h6">Tổng điểm tự đánh giá: {point}</Typography>
                       <Typography variant="h6">{props.level > 1 && `Tổng điểm trưởng Khoa đánh giá: ${point2}`}</Typography>
+                      <Typography variant="h6">{props.level > 2 && `Tổng điểm HĐĐG Trường đánh giá: ${point3}`}</Typography>
                     </div>
                     {
-                      ((!disableEdit && level == 1) || (level == 2 && !disableEdit2)) &&
+                      ((!disableEdit && level == 1) || (level == 2 && !disableEdit2) || (level == 3 && !disableEdit3)) &&
                       <div style={{ textAlign: 'center', margin: '24px 0' }}>
                         <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
                           Lưu tạm
