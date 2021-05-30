@@ -14,7 +14,7 @@ export default function FormList() {
 
   const [list, setList] = useState([])
   const [isHeadUnit, setIsHeadUnit] = useState(false)
-  const [unit, setUnit] = useState()
+  const [unit, setUnit] = useState([])
   const [listH, setListH] = useState([])
   const [loading, setLoading] = useState(false)
 
