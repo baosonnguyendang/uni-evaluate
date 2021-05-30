@@ -11,8 +11,9 @@ import Evaluation from './user-evaluation';
 import EmployeeList from './user-head-unit/user-employee-list';
 import EmployeeForm from './user-head-unit/user-employee-form';
 
-import CouncilUnitList from './hddg/user-hddg-list'
-import CouncilEmployeeList from './hddg/user-hddg-employeelist'
+import CouncilUnitList from './hddg/user-hddg-list';
+import CouncilEmployeeList from './hddg/user-hddg-employeelist';
+import CouncilEmployeeForm from './hddg/user-hddg-employeeform';
 
 import NotFound from '../common/NotFound'
 
@@ -49,6 +50,9 @@ const UserPage = () => {
           </Route>
           <Route path='/user/evaluate/:id/:id1/:id2/:id3' exact>
             <EmployeeForm />
+          </Route>
+          <Route path='/user/evaluate/:id/:id1/hddg/:id2/:id3' exact>
+            <CouncilEmployeeForm />
           </Route>
           <Route path="*">
             <NotFound />

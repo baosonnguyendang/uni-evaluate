@@ -7,6 +7,8 @@ import { Link, useParams, useRouteMatch } from 'react-router-dom'
 import { Container, Paper, Typography, Table, TableHead, TableBody, TableRow, TableCell, TableContainer } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 
+import EmployeeList from '../user-head-unit/user-employee-list'
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650
@@ -28,6 +30,6 @@ export default function CouncilEmployeeList() {
     })
 
   return (
-    <p>P</p>
+    <EmployeeList />
   )
 }

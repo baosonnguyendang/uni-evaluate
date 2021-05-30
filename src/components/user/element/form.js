@@ -302,7 +302,7 @@ export default function FormEvaluation(props) {
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">Cá nhân tự chấm</TableCell>
-                        <TableCell align="center">Trưởng bộ môn</TableCell>
+                        <TableCell align="center">Trưởng Đơn vị</TableCell>
                         <TableCell align="center">Hội đồng nhà trường</TableCell>
                       </TableRow>
                     </TableHead>
