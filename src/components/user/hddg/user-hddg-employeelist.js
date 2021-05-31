@@ -29,6 +29,14 @@ export default function CouncilEmployeeList() {
       console.log(err)
     })
 
+    axios.get(`/user`, { headers: { "Authorization": `Bearer ${token}` } })
+    .then(res => {
+      console.log(res.data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+
   return (
     <EmployeeList />
   )

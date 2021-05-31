@@ -14,7 +14,7 @@ export default function FormList() {
 
   const [list, setList] = useState([])
   const [isHeadUnit, setIsHeadUnit] = useState(false)
-  const [unit, setUnit] = useState()
+  const [unit, setUnit] = useState([])
   const [listH, setListH] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -110,7 +110,7 @@ export default function FormList() {
                         <Button variant='contained' color='secondary'>
                           <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.code}/${x.department}`}>Đánh giá với tư cách trưởng đơn vị</Link>
                         </Button>}
-                      {listH > 0 && listH.some(y => y.code == x.code) &&
+                      {listH.length > 0 && listH.some(y => y.code == x.code) &&
                         <Button variant='contained' color='default'>
                           <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
                         </Button>
