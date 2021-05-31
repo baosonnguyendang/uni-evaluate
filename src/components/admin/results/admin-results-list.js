@@ -193,7 +193,7 @@ export default function ResultsList(props) {
                   </Typography>
                   <div>
                     <ul>
-                      {units.map(unit => {
+                      {units.filter(x => x.department_code != 'HDDG').map(unit => {
                         return (
                           <li key={unit._id} ><Link to={`${url}/${unit.department_code}`}>{unit.name}</Link></li>
                         )

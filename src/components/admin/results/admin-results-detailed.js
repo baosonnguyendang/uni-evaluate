@@ -21,6 +21,8 @@ export default function ResultsDetailed() {
   const [data, setData] = useState([]) //đổ dữ liệu đã đánh giá vào form
   const [loading, setLoading] = useState(false)
 
+  const [point, setPoint] = useState(0)
+
   useEffect(() => {
     setLoading(true)
     axios.get(`/admin/userForm/${id3}/get`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -35,10 +37,19 @@ export default function ResultsDetailed() {
               res.data.evaluateForms.map(level => {
                 let arr = []
                 level.evaluateCriteria.map(criteria => {
-                  arr.push({name: criteria.form_criteria.criteria_id.code, value: criteria.point})
+                  arr.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point })
                 })
                 total.push(arr)
               })
+              if (total.length > 2) {
+                let pts = 0
+                total[2].map(x => {
+                  if (x.value != null) {
+                    pts += parseInt(x.value)
+                  }
+                })
+                setPoint(pts)
+              }
               setData(total.slice())
             }
             setLoading(false)
@@ -112,7 +123,7 @@ export default function ResultsDetailed() {
                               {criteria.options.length > 0 ? null :
                                 <input
                                   disabled
-                                  checked={data.length > 2 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                  checked={data.length > 2 && data[2].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                   type="checkbox"
                                   name={criteria.criteria_id.code + '_3'}
                                   value={criteria.point} />}
@@ -143,7 +154,7 @@ export default function ResultsDetailed() {
                               <TableCell align='center' colSpan={1}>
                                 <input
                                   disabled
-                                  checked={data.length > 2 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                  checked={data.length > 2 && data[2].find(y => (y.name == criteria.criteria_id.code && y.value == option.max_point))}
                                   type="radio"
                                   name={criteria.criteria_id.code + '_3'}
                                   value={option.max_point}
@@ -161,7 +172,7 @@ export default function ResultsDetailed() {
           </Grid>
         )}
       </div>
-      <h5 style={{ marginTop: '30px' }}>Điểm đánh giá: 0</h5>
+      <h5 style={{ marginTop: '30px' }}>Điểm đánh giá: {point}</h5>
     </div>
   )
 }

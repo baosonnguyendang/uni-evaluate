@@ -41,7 +41,6 @@ const CustomTableCell = ({ row, name }) => {
     )
   }
   else {
-
     return (
       <TableCell>
         {name === 'link' ? (row.status != 'Chưa đánh giá' ? (<Link to={`${url}/` + row._id} >{row[name]}</Link>) : null) : (row[name])}
