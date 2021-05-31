@@ -18,10 +18,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import EditIcon from "@material-ui/icons/EditOutlined";
-import DoneIcon from "@material-ui/icons/DoneAllTwoTone";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
-import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
@@ -88,28 +86,18 @@ const createData = (name, code, description, point, type) => ({
   isEditMode: false
 });
 
-const CustomTableCell = ({ row, name, onChange }) => {
+const CustomTableCell = ({ row, name }) => {
   const classes = useStyles();
-  const { isEditMode } = row;
   let { url } = useRouteMatch();
 
   return (
     <TableCell align="left" className={classes.tableCell}>
-      {isEditMode ? (
-        <Input
-          value={row[name]}
-          name={name}
-          onChange={e => onChange(e, row)}
-          className={classes.input}
-        />
-      ) : (
+      {
         name === 'name' ? (<Link to={`${url}/${row['code']}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
-      )}
+      }
     </TableCell>
   );
 };
-
-// component={Link} href={window.location.href + '/a'}
 
 export default function Criteria() {
   const [rows, setRows] = React.useState([
@@ -137,32 +125,6 @@ export default function Criteria() {
     fetchCriteriaOfStandard()
   }, [])
 
-  const onToggleEditMode = id => {
-    setRows(state => {
-      return rows.map(row => {
-        if (row._id === id) {
-          return { ...row, isEditMode: !row.isEditMode };
-        }
-        return row;
-      });
-    });
-  };
-
-  const onChange = (e, row) => {
-    if (!previous[row.id]) {
-      setPrevious(state => ({ ...state, [row.id]: row }));
-    }
-    const value = e.target.value;
-    const name = e.target.name;
-    const { id } = row;
-    const newRows = rows.map(row => {
-      if (row._id === id) {
-        return { ...row, [name]: value };
-      }
-      return row;
-    });
-    setRows(newRows);
-  };
   // loading add criterion
   const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
@@ -195,29 +157,26 @@ export default function Criteria() {
       })
   }
 
-  const onRevert = id => {
-    const newRows = rows.map(row => {
-      if (row._id === id) {
-        return previous[id] ? previous[id] : row;
-      }
-      return row;
-    });
-    setRows(newRows);
-    setPrevious(state => {
-      delete state[id];
-      return state;
-    });
-    onToggleEditMode(id);
-  };
 
   //open modal
-  const [open, setOpen] = React.useState(false);
+  const [modal, setModal] = React.useState({open:false, id:''});
   const handleOpen = () => {
-    setOpen(true);
+    setModal({open:true, id:''});
   };
   const handleClose = () => {
-    setOpen(false);
+    setModal({...modal,open:false});
   };
+  const onEdit = id => {
+    rows.forEach(u => {
+      if (u.code === id){
+        setCode(id)
+        setName(u.name)
+        setDescription(u.description)
+        setType(u.type)
+      }
+    })
+    setModal({open:true, id})
+  }
 
   //sumbit form tao tieu chi
   const submitAddCriteria = (e) => {
@@ -282,31 +241,14 @@ export default function Criteria() {
               <TableBody>
                 {rows.map(row => (
                   <TableRow key={row._id}>
-                    <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
-                    <CustomTableCell {...{ row, name: "description", onChange }} />
-                    <CustomTableCell {...{ row, name: "type", onChange }} />
+                    <CustomTableCell className={classes.number} {...{ row, name: "code" }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "name" }} />
+                    <CustomTableCell {...{ row, name: "description" }} />
+                    <CustomTableCell {...{ row, name: "type" }} />
                     <TableCell className={classes.selectTableCell}>
-                      {row.isEditMode ? (
-                        <>
-                          <IconButton
-                            aria-label="done"
-                            onClick={() => onToggleEditMode(row._id)}
-                          >
-                            <DoneIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="revert"
-                            onClick={() => onRevert(row._id)}
-                          >
-                            <RevertIcon />
-                          </IconButton>
-                        </>
-                      ) : (
-                        <>
                           <IconButton
                             aria-label="delete"
-                            onClick={() => onToggleEditMode(row._id)}
+                            onClick={() => onEdit(row.code)}
                           >
                             <EditIcon />
                           </IconButton>
@@ -316,14 +258,16 @@ export default function Criteria() {
                           >
                             <DeleteIcon />
                           </IconButton>
-                        </>
-                      )}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-            <div style={{ margin: '10px', textAlign: 'right' }}>
+              {rows.length === 0 && <Typography variant='body1' >Không có tiêu chí</Typography>}
+            <div style={{margin: 10, justifyContent:'space-between', display: 'flex' }}>
+              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+                Khôi phục
+              </Button>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                 Tạo tiêu chí mới
               </Button>
@@ -331,7 +275,7 @@ export default function Criteria() {
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 className={classes.modal}
-                open={open}
+                open={modal.open}
                 onClose={handleClose}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
@@ -339,13 +283,13 @@ export default function Criteria() {
                   timeout: 500,
                 }}
               >
-                <Fade in={open}>
+                <Fade in={modal.open}>
                   <div className={classes.paper1}>
-                    <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm tiêu chí</Typography>
+                    <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? "Cập nhật tiêu chí" : 'Thêm tiêu chí'}</Typography>
                     <form onSubmit={submitAddCriteria}>
-                      <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth autoFocus className={classes.field} />
-                      <TextField onChange={e => setName(e.target.value)} id="name" required label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} />
-                      <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" className={classes.field} />
+                      <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth autoFocus className={classes.field} defaultValue={modal.id && code} />
+                      <TextField onChange={e => setName(e.target.value)} id="name" required label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} defaultValue={modal.id && name} />
+                      <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" className={classes.field} defaultValue={modal.id && description} />
                       <FormControl fullWidth variant="outlined"  >
                         <InputLabel >Kiểu đánh giá</InputLabel>
                         <Select
@@ -362,7 +306,7 @@ export default function Criteria() {
                         </Select>
                       </FormControl>
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddCriteria}>Tạo</Button>
+                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddCriteria}>{modal.id ? "Cập nhật" : 'Tạo'}</Button>
                         <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                       </div>
                     </form>

@@ -289,15 +289,18 @@ export default function Criterion() {
               onChangePage={handleChangePage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-            <div style={{ margin: '10px', textAlign: 'right' }}>
-              <div>
+            <div style={{ margin: '10px', display: 'flex' }}>
+              <div style={{ flexGrow: 1 }}>
+              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+                  Khôi phục
+                </Button>
+              </div>
                 <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                   Thêm đơn vị
                 </Button>
                 <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                   import file
                 </Button>
-              </div>
               <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"

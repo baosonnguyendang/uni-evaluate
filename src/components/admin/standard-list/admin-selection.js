@@ -120,8 +120,8 @@ export default function Selection() {
     axios.get(`/admin/criteria/${id}/option`, config)
       .then(res => {
         const selections = res.data.criteriaOptions;
-        setRows(selections.map(op => createData(op.code, op.name, op.description, op.max_point)))
-        setPrevious(selections.map(op => createData(op.code, op.name, op.description, op.max_point)))
+        console.log(selections)
+        setRows(res.data.criteriaOptions)
         // setIsLoading(false)
       })
   }
@@ -161,29 +161,25 @@ export default function Selection() {
     setRows(newRows)
   }
 
-  const onRevert = id => {
-    const newRows = rows.map(row => {
-      if (row.id === id) {
-        return previous[id] ? previous[id] : row;
-      }
-      return row;
-    });
-    setRows(newRows);
-    setPrevious(state => {
-      delete state[id];
-      return state;
-    });
-    onToggleEditMode(id);
-  };
-
   //open modal
-  const [open, setOpen] = React.useState(false);
+  const [modal, setModal] = React.useState({ open: false, id: '' });
   const handleOpen = () => {
-    setOpen(true);
+    setModal({ open: true, id: '' });
   };
   const handleClose = () => {
-    setOpen(false);
+    setModal({ ...modal, open: false });
   };
+  const onEdit = id => {
+    rows.forEach(u => {
+      if (u.code === id) {
+        setCode(id)
+        setName(u.name)
+        setDescription(u.description)
+        setPoint(u.max_point)
+      }
+    })
+    setModal({ open: true, id })
+  }
 
   // Tạo lựa chọn
   const submitAddSelection = (e) => {
@@ -208,9 +204,9 @@ export default function Selection() {
 
   //get data from new criterion
   const [name, setName] = React.useState('')
-  const [code, setC] = React.useState('')
-  const [description, setD] = React.useState('')
-  const [point, setP] = React.useState(0)
+  const [code, setCode] = React.useState('')
+  const [description, setDescription] = React.useState('')
+  const [point, setPoint] = React.useState(0)
   const submit = e => {
     e.preventDefault()
     setRows(rows => [...rows, createData(code, name, description, point)])
@@ -244,47 +240,29 @@ export default function Selection() {
               <TableBody>
                 {rows.map(row => (
                   <TableRow key={row.id}>
-                    <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
-                    <CustomTableCell className={classes.number} {...{ row, name: "code", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "code", onChange }} />
+                    <CustomTableCell className={classes.number} {...{ row, name: "name", onChange }} />
                     <CustomTableCell {...{ row, name: "description", onChange }} />
-                    <CustomTableCell {...{ row, name: "point", onChange }} />
+                    <CustomTableCell {...{ row, name: "max_point", onChange }} />
                     <TableCell className={classes.selectTableCell}>
-                      {row.isEditMode ? (
-                        <>
-                          <IconButton
-                            aria-label="done"
-                            onClick={() => onToggleEditMode(row.id)}
-                          >
-                            <DoneIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="revert"
-                            onClick={() => onRevert(row.id)}
-                          >
-                            <RevertIcon />
-                          </IconButton>
-                        </>
-                      ) : (
-                        <>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => onToggleEditMode(row.id)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => onDelete(row.id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </>
-                      )}
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => onEdit(row.code)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => onDelete(row.code)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            {rows.length === 0 && <Typography variant='body1' >Không có tiêu chí</Typography>}
             <div style={{ margin: '10px', textAlign: 'right' }}>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                 Thêm lựa chọn
@@ -293,7 +271,7 @@ export default function Selection() {
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 className={classes.modal}
-                open={open}
+                open={modal.open}
                 onClose={handleClose}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
@@ -301,16 +279,16 @@ export default function Selection() {
                   timeout: 500,
                 }}
               >
-                <Fade in={open}>
+                <Fade in={modal.open}>
                   <div className={classes.paper1}>
-                    <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm lựa chọn</Typography>
+                    <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? "Cập nhật lựa chọn" : 'Thêm lựa chọn'}</Typography>
                     <form onSubmit={submitAddSelection}>
-                      <TextField onChange={e => setC(e.target.value)} id="code" label="Mã" variant="outlined" fullWidth autoFocus required className={classes.field} />
-                      <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth required className={classes.field} />
-                      <TextField onChange={e => setD(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" className={classes.field} />
-                      <TextField onChange={e => setP(e.target.value)} id="point" label="Điểm" type="number" fullWidth required variant="outlined" className={classes.field} />
+                      <TextField onChange={e => setCode(e.target.value)} id="code" label="Mã" variant="outlined" fullWidth autoFocus required className={classes.field} defaultValue={modal.id && code} />
+                      <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth required className={classes.field} defaultValue={modal.id && name} />
+                      <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" className={classes.field} defaultValue={modal.id && description} />
+                      <TextField onChange={e => setPoint(e.target.value)} id="point" label="Điểm" type="number" fullWidth required variant="outlined" className={classes.field} defaultValue={modal.id && point} />
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                        <Button style={{ marginRight: '10px' }} variant="contained" color="primary" onClick={submitAddSelection}>Tạo</Button>
+                        <Button style={{ marginRight: '10px' }} variant="contained" color="primary" onClick={submitAddSelection}>{modal.id ? "Cập nhật" : 'Tạo'}</Button>
                         <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                       </div>
                     </form>

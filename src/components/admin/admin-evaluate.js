@@ -76,8 +76,8 @@ function NumberList(props) {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    paddingBottom: '10px',
-    marginTop: '15px'
+    marginTop: '15px',
+    overflowX: "auto"
   },
   modal: {
     display: 'flex',
@@ -92,6 +92,10 @@ const useStyles = makeStyles((theme) => ({
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  },
+  btn: {
+    marginRight: 5,
+    minWidth: 180,
   },
 }));
 
@@ -155,10 +159,10 @@ export default function EvaluateList() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã đơn vị đã tồn tại', severity: "error" })
+            setToast({ open: true, time: 3000, message: 'Mã đợt đánh giá đã tồn tại', severity: "error" })
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Tạo đơn vị thất bại', severity: "error" })
+            setToast({ open: true, time: 3000, message: 'Tạo đợt đánh giá thất bại', severity: "error" })
             break;
         }
         setLoading(false)
@@ -168,11 +172,11 @@ export default function EvaluateList() {
     // console.log(number)
     // console.log(listEvaluate)
   }
-  const [selectedDate, handleDateChange] = useState(new Date());
   // loading thêm đợt
   const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
   const handleCloseToast = () => setToast({ ...toast, open: false })
+  
   return (
     <>
       { !number ? <Skeleton /> : <div>
@@ -183,7 +187,12 @@ export default function EvaluateList() {
       </Typography>
         <Paper className={classes.paper}>
           <NumberList numbers={number} />
-          <Button style={{ marginLeft: 10 }} variant="contained" type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
+          <div style={{margin: 10, justifyContent:'space-between', display: 'flex' }}>
+              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+                Khôi phục
+              </Button>
+          <Button variant="contained" color='primary' type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
+          </div>
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"

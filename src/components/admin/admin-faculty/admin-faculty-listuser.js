@@ -18,7 +18,6 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import DoneIcon from "@material-ui/icons/DoneAllTwoTone";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
-import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
@@ -84,11 +83,12 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const CustomTableCell = ({ row, name, onChange }) => {
+const CustomTableCell = ({ row, name }) => {
     const classes = useStyles();
+    let { url } = useRouteMatch();
     return (
         <TableCell align="left" className={classes.tableCell}>
-            {row[name]}
+            {name === 'namedepartment' ? (<Link to={`/admin/faculty/${row['department_code']}`} style={{ color: 'black' }}>{row['name']}</Link>) : (row[name])}
         </TableCell>
     );
 };
@@ -104,50 +104,34 @@ const UserOfFaculty = () => {
     const [nameDept, setLNameDept] = useState('')
     const [children, setChildren] = useState([])
     const fetchChildren = () => {
-        axios.get(`/admin/department/${id}/children`, { headers: { "Authorization": `Bearer ${token}` } })
+        return axios.get(`/admin/department/${id}/children`, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
                 console.log(res.data);
                 setLNameDept(res.data.parent.name)
                 setChildren(res.data.children)
-                setIsLoading(false)
             })
             .catch(err => {
                 console.log(err)
-                setIsLoading(false)
             })
     }
     const fetchUserOfFaculty = () => {
         return axios.get(`/admin/department/${id}/user`, { headers: { "Authorization": `Bearer ${token}` } })
-                .then(res => {
-                    console.log(res.data);
-                    setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
-                    setIsLoading(false)
-                })
-                .catch(err => {
-                    console.log(err)
-                    setIsLoading(false)
-                })
-        
+            .then(res => {
+                console.log(res.data);
+                setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
     }
     useEffect(() => {
         setIsLoading(true)
-        fetchUserOfFaculty()
-        fetchChildren()
+        Promise.all([fetchUserOfFaculty(), fetchChildren()])
+            .then(res => {
+                setIsLoading(false)
+            })
     }, [id])
-
-    const onChange = (e, row) => {
-        const value = e.target.value;
-        const name = e.target.name;
-        const { _id } = row;
-        const newRows = rows.map(row => {
-            if (row._id === _id) {
-                return { ...row, [name]: value };
-            }
-            return row;
-        });
-        setRows(newRows);
-    };
-
     //qua trang
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -238,21 +222,21 @@ const UserOfFaculty = () => {
     const deleteUserWithAPI = (iduser) => {
         setLoading(true)
         closeDialog()
-        axios.post(`/admin/department/${id}/user/${iduser}/delete`,{},{ headers: { "Authorization": `Bearer ${token}` } })
-          .then(res => {
-            const newRows = rows.filter(row => row.staff_id !== iduser)
-            setRows(newRows)
-            setToast({ open: true, time: 3000, message: 'Xoá người dùng thành công', severity: 'success' })
-            setLoading(false)
-          })
-          .catch(err => {
-            console.log(err.response.status)
-            setLoading(false)
-          })
-      }
+        axios.post(`/admin/department/${id}/user/${iduser}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => {
+                const newRows = rows.filter(row => row.staff_id !== iduser)
+                setRows(newRows)
+                setToast({ open: true, time: 3000, message: 'Xoá người dùng thành công', severity: 'success' })
+                setLoading(false)
+            })
+            .catch(err => {
+                console.log(err.response.status)
+                setLoading(false)
+            })
+    }
     const onDelete = id => {
         setStatusDelete({ open: true, onClick: () => deleteUserWithAPI(id) })
-      }
+    }
 
     const closeDialog = () => {
         setStatusDelete({ open: false })
@@ -282,11 +266,11 @@ const UserOfFaculty = () => {
                                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                     return (
                                         <TableRow key={row._id}>
-                                            <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange }} />
-                                            <CustomTableCell className={classes.name} {...{ row, name: "lastname", onChange }} />
-                                            <CustomTableCell {...{ row, name: "firstname", onChange }} />
-                                            <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
-                                            <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
+                                            <CustomTableCell className={classes.name} {...{ row, name: "staff_id" }} />
+                                            <CustomTableCell className={classes.name} {...{ row, name: "lastname", }} />
+                                            <CustomTableCell className={classes.name} {...{ row, name: "firstname", }} />
+                                            <CustomTableCell className={classes.name} {...{ row, name: "email", }} />
+                                            <CustomTableCell className={classes.name} {...{ row, name: "department", }} />
                                             <TableCell className={classes.selectTableCell}>
                                                 <IconButton
                                                     aria-label="delete"
@@ -379,21 +363,62 @@ const UserOfFaculty = () => {
                     </Paper>
                     {children.length !== 0 && (
                         <>
-                            <Typography component="h1" variant="h5" color="inherit" noWrap onClick={() => id=10}>
+                            <Typography component="h1" variant="h5" color="inherit" noWrap onClick={() => id = 10}>
                                 DANH SÁCH ĐƠN VỊ TRỰC THUỘC
                             </Typography>
-                            <List component="nav" aria-label="main mailbox folders">
-                                {children.map(c => (
-                                    <ListItem button key={c._id} component={Link} to={`/admin/faculty/${c.department_code}`}>
-                                        <ListItemText primary={c.name} />
-                                    </ListItem>
-                                ))}
-                            </List>
+                            <Paper className={classes.root}>
+                                <Table className={classes.table} aria-label="caption table">
+                                    <TableHead>
+                                        <TableRow style={{ backgroundColor: '#f4f4f4' }}>
+                                            <TableCell align="left">ID</TableCell>
+                                            <TableCell align="left">Tên đơn vị</TableCell>
+                                            <TableCell className={classes.name} align="left">Trưởng đơn vị</TableCell>
+                                            <TableCell align="left">ID Trưởng đơn vị</TableCell>
+                                            <TableCell align="left" />
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {children.map((row) => {
+                                            return (
+                                                <TableRow key={row.department_code}>
+                                                    <CustomTableCell {...{ row, name: "department_code", }} />
+                                                    <CustomTableCell  {...{ row, name: "namedepartment", }} />
+                                                    <CustomTableCell  {...{ row, name: "namemanager", }} />
+                                                    <CustomTableCell  {...{ row, name: "idmanager", }} />
+                                                    <TableCell className={classes.selectTableCell}>
+                                                        <IconButton
+                                                            aria-label="delete"
+                                                            onClick={() => onDelete(row._id)}
+                                                        >
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                        <IconButton
+                                                            aria-label="delete"
+                                                            onClick={() => onDelete(row._id)}
+                                                        >
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                                <div style={{ margin: 10, justifyContent: 'space-between', display: 'flex' }}>
+                                    <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+                                        Khôi phục
+                                    </Button>
+                                    <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                                        Thêm vị mới
+                                    </Button>
+                                </div>
+                            </Paper>
+
                         </>)}
+                        </>
+                    )}
                 </>
-            )}
-        </>
-    )
-}
+            )
+            }
 
 export default UserOfFaculty

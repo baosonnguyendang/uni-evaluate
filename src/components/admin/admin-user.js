@@ -97,17 +97,17 @@ export default function ListUser() {
   const token = localStorage.getItem('token')
   const fetchUser = () => {
     return axios.get('/admin/user', { headers: { "Authorization": `Bearer ${token}` } })
-            .then(res => {
-              console.log(res.data.users);
-              setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
-              setFilterUser(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ")})))
-              console.log(rows)
-              setIsLoading(false)
-            })
-            .catch(err => {
-              console.log(err.response)
-              setIsLoading(false)
-            })
+      .then(res => {
+        console.log(res.data.users);
+        setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
+        setFilterUser(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
+        console.log(rows)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.log(err.response)
+        setIsLoading(false)
+      })
   }
   // Danh sách đơn vị
   const [units, setUnits] = useState([])
@@ -143,7 +143,7 @@ export default function ListUser() {
   const deleteUserWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/user/${id}/delete`,{},{ headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/user/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         const newRows = rows.filter(row => row.staff_id !== id)
         setRows(newRows)
@@ -165,7 +165,7 @@ export default function ListUser() {
   }
   const onEdit = id => {
     filterUser.forEach(u => {
-      if (u.staff_id === id){
+      if (u.staff_id === id) {
         setId(id)
         setFname(u.firstname)
         setLname(u.lastname)
@@ -173,7 +173,7 @@ export default function ListUser() {
         setRole(u.roles)
       }
     })
-    setOpen({open:true, id})
+    setModal({ open: true, id })
   }
 
   //qua trang
@@ -190,12 +190,12 @@ export default function ListUser() {
   };
 
   //open modal
-  const [open, setOpen] = React.useState({open:false, id:''});
+  const [modal, setModal] = React.useState({ open: false, id: '' });
   const handleOpen = () => {
-    setOpen({open:true, id:''});
+    setModal({ open: true, id: '' });
   };
   const handleClose = () => {
-    setOpen({...open,open:false});
+    setModal({ ...modal, open: false });
     setNewUnit('')
   };
 
@@ -209,18 +209,18 @@ export default function ListUser() {
     setRole(e.target.value)
   }
   // edit user
-  // open.id là id user đang được edit
+  // modal.id là id user đang được edit
   const submitEditUser = (e) => {
     e.preventDefault()
-    const body = {new_ucode: id,fname, lname, email, roles:role}
+    const body = { new_ucode: id, fname, lname, email, roles: role }
     setLoading(true)
-    console.log(open.id)
+    console.log(modal.id)
 
     handleClose()
-    axios.post(`/admin/user/${open.id}/edit`,body,{ headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/user/${modal.id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        setRows(rows.map(r => r.staff_id === open.id ? {...r, staff_id:id, firstname:fname, lastname: lname, roles: role, email} : r))
-        setFilterUser(rows.map(r => r.staff_id === open.id ? {...r, staff_id:id, firstname:fname, lastname: lname, roles: role, email} : r))
+        setRows(rows.map(r => r.staff_id === modal.id ? { ...r, staff_id: id, firstname: fname, lastname: lname, roles: role, email } : r))
+        setFilterUser(rows.map(r => r.staff_id === modal.id ? { ...r, staff_id: id, firstname: fname, lastname: lname, roles: role, email } : r))
         setToast({ open: true, time: 3000, message: 'Cập nhật thông tin thành công', severity: "success" })
         setLoading(false)
       })
@@ -244,7 +244,7 @@ export default function ListUser() {
     setLoading(true)
     const body = { id, lname, fname, email, dcode: newUnit }
     handleClose()
-    axios.post('/admin/user/add', body , { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post('/admin/user/add', body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         fetchUser().then((res) => {
           setToast({ open: true, time: 3000, message: 'Thêm người dùng thành công', severity: "success" })
@@ -295,12 +295,12 @@ export default function ListUser() {
         <Toast toast={toast} handleClose={handleCloseToast} />
         <Loading open={loading} />
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography component="h1" variant="h5" color="inherit" noWrap>
-          DANH SÁCH NGƯỜI DÙNG
+          <Typography component="h1" variant="h5" color="inherit" noWrap>
+            DANH SÁCH NGƯỜI DÙNG
         </Typography>
-        <TextField id="standard-basic" label="Tìm kiếm" onChange={searchUser} />
+          <TextField id="standard-basic" label="Tìm kiếm" onChange={searchUser} />
         </div>
-        
+
         <Paper className={classes.root}>
           <Table className={classes.table} aria-label="caption table">
             <TableHead>
@@ -318,7 +318,7 @@ export default function ListUser() {
               {filterUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow key={row._id}>
-                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange, value :{fname} }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange, value: { fname } }} />
                     <CustomTableCell className={classes.name} {...{ row, name: "lastname", onChange }} />
                     <CustomTableCell className={classes.name} {...{ row, name: "firstname", onChange }} />
                     <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
@@ -353,20 +353,23 @@ export default function ListUser() {
             onChangeRowsPerPage={handleChangeRowsPerPage}
           /> : <Typography variant='body1'>Không tồn tại người dùng</Typography>}
 
-          <div style={{ margin: '10px', textAlign: 'right' }}>
-            <div>
-              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-                Thêm người dùng
-           </Button>
-              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-                Import file
-           </Button>
+          <div style={{ margin: '10px', display: 'flex' }}>
+            <div style={{ flexGrow: 1 }}>
+              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+                Khôi phục
+                </Button>
             </div>
+            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+              Thêm người dùng
+           </Button>
+            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+              Import file
+           </Button>
             <Modal
               aria-labelledby="transition-modal-title"
               aria-describedby="transition-modal-description"
               className={classes.modal}
-              open={open.open}
+              open={modal.open}
               onClose={handleClose}
               closeAfterTransition
               BackdropComponent={Backdrop}
@@ -374,47 +377,47 @@ export default function ListUser() {
                 timeout: 500,
               }}
             >
-              <Fade in={open.open}>
+              <Fade in={modal.open}>
                 <div className={classes.paper1}>
-                  <Typography variant='h5' gutterBottom id="transition-modal-title">{open.id ? 'Cập nhật thông tin' : 'Thêm người dùng'}</Typography>
-                  <form onSubmit={open.id ? submitEditUser : submit}>
-                    <TextField onChange={e => setId(e.target.value)} fullWidth defaultValue={open.id && id} autoFocus required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setLname(e.target.value)} defaultValue={open.id && lname} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setFname(e.target.value)} required defaultValue={open.id && fname} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setEmail(e.target.value)} required defaultValue={open.id && email} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
-                    
-                    {open.id ? 
-                    <FormControl variant="outlined" fullWidth className={classes.formControl}>
-                      <InputLabel htmlFor="outlined-newUnit-native">Vai trò</InputLabel>
-                      <Select
-                        native
-                        required
-                        value={role}
-                        label='Vai trò'
-                        onChange={handleChangeRole}
-                      >
-                        <option aria-label="None" value="user">User</option>
-                        <option aria-label="None" value="admin">Admin</option>
-                      </Select>
-                    </FormControl> : 
-                    <FormControl variant="outlined" fullWidth disabled={!!open.id} className={classes.formControl}>
-                    <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
-                    <Select
-                      native
-                      required
-                      value={newUnit}
-                      label='Đơn vị'
-                      onChange={handleChangeUnit}
-                    >
-                      <option aria-label="None" value="" />
-                      {units.map(u => <option key={u._id} value={u.department_code}>{u.name}</option>)}
-                    </Select>
-                  </FormControl>
-                  }
-                    
+                  <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật thông tin' : 'Thêm người dùng'}</Typography>
+                  <form onSubmit={modal.id ? submitEditUser : submit}>
+                    <TextField onChange={e => setId(e.target.value)} fullWidth defaultValue={modal.id && id} autoFocus required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setLname(e.target.value)} defaultValue={modal.id && lname} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setFname(e.target.value)} required defaultValue={modal.id && fname} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setEmail(e.target.value)} required defaultValue={modal.id && email} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+
+                    {modal.id ?
+                      <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                        <InputLabel htmlFor="outlined-newUnit-native">Vai trò</InputLabel>
+                        <Select
+                          native
+                          required
+                          value={role}
+                          label='Vai trò'
+                          onChange={handleChangeRole}
+                        >
+                          <option aria-label="None" value="user">User</option>
+                          <option aria-label="None" value="admin">Admin</option>
+                        </Select>
+                      </FormControl> :
+                      <FormControl variant="outlined" fullWidth disabled={!!modal.id} className={classes.formControl}>
+                        <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
+                        <Select
+                          native
+                          required
+                          value={newUnit}
+                          label='Đơn vị'
+                          onChange={handleChangeUnit}
+                        >
+                          <option aria-label="None" value="" />
+                          {units.map(u => <option key={u._id} value={u.department_code}>{u.name}</option>)}
+                        </Select>
+                      </FormControl>
+                    }
+
                     {/* <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth className={classes.field} /> */}
                     <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                      <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >{open.id ? 'Cập nhật' : 'Tạo'}</Button>
+                      <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >{modal.id ? 'Cập nhật' : 'Tạo'}</Button>
                       <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                     </div>
                   </form>
