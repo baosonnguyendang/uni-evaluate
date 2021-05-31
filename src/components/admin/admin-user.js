@@ -124,19 +124,6 @@ export default function ListUser() {
 
 
   const classes = useStyles();
-
-  const onChange = (e, row) => {
-    const value = e.target.value;
-    const name = e.target.name;
-    const { _id } = row;
-    const newRows = rows.map(row => {
-      if (row._id === _id) {
-        return { ...row, [name]: value };
-      }
-      return row;
-    });
-    setRows(newRows);
-  };
   // modal xoá
   const [statusDelete, setStatusDelete] = useState({ open: false })
   // xoá user vs api
@@ -318,12 +305,12 @@ export default function ListUser() {
               {filterUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow key={row._id}>
-                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange, value: { fname } }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "lastname", onChange }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "firstname", onChange }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "roles", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id",}} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "lastname",  }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "firstname",  }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "email",  }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "department",  }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "roles",  }} />
                     <TableCell className={classes.selectTableCell}>
                       <IconButton
                         aria-label="update"
@@ -381,13 +368,13 @@ export default function ListUser() {
                 <div className={classes.paper1}>
                   <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật thông tin' : 'Thêm người dùng'}</Typography>
                   <form onSubmit={modal.id ? submitEditUser : submit}>
-                    <TextField onChange={e => setId(e.target.value)} fullWidth defaultValue={modal.id && id} autoFocus required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setLname(e.target.value)} defaultValue={modal.id && lname} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setFname(e.target.value)} required defaultValue={modal.id && fname} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setEmail(e.target.value)} required defaultValue={modal.id && email} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                    <TextField onChange={e => setId(e.target.value)} fullWidth defaultValue={modal.id && id} autoFocus required id="id" label="ID" variant="outlined" fullWidth margin='normal' />
+                    <TextField onChange={e => setLname(e.target.value)} defaultValue={modal.id && lname} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth margin='normal' />
+                    <TextField onChange={e => setFname(e.target.value)} required defaultValue={modal.id && fname} id="fname" label="Tên" variant="outlined" fullWidth margin='normal' />
+                    <TextField onChange={e => setEmail(e.target.value)} required defaultValue={modal.id && email} id="email" label="Email" multiline variant="outlined" fullWidth margin='normal' />
 
                     {modal.id ?
-                      <FormControl variant="outlined" fullWidth className={classes.formControl}>
+                      <FormControl variant="outlined" margin='normal' fullWidth className={classes.formControl}>
                         <InputLabel htmlFor="outlined-newUnit-native">Vai trò</InputLabel>
                         <Select
                           native
@@ -400,7 +387,7 @@ export default function ListUser() {
                           <option aria-label="None" value="admin">Admin</option>
                         </Select>
                       </FormControl> :
-                      <FormControl variant="outlined" fullWidth disabled={!!modal.id} className={classes.formControl}>
+                      <FormControl variant="outlined" margin='normal' fullWidth disabled={!!modal.id} className={classes.formControl}>
                         <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
                         <Select
                           native
@@ -415,7 +402,7 @@ export default function ListUser() {
                       </FormControl>
                     }
 
-                    {/* <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth className={classes.field} /> */}
+                    {/* <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth margin='normal' /> */}
                     <div style={{ textAlign: 'center', marginTop: '10px' }}>
                       <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >{modal.id ? 'Cập nhật' : 'Tạo'}</Button>
                       <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>

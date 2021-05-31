@@ -317,11 +317,11 @@ export default function Criterion() {
                   <div className={classes.paper1}>
                     <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm đơn vị</Typography>
                     <form onSubmit={submitAddDepartment}>
-                      <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required className={classes.field} />
-                      <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth required className={classes.field} />
-                      <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" className={classes.field} />
-                      {/* <TextField onChange={e => setN(e.target.value)} id="unit" label="Đơn vị" variant="outlined" fullWidth className={classes.field} /> */}
-                      <FormControl variant="outlined" fullWidth className={classes.field}>
+                      <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required margin='normal' />
+                      <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth required margin='normal' />
+                      <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" margin='normal' />
+                      {/* <TextField onChange={e => setN(e.target.value)} id="unit" label="Đơn vị" variant="outlined" fullWidth margin='normal' /> */}
+                      <FormControl variant="outlined" fullWidth margin='normal'>
                         <InputLabel htmlFor="outlined-newUnit-native">Thuộc đơn vị</InputLabel>
                         <Select
                           native
