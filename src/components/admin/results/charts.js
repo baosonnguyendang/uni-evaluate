@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Bar, Line, Pie, Doughnut  } from 'react-chartjs-2'
+import { Bar, Line, Pie, Doughnut } from 'react-chartjs-2'
 
 export default function Chart(props) {
   return (
@@ -8,18 +8,11 @@ export default function Chart(props) {
       {(() => {
         switch (props.type) {
           case 0:
+            console.log(props.options)
             return (
               <Bar
                 data={props.chartData}
-                options={{
-                  legend: {
-                    display: props.displayLegend,
-                    position: props.legendPosition,
-                    labels: {
-                      fontColor: '#000'
-                    }
-                  }
-                }}
+                options={props.options}
               />
             )
           case 1:

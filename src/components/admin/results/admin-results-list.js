@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     marginTop: '24px',
     display: 'inline-block',
+    width: '23%'
   },
   number: {
     textAlign: 'center'
@@ -53,6 +54,14 @@ export default function ResultsList(props) {
   //lấy ít data vẽ lên biểu đồ
   const [chartData, setChartData] = useState({})
   const [chartData2, setChartData2] = useState({})
+  const [chartOptions2, setChartOptions2] = useState({})
+  //array gom so nguoi tham gia va khong tham gia
+  const [participate, setParicipate] = useState([])
+
+  const [range, setRange] = useState([0, 0, 0, 0, 0, 0])
+
+  //diem so
+  const [point, setPoint] = useState([0])
 
   const getChartData = () => {
     setChartData({
@@ -62,14 +71,26 @@ export default function ResultsList(props) {
       ],
       datasets: [
         {
-          data: [70, 3],
-          //backgroundColor:'green',
+          data: [participate[0], participate[1]],
           backgroundColor: [
             'rgba(255, 99, 132, 0.6)',
             'rgba(54, 162, 235, 0.6)',
           ]
         }
       ]
+    })
+    setChartOptions2({
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              max: 30,
+              min: 0,
+              stepSize:2
+            }
+          }
+        ]
+      }
     })
     setChartData2({
       labels: [
@@ -83,7 +104,7 @@ export default function ResultsList(props) {
       datasets: [
         {
           label: 'Số GV/VC',
-          data: [1, 9, 25, 15, 10, 10],
+          data: range,
           //backgroundColor:'green',
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
@@ -100,10 +121,26 @@ export default function ResultsList(props) {
 
   //lấy mã form
   useEffect(() => {
-    getChartData()
     axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         if (res.data.form) {
+          axios.get(`/admin/form/${res.data.form.code}/getPoints`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => {
+              console.log(res.data)
+              setPoint([...res.data.userforms])
+              let dat = []
+              dat[0] = res.data.userforms.filter(x => x < 50).length
+              dat[1] = res.data.userforms.filter(x => x >= 50 && x < 60).length
+              dat[2] = res.data.userforms.filter(x => x >= 60 && x < 70).length
+              dat[3] = res.data.userforms.filter(x => x >= 70 && x < 80).length
+              dat[4] = res.data.userforms.filter(x => x >= 80 && x < 90).length
+              dat[5] = res.data.userforms.filter(x => x >= 90).length
+              setRange([...dat])
+              setParicipate(participate => [res.data.userforms.length, res.data.total - res.data.userforms.length])
+            })
+            .catch(err => {
+              console.log(err)
+            })
           // setCode(res.data.form.code)
           setCode(res.data.form.code)
           //lấy các đơn vị cha nằm trong đợt đánh giá
@@ -121,6 +158,10 @@ export default function ResultsList(props) {
       })
   }, [])
 
+  useEffect(() => {
+    getChartData()
+  }, [participate])
+
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
@@ -131,34 +172,34 @@ export default function ResultsList(props) {
           case 0:
             return (
               <div>
-                <div style={{width: '90%', display: 'inline-flex', justifyContent: 'space-between'}}>
+                <div style={{ width: '90%', display: 'inline-flex', justifyContent: 'space-between' }}>
                   <Card className={classes.root}>
                     <CardContent>
-                      <Typography color="textSecondary" gutterBottom>
-                        Word of the Day
+                      <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
+                        {participate[0] + participate[1]}
                       </Typography>
-                      <Typography variant="body2" component="p">
-                        well meaning and kindly.
+                      <Typography align='center' variant="body2" component="p">
+                        Tổng số GV/VC tham gia đánh giá
                       </Typography>
                     </CardContent>
                   </Card>
                   <Card className={classes.root}>
                     <CardContent>
-                      <Typography color="textSecondary" gutterBottom>
-                        Word of the Day
+                      <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
+                        {Math.max(...point)}
                       </Typography>
-                      <Typography variant="body2" component="p">
-                        well meaning and kindly.
+                      <Typography align='center' variant="body2" component="p">
+                        Điểm số cao nhất trong Form
                       </Typography>
                     </CardContent>
                   </Card>
                   <Card className={classes.root}>
-                    <CardContent>
-                      <Typography color="textSecondary" gutterBottom>
-                        Word of the Day
+                  <CardContent>
+                    <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
+                        {Math.min(...point)}
                       </Typography>
-                      <Typography variant="body2" component="p">
-                        well meaning and kindly.
+                      <Typography align='center' variant="body2" component="p">
+                        Điểm số thấp nhất trong Form
                       </Typography>
                     </CardContent>
                   </Card>
@@ -178,7 +219,7 @@ export default function ResultsList(props) {
                     <Charts data={chartData} type={2} title={'Số GV/VC đánh giá'} />
                   </Paper>
                   <Paper style={{ width: '64.3%', height: '100%', float: 'right', padding: '10px', display: 'inline-block' }}>
-                    <Charts data={chartData2} type={0} title={'Phân bố điểm'} />
+                    <Charts data={chartData2} type={0} options={chartOptions2} title={'Phân bố điểm'} />
                   </Paper>
                 </div>
                 <Button onClick={() => { setValue(1) }} variant="contained" color="primary"> Nhấn vào đây để xem kết quả chi tiết</Button>
@@ -200,7 +241,10 @@ export default function ResultsList(props) {
                       })}
                     </ul>
                   </div>
-                  <Button style={{ position: 'absolute', bottom: '10px' }} variant="contained" color="secondary" onClick={() => { setValue(0) }}>Trở lại trang thống kê chung</Button>
+                  <div style={{ position: 'absolute', bottom: '10px' }}>
+                    <Button variant="contained" color="secondary" onClick={() => { setValue(0) }}>Trở lại trang thống kê chung</Button>
+                    <Button style={{ marginLeft: 10 }} variant="contained" color="inherit" onClick={() => { setValue(0) }}>Xem chi tiết GV/VC</Button>
+                  </div>
                 </Paper>
               </div>
             )
