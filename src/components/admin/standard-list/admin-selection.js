@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory, useRouteMatch } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
 import Link from '@material-ui/core/Link'
@@ -18,10 +17,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import EditIcon from "@material-ui/icons/EditOutlined";
-import DoneIcon from "@material-ui/icons/DoneAllTwoTone";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
-import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
@@ -81,47 +78,27 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const createData = (name, code, description, point) => ({
-  id: code,
-  name,
-  code,
-  description,
-  point,
-  isEditMode: false
-});
-
-const CustomTableCell = ({ row, name, onChange }) => {
+const CustomTableCell = ({ row, name,}) => {
   const classes = useStyles();
-  const { isEditMode } = row;
   return (
     <TableCell align="left" className={classes.tableCell}>
-      {isEditMode ? (
-        <Input
-          value={row[name]}
-          name={name}
-          onChange={e => onChange(e, row)}
-          className={classes.input}
-        />
-      ) : (
-        row[name]
-      )}
+      { row[name] }
     </TableCell>
   );
 };
 
-// component={Link} href={window.location.href + '/a'}
 
 export default function Selection() {
   const [rows, setRows] = React.useState(null);
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
-  const { id } = useParams();
+  const { id1 } = useParams();
   //token
   const token = localStorage.getItem('token');
   const config = { headers: { "Authorization": `Bearer ${token}` } };
 
   const fetchSelection = () => {
-    axios.get(`/admin/criteria/${id}/option`, config)
+    axios.get(`/admin/criteria/${id1}/option`, config)
       .then(res => {
         const selections = res.data.criteriaOptions;
         console.log(selections)
@@ -132,33 +109,6 @@ export default function Selection() {
   useEffect(() => {
     fetchSelection()
   }, [])
-
-  const onToggleEditMode = id => {
-    setRows(state => {
-      return rows.map(row => {
-        if (row.id === id) {
-          return { ...row, isEditMode: !row.isEditMode };
-        }
-        return row;
-      });
-    });
-  };
-
-  const onChange = (e, row) => {
-    if (!previous[row.id]) {
-      setPrevious(state => ({ ...state, [row.id]: row }));
-    }
-    const value = e.target.value;
-    const name = e.target.name;
-    let { id } = row;
-    const newRows = rows.map(row => {
-      if (row.id === id) {
-        return { ...row, [name]: value };
-      }
-      return row;
-    });
-    setRows(newRows);
-  };
   // modal xoá
   const [statusDelete, setStatusDelete] = useState({ open: false })
   const closeDialog = () => {
@@ -248,7 +198,7 @@ export default function Selection() {
       max_point: point,
       description
     }
-    axios.post(`/admin/criteria/${id}/addCriteriaOption`, body, config)
+    axios.post(`/admin/criteria/${id1}/addCriteriaOption`, body, config)
       .then(res => {
         console.log(res.data);
         setRows(row => [...row, { name, code, description, max_point: point }])
@@ -277,12 +227,17 @@ export default function Selection() {
   const [point, setPoint] = React.useState(0)
 
   function Criteria() {
-    let { id } = useParams();
+    let { id1 } = useParams();
     return (
       < Typography component="h1" variant="h5" color="inherit" noWrap >
-        Tiêu chí { id} - DS lựa chọn
+        Tiêu chí { id1} - DS lựa chọn
       </Typography >
     )
+  }
+  let history = useHistory();
+  let { url } = useRouteMatch();
+  const redirectStorePage = () => {
+    history.push(`${url}/deleted`)
   }
 
   return (
@@ -307,10 +262,10 @@ export default function Selection() {
               <TableBody>
                 {rows.map(row => (
                   <TableRow key={row._id}>
-                    <CustomTableCell className={classes.name} {...{ row, name: "code", onChange }} />
-                    <CustomTableCell className={classes.number} {...{ row, name: "name", onChange }} />
-                    <CustomTableCell {...{ row, name: "description", onChange }} />
-                    <CustomTableCell {...{ row, name: "max_point", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "code",}} />
+                    <CustomTableCell className={classes.number} {...{ row, name: "name",}} />
+                    <CustomTableCell {...{ row, name: "description",}} />
+                    <CustomTableCell {...{ row, name: "max_point",}} />
                     <TableCell className={classes.selectTableCell}>
                       <IconButton
                         aria-label="delete"
@@ -331,7 +286,7 @@ export default function Selection() {
               </TableBody>
             </Table>
             <div style={{ margin: 10, justifyContent: 'space-between', display: 'flex' }}>
-              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+              <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                 Khôi phục
               </Button>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>

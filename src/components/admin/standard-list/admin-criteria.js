@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useRouteMatch } from 'react-router-dom';
+import { Link, useParams, useRouteMatch, useHistory } from 'react-router-dom';
 
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -240,7 +240,11 @@ export default function Criteria() {
   const handleChangeType = (event) => {
     setType(event.target.value);
   };
-
+  let history = useHistory();
+  let { url } = useRouteMatch();
+  const redirectStorePage = () => {
+    history.push(`${url}/deleted`)
+  }
   return (
     <>
       {isLoading ? <Skeleton /> : (
@@ -289,7 +293,7 @@ export default function Criteria() {
               </TableBody>
             </Table>
             <div style={{ margin: 10, justifyContent: 'space-between', display: 'flex' }}>
-              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+              <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                 Khôi phục
               </Button>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>

@@ -7,7 +7,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from "@material-ui/core/TableRow";
-import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
@@ -15,17 +14,12 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import EditIcon from "@material-ui/icons/EditOutlined";
-import DoneIcon from "@material-ui/icons/DoneAllTwoTone";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
 import Skeleton from '../../common/skeleton'
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import { Link, useRouteMatch } from 'react-router-dom'
 import Toast from '../../common/snackbar'
 import Loading from '../../common/Loading'
@@ -42,6 +36,7 @@ const useStyles = makeStyles(theme => ({
         minWidth: 650
     },
     selectTableCell: {
+        width: 120,
         paddingRight: 0,
     },
     tableCell: {
@@ -271,7 +266,7 @@ const UserOfFaculty = () => {
                                             <CustomTableCell className={classes.name} {...{ row, name: "firstname", }} />
                                             <CustomTableCell className={classes.name} {...{ row, name: "email", }} />
                                             <CustomTableCell className={classes.name} {...{ row, name: "department", }} />
-                                            <TableCell className={classes.selectTableCell}>
+                                            <TableCell align="right" >
                                                 <IconButton
                                                     aria-label="delete"
                                                     onClick={() => onDelete(row.staff_id)}
@@ -409,7 +404,7 @@ const UserOfFaculty = () => {
                                         Khôi phục
                                     </Button>
                                     <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-                                        Thêm vị mới
+                                        Thêm đơn vị mới
                                     </Button>
                                 </div>
                             </Paper>

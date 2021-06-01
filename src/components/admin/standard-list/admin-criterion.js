@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import { Link, useParams } from 'react-router-dom';
-import ButtonCustom from '../../common/ButtonCustom'
+import { Link, useRouteMatch, useHistory } from 'react-router-dom';
+
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -90,6 +90,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
 };
 
 export default function Criterion() {
+  const { url } = useRouteMatch()
   const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
   const token = localStorage.getItem('token')
@@ -110,19 +111,6 @@ export default function Criterion() {
   }, [])
 
   const classes = useStyles();
-
-  const onChange = (e, row) => {
-    const value = e.target.value;
-    const name = e.target.name;
-    const { _id } = row;
-    const newRows = rows.map(row => {
-      if (row._id === _id) {
-        return { ...row, [name]: value };
-      }
-      return row;
-    });
-    setRows(newRows);
-  };
 
   const onDelete = id => {
     setStatusDelete({ open: true, onClick: () => deleteStandardWithAPI(id) })
@@ -245,6 +233,10 @@ export default function Criterion() {
         setLoading(false)
       })
   }
+  let history = useHistory();
+  const redirectStorePage = () => {
+    history.push(`${url}/deleted`)
+  }
   return (
     <>
       { isLoading ? <Skeleton /> :
@@ -269,9 +261,9 @@ export default function Criterion() {
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                   return (
                     <TableRow key={row._id}>
-                      <CustomTableCell {...{ row, name: "code", onChange }} />
-                      <CustomTableCell {...{ row, name: "name", onChange }} />
-                      <CustomTableCell {...{ row, name: "description", onChange }} />
+                      <CustomTableCell {...{ row, name: "code" }} />
+                      <CustomTableCell {...{ row, name: "name" }} />
+                      <CustomTableCell {...{ row, name: "description" }} />
                       <TableCell className={classes.selectTableCell}>
                         <IconButton
                           aria-label="delete"
@@ -302,7 +294,7 @@ export default function Criterion() {
               onChangeRowsPerPage={handleChangeRowsPerPage}
             />
             <div style={{ margin: 10, justifyContent: 'space-between', display: 'flex' }}>
-              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+              <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                 Khôi phục
               </Button>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>

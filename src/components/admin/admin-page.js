@@ -25,6 +25,11 @@ import Sub from './admin-sub'
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
+import DeletedCriterion from './RestoreList/DeletedCriterion'
+import DeletedCriteria from './RestoreList/DeletedCriteria'
+import DeletedSelection from './RestoreList/DeletedSelection'
+import DeletedFaculty from './RestoreList/DeletedFaculty'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -69,8 +74,10 @@ const AdminPage = () => {
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
+              <Switch>
               <Route exact path='/admin/user' component={UserTable} />
               <Route exact path='/admin/faculty' children={<Faculty />} />
+              <Route exact path='/admin/faculty/deleted' children={<DeletedFaculty />} />
               <Route exact path='/admin/faculty/:id' children={<UserOfFaculty />} />
               <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
               <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
@@ -79,9 +86,13 @@ const AdminPage = () => {
               <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2/:id3' children={<ResultsDetailed />} />
               <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<ResultsList />} />
               <Route exact path='/admin/criterion' children={<Criterion />} />
-              <Route exact path='/admin/criteria/' children={<Sub />} />
+              <Route exact path='/admin/criterion/deleted' children={<DeletedCriterion />} />
               <Route exact path='/admin/criterion/:id' children={<Criteria />} />
-              <Route exact path='/admin/criterion/:id/:id' children={<Selection />} />
+              <Route exact path='/admin/criterion/:id/deleted' children={<DeletedCriteria />} />
+              <Route exact path='/admin/criterion/:id/:id1' children={<Selection />} />
+              <Route exact path='/admin/criterion/:id/:id1/deleted' children={<DeletedSelection />} />
+              <Route exact path='/admin/criteria/' children={<Sub />} />
+              </Switch>
             </Grid>
           </Grid>
         </Container>
