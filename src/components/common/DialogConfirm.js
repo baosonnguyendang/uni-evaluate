@@ -7,7 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
-export default function AlertDialog({ openDialog = false, onClick, onClose }) {
+export default function AlertDialog({ openDialog = false, onClick, onClose, text }) {
     return (
         <>
             <Dialog
@@ -23,8 +23,8 @@ export default function AlertDialog({ openDialog = false, onClick, onClose }) {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Bạn có thực sự muốn xoá ?
-                </DialogContentText>
+                        {text ? text : 'Bạn có thực sự muốn xoá ?'}
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button  onClick={onClose} variant="contained" >

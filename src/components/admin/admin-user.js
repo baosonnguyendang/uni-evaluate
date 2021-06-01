@@ -29,6 +29,7 @@ import Skeleton from '../common/skeleton'
 import Toast from '../common/snackbar'
 import Loading from '../common/Loading'
 import DialogConfirm from '../common/DialogConfirm'
+import UpLoadFile from '../common/UpLoadFile'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -82,9 +83,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const CustomTableCell = ({ row, name, onChange }) => {
+const CustomTableCell = ({ row, name }) => {
   const classes = useStyles();
-  const { isEditMode } = row;
   return (
     <TableCell align="left" className={classes.tableCell}>
       {row[name]}
@@ -124,19 +124,6 @@ export default function ListUser() {
 
 
   const classes = useStyles();
-
-  const onChange = (e, row) => {
-    const value = e.target.value;
-    const name = e.target.name;
-    const { _id } = row;
-    const newRows = rows.map(row => {
-      if (row._id === _id) {
-        return { ...row, [name]: value };
-      }
-      return row;
-    });
-    setRows(newRows);
-  };
   // modal xoá
   const [statusDelete, setStatusDelete] = useState({ open: false })
   // xoá user vs api
@@ -192,6 +179,7 @@ export default function ListUser() {
   //open modal
   const [modal, setModal] = React.useState({ open: false, id: '' });
   const handleOpen = () => {
+    setOpenImport(false)
     setModal({ open: true, id: '' });
   };
   const handleClose = () => {
@@ -288,6 +276,17 @@ export default function ListUser() {
     setFilterUser(temp)
     setPage(0);
   }
+  // open import
+  const [openImport, setOpenImport] = useState(false)
+  const handleOpenImport = () => {
+    handleOpen()
+    setOpenImport(true)
+  }
+  // submit file excel
+  const submitExcel = (e) => {
+    e.preventDefault()
+    console.log(e.target.files[0].name)
+  }
   return (<>
     { isLoading ? <Skeleton /> : (
       <>
@@ -318,12 +317,12 @@ export default function ListUser() {
               {filterUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow key={row._id}>
-                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id", onChange, value: { fname } }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "lastname", onChange }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "firstname", onChange }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "email", onChange }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "department", onChange }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "roles", onChange }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id", }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "lastname", }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "firstname", }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "email", }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "department", }} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "roles", }} />
                     <TableCell className={classes.selectTableCell}>
                       <IconButton
                         aria-label="update"
@@ -357,13 +356,13 @@ export default function ListUser() {
             <div style={{ flexGrow: 1 }}>
               <Button variant="contained" className={classes.btn} onClick={handleOpen}>
                 Khôi phục
-                </Button>
+              </Button>
             </div>
             <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
               Thêm người dùng
            </Button>
-            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-              Import file
+            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenImport}>
+              Import File
            </Button>
             <Modal
               aria-labelledby="transition-modal-title"
@@ -379,49 +378,55 @@ export default function ListUser() {
             >
               <Fade in={modal.open}>
                 <div className={classes.paper1}>
-                  <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật thông tin' : 'Thêm người dùng'}</Typography>
-                  <form onSubmit={modal.id ? submitEditUser : submit}>
-                    <TextField onChange={e => setId(e.target.value)} fullWidth defaultValue={modal.id && id} autoFocus required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setLname(e.target.value)} defaultValue={modal.id && lname} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setFname(e.target.value)} required defaultValue={modal.id && fname} id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                    <TextField onChange={e => setEmail(e.target.value)} required defaultValue={modal.id && email} id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                  {!openImport ?
+                    <>
+                      <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật thông tin' : 'Thêm người dùng'}</Typography>
+                      <form onSubmit={modal.id ? submitEditUser : submit}>
+                        <TextField onChange={e => setId(e.target.value)} fullWidth defaultValue={modal.id && id} autoFocus required id="id" label="ID" variant="outlined" fullWidth margin='normal' />
+                        <TextField onChange={e => setLname(e.target.value)} defaultValue={modal.id && lname} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth margin='normal' />
+                        <TextField onChange={e => setFname(e.target.value)} required defaultValue={modal.id && fname} id="fname" label="Tên" variant="outlined" fullWidth margin='normal' />
+                        <TextField onChange={e => setEmail(e.target.value)} required defaultValue={modal.id && email} id="email" label="Email" multiline variant="outlined" fullWidth margin='normal' />
 
-                    {modal.id ?
-                      <FormControl variant="outlined" fullWidth className={classes.formControl}>
-                        <InputLabel htmlFor="outlined-newUnit-native">Vai trò</InputLabel>
-                        <Select
-                          native
-                          required
-                          value={role}
-                          label='Vai trò'
-                          onChange={handleChangeRole}
-                        >
-                          <option aria-label="None" value="user">User</option>
-                          <option aria-label="None" value="admin">Admin</option>
-                        </Select>
-                      </FormControl> :
-                      <FormControl variant="outlined" fullWidth disabled={!!modal.id} className={classes.formControl}>
-                        <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
-                        <Select
-                          native
-                          required
-                          value={newUnit}
-                          label='Đơn vị'
-                          onChange={handleChangeUnit}
-                        >
-                          <option aria-label="None" value="" />
-                          {units.map(u => <option key={u._id} value={u.department_code}>{u.name}</option>)}
-                        </Select>
-                      </FormControl>
-                    }
+                        {modal.id ?
+                          <FormControl variant="outlined" margin='normal' fullWidth className={classes.formControl}>
+                            <InputLabel htmlFor="outlined-newUnit-native">Vai trò</InputLabel>
+                            <Select
+                              native
+                              required
+                              value={role}
+                              label='Vai trò'
+                              onChange={handleChangeRole}
+                            >
+                              <option aria-label="None" value="user">User</option>
+                              <option aria-label="None" value="admin">Admin</option>
+                            </Select>
+                          </FormControl> :
+                          <FormControl variant="outlined" margin='normal' fullWidth disabled={!!modal.id} className={classes.formControl}>
+                            <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
+                            <Select
+                              native
+                              required
+                              value={newUnit}
+                              label='Đơn vị'
+                              onChange={handleChangeUnit}
+                            >
+                              <option aria-label="None" value="" />
+                              {units.map(u => <option key={u._id} value={u.department_code}>{u.name}</option>)}
+                            </Select>
+                          </FormControl>
+                        }
 
-                    {/* <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth className={classes.field} /> */}
-                    <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                      <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >{modal.id ? 'Cập nhật' : 'Tạo'}</Button>
-                      <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
-                    </div>
-                  </form>
+                        {/* <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth margin='normal' /> */}
+                        <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                          <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >{modal.id ? 'Cập nhật' : 'Tạo'}</Button>
+                          <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                        </div>
+                      </form>
+                    </> : 
+                    <UpLoadFile handleClose={handleClose} submit={submitExcel}/>}
                 </div>
+
+
               </Fade>
             </Modal>
           </div>

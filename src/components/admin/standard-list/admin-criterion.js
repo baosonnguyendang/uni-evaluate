@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import { Link, useParams } from 'react-router-dom';
-import ButtonCustom from '../../common/ButtonCustom'
+import { Link, useRouteMatch, useHistory } from 'react-router-dom';
+
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -90,6 +90,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
 };
 
 export default function Criterion() {
+  const { url } = useRouteMatch()
   const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
   const token = localStorage.getItem('token')
@@ -111,19 +112,6 @@ export default function Criterion() {
 
   const classes = useStyles();
 
-  const onChange = (e, row) => {
-    const value = e.target.value;
-    const name = e.target.name;
-    const { _id } = row;
-    const newRows = rows.map(row => {
-      if (row._id === _id) {
-        return { ...row, [name]: value };
-      }
-      return row;
-    });
-    setRows(newRows);
-  };
-
   const onDelete = id => {
     setStatusDelete({ open: true, onClick: () => deleteStandardWithAPI(id) })
   }
@@ -132,7 +120,7 @@ export default function Criterion() {
   const deleteStandardWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/user/${id}/delete`,{},{ headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/standard/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -199,22 +187,55 @@ export default function Criterion() {
   const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
   const handleCloseToast = () => setToast({ ...toast, open: false })
   //open modal
-  const [modal, setModal] = React.useState({open:false, id:''});
+  const [modal, setModal] = React.useState({ open: false, id: '' });
   const handleOpen = () => {
-    setModal({open:true, id:''});
+    setModal({ open: true, id: '' });
   };
   const handleClose = () => {
-    setModal({...modal,open:false});
+    setModal({ ...modal, open: false });
   };
   const onEdit = id => {
     rows.forEach(u => {
-      if (u.code === id){
+      if (u.code === id) {
         setCode(id)
         setName(u.name)
         setDescription(u.description)
       }
     })
-    setModal({open:true, id})
+    setModal({ open: true, id })
+  }
+  const editCriterion = (e, id) => {
+    e.preventDefault()
+    console.log(modal.id)
+    console.log(id)
+
+    const body = { new_ccode: code, name, description }
+    setLoading(true)
+
+    handleClose()
+    axios.post(`/admin/standard/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        setRows(rows.map(r => r.code === id ? { ...r, code, name, description } : r))
+        setToast({ open: true, time: 3000, message: 'Cập nhật tiêu chuẩn thành công', severity: "success" })
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        console.log(err.response)
+        switch (err.response?.status) {
+          case 409:
+            setToast({ open: true, time: 3000, message: 'Mã tiêu chuẩn đã tồn tại', severity: "error" })
+            break;
+          default:
+            setToast({ open: true, time: 3000, message: 'Cập nhật tiêu chuẩn thất bại', severity: "error" })
+            break;
+        }
+        setLoading(false)
+      })
+  }
+  let history = useHistory();
+  const redirectStorePage = () => {
+    history.push(`${url}/deleted`)
   }
   return (
     <>
@@ -240,30 +261,30 @@ export default function Criterion() {
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                   return (
                     <TableRow key={row._id}>
-                      <CustomTableCell {...{ row, name: "code", onChange }} />
-                      <CustomTableCell {...{ row, name: "name", onChange }} />
-                      <CustomTableCell {...{ row, name: "description", onChange }} />
+                      <CustomTableCell {...{ row, name: "code" }} />
+                      <CustomTableCell {...{ row, name: "name" }} />
+                      <CustomTableCell {...{ row, name: "description" }} />
                       <TableCell className={classes.selectTableCell}>
-                            <IconButton
-                              aria-label="delete"
-                              onClick={() => onEdit(row.code)}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton
-                              aria-label="delete"
-                              onClick={() => onDelete(row.code)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => onEdit(row.code)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => onDelete(row.code)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   )
                 })}
+                {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không có tiêu chuẩn</TableCell></TableRow>}
               </TableBody>
             </Table>
-            {rows.length === 0 ? <Typography variant='body1' >Không có tiêu chuẩn</Typography> 
-            : <TablePagination
+            <TablePagination
               rowsPerPageOptions={[5, 10, 20]}
               component="div"
               count={rows.length}
@@ -272,9 +293,8 @@ export default function Criterion() {
               onChangePage={handleChangePage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-            }
-            <div style={{margin: 10, justifyContent:'space-between', display: 'flex' }}>
-              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+            <div style={{ margin: 10, justifyContent: 'space-between', display: 'flex' }}>
+              <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                 Khôi phục
               </Button>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
@@ -293,13 +313,13 @@ export default function Criterion() {
                 <Fade in={modal.open}>
                   <div className={classes.paper1}>
                     <Typography variant="h5" gutterBottom color="inherit" noWrap>{modal.id ? "Cập nhật tiêu chuẩn" : 'Thêm tiêu chuẩn'}</Typography>
-                    <form onSubmit={submit}>
-                      <TextField autoFocus required onChange={e => setCode(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth className={classes.field} defaultValue={modal.id && code} />
-                      <TextField required onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth className={classes.field} defaultValue={modal.id && name}  />
-                      <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" className={classes.field} defaultValue={modal.id && description}  />
+                    <form onSubmit={modal.id ? (e) => editCriterion(e, modal.id) : submit}>
+                      <TextField autoFocus required onChange={e => setCode(e.target.value)} id="code" label="Mã tiêu chuẩn" variant="outlined" fullWidth margin='normal' defaultValue={modal.id && code} />
+                      <TextField required onChange={e => setName(e.target.value)} id="name" label="Tên tiêu chuẩn" variant="outlined" fullWidth margin='normal' defaultValue={modal.id && name} />
+                      <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline variant="outlined" fullWidth margin='normal' defaultValue={modal.id && description} />
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
                         <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">{modal.id ? "Cập nhật" : 'Tạo'}</Button>
-                        <Button style={{ marginRight: '10px' }} handleButtonClick={handleClose} onClick={handleClose} variant="contained" color="primary">Huỷ</Button>
+                        <Button style={{ marginRight: '10px' }} onClick={handleClose} variant="contained" color="primary">Huỷ</Button>
                       </div>
                     </form>
                   </div>

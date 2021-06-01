@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useRouteMatch, useHistory } from "react-router-dom";
 import ButtonCustom from '../../common/ButtonCustom'
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -30,6 +30,7 @@ import axios from 'axios'
 import Skeleton from '../../common/skeleton'
 import Toast from '../../common/snackbar'
 import Loading from '../../common/Loading'
+import DialogConfirm from '../../common/DialogConfirm'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -106,48 +107,38 @@ export default function Criterion() {
   }, [])
   const classes = useStyles();
 
-  const CustomTableCell = ({ row, name, onChange, ...rest }) => {
+  const CustomTableCell = ({ row, name, ...rest }) => {
     return (
       <TableCell align="left" className={classes.tableCell} {...rest}>
         {name === 'name' ? (<Link to={`${url}/${row.department_code}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])}
       </TableCell>
     );
   };
-  const onToggleEditMode = id => {
-    setPrevious([...rows])
-    console.log(rows)
-    setRows(state => {
-      return rows.map(row => {
-        if (row._id === id) {
-          return { ...row, isEditMode: !row.isEditMode };
-        }
-        return row;
-      });
-    });
-  };
-
-  const onChange = (e, row) => {
-    const value = e.target.value;
-    const name = e.target.name;
-    const { _id } = row;
-    const newRows = rows.map(row => {
-      if (row._id === _id) {
-        return { ...row, [name]: value };
-      }
-      return row;
-    });
-    setRows(newRows);
-  };
-
+  // modal xoá
+  const [statusDelete, setStatusDelete] = useState({ open: false })
   const onDelete = id => {
-    const newRows = rows.filter(row => row._id !== id)
-    setRows(newRows)
+    setStatusDelete({ open: true, onClick: () => deleteDeptWithAPI(id) })
   }
-
-  const onRevert = id => {
-    setRows([...previous])
-  };
-
+  const closeDialog = () => {
+    setStatusDelete({ open: false })
+  }
+  // xoá dept vs api
+  const deleteDeptWithAPI = (id) => {
+    setLoading(true)
+    closeDialog()
+    axios.post(`/admin/department/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        const newRows = rows.filter(row => row.department_code !== id)
+        setRows(newRows)
+        setToast({ open: true, time: 3000, message: 'Xoá đơn vị thành công', severity: 'success' })
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err.response.status)
+        setToast({ open: true, time: 3000, message: 'Xoá đơn vị thất bại', severity: 'error' })
+        setLoading(false)
+      })
+  }
   //qua trang
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -162,7 +153,6 @@ export default function Criterion() {
   };
 
   //open modal, khi nay lay ds don vi cha tu be luon
-  const [open, setOpen] = React.useState(false);
   const [units, setUnits] = React.useState([])
   const handleOpen = () => {
     axios.get('admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
@@ -178,38 +168,36 @@ export default function Criterion() {
       .catch(e => {
         console.log(e)
       })
-    setOpen(true);
+    setModal({ open: true, id: '' });
   };
+  //open modal
+  const [modal, setModal] = React.useState({ open: false, id: '' });
   const handleClose = () => {
-    setOpen(false);
+    setModal({ ...modal, open: false });
+    setNewUnit('')
   };
-  // loading add unit
-  const [loading, setLoading] = useState(false)
-  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-  const handleCloseToast = () => setToast({ ...toast, open: false })
-
-  //get data from new criterion
-  const [id, setId] = React.useState('')
-  const [name, setName] = React.useState('')
-  const [head, setHead] = React.useState('')
-
-  const submitAddDepartment = (e) => {
-    console.log(id, name, head, newUnit);
+  const onEdit = id => {
+    rows.forEach(u => {
+      if (u.department_code === id) {
+        setId(id)
+        setName(u.name)
+        setHeadUnit(u.manager?.staff_id)
+      }
+    })
+    setModal({ open: true, id })
+  }
+  // edit submit dept
+  const submitEditDept = (e, id) => {
     e.preventDefault()
+    const body = { new_dcode: id, name }
     setLoading(true)
-    const body = {
-      department_code: id,
-      name,
-      manager: head,
-      parent: newUnit
-    }
-    console.log(body)
-    handleClose();
-    axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
+    console.log(modal.id)
+
+    handleClose()
+    axios.post(`/admin/department/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        //console.log(res.data);
-        setToast({ open: true, time: 3000, message: 'Tạo đơn vị thành công', severity: "success" })
-        setRows(rows => [...rows, createData(id, name, null, head, newUnit)])
+        setRows(rows.map(r => r.department_code === id ? { ...r, department_code: id, name } : r))
+        setToast({ open: true, time: 3000, message: 'Cập nhật đơn vị thành công', severity: "success" })
         setLoading(false)
       })
       .catch(err => {
@@ -218,6 +206,53 @@ export default function Criterion() {
         switch (err.response?.status) {
           case 409:
             setToast({ open: true, time: 3000, message: 'Mã đơn vị đã tồn tại', severity: "error" })
+            break;
+          default:
+            setToast({ open: true, time: 3000, message: 'Cập nhật đơn vị thất bại', severity: "error" })
+            break;
+        }
+        setLoading(false)
+      })
+  }
+
+  // loading add unit
+  const [loading, setLoading] = useState(false)
+  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
+  const handleCloseToast = () => setToast({ ...toast, open: false })
+
+  //get data from new criterion
+  const [id, setId] = React.useState('')
+  const [name, setName] = React.useState('')
+  const [headUnit, setHeadUnit] = React.useState('')
+
+  const submitAddDepartment = (e) => {
+    console.log(id, name, headUnit, newUnit);
+    e.preventDefault()
+    setLoading(true)
+    const body = {
+      department_code: id,
+      name,
+      manager: headUnit,
+      parent: newUnit
+    }
+    console.log(body)
+    handleClose();
+    axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        //console.log(res.data);
+        setToast({ open: true, time: 3000, message: 'Tạo đơn vị thành công', severity: "success" })
+        setRows(rows => [...rows, {department_code:id, name, manager: headUnit, parent: newUnit}])
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        console.log(err.response)
+        switch (err.response?.status) {
+          case 409:
+            setToast({ open: true, time: 3000, message: 'Mã đơn vị đã tồn tại', severity: "error" })
+            break;
+          case 404:
+            setToast({ open: true, time: 3000, message: 'Mã trưởng đơn vị không đúng', severity: "error" })
             break;
           default:
             setToast({ open: true, time: 3000, message: 'Tạo đơn vị thất bại', severity: "error" })
@@ -232,11 +267,16 @@ export default function Criterion() {
   const handleChangeUnit = (event) => {
     setNewUnit(event.target.value);
   };
+  let history = useHistory();
 
+  const redirectStorePage = () => {
+    history.push(`${url}/deleted`)
+  }
   return (
     <>
       { isLoading ? <Skeleton /> : (
         <div>
+          <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
           <Toast toast={toast} handleClose={handleCloseToast} />
           <Loading open={loading} />
           <Typography component="h1" variant="h5" color="inherit" noWrap>
@@ -257,23 +297,23 @@ export default function Criterion() {
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                   return (
                     <TableRow key={row.department_code}>
-                      <CustomTableCell className={classes.number} {...{ row, name: "department_code", onChange }} />
-                      <CustomTableCell className={classes.name} {...{ row, name: "name", onChange }} />
-                      <CustomTableCell className={classes.name} {...{ row, name: "namemanager", onChange }} />
-                      <CustomTableCell className={classes.name} {...{ row, name: "idmanager", onChange }} />
+                      <CustomTableCell {...{ row, name: "department_code" }} />
+                      <CustomTableCell {...{ row, name: "name" }} />
+                      <CustomTableCell {...{ row, name: "namemanager" }} />
+                      <CustomTableCell {...{ row, name: "idmanager" }} />
                       <TableCell className={classes.selectTableCell}>
-                            <IconButton
-                              aria-label="delete"
-                              onClick={() => onToggleEditMode(row._id)}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton
-                              aria-label="delete"
-                              onClick={() => onDelete(row._id)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => onEdit(row.department_code)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => onDelete(row.department_code)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   )
@@ -291,21 +331,21 @@ export default function Criterion() {
             />
             <div style={{ margin: '10px', display: 'flex' }}>
               <div style={{ flexGrow: 1 }}>
-              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+                <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                   Khôi phục
                 </Button>
               </div>
-                <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-                  Thêm đơn vị
+              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                Thêm đơn vị
                 </Button>
-                <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-                  import file
+              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
+                import file
                 </Button>
               <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 className={classes.modal}
-                open={open}
+                open={modal.open}
                 onClose={handleClose}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
@@ -313,32 +353,32 @@ export default function Criterion() {
                   timeout: 500,
                 }}
               >
-                <Fade in={open}>
+                <Fade in={modal.open}>
                   <div className={classes.paper1}>
-                    <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm đơn vị</Typography>
-                    <form onSubmit={submitAddDepartment}>
-                      <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required className={classes.field} />
-                      <TextField onChange={e => setName(e.target.value)} id="fname" label="Tên" variant="outlined" fullWidth required className={classes.field} />
-                      <TextField onChange={e => setHead(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" className={classes.field} />
-                      {/* <TextField onChange={e => setN(e.target.value)} id="unit" label="Đơn vị" variant="outlined" fullWidth className={classes.field} /> */}
-                      <FormControl variant="outlined" fullWidth className={classes.field}>
-                        <InputLabel htmlFor="outlined-newUnit-native">Thuộc đơn vị</InputLabel>
-                        <Select
-                          native
-                          value={newUnit}
-                          label='Thuộc đơn vị'
-                          onChange={handleChangeUnit}
-                        >
-                          <option aria-label="None" value="" />
-                          {units.map(unit => {
-                            return (
-                              <option key={unit._id} value={unit.department_code}>{unit.name}</option>
-                            )
-                          })}
-                        </Select>
-                      </FormControl>
+                    <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật đơn vị' : "Thêm đơn vị"}</Typography>
+                    <form onSubmit={modal.id ? (e) => submitEditDept(e, modal.id) : submitAddDepartment}>
+                      <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && id} />
+                      <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && name} />
+                      {!modal.id && <TextField onChange={e => setHeadUnit(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" margin='normal' />}
+                      {!modal.id &&
+                        <FormControl variant="outlined" fullWidth margin='normal'>
+                          <InputLabel htmlFor="outlined-newUnit-native">Thuộc đơn vị</InputLabel>
+                          <Select
+                            native
+                            value={newUnit}
+                            label='Thuộc đơn vị'
+                            onChange={handleChangeUnit}
+                          >
+                            <option aria-label="None" value="" />
+                            {units.map(unit => {
+                              return (
+                                <option key={unit._id} value={unit.department_code}>{unit.name}</option>
+                              )
+                            })}
+                          </Select>
+                        </FormControl>}
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">Tạo</Button>
+                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">{modal.id ? "Cập nhật" : 'Tạo'}</Button>
                         <Button style={{ marginLeft: '10px' }} onClick={handleClose} variant="contained" color="primary">Thoát</Button>
                       </div>
                     </form>

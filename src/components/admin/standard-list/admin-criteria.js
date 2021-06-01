@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useRouteMatch } from 'react-router-dom';
+import { Link, useParams, useRouteMatch, useHistory } from 'react-router-dom';
 
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -28,6 +28,7 @@ import Toast from '../../common/snackbar'
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
+import { ErrorSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -73,18 +74,12 @@ const useStyles = makeStyles(theme => ({
   },
   field: {
     marginBottom: 10,
-  }
+  },
+  btn: {
+    marginRight: 5,
+    minWidth: 180,
+  },
 }));
-
-const createData = (name, code, description, point, type) => ({
-  id: code,
-  name,
-  code,
-  description,
-  point,
-  type,
-  isEditMode: false
-});
 
 const CustomTableCell = ({ row, name }) => {
   const classes = useStyles();
@@ -100,12 +95,7 @@ const CustomTableCell = ({ row, name }) => {
 };
 
 export default function Criteria() {
-  const [rows, setRows] = React.useState([
-    createData("Định mức giờ chuẩn hoàn thành", '00101', 'BÙm bùm bùm bùm', 5),
-    createData("Kết quả khảo sát chất lượng dịch vụ", '00102', 'Mô tảaaaaaaaaaaaaaaaaaaaaaa', 7),
-    createData("Hình thức giảng dạy khác", '00103', 'Description', 10)
-  ]);
-  const [previous, setPrevious] = React.useState({});
+  const [rows, setRows] = React.useState(null);
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true)
   const token = localStorage.getItem('token')
@@ -143,7 +133,7 @@ export default function Criteria() {
   const deleteCriteriaWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/user/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/criteria/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -159,29 +149,60 @@ export default function Criteria() {
 
 
   //open modal
-  const [modal, setModal] = React.useState({open:false, id:''});
+  const [modal, setModal] = React.useState({ open: false, id: '' });
   const handleOpen = () => {
-    setModal({open:true, id:''});
+    setModal({ open: true, id: '' });
   };
   const handleClose = () => {
-    setModal({...modal,open:false});
+    setModal({ ...modal, open: false });
+    setType('')
   };
   const onEdit = id => {
     rows.forEach(u => {
-      if (u.code === id){
+      if (u.code === id) {
         setCode(id)
         setName(u.name)
         setDescription(u.description)
         setType(u.type)
       }
     })
-    setModal({open:true, id})
+    setModal({ open: true, id })
+  }
+  //edit with api
+  const editCriteria = (e, id) => {
+    e.preventDefault()
+    const body = { new_ccode: code, name, description, type }
+    setLoading(true)
+    console.log(modal.id)
+
+    handleClose()
+    axios.post(`/admin/standard/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        setRows(rows.map(r => r.code === id ? { ...r, code, name, description, type } : r))
+        setToast({ open: true, time: 3000, message: 'Cập nhật tiêu chí thành công', severity: "success" })
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        console.log(err.response)
+        switch (err.response?.status) {
+          case 409:
+            setToast({ open: true, time: 3000, message: 'Mã tiêu chí đã tồn tại', severity: "error" })
+            break;
+          default:
+            setToast({ open: true, time: 3000, message: 'Cập nhật tiêu chí thất bại', severity: "error" })
+            break;
+        }
+        setLoading(false)
+      })
   }
 
   //sumbit form tao tieu chi
   const submitAddCriteria = (e) => {
     console.log(code, name, description, type);
     e.preventDefault()
+    setLoading(true)
+    handleClose()
     const body = {
       name,
       code,
@@ -192,14 +213,22 @@ export default function Criteria() {
       .then(res => {
         // chỗ này success thì fe tạo bảng
         console.log(res.data);
-        handleClose();
-        setRows(rows => [...rows, createData(name, code, description, point, type)])
-        // bỏ cái tạo bảng vô đây
+        setRows(row => [...row, { name, code, description, type }])
+        setToast({ open: true, time: 3000, message: 'Tạo tiêu chí thành công', severity: "success" })
+        setLoading(false)
       })
-      .catch(e => {
-        // lỗi thì ko
-        console.log(e);
-        alert('Lỗi khi thêm tiêu chí')
+      .catch(err => {
+        console.log(err)
+        console.log(err.response)
+        switch (err.response?.status) {
+          case 409:
+            setToast({ open: true, time: 3000, message: 'Mã tiêu chí đã tồn tại', severity: "error" })
+            break;
+          default:
+            setToast({ open: true, time: 3000, message: 'Tạo tiêu chí thất bại', severity: "error" })
+            break;
+        }
+        setLoading(false)
       })
   }
 
@@ -207,16 +236,15 @@ export default function Criteria() {
   const [name, setName] = React.useState('')
   const [code, setCode] = React.useState('')
   const [description, setDescription] = React.useState('')
-  const [point, setP] = React.useState(0)
   const [type, setType] = React.useState('');
   const handleChangeType = (event) => {
     setType(event.target.value);
   };
-  const submit = e => {
-    e.preventDefault()
-    setRows(rows => [...rows, createData(name, code, description, point, type)])
+  let history = useHistory();
+  let { url } = useRouteMatch();
+  const redirectStorePage = () => {
+    history.push(`${url}/deleted`)
   }
-
   return (
     <>
       {isLoading ? <Skeleton /> : (
@@ -246,26 +274,26 @@ export default function Criteria() {
                     <CustomTableCell {...{ row, name: "description" }} />
                     <CustomTableCell {...{ row, name: "type" }} />
                     <TableCell className={classes.selectTableCell}>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => onEdit(row.code)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => onDelete(row.code)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => onEdit(row.code)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => onDelete(row.code)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
+                {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không có tiêu chí</TableCell></TableRow>}
               </TableBody>
             </Table>
-              {rows.length === 0 && <Typography variant='body1' >Không có tiêu chí</Typography>}
-            <div style={{margin: 10, justifyContent:'space-between', display: 'flex' }}>
-              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+            <div style={{ margin: 10, justifyContent: 'space-between', display: 'flex' }}>
+              <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                 Khôi phục
               </Button>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
@@ -286,11 +314,11 @@ export default function Criteria() {
                 <Fade in={modal.open}>
                   <div className={classes.paper1}>
                     <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? "Cập nhật tiêu chí" : 'Thêm tiêu chí'}</Typography>
-                    <form onSubmit={submitAddCriteria}>
-                      <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth autoFocus className={classes.field} defaultValue={modal.id && code} />
-                      <TextField onChange={e => setName(e.target.value)} id="name" required label="Tên tiêu chí" variant="outlined" fullWidth className={classes.field} defaultValue={modal.id && name} />
-                      <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" className={classes.field} defaultValue={modal.id && description} />
-                      <FormControl fullWidth variant="outlined"  >
+                    <form onSubmit={modal.id ? ((e) => editCriteria(e, modal.id)) : submitAddCriteria}>
+                      <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth autoFocus margin='normal' defaultValue={modal.id && code} />
+                      <TextField onChange={e => setName(e.target.value)} id="name" required label="Tên tiêu chí" variant="outlined" fullWidth margin='normal' defaultValue={modal.id && name} />
+                      <TextField onChange={e => setDescription(e.target.value)} id="description" label="Mô tả" multiline fullWidth variant="outlined" margin='normal' defaultValue={modal.id && description} />
+                      <FormControl fullWidth variant="outlined" margin='normal' >
                         <InputLabel >Kiểu đánh giá</InputLabel>
                         <Select
                           native
@@ -306,7 +334,7 @@ export default function Criteria() {
                         </Select>
                       </FormControl>
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" onClick={submitAddCriteria}>{modal.id ? "Cập nhật" : 'Tạo'}</Button>
+                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">{modal.id ? "Cập nhật" : 'Tạo'}</Button>
                         <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                       </div>
                     </form>
