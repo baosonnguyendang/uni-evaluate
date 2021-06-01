@@ -60,10 +60,10 @@ export default function FormEvaluation(props) {
         let temp = []
         res.data.formStandards.map(standard => {
           standard.formCriteria.map(criteria => {
-            console.log(criteria.criteria_id.type)
             let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type != 'radio' ? 0 : null }
             temp.push(obj)
           })
+          console.log(temp)
         })
         //lấy dữ liệu đã làm nếu Form đã điền trước đó
         axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -100,6 +100,7 @@ export default function FormEvaluation(props) {
             else {
               setLoading(false)
             }
+            console.log(temp)
             setSent([...temp])
             setLuuTam([...temp])
             console.log('a')
@@ -346,6 +347,7 @@ export default function FormEvaluation(props) {
     switch (level) {
       case 1:
         let filter = sent.filter(y => y.value == null)
+        console.log(filter)
         if (filter.length > 0) {
           filter.map(x => {
             list.push(x.name)
@@ -389,8 +391,16 @@ export default function FormEvaluation(props) {
         })
     }
     else {
-      let noti = 'Các tiêu chuẩn sau chưa hoàn thành đánh giá:'
-      list.map(x => noti += '\n' + x)
+      let noti = 'Các tiêu chuẩn/tiêu chí sau chưa hoàn thành đánh giá:'
+      data.map(x => {
+        x.formCriteria.map(y => {
+          if (list.some(z => z == y.criteria_id.code)) {
+            noti += '\n' + x.standard_order + '.' + y.criteria_order
+          }
+        })
+      })
+
+      //list.map(x => noti += '\n' + x)
       alert(noti)
     }
   }
