@@ -121,7 +121,7 @@ export default function FormEvaluation(props) {
     let pts2 = 0
     let pts3 = 0
     if (loading === false) {
-      if (props.level == 1) {
+      if (props.level == 1 || disableEdit) {
         if (sent.length > 0) {
           sent.map(x => {
             if (x.value != null) {
@@ -131,11 +131,12 @@ export default function FormEvaluation(props) {
         }
         setPoint(pts)
       }
-      else if (props.level == 2 || (disableEdit2 && props.level < 3)) {
+      if (props.level == 2 || (disableEdit2)) {
+        let tam = 0
         all[0].map(x => {
-          pts += parseInt(x.value)
+          tam += parseInt(x.value)
         })
-        setPoint(pts)
+        setPoint(tam)
         all[1].map(x => {
           pts2 += parseInt(x.value)
         })
@@ -153,15 +154,17 @@ export default function FormEvaluation(props) {
         //   setPoint2(pts2)
         // }
       }
-      else if (props.level == 3 || disableEdit3) {
+      if (props.level == 3 || disableEdit3) {
+        let tam = 0
         all[0].map(x => {
-          pts += parseInt(x.value)
+          tam += parseInt(x.value)
         })
-        setPoint(pts)
+        setPoint(tam)
+        let tamm = 0
         all[1].map(x => {
-          pts2 += parseInt(x.value)
+          tamm += parseInt(x.value)
         })
-        setPoint2(pts2)
+        setPoint2(tamm)
         all[2].map(x => {
           pts3 += parseInt(x.value)
         })

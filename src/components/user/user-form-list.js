@@ -17,11 +17,15 @@ export default function FormList() {
   const [unit, setUnit] = useState([])
   const [listH, setListH] = useState([])
   const [loading, setLoading] = useState(false)
+  const [headH, setHeadH] = useState(false)
 
   const fetchHeadForm = () => {
     return axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
+        if (res.data.formDepartment.some(x => x.department_id.department_code == 'HDDG')){
+          setHeadH(true)
+        }
         if (res.data.formDepartment.length > 0) {
           setIsHeadUnit(true)
           let t = []
@@ -110,7 +114,7 @@ export default function FormList() {
                         <Button variant='contained' color='secondary'>
                           <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.code}/${x.department}`}>Đánh giá với tư cách trưởng đơn vị</Link>
                         </Button>}
-                      {listH.length > 0 && listH.some(y => y.code == x.code) &&
+                      {listH.length > 0 && listH.some(y => y.code == x.code) && headH &&
                         <Button variant='contained' color='default'>
                           <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
                         </Button>
@@ -118,6 +122,7 @@ export default function FormList() {
                     </CardActions>
                   </Card>
                 ) : (
+                  headH && 
                   <Card key={x.code} style={{ marginTop: '24px' }}>
                     <CardContent>
                       <Typography variant="h6" component="h5">
