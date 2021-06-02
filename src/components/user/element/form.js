@@ -11,7 +11,7 @@ import {
 import axios from 'axios'
 
 import { useParams } from 'react-router-dom'
-import { ArrowRightAltOutlined } from '@material-ui/icons';
+import DialogConfirm from '../../common/DialogConfirm'
 
 const useStyles = makeStyles({
   table: {
@@ -341,7 +341,7 @@ export default function FormEvaluation(props) {
     compare(temp)
   }
 
-  const sendNude = () => {
+  const submitForm = () => {
     let list = []
     let dataToSend = []
     switch (level) {
@@ -450,13 +450,21 @@ export default function FormEvaluation(props) {
     }
     setStatus(true)
   }
-
+  // modal submit form
+  const [statusDelete, setStatusDelete] = useState({ open: false })
+  const closeDialog = () => {
+    setStatusDelete({ open: false })
+  }
+  const onSubmit = () => {
+    setStatusDelete({ open: true, onClick: submitForm })
+  }
   return (
     < >
       {status ? (
         <div >
           { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
             <Container>
+               <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Không thể chỉnh sửa sau khi hoàn thành bài đánh giá. Bạn đã chắc chắn chưa ? ' />
               {info != null && (
                 <div style={{ display: 'flex', fontSize: '1.125rem', justifyContent: 'space-between', marginRight: '20%', marginTop: 30 }}>
                   <span><b>Tên: </b>{info.name}</span>
@@ -469,10 +477,10 @@ export default function FormEvaluation(props) {
                   <Table className={classes.table} >
                     <TableHead>
                       <TableRow>
-                        <TableCell rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
+                        <TableCell style={{width:'10%'}} rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
                         <TableCell rowSpan={2}>Nội dung</TableCell>
-                        <TableCell rowSpan={2}>Điểm quy định</TableCell>
-                        <TableCell colSpan={3} align="center">Điểm đánh giá</TableCell>
+                        <TableCell align='center' style={{width:'15%'}} rowSpan={2}>Điểm quy định</TableCell>
+                        <TableCell colSpan={3} align="center" style={{width:'30%'}}>Điểm đánh giá</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">Cá nhân tự chấm</TableCell>
@@ -483,10 +491,10 @@ export default function FormEvaluation(props) {
                     <TableBody>
                       {data.map(standard => (
                         <>
-                          <TableRow key={standard.standard_id?._id}>
+                          <TableRow key={standard._id}>
                             <TableCell>{standard.standard_order}</TableCell>
                             <TableCell><b>{standard.standard_id.name}</b></TableCell>
-                            <TableCell>{standard.standard_point}</TableCell>
+                            <TableCell align='center'>{standard.standard_point}</TableCell>
                             <TableCell />
                             <TableCell />
                             <TableCell />
@@ -497,7 +505,7 @@ export default function FormEvaluation(props) {
                               <TableRow key={criteria._id}>
                                 <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
                                 <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
-                                <TableCell>{criteria.point}</TableCell>
+                                <TableCell align='center'>{criteria.point}</TableCell>
                                 <TableCell align='center'>
                                   {criteria.options.length > 0 ? null : (criteria.criteria_id.type == 'input' ? (
                                     <input
@@ -565,9 +573,9 @@ export default function FormEvaluation(props) {
                                 </TableCell>
                               </TableRow>
                               {criteria.options.map((option, index) => (
-                                <TableRow>
+                                <TableRow key={option._id}>
                                   <TableCell>{option.name}</TableCell>
-                                  <TableCell>{option.max_point}</TableCell>
+                                  <TableCell align='center' >{option.max_point}</TableCell>
                                   <TableCell align='center' colSpan={1}>
                                     <input
                                       onChange={handleCheckRadio}
@@ -626,7 +634,7 @@ export default function FormEvaluation(props) {
                         <Button variant="contained" color="secondary" disabled={disabled} onClick={temporary}>
                           Lưu tạm
                         </Button>
-                        <Button variant="contained" color="primary" onClick={sendNude} style={{ marginLeft: '10px' }}>
+                        <Button variant="contained" color="primary" onClick={onSubmit} style={{ marginLeft: '10px' }}>
                           Hoàn thành đánh giá
                         </Button>
                       </div>

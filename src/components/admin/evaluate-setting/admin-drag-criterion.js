@@ -382,6 +382,7 @@ export default function Drag(props) {
     <div>
       { loading ? <Loading /> : (
         <>
+<<<<<<< HEAD
           {loadingItem && <LinearProgress style={{ position: "absolute", width: "100%" }} />}
           <FormControl variant="outlined" >
             <InputLabel >Tiêu chuẩn </InputLabel>
@@ -451,6 +452,72 @@ export default function Drag(props) {
           <div style={{ position: 'absolute', right: 10, bottom: 10 }}>
             {/* <Button style={{ marginRight: 10 }} variant='contained' color='primary' onClick={undo}>Undo</Button> */}
             <Button variant='contained' disabled={disabled} color='secondary' onClick={save}>Lưu Form</Button>
+=======
+        {loadingItem && <LinearProgress style={{position:"absolute", width:"100%" }} />}
+        <FormControl variant="outlined" >
+        <InputLabel >Tiêu chuẩn </InputLabel>
+        <Select
+          style={{minWidth: '300px'}}
+          native
+          value={newCriterion}
+          label='Tiêu chuẩn'
+          onChange={handleChangeCriterion}
+        >
+          <option value="" disabled />
+          {data.filter(x => x.clicked == false).map(x => {
+            return (
+              <option key={x._id} value={x.code}>{x.name}</option >
+            )
+          })}
+        </Select>
+      </FormControl>
+      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => { newCriterion && addItem('criterion') }}>Thêm tiêu chuẩn</Button>
+      <PostList postList={items}
+        updateScore={updateScore}
+        removeItem={removeItem}
+      />
+      <Modal
+        className={classes.modal}
+        open={openCriteria}
+        onClose={handleCloseCriteria}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={openCriteria}>
+          <div className={classes.paper1}>
+            <h4 id="transition-modal-title">Thêm tiêu chí cho tiêu chuẩn {chosen}</h4>
+            <FormControl variant="outlined" >
+              <InputLabel >Tiêu chí </InputLabel>
+              <Select
+                style={{minWidth: '300px'}}
+                native
+                value={newCriteria}
+                label='Đơn vị'
+                onChange={handleChangeCriteria}
+              >
+                <option value="" disabled />
+                {chosen && data.find(x => x.code == chosen).criteria.map(y => {
+                  if (!itemsCriteria.map(z => z.code).includes(y.code)) {
+                    return (
+                      <option key={y._id} value={y.code}>{y.name}</option>
+                    )
+                  }
+                })}
+              </Select>
+            </FormControl>
+            <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => { newCriteria && addItem('criteria') }}>Thêm tiêu chí</Button>
+            <PostList postList={itemsCriteria}
+              updateScore={updateScore}
+              removeItem={removeItem}
+            />
+            <div style={{ marginTop: '10px', textAlign: 'center' }} >
+              <Button variant="contained" color="primary" onClick={submitAddFormCriteria}>Lưu và thoát</Button>
+              <Button style={{marginLeft: 10}} variant="contained" color="secondary" onClick={cancel}>Thoát</Button>
+            </div>
+>>>>>>> 28d9f4ceb5c90046c77abdc0cd38ba9513e28489
           </div>
         </>
       )}

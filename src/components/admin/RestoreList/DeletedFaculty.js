@@ -105,15 +105,15 @@ const DeletedFaculty = () => {
         setStatusDelete({ open: false })
     }
     const onRestore = id => {
-        setStatusDelete({ open: true, onClick: () => restoreCriterionWithAPI(id) })
+        setStatusDelete({ open: true, onClick: () => restoreDeptWithAPI(id) })
     }
     // khôi phục đơn vị vs api
-    const restoreCriterionWithAPI = (id) => {
+    const restoreDeptWithAPI = (id) => {
         setLoading(true)
         closeDialog()
-        axios.post(`/admin/Dept/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/department/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
-                const newRows = rows.filter(row => row.code !== id)
+                const newRows = rows.filter(row => row.department_code !== id)
                 setRows(newRows)
                 setToast({ open: true, time: 3000, message: 'Khôi phục đơn vị thành công', severity: 'success' })
                 setLoading(false)
@@ -132,7 +132,7 @@ const DeletedFaculty = () => {
             <Toast toast={toast} handleClose={handleCloseToast} />
             <Loading open={loading} />
             <Typography component="h1" variant="h5" color="inherit" noWrap >
-                DS Đơn vị đã xoá
+                Danh sách đơn vị đã xoá
             </Typography >
             <Paper className={classes.root}>
                 <Table className={classes.table} aria-label="caption table">
@@ -140,8 +140,6 @@ const DeletedFaculty = () => {
                         <TableRow style={{ backgroundColor: '#f4f4f4' }}>
                             <TableCell className={classes.number} >Mã đơn vị</TableCell>
                             <TableCell className={classes.name} >Tên đơn vị</TableCell>
-                            <TableCell className={classes.name} align="left">Trưởng đơn vị</TableCell>
-                            <TableCell className={classes.name} align="left">ID Trưởng đơn vị</TableCell>
                             <TableCell />
                         </TableRow>
                     </TableHead>
@@ -150,8 +148,6 @@ const DeletedFaculty = () => {
                             <TableRow key={row._id}>
                                 <CustomTableCell {...{ row, name: "department_code" }} />
                                 <CustomTableCell {...{ row, name: "name" }} />
-                                <CustomTableCell {...{ row, name: "namemanager" }} />
-                                <CustomTableCell {...{ row, name: "idmanager" }} />
                                 <TableCell align='right' className={classes.selectTableCell}>
                                     <IconButton
                                         aria-label="restore"

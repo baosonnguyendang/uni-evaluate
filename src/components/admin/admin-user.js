@@ -10,7 +10,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from "@material-ui/core/TableRow";
-import Input from "@material-ui/core/Input";
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
@@ -18,10 +18,8 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import EditIcon from "@material-ui/icons/EditOutlined";
-import DoneIcon from "@material-ui/icons/DoneAllTwoTone";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
-import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
@@ -133,7 +131,9 @@ export default function ListUser() {
     axios.post(`/admin/user/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         const newRows = rows.filter(row => row.staff_id !== id)
+        console.log(newRows)
         setRows(newRows)
+        setFilterUser(newRows)
         setToast({ open: true, time: 3000, message: 'Xoá người dùng thành công', severity: 'success' })
         setLoading(false)
       })
@@ -287,6 +287,11 @@ export default function ListUser() {
     e.preventDefault()
     console.log(e.target.files[0].name)
   }
+  let history = useHistory();
+  const { url } = useRouteMatch()
+  const redirectStorePage = () => {
+    history.push(`${url}/deleted`)
+  }
   return (<>
     { isLoading ? <Skeleton /> : (
       <>
@@ -317,12 +322,12 @@ export default function ListUser() {
               {filterUser.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                 return (
                   <TableRow key={row._id}>
-                    <CustomTableCell className={classes.name} {...{ row, name: "staff_id", }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "lastname", }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "firstname", }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "email", }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "department", }} />
-                    <CustomTableCell className={classes.name} {...{ row, name: "roles", }} />
+                    <CustomTableCell {...{ row, name: "staff_id", }} />
+                    <CustomTableCell {...{ row, name: "lastname", }} />
+                    <CustomTableCell {...{ row, name: "firstname", }} />
+                    <CustomTableCell {...{ row, name: "email", }} />
+                    <CustomTableCell {...{ row, name: "department", }} />
+                    <CustomTableCell {...{ row, name: "roles", }} />
                     <TableCell className={classes.selectTableCell}>
                       <IconButton
                         aria-label="update"
@@ -354,7 +359,7 @@ export default function ListUser() {
 
           <div style={{ margin: '10px', display: 'flex' }}>
             <div style={{ flexGrow: 1 }}>
-              <Button variant="contained" className={classes.btn} onClick={handleOpen}>
+              <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                 Khôi phục
               </Button>
             </div>

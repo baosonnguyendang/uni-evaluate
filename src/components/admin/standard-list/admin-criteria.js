@@ -253,7 +253,7 @@ export default function Criteria() {
           <Toast toast={toast} handleClose={handleCloseToast} />
           <Loading open={loading} />
           <Typography component="h1" variant="h5" color="inherit" noWrap >
-            Tiêu chuẩn {nameStandard} - DS Tiêu chí
+            Tiêu chuẩn {nameStandard} - Danh sách Tiêu chí
           </Typography >
           <Paper className={classes.root}>
             <Table className={classes.table} aria-label="caption table">

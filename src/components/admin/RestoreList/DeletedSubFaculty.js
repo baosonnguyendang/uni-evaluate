@@ -44,9 +44,6 @@ const useStyles = makeStyles(theme => ({
     number: {
         width: '15%',
     },
-    description: {
-        width: '30%'
-    },
     modal: {
         display: 'flex',
         alignItems: 'center',
@@ -69,10 +66,8 @@ const useStyles = makeStyles(theme => ({
         minWidth: 180,
     },
 }));
-
 const CustomTableCell = ({ row, name }) => {
     const classes = useStyles();
-
     return (
         <TableCell align="left" className={classes.tableCell}>
             {row[name]}
@@ -80,31 +75,27 @@ const CustomTableCell = ({ row, name }) => {
     );
 };
 
-const DeletedCriteria = () => {
+const DeletedSubFaculty = () => {
     const classes = useStyles();
     const [rows, setRows] = useState(null);
     const token = localStorage.getItem('token')
     const config = { headers: { "Authorization": `Bearer ${token}` } }
     const { id } = useParams()
-    // tên tiêu chuẩn
-    const [nameStandard, setNameStandard] = useState(null)
-    console.log(id)
-    const fetchDeletedCriteriaOfStandard = (id) => {
-        return axios.get(`/admin/standard/${id}/criteria/deleted`, config)
+
+    const fetchDeletedSubDept = (id) => {
+        return axios.get(`/admin/department/deleted/${id}/children`, config)
             .then(res => {
                 console.log(res.data)
-                setRows(res.data.criterions)
-                setNameStandard(res.data.standard.name)
+                setRows(res.data.departments)
             })
             .catch(e => {
                 console.log(e.response)
             })
     }
     useEffect(() => {
-        fetchDeletedCriteriaOfStandard(id)
+        fetchDeletedSubDept(id)
     }, [])
-
-    // loading restore criteria
+    // loading restore criteron
     const [loading, setLoading] = useState(false)
     const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
     const handleCloseToast = () => setToast({ ...toast, open: false })
@@ -114,22 +105,22 @@ const DeletedCriteria = () => {
         setStatusDelete({ open: false })
     }
     const onRestore = id => {
-        setStatusDelete({ open: true, onClick: () => restoreCriteriaWithAPI(id) })
+        setStatusDelete({ open: true, onClick: () => restoreSubDeptWithAPI(id) })
     }
-    // khôi phục tiêu chi vs api
-    const restoreCriteriaWithAPI = (id) => {
+    // khôi phục đơn vị vs api
+    const restoreSubDeptWithAPI = (id) => {
         setLoading(true)
         closeDialog()
-        axios.post(`/admin/criteria/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/department/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
-                const newRows = rows.filter(row => row.code !== id)
+                const newRows = rows.filter(row => row.department_code !== id)
                 setRows(newRows)
-                setToast({ open: true, time: 3000, message: 'Khôi phục tiêu chí thành công', severity: 'success' })
+                setToast({ open: true, time: 3000, message: 'Khôi phục đơn vị thành công', severity: 'success' })
                 setLoading(false)
             })
             .catch(err => {
                 console.log(err.response.status)
-                setToast({ open: true, time: 3000, message: 'Khôi phục tiêu chí thất bại', severity: 'error' })
+                setToast({ open: true, time: 3000, message: 'Khôi phục đơn vị thất bại', severity: 'error' })
                 setLoading(false)
             })
     }
@@ -137,41 +128,38 @@ const DeletedCriteria = () => {
         return <Skeleton />
     return (
         <>
-            <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick}  onClose={closeDialog} text='Bạn muốn khôi phục ?' />
+            <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Bạn muốn khôi phục ?' />
             <Toast toast={toast} handleClose={handleCloseToast} />
             <Loading open={loading} />
             <Typography component="h1" variant="h5" color="inherit" noWrap >
-                Tiêu chuẩn {nameStandard} - Danh sách tiêu chí đã xoá
+                Danh sách đơn vị trực thuộc đã xoá
             </Typography >
             <Paper className={classes.root}>
                 <Table className={classes.table} aria-label="caption table">
                     <TableHead>
                         <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-                            <TableCell className={classes.number} >Mã tiêu chí</TableCell>
-                            <TableCell className={classes.name} >Tên tiêu chí</TableCell>
-                            <TableCell className={classes.description}>Mô tả</TableCell>
-                            <TableCell >Kiểu đánh giá</TableCell>
+                            <TableCell className={classes.number} >Mã đơn vị</TableCell>
+                            <TableCell className={classes.name} >Tên đơn vị</TableCell>
                             <TableCell />
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {rows.map(row => (
                             <TableRow key={row._id}>
-                                <CustomTableCell {...{ row, name: "code" }} />
+                                <CustomTableCell {...{ row, name: "department_code" }} />
                                 <CustomTableCell {...{ row, name: "name" }} />
-                                <CustomTableCell {...{ row, name: "description" }} />
-                                <CustomTableCell {...{ row, name: "type" }} />
                                 <TableCell align='right' className={classes.selectTableCell}>
                                     <IconButton
                                         aria-label="restore"
-                                        onClick={() => onRestore(row.code)}
+                                        onClick={() => onRestore(row.department_code)}
+                                        style={{ marginRight: '10px' }}
                                     >
                                         <RestoreFromTrashIcon />
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
                         ))}
-                        {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không có tiêu chí</TableCell></TableRow>}
+                        {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không có đơn vị</TableCell></TableRow>}
                     </TableBody>
                 </Table>
             </Paper>
@@ -179,4 +167,4 @@ const DeletedCriteria = () => {
     )
 }
 
-export default DeletedCriteria
+export default DeletedSubFaculty
