@@ -131,7 +131,7 @@ export default function FormEvaluation(props) {
         }
         setPoint(pts)
       }
-      else if (props.level == 2) {
+      else if (props.level == 2 || (disableEdit2 && props.level < 3)) {
         all[0].map(x => {
           pts += parseInt(x.value)
         })
@@ -153,7 +153,7 @@ export default function FormEvaluation(props) {
         //   setPoint2(pts2)
         // }
       }
-      else {
+      else if (props.level == 3 || disableEdit3) {
         all[0].map(x => {
           pts += parseInt(x.value)
         })
@@ -464,7 +464,7 @@ export default function FormEvaluation(props) {
         <div >
           { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
             <Container>
-               <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Không thể chỉnh sửa sau khi hoàn thành bài đánh giá. Bạn đã chắc chắn chưa ? ' />
+              <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Không thể chỉnh sửa sau khi hoàn thành bài đánh giá. Bạn đã chắc chắn chưa ? ' />
               {info != null && (
                 <div style={{ display: 'flex', fontSize: '1.125rem', justifyContent: 'space-between', marginRight: '20%', marginTop: 30 }}>
                   <span><b>Tên: </b>{info.name}</span>
@@ -477,10 +477,10 @@ export default function FormEvaluation(props) {
                   <Table className={classes.table} >
                     <TableHead>
                       <TableRow>
-                        <TableCell style={{width:'10%'}} rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
+                        <TableCell style={{ width: '10%' }} rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
                         <TableCell rowSpan={2}>Nội dung</TableCell>
-                        <TableCell align='center' style={{width:'15%'}} rowSpan={2}>Điểm quy định</TableCell>
-                        <TableCell colSpan={3} align="center" style={{width:'30%'}}>Điểm đánh giá</TableCell>
+                        <TableCell align='center' style={{ width: '15%' }} rowSpan={2}>Điểm quy định</TableCell>
+                        <TableCell colSpan={3} align="center" style={{ width: '30%' }}>Điểm đánh giá</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="center">Cá nhân tự chấm</TableCell>
@@ -527,7 +527,7 @@ export default function FormEvaluation(props) {
                                   ))}
                                 </TableCell>
                                 <TableCell align='center'>
-                                  {props.level > 1 && criteria.options.length == 0 ? (criteria.criteria_id.type == 'input' ? (
+                                  {(props.level > 1 || disableEdit2) && criteria.options.length == 0 ? (criteria.criteria_id.type == 'input' ? (
                                     <input
                                       type="number"
                                       style={{ width: '40px', textAlign: 'center' }}
@@ -549,7 +549,7 @@ export default function FormEvaluation(props) {
                                     : null}
                                 </TableCell>
                                 <TableCell align='center'>
-                                  {props.level > 2 && criteria.options.length == 0 ? (criteria.criteria_id.type == 'input' ? (
+                                  {(props.level > 2 || disableEdit3) && criteria.options.length == 0 ? (criteria.criteria_id.type == 'input' ? (
                                     <input
                                       type="number"
                                       style={{ width: '40px', textAlign: 'center' }}
@@ -587,7 +587,7 @@ export default function FormEvaluation(props) {
                                     />
                                   </TableCell>
                                   <TableCell align='center' colSpan={1}>
-                                    {props.level > 1 ?
+                                    {(props.level > 1 || disableEdit2) ?
                                       <input
                                         onChange={handleCheckRadio2}
                                         type="radio"
@@ -599,7 +599,7 @@ export default function FormEvaluation(props) {
                                       null}
                                   </TableCell>
                                   <TableCell align='center' colSpan={1}>
-                                    {props.level > 2 ?
+                                    {(props.level > 2 || disableEdit3) ?
                                       <input
                                         onChange={handleCheckRadio3}
                                         disabled={disableEdit3}
@@ -616,6 +616,14 @@ export default function FormEvaluation(props) {
                           ))}
                         </>
                       ))}
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell><b>Tổng điểm</b></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell align='center'><h5>{point}</h5></TableCell>
+                        <TableCell align='center'><h5>{props.level > 1 || disableEdit2 ? point2 : null}</h5></TableCell>
+                        <TableCell align='center'><h5>{props.level > 2 || disableEdit3 ? point3 : null}</h5></TableCell>
+                      </TableRow>
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -624,9 +632,9 @@ export default function FormEvaluation(props) {
                 {
                   <div>
                     <div style={{ marginBottom: '24px' }}>
-                      <Typography variant="h6">Tổng điểm tự đánh giá: {point}</Typography>
-                      <Typography variant="h6">{props.level > 1 && `Tổng điểm trưởng Khoa đánh giá: ${point2}`}</Typography>
-                      <Typography variant="h6">{props.level > 2 && `Tổng điểm HĐĐG Trường đánh giá: ${point3}`}</Typography>
+                      {/* <Typography variant="h6">Tổng điểm tự đánh giá: {point}</Typography>
+                      <Typography variant="h6">{props.level > 1 && `Tổng điểm trưởng Khoa đánh giá: ${point2}`}</Typography> */}
+                      <Typography variant="h6">{disableEdit3 && `Điểm đợt đánh giá: ${point3}`}</Typography>
                     </div>
                     {
                       ((!disableEdit && level == 1) || (level == 2 && !disableEdit2) || (level == 3 && !disableEdit3)) &&
