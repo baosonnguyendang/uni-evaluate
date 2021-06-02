@@ -3,13 +3,11 @@ import React, { useState, useEffect } from "react";
 import { useParams, useHistory, useRouteMatch } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
-import Link from '@material-ui/core/Link'
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
@@ -102,6 +100,7 @@ export default function Selection() {
       .then(res => {
         const selections = res.data.criteriaOptions;
         console.log(selections)
+        setNameCriteria(res.data.criteria.name)
         setRows(res.data.criteriaOptions)
         // setIsLoading(false)
       })
@@ -219,7 +218,7 @@ export default function Selection() {
         setLoading(false)
       })
   }
-
+  const [nameCriteria, setNameCriteria] = useState(null)
   //get data from new criterion
   const [name, setName] = React.useState('')
   const [code, setCode] = React.useState('')
@@ -230,7 +229,7 @@ export default function Selection() {
     let { id1 } = useParams();
     return (
       < Typography component="h1" variant="h5" color="inherit" noWrap >
-        Tiêu chí { id1} - DS lựa chọn
+        Tiêu chí { nameCriteria } - Danh sách lựa chọn
       </Typography >
     )
   }

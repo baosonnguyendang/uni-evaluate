@@ -114,6 +114,13 @@ const UserOfFaculty = () => {
             .then(res => {
                 console.log(res.data);
                 setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
+                if(res.data.department.manager){
+                    setIdExistHeadUnit(res.data.department?.manager?.staff_id)
+                    setIdHeadUnit(res.data.department?.manager?.staff_id)
+                    setNameHeadUnit(res.data.department?.manager?.lastname + ' ' + res.data.department?.manager?.firstname)
+                    console.log(nameHeadUnit)
+                }
+                
             })
             .catch(err => {
                 console.log(err)
@@ -153,13 +160,14 @@ const UserOfFaculty = () => {
     };
 
     const handleOpen = () => {
-        setModal({ open: true, id: '', addSubDept:false });
+        setModal({ open: true, id: '', addSubDept:false, setHeadUnit: false });
     };
     //open modal
     const [modal, setModal] = React.useState({ open: false, id: '' });
     const handleClose = () => {
         setModal({ ...modal, open: false });
         setOpenAddUser(false);
+        setIdHeadUnit(null)
     };
     const [idDept, setIdDept] = useState(null)
     const [name, setName] = useState(null)
@@ -297,7 +305,7 @@ const UserOfFaculty = () => {
         history.push(`${url}/deleted`)
     }
     const handleOpenAddDept = () => {
-        setModal({...modal, open: true, addSubDept: true})
+        setModal({...modal, open: true, addSubDept: true, setHeadUnit: false})
     }
     //trưởng dv 
     const [headUnit, setHeadUnit] = React.useState('')
@@ -337,6 +345,42 @@ const UserOfFaculty = () => {
             setLoading(false)
           })
       }
+    // Sửa trưởng dv
+    const [idExistHeadUnit, setIdExistHeadUnit] =useState( null )
+    const [nameHeadUnit, setNameHeadUnit] = useState('')
+    const [idHeadUnit, setIdHeadUnit]= useState(null)
+    const handleOpenSetHeadUnit = () => {
+        setModal({...modal, setHeadUnit: true, open:true})
+    }
+    //cập nhật trưởng dv
+    const editHeadUnit = () => {
+        const body = { manager: idHeadUnit }
+        setLoading(true)
+        console.log(modal.id)
+
+        handleClose()
+        axios.post(`/admin/department/${id}/editHead`, body, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => {
+                fetchUserOfFaculty()
+                    .then(() => {
+                        setToast({ open: true, time: 3000, message: 'Cập nhật trưởng đơn vị thành công', severity: "success" })
+                        setLoading(false)
+                    })               
+            })
+            .catch(err => {
+                console.log(err)
+                console.log(err.response)
+                switch (err.response?.status) {
+                    case 404:
+                        setToast({ open: true, time: 3000, message: 'Mã trưởng đơn vị không đúng', severity: "error" })
+                        break;
+                    default:
+                        setToast({ open: true, time: 3000, message: 'Cập nhật đơn vị thất bại', severity: "error" })
+                        break;
+                }
+                setLoading(false)
+            })
+    }
     return (
         <>
             { isLoading ? <Skeleton /> : (
@@ -393,6 +437,9 @@ const UserOfFaculty = () => {
                         />
                         <div style={{ margin: '10px', textAlign: 'right' }}>
                             <div>
+                            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenSetHeadUnit}>
+                                    Trưởng đơn vị
+                                </Button>
                                 <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                                     Tạo người dùng
                                 </Button>
@@ -414,18 +461,21 @@ const UserOfFaculty = () => {
                             >
                                 <Fade in={modal.open}>
                                     <div className={classes.paper1}>
-                                        <Typography gutterBottom variant='h5' id="transition-modal">{modal.addSubDept ? 'Thêm đơn vị trực thuộc mới' : modal.id ? 'Cập nhật đơn vị' : 'Tạo người dùng'}</Typography>
+                                        {modal.setHeadUnit && <Typography gutterBottom variant='h5' id="transition-modal">Trưởng đơn vị</Typography>}
+                                        {!modal.setHeadUnit && <Typography gutterBottom variant='h5' id="transition-modal">{modal.addSubDept ? 'Thêm đơn vị trực thuộc mới' : modal.id ? 'Cập nhật đơn vị' : 'Tạo người dùng'}</Typography>}
                                         <form onSubmit={modal.addSubDept ? submitAddDepartment : modal.id ? (e) => submitEditDept(e, modal.id) : submitNewUser}>
+                                            {!modal.setHeadUnit ?
+                                            <>
                                             {!modal.addSubDept && (modal.id  ?
                                                 <>
-                                                    <TextField onChange={e => setIdDept(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth className={classes.field} defaultValue={idDept} />
-                                                    <TextField onChange={e => setName(e.target.value)} required id="name" label="Tên đơn vị" variant="outlined" fullWidth className={classes.field} defaultValue={name} />
+                                                    <TextField onChange={e => setIdDept(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth margin='normal' defaultValue={idDept} />
+                                                    <TextField onChange={e => setName(e.target.value)} required id="name" label="Tên đơn vị" variant="outlined" fullWidth margin='normal' defaultValue={name} />
                                                 </> :
                                                 <>
-                                                    <TextField onChange={e => setIduser(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth className={classes.field} />
-                                                    <TextField onChange={e => setLName(e.target.value)} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth className={classes.field} />
-                                                    <TextField onChange={e => setFName(e.target.value)} required id="fname" label="Tên" variant="outlined" fullWidth className={classes.field} />
-                                                    <TextField onChange={e => setEmail(e.target.value)} required type='email' id="email" label="Email" multiline variant="outlined" fullWidth className={classes.field} />
+                                                    <TextField onChange={e => setIduser(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth margin='normal' />
+                                                    <TextField onChange={e => setLName(e.target.value)} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth margin='normal' />
+                                                    <TextField onChange={e => setFName(e.target.value)} required id="fname" label="Tên" variant="outlined" fullWidth margin='normal' />
+                                                    <TextField onChange={e => setEmail(e.target.value)} required type='email' id="email" label="Email" multiline variant="outlined" fullWidth margin='normal' />
                                                 </>)}
                                             {modal.addSubDept &&
                                                 <>
@@ -438,6 +488,16 @@ const UserOfFaculty = () => {
                                                 <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >{modal.id ? "Cập nhật" : 'Tạo'}</Button>
                                                 <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                                             </div>
+                                            </> : 
+                                            <>
+                                            <TextField onChange={e => setIdHeadUnit(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth margin='normal' defaultValue={idExistHeadUnit} />
+                                            <TextField onChange={e => setName(e.target.value)} required id="name" label="Tên đơn vị" variant="outlined" disabled fullWidth margin='normal' defaultValue={nameHeadUnit} />
+                                            <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                                                <Button style={{ marginRight: '10px' }} variant="contained" disabled={idExistHeadUnit === idHeadUnit} color="primary" onClick={editHeadUnit}>Cập nhật</Button>
+                                                <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
+                                            </div>
+                                            </>}
+                                            
                                         </form>
                                     </div>
                                 </Fade>
@@ -459,7 +519,7 @@ const UserOfFaculty = () => {
                                     <div className={classes.paper1}>
                                         <Typography variant='h5' gutterBottom id="transition-modal-title">Thêm người dùng có sẵn</Typography>
                                         <form onSubmit={submitExistUser}>
-                                            <TextField id="id" label="ID" required onChange={(e) => setIduser(e.target.value)} name='idexistuser' variant="outlined" fullWidth className={classes.field} />
+                                            <TextField id="id" label="ID" required onChange={(e) => setIduser(e.target.value)} name='idexistuser' variant="outlined" fullWidth margin='normal' />
                                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
                                                 <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Tạo</Button>
                                                 <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>

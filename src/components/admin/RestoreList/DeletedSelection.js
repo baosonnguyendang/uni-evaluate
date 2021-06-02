@@ -141,7 +141,7 @@ const DeletedSelection = () => {
             <Toast toast={toast} handleClose={handleCloseToast} />
             <Loading open={loading} />
             <Typography component="h1" variant="h5" color="inherit" noWrap >
-                Tiêu chí {nameCriteria} - DS lựa chọn đã xoá
+                Tiêu chí {nameCriteria} - Danh sách lựa chọn đã xoá
             </Typography >
             <Paper className={classes.root}>
                 <Table className={classes.table} aria-label="caption table">

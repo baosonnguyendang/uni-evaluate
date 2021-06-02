@@ -132,7 +132,7 @@ const DeletedFaculty = () => {
             <Toast toast={toast} handleClose={handleCloseToast} />
             <Loading open={loading} />
             <Typography component="h1" variant="h5" color="inherit" noWrap >
-                DS Đơn vị đã xoá
+                Danh sách đơn vị đã xoá
             </Typography >
             <Paper className={classes.root}>
                 <Table className={classes.table} aria-label="caption table">

@@ -30,6 +30,7 @@ import DeletedCriteria from './RestoreList/DeletedCriteria'
 import DeletedSelection from './RestoreList/DeletedSelection'
 import DeletedFaculty from './RestoreList/DeletedFaculty'
 import DeletedSubFaculty from './RestoreList/DeletedSubFaculty'
+import DeletedUser from './RestoreList/DeletedUser'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,7 +69,7 @@ const AdminPage = () => {
   let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
   return (
     <div className={classes.root}>
-      {isLogged ? (localStorage.getItem('role') === 'user' && <Redirect to='/user' />) : <Redirect to='/' />}
+      {isLogged ? (localStorage.getItem('role') !== 'admin' && <Redirect to='/user' />) : <Redirect to='/admin/user' />}
       <Navbar />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
@@ -77,6 +78,7 @@ const AdminPage = () => {
             <Grid item xs={12}>
               <Switch>
               <Route exact path='/admin/user' component={UserTable} />
+              <Route exact path='/admin/user/deleted' component={DeletedUser} />
               <Route exact path='/admin/faculty' children={<Faculty />} />
               <Route exact path='/admin/faculty/deleted' children={<DeletedFaculty />} />
               <Route exact path='/admin/faculty/:id' children={<UserOfFaculty />} />

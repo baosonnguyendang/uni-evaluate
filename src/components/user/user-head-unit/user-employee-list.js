@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { Link, useRouteMatch, useParams } from 'react-router-dom';
 
-import { Table, TableHead, TableBody, TableCell, TableRow, Typography } from '@material-ui/core';
+import { Table, TableHead, TableBody, TableCell, TableRow, Typography, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -40,7 +40,7 @@ export default function EmployeeList() {
     return display
   }
 
-  const [data, setData] = useState([])
+  const [data, setData] = useState(null)
 
   useEffect(() => {
     axios.get(`/user/head/${id1}/${id2}/get`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -57,7 +57,8 @@ export default function EmployeeList() {
         console.log(err)
       })
   }, [])
-
+  if (!data)
+    return <LinearProgress style={{position:"absolute", width:"100%" }} />
   return (
     <div style={{ margin: '24px' }}>
       <Typography component="h3" variant="h5" color="inherit">

@@ -75,25 +75,25 @@ const CustomTableCell = ({ row, name }) => {
     );
 };
 
-const DeletedSubFaculty = () => {
+const DeletedUser = () => {
     const classes = useStyles();
     const [rows, setRows] = useState(null);
     const token = localStorage.getItem('token')
     const config = { headers: { "Authorization": `Bearer ${token}` } }
     const { id } = useParams()
 
-    const fetchDeletedSubDept = (id) => {
-        return axios.get(`/admin/department/deleted/${id}/children`, config)
+    const fetchDeletedUser = () => {
+        return axios.get('/admin/user/deleted', config)
             .then(res => {
                 console.log(res.data)
-                setRows(res.data.departments)
+                setRows(res.data.users)
             })
             .catch(e => {
                 console.log(e.response)
             })
     }
     useEffect(() => {
-        fetchDeletedSubDept(id)
+        fetchDeletedUser()
     }, [])
     // loading restore criteron
     const [loading, setLoading] = useState(false)
@@ -105,22 +105,23 @@ const DeletedSubFaculty = () => {
         setStatusDelete({ open: false })
     }
     const onRestore = id => {
-        setStatusDelete({ open: true, onClick: () => restoreSubDeptWithAPI(id) })
+        setStatusDelete({ open: true, onClick: () => restoreUserWithAPI(id) })
     }
-    // khôi phục đơn vị vs api
-    const restoreSubDeptWithAPI = (id) => {
+    // khôi phục người dùng vs api
+    const restoreUserWithAPI = (id) => {
         setLoading(true)
         closeDialog()
-        axios.post(`/admin/department/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/user/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
-                const newRows = rows.filter(row => row.department_code !== id)
+                const newRows = rows.filter(row => row.staff_id !== id)
+                console.log(newRows)
                 setRows(newRows)
-                setToast({ open: true, time: 3000, message: 'Khôi phục đơn vị thành công', severity: 'success' })
+                setToast({ open: true, time: 3000, message: 'Khôi phục người dùng thành công', severity: 'success' })
                 setLoading(false)
             })
             .catch(err => {
                 console.log(err.response.status)
-                setToast({ open: true, time: 3000, message: 'Khôi phục đơn vị thất bại', severity: 'error' })
+                setToast({ open: true, time: 3000, message: 'Khôi phục người dùng thất bại', severity: 'error' })
                 setLoading(false)
             })
     }
@@ -132,26 +133,34 @@ const DeletedSubFaculty = () => {
             <Toast toast={toast} handleClose={handleCloseToast} />
             <Loading open={loading} />
             <Typography component="h1" variant="h5" color="inherit" noWrap >
-                Danh sách đơn vị trực thuộc đã xoá
+                Danh sách người dùng đã xoá
             </Typography >
             <Paper className={classes.root}>
                 <Table className={classes.table} aria-label="caption table">
                     <TableHead>
                         <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-                            <TableCell className={classes.number} >Mã đơn vị</TableCell>
-                            <TableCell className={classes.name} >Tên đơn vị</TableCell>
-                            <TableCell />
+                            <TableCell align="left">ID</TableCell>
+                            <TableCell align="left">Họ và tên đệm</TableCell>
+                            <TableCell align="left">Tên</TableCell>
+                            <TableCell align="left">Email</TableCell>
+                            <TableCell style={{width:'20%'}} align="left">Đơn vị</TableCell>
+                            <TableCell align="left">Vai trò</TableCell>
+                            <TableCell align="left" />
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {rows.map(row => (
                             <TableRow key={row._id}>
-                                <CustomTableCell {...{ row, name: "department_code" }} />
-                                <CustomTableCell {...{ row, name: "name" }} />
+                                <CustomTableCell {...{ row, name: "staff_id", }} />
+                                <CustomTableCell {...{ row, name: "lastname", }} />
+                                <CustomTableCell {...{ row, name: "firstname", }} />
+                                <CustomTableCell {...{ row, name: "email", }} />
+                                <CustomTableCell {...{ row, name: "department", }} />
+                                <CustomTableCell {...{ row, name: "roles", }} />
                                 <TableCell align='right' className={classes.selectTableCell}>
                                     <IconButton
                                         aria-label="restore"
-                                        onClick={() => onRestore(row.department_code)}
+                                        onClick={() => onRestore(row.staff_id)}
                                         style={{ marginRight: '10px' }}
                                     >
                                         <RestoreFromTrashIcon />
@@ -159,7 +168,7 @@ const DeletedSubFaculty = () => {
                                 </TableCell>
                             </TableRow>
                         ))}
-                        {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không có đơn vị</TableCell></TableRow>}
+                        {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không có người dùng</TableCell></TableRow>}
                     </TableBody>
                 </Table>
             </Paper>
@@ -167,4 +176,4 @@ const DeletedSubFaculty = () => {
     )
 }
 
-export default DeletedSubFaculty
+export default DeletedUser
