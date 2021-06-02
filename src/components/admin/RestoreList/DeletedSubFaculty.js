@@ -75,15 +75,15 @@ const CustomTableCell = ({ row, name }) => {
     );
 };
 
-const DeletedFaculty = () => {
+const DeletedSubFaculty = () => {
     const classes = useStyles();
     const [rows, setRows] = useState(null);
     const token = localStorage.getItem('token')
     const config = { headers: { "Authorization": `Bearer ${token}` } }
     const { id } = useParams()
 
-    const fetchDeletedDept = () => {
-        return axios.get('/admin/department/deleted/parent', config)
+    const fetchDeletedSubDept = (id) => {
+        return axios.get(`/admin/department/deleted/${id}/children`, config)
             .then(res => {
                 console.log(res.data)
                 setRows(res.data.departments)
@@ -93,7 +93,7 @@ const DeletedFaculty = () => {
             })
     }
     useEffect(() => {
-        fetchDeletedDept()
+        fetchDeletedSubDept(id)
     }, [])
     // loading restore criteron
     const [loading, setLoading] = useState(false)
@@ -105,10 +105,10 @@ const DeletedFaculty = () => {
         setStatusDelete({ open: false })
     }
     const onRestore = id => {
-        setStatusDelete({ open: true, onClick: () => restoreDeptWithAPI(id) })
+        setStatusDelete({ open: true, onClick: () => restoreSubDeptWithAPI(id) })
     }
     // khôi phục đơn vị vs api
-    const restoreDeptWithAPI = (id) => {
+    const restoreSubDeptWithAPI = (id) => {
         setLoading(true)
         closeDialog()
         axios.post(`/admin/department/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
@@ -132,7 +132,7 @@ const DeletedFaculty = () => {
             <Toast toast={toast} handleClose={handleCloseToast} />
             <Loading open={loading} />
             <Typography component="h1" variant="h5" color="inherit" noWrap >
-                DS Đơn vị đã xoá
+                DS Đơn vị trực thuộc đã xoá
             </Typography >
             <Paper className={classes.root}>
                 <Table className={classes.table} aria-label="caption table">
@@ -167,4 +167,4 @@ const DeletedFaculty = () => {
     )
 }
 
-export default DeletedFaculty
+export default DeletedSubFaculty

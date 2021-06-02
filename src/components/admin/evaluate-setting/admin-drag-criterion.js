@@ -364,6 +364,7 @@ export default function Drag(props) {
           style={{minWidth: '300px'}}
           native
           value={newCriterion}
+          label='Tiêu chuẩn'
           onChange={handleChangeCriterion}
         >
           <option value="" disabled />

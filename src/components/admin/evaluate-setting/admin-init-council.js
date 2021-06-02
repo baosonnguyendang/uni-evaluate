@@ -97,7 +97,7 @@ export default function Council(props) {
 
   const remove = (id) => {
     let item = member.slice()
-    item = item.filter(x => x.id != id)
+    item = item.filter(x => x.id !== id)
     axios.post(`/admin/form/${props.fcode}/${code}/removeFormUser`, { delete_users: [id] }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(item)
@@ -163,7 +163,6 @@ export default function Council(props) {
             .catch(err => {
               console.log(err)
             })
-          setChose(true)
         }
         else {
           setChose(false)

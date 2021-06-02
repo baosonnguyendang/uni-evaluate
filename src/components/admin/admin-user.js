@@ -184,6 +184,7 @@ export default function ListUser() {
   };
   const handleClose = () => {
     setModal({ ...modal, open: false });
+    setOpenImport(false)
     setNewUnit('')
   };
 

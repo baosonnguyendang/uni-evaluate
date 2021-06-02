@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useRouteMatch, useHistory } from "react-router-dom";
-import ButtonCustom from '../../common/ButtonCustom'
+
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,7 +8,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from "@material-ui/core/TableRow";
-import Input from "@material-ui/core/Input";
+
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
@@ -19,10 +19,10 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import EditIcon from "@material-ui/icons/EditOutlined";
-import DoneIcon from "@material-ui/icons/DoneAllTwoTone";
+
 import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
-import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
+
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
@@ -220,7 +220,7 @@ export default function Criterion() {
   const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
   const handleCloseToast = () => setToast({ ...toast, open: false })
 
-  //get data from new criterion
+  //data dept
   const [id, setId] = React.useState('')
   const [name, setName] = React.useState('')
   const [headUnit, setHeadUnit] = React.useState('')
