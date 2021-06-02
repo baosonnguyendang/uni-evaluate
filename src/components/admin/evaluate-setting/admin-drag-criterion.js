@@ -16,6 +16,7 @@ import TextField from '@material-ui/core/TextField'
 import { makeStyles, LinearProgress } from '@material-ui/core';
 import { useParams } from 'react-router';
 import Loading from '../../common/CircleLoading'
+
 const useStyles = makeStyles(theme => ({
   modal: {
     display: 'flex',
@@ -37,12 +38,12 @@ export default function Drag(props) {
   // mã form
   const { fcode } = props;
   // Loading chi tiết tiêu chuẩn
-  const [loadingItem ,setLoadingItem] = React.useState(false)
+  const [loadingItem, setLoadingItem] = React.useState(false)
   //css
   const classes = useStyles();
 
   //phai an luu form 1 lan moi co the vao them tieu chi dc
-  const [disabled, setDisabled] = React.useState(true)
+  const [disabled, setDisabled] = React.useState(false)
 
   //cai nay la de luu tam data, data thay doi thi moi an luu duoc, tranh lam kho backend
   const [luuTam, setLuuTam] = React.useState([])
@@ -55,21 +56,26 @@ export default function Drag(props) {
   }
 
   // thêm tiêu chí vào tiêu chuẩn thuộc form
-  const submitAddFormCriteria = () =>{
+  const submitAddFormCriteria = () => {
+    console.log(chosen, itemsCriteria)
     const scode = chosen //mã tiêu chuẩn
     setDisabled(false)
     //request body
     const body = {
-        criterions: itemsCriteria.map(item => {
-          return {
-            code: item.code, //mã tiêu chí
-            point: item.pts, // điểm tối đa
-            order: item.score // stt
-          }
-        }),
+      criterions: itemsCriteria.map(item => {
+        return {
+          code: item.code, //mã tiêu chí
+          point: item.pts, // điểm tối đa
+          order: item.score // stt
+        }
+      }),
     }
     axios.post(`/admin/form/${fcode}/standard/${scode}/addFormCriteria`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
+        let temp = [...items]
+        temp.find(x => x.code == chosen).criteria = itemsCriteria
+        console.log(temp)
+        setItems(temp)
         handleCloseCriteria(); // tắt modal
       })
       .catch(err => {
@@ -105,17 +111,17 @@ export default function Drag(props) {
     const handleOpen = (x) => {
       setChosen(x)
       setLoadingItem(true)
+      console.log(x)
       //setItemsCriteria(items.find(item => item.code == x).criteria) 
       axios.get(`/admin/form/${fcode}/standard/${x}/getFormCriteria`, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           console.log(res.data.formCriteria)
           let temp = []
           res.data.formCriteria.map(x => {
-            let obj = {'code': x.criteria_id.code, 'score': parseInt(x.criteria_order), 'pts': x.point, 'title': x.criteria_id.name}
+            let obj = { 'code': x.criteria_id.code, 'score': parseInt(x.criteria_order), 'pts': x.point, 'title': x.criteria_id.name }
             temp.push(obj)
           })
           setItemsCriteria(temp)
-          console.log(itemsCriteria)
           setOpenCriteria(true)
           setLoadingItem(false)
         })
@@ -131,7 +137,7 @@ export default function Drag(props) {
     return (
       <tr>
         <td><PostButton label='x' handleClick={props.removeItem} /></td>
-        <td><span type={!openCriteria && 'button'} onClick={() => { disabled && !openCriteria && handleOpen(props.code) }}><PostText text={props.title} /></span></td>
+        <td><span type={!openCriteria && 'button'} onClick={() => { !openCriteria && handleOpen(props.code) }}><PostText text={props.title} /></span></td>
         <td style={style}>
           <PostButton label='+' handleClick={props.incrementScore} />
           <PostText score={true} text={props.score} style={{ lineHeight: 30 }} />
@@ -197,15 +203,22 @@ export default function Drag(props) {
   const fetchCriterion = () => {
     axios.get('admin/standard/criteria', { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
+        console.log(res.data)
         let temp = res.data.standards.map(x => createData(x))
         axios.get(`/admin/form/${fcode}/getFormStandard`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
+            console.log(res.data)
             let temp2 = []
             res.data.formStandards.map(x => {
               let obj = { "title": x.standard_id.name, "score": x.standard_order, "code": x.standard_id.code, "pts": x.standard_point, "criteria": [] }
+              axios.get(`/admin/form/${fcode}/standard/${x.standard_id.code}/getFormCriteria`, { headers: { "Authorization": `Bearer ${token}` } })
+                .then(res => {
+                  obj.criteria = res.data.formCriteria
+                })
               temp.find(x => x.code == obj.code).clicked = true
               temp2.push(obj)
             })
+            console.log(temp2)
             function dynamicSort(property) {
               var sortOrder = 1;
               if (property[0] === "-") {
@@ -237,12 +250,11 @@ export default function Drag(props) {
   }
 
   useEffect(() => {
-    console.log(items)
-    console.log(luuTam)
     if (data.length === 0) {
       fetchCriterion()
     }
     else {
+      console.log(items, luuTam)
       if (items === luuTam) {
         setDisabled(true)
       }
@@ -251,6 +263,15 @@ export default function Drag(props) {
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (items === luuTam) {
+      setDisabled(true)
+    }
+    else {
+      setDisabled(false)
+    }
+  }, [items])
 
   //chon tieu chuan
   const [newCriterion, setNewCriterion] = React.useState('');
@@ -266,11 +287,12 @@ export default function Drag(props) {
 
   //them tieu chuan (tieu chi) vao form
   const addItem = (type) => {
+    setDisabled(false)
     let itemsCopy = type === 'criterion' ? items.slice() : itemsCriteria.slice()
     let truncatedString = (type === 'criterion' ? data.find(x => x.code == newCriterion).name : (chosen && data.find(x => x.code == chosen).criteria.find(y => y.code == newCriteria).name)); //data.find(x => x.code == value).name
     //itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": type === 'criterion' ? newCriterion : newCriteria, "pts": 5 })
     if (type === 'criterion') {
-      itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriterion, "pts": 5 })
+      itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriterion, "pts": 5, "criteria": [] })
     } else {
       itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriteria, "pts": 5 })
       console.log(itemsCopy)
@@ -330,12 +352,15 @@ export default function Drag(props) {
           order: item.score
         }
       }),
+    } 
+    if (items.some(x => x.criteria.length == 0)) {
+      alert('Có tiêu chuẩn chưa có tiêu chí, xem lại')
     }
     console.log(items)
     if (new Set(items.map(x => x.score)).size !== items.map(x => x.score).length) {
       alert('Kiểm tra lại STT')
-    } else {
-
+    }
+    else {
       axios.post(`/admin/form/${fcode}/addFormStandard`, body, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           console.log(items)
@@ -354,82 +379,82 @@ export default function Drag(props) {
   }
 
   return (
-    <div style={{position:'relative'}}>
+    <div>
       { loading ? <Loading /> : (
         <>
-        {loadingItem && <LinearProgress style={{position:"absolute", width:"100%" }} />}
-        <FormControl variant="outlined" >
-        <InputLabel >Tiêu chuẩn </InputLabel>
-        <Select
-          style={{minWidth: '300px'}}
-          native
-          value={newCriterion}
-          onChange={handleChangeCriterion}
-        >
-          <option value="" disabled />
-          {data.filter(x => x.clicked == false).map(x => {
-            return (
-              <option key={x._id} value={x.code}>{x.name}</option >
-            )
-          })}
-        </Select>
-      </FormControl>
-      <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => { newCriterion && addItem('criterion') }}>Thêm tiêu chuẩn</Button>
-      <PostList postList={items}
-        updateScore={updateScore}
-        removeItem={removeItem}
-      />
-      <Modal
-        className={classes.modal}
-        open={openCriteria}
-        onClose={handleCloseCriteria}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={openCriteria}>
-          <div className={classes.paper1}>
-            <h4 id="transition-modal-title">Thêm tiêu chí cho tiêu chuẩn {chosen}</h4>
-            <FormControl variant="outlined" >
-              <InputLabel >Tiêu chí </InputLabel>
-              <Select
-                style={{minWidth: '300px'}}
-                native
-                value={newCriteria}
-                label='Đơn vị'
-                onChange={handleChangeCriteria}
-              >
-                <option value="" disabled />
-                {chosen && data.find(x => x.code == chosen).criteria.map(y => {
-                  if (!itemsCriteria.map(z => z.code).includes(y.code)) {
-                    return (
-                      <option key={y._id} value={y.code}>{y.name}</option>
-                    )
-                  }
-                })}
-              </Select>
-            </FormControl>
-            <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => { newCriteria && addItem('criteria') }}>Thêm tiêu chí</Button>
-            <PostList postList={itemsCriteria}
-              updateScore={updateScore}
-              removeItem={removeItem}
-            />
-            <div style={{ marginTop: '10px', textAlign: 'center' }} >
-              <Button variant="contained" color="primary" onClick={submitAddFormCriteria}>Lưu và thoát</Button>
-              <Button style={{marginLeft: 10}} variant="contained" color="secondary" onClick={cancel}>Thoát</Button>
-            </div>
+          {loadingItem && <LinearProgress style={{ position: "absolute", width: "100%" }} />}
+          <FormControl variant="outlined" >
+            <InputLabel >Tiêu chuẩn </InputLabel>
+            <Select
+              style={{ minWidth: '300px' }}
+              native
+              value={newCriterion}
+              onChange={handleChangeCriterion}
+            >
+              <option value="" disabled />
+              {data.filter(x => x.clicked == false).map(x => {
+                return (
+                  <option key={x._id} value={x.code}>{x.name}</option >
+                )
+              })}
+            </Select>
+          </FormControl>
+          <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => { newCriterion && addItem('criterion') }}>Thêm tiêu chuẩn</Button>
+          <PostList postList={items}
+            updateScore={updateScore}
+            removeItem={removeItem}
+          />
+          <Modal
+            className={classes.modal}
+            open={openCriteria}
+            onClose={handleCloseCriteria}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={openCriteria}>
+              <div className={classes.paper1}>
+                <h4 id="transition-modal-title">Thêm tiêu chí cho tiêu chuẩn {chosen}</h4>
+                <FormControl variant="outlined" >
+                  <InputLabel >Tiêu chí </InputLabel>
+                  <Select
+                    style={{ minWidth: '300px' }}
+                    native
+                    value={newCriteria}
+                    label='Đơn vị'
+                    onChange={handleChangeCriteria}
+                  >
+                    <option value="" disabled />
+                    {chosen && data.find(x => x.code == chosen).criteria.map(y => {
+                      if (!itemsCriteria.map(z => z.code).includes(y.code)) {
+                        return (
+                          <option key={y._id} value={y.code}>{y.name}</option>
+                        )
+                      }
+                    })}
+                  </Select>
+                </FormControl>
+                <Button style={{ marginLeft: 10, height: 56 }} variant="contained" color="primary" onClick={() => { newCriteria && addItem('criteria') }}>Thêm tiêu chí</Button>
+                <PostList postList={itemsCriteria}
+                  updateScore={updateScore}
+                  removeItem={removeItem}
+                />
+                <div style={{ marginTop: '10px', textAlign: 'center' }} >
+                  <Button variant="contained" color="primary" onClick={submitAddFormCriteria}>Lưu và thoát</Button>
+                  <Button style={{ marginLeft: 10 }} variant="contained" color="secondary" onClick={cancel}>Thoát</Button>
+                </div>
+              </div>
+            </Fade>
+          </Modal>
+          <div style={{ position: 'absolute', right: 10, bottom: 10 }}>
+            {/* <Button style={{ marginRight: 10 }} variant='contained' color='primary' onClick={undo}>Undo</Button> */}
+            <Button variant='contained' disabled={disabled} color='secondary' onClick={save}>Lưu Form</Button>
           </div>
-        </Fade>
-      </Modal>
-      <div style={{ position: 'absolute', right: 10}}>
-        {/* <Button style={{ marginRight: 10 }} variant='contained' color='primary' onClick={undo}>Undo</Button> */}
-        <Button variant='contained' disabled={disabled} color='secondary' onClick={save}>Lưu Form</Button>
-      </div>
         </>
       )}
-      
+
     </div>
   );
 }
