@@ -31,7 +31,7 @@ export default function FormEvaluation(props) {
   const [point, setPoint] = useState(0) //điểm tự đánh giá
   const [point2, setPoint2] = useState(0)
   const [point3, setPoint3] = useState(0) //điểm trưởng khoa đánh giá
-  const [all, setAll] = useState([])
+  const [all, setAll] = useState([]) // tất cả dữ liệu về điểm
   const [edited, setEdited] = useState(false)
   const [data, setData] = useState([]) //data đầu vào
   const [sent, setSent] = useState([]) //data đầu ra
@@ -42,6 +42,7 @@ export default function FormEvaluation(props) {
   const [disableEdit, setDisableEdit] = useState(props.level > 1 ? true : false) //ấn hoàn thành rồi thì ko lưu được nữa, cấp trên ko sửa bài cấp dưới đc 
   const [disableEdit2, setDisableEdit2] = useState(props.level > 2 ? true : false)
   const [disableEdit3, setDisableEdit3] = useState(false)
+  const [max, setMax] = useState([]) // lưu điểm tối đa mỗi tiêu chuẩn
 
   var variable = props.level === 1 ? id1 : id3
 
@@ -58,13 +59,15 @@ export default function FormEvaluation(props) {
         })
         setData(res.data.formStandards)
         let temp = []
+        let t3mp = []
         res.data.formStandards.map(standard => {
+          t3mp.push({order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null})
           standard.formCriteria.map(criteria => {
-            let obj = { name: criteria.criteria_id.code, value: criteria.criteria_id.type != 'radio' ? 0 : null }
+            let obj = { name: criteria.criteria_id.code, standard_order: standard.standard_order, value: criteria.criteria_id.type != 'radio' ? 0 : null }
             temp.push(obj)
           })
-          console.log(temp)
         })
+        console.log(t3mp)
         //lấy dữ liệu đã làm nếu Form đã điền trước đó
         axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
@@ -452,6 +455,7 @@ export default function FormEvaluation(props) {
       setDisableEdit3(true)
     }
     setStatus(true)
+    closeDialog()
   }
   // modal submit form
   const [statusDelete, setStatusDelete] = useState({ open: false })
