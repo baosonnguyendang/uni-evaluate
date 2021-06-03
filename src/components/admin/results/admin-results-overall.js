@@ -230,7 +230,7 @@ export default function ResultsList(props) {
           case 1:
             return (
               <div style={{marginTop: '24px'}}>
-                <ResultsDashboard/>
+                <ResultsDashboard code={code}/>
                 <div style={{marginTop: '24px'}}>
                   <Button variant="contained" color="secondary" onClick={() => { setValue(0) }}>Trở lại trang thống kê chung</Button>
                   <Button style={{ marginLeft: 10 }} variant="contained" color="inherit" ><Link style={{ textDecoration: 'none', color:'black' }} to={`${url}/formDetailed`}>Xem chi tiết Form GV/VC</Link></Button>
