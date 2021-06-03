@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import moment from 'moment'
-import EvaluateSetting from './evaluate-setting/admin-evaluate-setting'
+
 import MomentUtils from '@date-io/moment';
 import {
-  TimePicker,
-  DateTimePicker,
   MuiPickersUtilsProvider,
   KeyboardDateTimePicker,
 } from '@material-ui/pickers';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Skeleton from '../common/skeleton';
 

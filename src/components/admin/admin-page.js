@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Navbar from './admin-navbar'
 import UserTable from "./admin-user"
 import Faculty from "./admin-faculty/admin-faculty"
@@ -19,9 +19,8 @@ import ResultsDetailed from './results/admin-results-detailed'
 
 import NotFound from '../common/NotFound'
 
-import { Switch, Route, Redirect, NavLink } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import Sub from './admin-sub'
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
@@ -95,7 +94,6 @@ const AdminPage = () => {
               <Route exact path='/admin/criterion/:id/deleted' children={<DeletedCriteria />} />
               <Route exact path='/admin/criterion/:id/:id1' children={<Selection />} />
               <Route exact path='/admin/criterion/:id/:id1/deleted' children={<DeletedSelection />} />
-              <Route exact path='/admin/criteria/' children={<Sub />} />
               </Switch>
             </Grid>
           </Grid>

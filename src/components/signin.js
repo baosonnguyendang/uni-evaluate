@@ -99,7 +99,7 @@ const SignInSide = () => {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Tài khoản"
               name="email"
               autoComplete="email"
               autoFocus
@@ -111,14 +111,14 @@ const SignInSide = () => {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Mật khẩu"
               type="password"
               id="password"
               autoComplete="current-password"
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              label="Nhớ mật khẩu"
             />
             {error && <Alert severity="error">Tài khoản hoặc mật khẩu không đúng</Alert>}
               <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} >
@@ -126,7 +126,7 @@ const SignInSide = () => {
               </Button>
             <Grid container>
               <Grid item xs>
-                <Link to="/user/info" variant="body2">Forgot password?</Link>
+                <Link to="/user/info" variant="body2">Quên mật khẩu?</Link>
               </Grid>
             </Grid>
             <Box mt={5}>

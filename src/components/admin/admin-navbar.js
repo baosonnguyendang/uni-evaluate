@@ -13,14 +13,9 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 
 import { MainListItems } from './admin-listItems';
 import logo from '../../img/logo.png'
-import { BrowserRouter as Router, Switch, Route, Redirect, NavLink } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { logout } from '../../actions/authActions'
 import { useHistory } from "react-router-dom";

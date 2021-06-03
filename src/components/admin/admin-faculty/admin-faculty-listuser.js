@@ -491,7 +491,7 @@ const UserOfFaculty = () => {
                                             </> : 
                                             <>
                                             <TextField onChange={e => setIdHeadUnit(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth margin='normal' defaultValue={idExistHeadUnit} />
-                                            <TextField onChange={e => setName(e.target.value)} required id="name" label="Tên đơn vị" variant="outlined" disabled fullWidth margin='normal' defaultValue={nameHeadUnit} />
+                                            <TextField onChange={e => setName(e.target.value)} required id="name" label="Tên trưởng đơn vị" variant="outlined" disabled fullWidth margin='normal' defaultValue={nameHeadUnit} />
                                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
                                                 <Button style={{ marginRight: '10px' }} variant="contained" disabled={idExistHeadUnit === idHeadUnit} color="primary" onClick={editHeadUnit}>Cập nhật</Button>
                                                 <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>

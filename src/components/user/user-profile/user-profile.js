@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, Avatar, Typography, Button, IconButton, Tabs, Tab, Box, Paper } from '@material-ui/core'
+import { Grid, Avatar, Typography, Button } from '@material-ui/core'
 import { makeStyles, LinearProgress } from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
-import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
-import LiveTvIcon from '@material-ui/icons/LiveTv';
-import ViewModuleIcon from '@material-ui/icons/ViewModule';
-import CustomTextField from '../../common/CustomTextField'
 import EditUserForm from './user-editprofile'
 import EditPassword from './user-editpassword'
 import axios from 'axios'
@@ -48,7 +43,6 @@ const useStyles = makeStyles(theme => ({
 
 const Profile = () => {
   const classes = useStyles()
-  const [value, setValue] = React.useState(0);
   const [edit, setEdit] = React.useState(false)
   const [editPassword, setEditPassword] = React.useState(false)
   const [loading, setLoading] = useState(true)
@@ -81,10 +75,6 @@ const Profile = () => {
     setEdit(false)
     setEditPassword(true)
   }
-  const handleChange = (event, newValue) => {
-    console.log(newValue)
-    setValue(newValue);
-  };
 
   return (
     <>

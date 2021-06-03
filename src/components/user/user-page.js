@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router';
 import AppBar from './user-appbar';
-import Main from './user-main';
-import Info from './user-info';
 import TableEvaluation from './element/user-table';
 import FormList from './user-form-list';
 import Profile from './user-profile/user-profile';
@@ -17,8 +15,7 @@ import CouncilEmployeeForm from './hddg/user-hddg-employeeform';
 
 import NotFound from '../common/NotFound'
 
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Container } from '@material-ui/core';
+import { Route, Switch } from 'react-router-dom';
 
 const UserPage = () => {
   let isLogged = localStorage.getItem('token') && localStorage.getItem('role')

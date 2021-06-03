@@ -15,7 +15,6 @@ import Toast from '../../common/snackbar'
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
-import { useParams } from 'react-router-dom'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 
 const useStyles = makeStyles(theme => ({
@@ -80,7 +79,6 @@ const DeletedUser = () => {
     const [rows, setRows] = useState(null);
     const token = localStorage.getItem('token')
     const config = { headers: { "Authorization": `Bearer ${token}` } }
-    const { id } = useParams()
 
     const fetchDeletedUser = () => {
         return axios.get('/admin/user/deleted', config)
