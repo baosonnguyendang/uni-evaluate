@@ -3,7 +3,7 @@ import { TextField, Grid, Button, Typography } from '@material-ui/core';
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core';
-import Toast from '../../common/snackbar'
+import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 
 const useStyles = makeStyles(theme => ({

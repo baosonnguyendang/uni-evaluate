@@ -30,6 +30,7 @@ import DeletedSelection from './RestoreList/DeletedSelection'
 import DeletedFaculty from './RestoreList/DeletedFaculty'
 import DeletedSubFaculty from './RestoreList/DeletedSubFaculty'
 import DeletedUser from './RestoreList/DeletedUser'
+import DeletedEvaluateList from './RestoreList/DeletedEvaluateList'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,6 +84,7 @@ const AdminPage = () => {
               <Route exact path='/admin/faculty/:id' children={<UserOfFaculty />} />
               <Route exact path='/admin/faculty/:id/deleted' children={<DeletedSubFaculty />} />
               <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
+              <Route exact path='/admin/evaluate-settings/deleted' children={<DeletedEvaluateList />} />
               <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
               <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />
               <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2' children={<Results />} />

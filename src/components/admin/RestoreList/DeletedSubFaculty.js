@@ -11,9 +11,9 @@ import IconButton from "@material-ui/core/IconButton";
 // Icons
 import Typography from '@material-ui/core/Typography';
 
-import Toast from '../../common/snackbar'
+import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
-import Skeleton from '../../common/skeleton'
+import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
 import { useParams } from 'react-router-dom'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';

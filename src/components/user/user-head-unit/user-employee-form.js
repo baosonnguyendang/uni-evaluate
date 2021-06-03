@@ -1,7 +1,4 @@
-import React, {useState, useEffect} from 'react';
-
-import axios from 'axios';
-
+import React from 'react';
 import FormEvaluation from '../element/form.js'
 
 export default function EmployeeForm(){

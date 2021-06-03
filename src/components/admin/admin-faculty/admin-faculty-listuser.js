@@ -19,9 +19,9 @@ import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
-import Skeleton from '../../common/skeleton'
+import Skeleton from '../../common/Skeleton'
 import { Link, useRouteMatch } from 'react-router-dom'
-import Toast from '../../common/snackbar'
+import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 import DialogConfirm from '../../common/DialogConfirm'
 

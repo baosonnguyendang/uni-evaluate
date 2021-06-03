@@ -23,8 +23,8 @@ import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
-import Skeleton from '../common/skeleton'
-import Toast from '../common/snackbar'
+import Skeleton from '../common/Skeleton'
+import Toast from '../common/Snackbar'
 import Loading from '../common/Loading'
 import DialogConfirm from '../common/DialogConfirm'
 import UpLoadFile from '../common/UpLoadFile'

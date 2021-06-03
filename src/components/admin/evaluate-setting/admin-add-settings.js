@@ -28,7 +28,7 @@ import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
 import { useRouteMatch } from 'react-router-dom'
-import Skeleton from '../../common/skeleton'
+import Skeleton from '../../common/Skeleton'
 import MUIDataTable from "mui-datatables";
 
 const useStyles = makeStyles(theme => ({
