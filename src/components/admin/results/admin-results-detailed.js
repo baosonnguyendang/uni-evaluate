@@ -22,6 +22,8 @@ export default function ResultsDetailed() {
   const [loading, setLoading] = useState(false)
 
   const [point, setPoint] = useState(0)
+  const [point2, setPoint2] = useState(null)
+  const [point3, setPoint3] = useState(null)
 
   useEffect(() => {
     setLoading(true)
@@ -41,14 +43,31 @@ export default function ResultsDetailed() {
                 })
                 total.push(arr)
               })
-              if (total.length > 2) {
-                let pts = 0
-                total[2].map(x => {
+              console.log(total)
+              let pts = 0
+              total[0].map(x => {
+                if (x.value != null) {
+                  pts += parseInt(x.value)
+                }
+              })
+              setPoint(pts)
+              if (total.length > 1) {
+                let pts2 = 0
+                total[1].map(x => {
                   if (x.value != null) {
-                    pts += parseInt(x.value)
+                    pts2 += parseInt(x.value)
                   }
                 })
-                setPoint(pts)
+                setPoint2(pts2)
+              }
+              if (total.length > 2) {
+                let pts3 = 0
+                total[2].map(x => {
+                  if (x.value != null) {
+                    pts3 += parseInt(x.value)
+                  }
+                })
+                setPoint3(pts3)
               }
               setData(total.slice())
             }
@@ -166,13 +185,21 @@ export default function ResultsDetailed() {
                       ))}
                     </>
                   ))}
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell><b>Tổng điểm</b></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell align='center'><h5>{point}</h5></TableCell>
+                    <TableCell align='center'><h5>{point2}</h5></TableCell>
+                    <TableCell align='center'><h5>{point3}</h5></TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
           </Grid>
         )}
       </div>
-      <h5 style={{ marginTop: '30px' }}>Điểm đánh giá: {point}</h5>
+      <h5 style={{ marginTop: '30px' }}>Điểm đánh giá: {point3 ? point3 : 'Chưa có'}</h5>
     </div>
   )
 }

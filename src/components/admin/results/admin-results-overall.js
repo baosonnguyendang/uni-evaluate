@@ -8,6 +8,8 @@ import { Link, useParams, useRouteMatch } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import ResultsDashboard from './admin-results-detailed2';
+
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -86,7 +88,7 @@ export default function ResultsList(props) {
             ticks: {
               max: 30,
               min: 0,
-              stepSize:2
+              stepSize: 2
             }
           }
         ]
@@ -194,8 +196,8 @@ export default function ResultsList(props) {
                     </CardContent>
                   </Card>
                   <Card className={classes.root}>
-                  <CardContent>
-                    <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
+                    <CardContent>
+                      <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
                         {Math.min(...point)}
                       </Typography>
                       <Typography align='center' variant="body2" component="p">
@@ -227,25 +229,12 @@ export default function ResultsList(props) {
             )
           case 1:
             return (
-              <div>
-                <Paper className={classes.paper}>
-                  <Typography component="h4" variant="h6" color="inherit" noWrap>
-                    Các đơn vị tham gia đánh giá
-                  </Typography>
-                  <div>
-                    <ul>
-                      {units.filter(x => x.department_code != 'HDDG').map(unit => {
-                        return (
-                          <li key={unit._id} ><Link to={`${url}/${unit.department_code}`}>{unit.name}</Link></li>
-                        )
-                      })}
-                    </ul>
-                  </div>
-                  <div style={{ position: 'absolute', bottom: '10px' }}>
-                    <Button variant="contained" color="secondary" onClick={() => { setValue(0) }}>Trở lại trang thống kê chung</Button>
-                    <Button style={{ marginLeft: 10 }} variant="contained" color="inherit" onClick={() => { setValue(0) }}>Xem chi tiết GV/VC</Button>
-                  </div>
-                </Paper>
+              <div style={{marginTop: '24px'}}>
+                <ResultsDashboard/>
+                <div style={{marginTop: '24px'}}>
+                  <Button variant="contained" color="secondary" onClick={() => { setValue(0) }}>Trở lại trang thống kê chung</Button>
+                  <Button style={{ marginLeft: 10 }} variant="contained" color="inherit" ><Link style={{ textDecoration: 'none', color:'black' }} to={`${url}/formDetailed`}>Xem chi tiết Form GV/VC</Link></Button>
+                </div>
               </div>
             )
           default:

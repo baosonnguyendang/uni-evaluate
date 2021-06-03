@@ -14,7 +14,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography'
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   number: {

@@ -13,7 +13,8 @@ import Criteria from './standard-list/admin-criteria'
 import Criterion from './standard-list/admin-criterion'
 import Selection from './standard-list/admin-selection'
 
-import ResultsList from './results/admin-results-list'
+import ResultsUnit from './results/admin-results-unitlist'
+import ResultsList from './results/admin-results-overall'
 import Results from './results/admin-results-unit'
 import ResultsDetailed from './results/admin-results-detailed'
 
@@ -77,25 +78,26 @@ const AdminPage = () => {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Switch>
-              <Route exact path='/admin/user' component={UserTable} />
-              <Route exact path='/admin/user/deleted' component={DeletedUser} />
-              <Route exact path='/admin/faculty' children={<Faculty />} />
-              <Route exact path='/admin/faculty/deleted' children={<DeletedFaculty />} />
-              <Route exact path='/admin/faculty/:id' children={<UserOfFaculty />} />
-              <Route exact path='/admin/faculty/:id/deleted' children={<DeletedSubFaculty />} />
-              <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
-              <Route exact path='/admin/evaluate-settings/deleted' children={<DeletedEvaluateList />} />
-              <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2' children={<Results />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2/:id3' children={<ResultsDetailed />} />
-              <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<ResultsList />} />
-              <Route exact path='/admin/criterion' children={<Criterion />} />
-              <Route exact path='/admin/criterion/deleted' children={<DeletedCriterion />} />
-              <Route exact path='/admin/criterion/:id' children={<Criteria />} />
-              <Route exact path='/admin/criterion/:id/deleted' children={<DeletedCriteria />} />
-              <Route exact path='/admin/criterion/:id/:id1' children={<Selection />} />
-              <Route exact path='/admin/criterion/:id/:id1/deleted' children={<DeletedSelection />} />
+                <Route exact path='/admin/user' component={UserTable} />
+                <Route exact path='/admin/user/deleted' component={DeletedUser} />
+                <Route exact path='/admin/faculty' children={<Faculty />} />
+                <Route exact path='/admin/faculty/deleted' children={<DeletedFaculty />} />
+                <Route exact path='/admin/faculty/:id' children={<UserOfFaculty />} />
+                <Route exact path='/admin/faculty/:id/deleted' children={<DeletedSubFaculty />} />
+                <Route exact path='/admin/evaluate-settings' children={<EvaluateList />} />
+                <Route exact path='/admin/evaluate-settings/deleted' children={<DeletedEvaluateList />} />
+                <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1/results/formDetailed/:id2' children={<Results />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1/results/formDetailed/:id2/:id3' children={<ResultsDetailed />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<ResultsList />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1/results/formDetailed' children={<ResultsUnit />} />
+                <Route exact path='/admin/criterion' children={<Criterion />} />
+                <Route exact path='/admin/criterion/deleted' children={<DeletedCriterion />} />
+                <Route exact path='/admin/criterion/:id' children={<Criteria />} />
+                <Route exact path='/admin/criterion/:id/deleted' children={<DeletedCriteria />} />
+                <Route exact path='/admin/criterion/:id/:id1' children={<Selection />} />
+                <Route exact path='/admin/criterion/:id/:id1/deleted' children={<DeletedSelection />} />
               </Switch>
             </Grid>
           </Grid>
