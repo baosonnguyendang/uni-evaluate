@@ -4,19 +4,19 @@ import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 
 function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-  }
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 //{open, time, message, severity}
-const Toast = ({toast, handleClose}) => {
-    return (
-        <>
-    <Snackbar anchorOrigin={{vertical: 'bottom', horizontal : 'right' }} open={toast.open} autoHideDuration={toast.time} onClose={handleClose}>
+const Toast = ({ toast, handleClose }) => {
+  return (
+    <>
+      <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} open={toast.open} autoHideDuration={toast.time} onClose={handleClose}>
         <Alert onClose={handleClose} severity={toast.severity}>
           {toast.message}
         </Alert>
-    </Snackbar>
-        </>
-    )
+      </Snackbar>
+    </>
+  )
 }
 
 export default Toast

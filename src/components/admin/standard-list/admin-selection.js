@@ -76,11 +76,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const CustomTableCell = ({ row, name,}) => {
+const CustomTableCell = ({ row, name, }) => {
   const classes = useStyles();
   return (
     <TableCell align="left" className={classes.tableCell}>
-      { row[name] }
+      { row[name]}
     </TableCell>
   );
 };
@@ -229,7 +229,7 @@ export default function Selection() {
     let { id1 } = useParams();
     return (
       < Typography component="h1" variant="h5" color="inherit" noWrap >
-        Tiêu chí { nameCriteria } - Danh sách lựa chọn
+        Tiêu chí { nameCriteria} - Danh sách lựa chọn
       </Typography >
     )
   }
@@ -261,10 +261,10 @@ export default function Selection() {
               <TableBody>
                 {rows.map(row => (
                   <TableRow key={row._id}>
-                    <CustomTableCell className={classes.name} {...{ row, name: "code",}} />
-                    <CustomTableCell className={classes.number} {...{ row, name: "name",}} />
-                    <CustomTableCell {...{ row, name: "description",}} />
-                    <CustomTableCell {...{ row, name: "max_point",}} />
+                    <CustomTableCell className={classes.name} {...{ row, name: "code", }} />
+                    <CustomTableCell className={classes.number} {...{ row, name: "name", }} />
+                    <CustomTableCell {...{ row, name: "description", }} />
+                    <CustomTableCell {...{ row, name: "max_point", }} />
                     <TableCell className={classes.selectTableCell}>
                       <IconButton
                         aria-label="delete"
