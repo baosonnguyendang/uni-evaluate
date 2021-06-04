@@ -34,7 +34,7 @@ export default function ResultsDetailed() {
         axios.get(`/admin/userForm/${id3}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
             console.log(res.data)
-            if (res.data.evaluateForms) {
+            if (res.data.evaluateForms.length > 0) {
               let total = []
               res.data.evaluateForms.map(level => {
                 let arr = []

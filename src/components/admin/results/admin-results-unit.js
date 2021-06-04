@@ -58,14 +58,6 @@ export default function Results(props) {
 
   const [rows, setRows] = useState([]);
 
-  // const getStatus = (status) => {
-  //   let word = ''
-  //   switch(status){
-  //     case -1:
-  //       word = 'Đang trong quá trình đánh giá'
-  //   }
-  // }
-
   //lấy mã form and then ds gv/vc thuộc đơn vị
   useEffect(() => {
     axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -73,6 +65,7 @@ export default function Results(props) {
         if (res.data.form) {
           // setCode(res.data.form.code)
           code = res.data.form.code
+
           axios.get(`/admin/form/${code}/${id2}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
               let temp = []
@@ -84,8 +77,15 @@ export default function Results(props) {
                 .then(res => {
                   console.log(res.data.formUsers)
                   res.data.formUsers.map(user => {
-                    temp.find(x => x.id == user.user_id.staff_id).status = user.evaluateForm ? 'Đang đánh giá' : 'Chưa đánh giá'
-                    temp.find(x => x.id == user.user_id.staff_id)._id = user._id
+                    let pts = ['null', 'null', 'null']
+                    if (user.evaluateForm) {
+                      user.evaluateForm.map(x => {
+                        pts[user.evaluateForm.indexOf(x)] = x.point
+                      })
+                    }
+                    console.log(pts)
+                    temp.find(x => x.id == user.user_id.staff_id).status = pts.toString()
+                    temp.find(x => x.id == user.user_id.staff_id)._id = user.userForm ? user.userForm._id : null
                   })
                   setRows(temp)
                 })
@@ -127,7 +127,7 @@ export default function Results(props) {
                 <TableCell align="center">Mã viên chức</TableCell>
                 <TableCell>Tên viên chức</TableCell>
                 <TableCell>Đơn vị</TableCell>
-                <TableCell>Trạng thái</TableCell>
+                <TableCell>Điểm thành phần</TableCell>
                 <TableCell ></TableCell>
               </TableRow>
             </TableHead>
