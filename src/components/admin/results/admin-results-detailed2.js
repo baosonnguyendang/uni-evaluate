@@ -110,7 +110,7 @@ export default function ResultsDashboard(props) {
       name: 'Name',
       options: {
         filter: true,
-        filterType: 'multiselect'
+        filterType: 'textField'
       },
     },
     {
@@ -129,6 +129,7 @@ export default function ResultsDashboard(props) {
         name: standard,
         options: {
           filter: true,
+          align: 'center',
           filterType: 'custom',
 
           // if the below value is set, these values will be used every time the table is rendered.
@@ -222,7 +223,89 @@ export default function ResultsDashboard(props) {
       name: 'Point',
       options: {
         filter: true,
-        filterType: 'multiselect'
+        align: 'center',
+        filterType: 'custom',
+
+        // if the below value is set, these values will be used every time the table is rendered.
+        // it's best to let the table internally manage the filterList
+        //filterList: [25, 50],
+
+        customFilterListOptions: {
+          render: v => {
+            if (v[0] && v[1] && ageFilterChecked) {
+              return [`Từ: ${v[0]}`, `Đến: ${v[1]}`];
+            } else if (v[0] && v[1] && !ageFilterChecked) {
+              return `Từ: ${v[0]}, Đến: ${v[1]}`;
+            } else if (v[0]) {
+              return `Từ: ${v[0]}`;
+            } else if (v[1]) {
+              return `Đến: ${v[1]}`;
+            }
+            return [];
+          },
+          update: (filterList, filterPos, index) => {
+            console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+
+            if (filterPos === 0) {
+              filterList[index].splice(filterPos, 1, '');
+            } else if (filterPos === 1) {
+              filterList[index].splice(filterPos, 1);
+            } else if (filterPos === -1) {
+              filterList[index] = [];
+            }
+
+            return filterList;
+          },
+        },
+        filterOptions: {
+          names: [],
+          logic(age, filters) {
+            if (filters[0] && filters[1]) {
+              return age < filters[0] || age > filters[1];
+            } else if (filters[0]) {
+              return age < filters[0];
+            } else if (filters[1]) {
+              return age > filters[1];
+            }
+            return false;
+          },
+          display: (filterList, onChange, index, column) => (
+            <div>
+              <FormLabel>Tổng điểm</FormLabel>
+              <FormGroup row>
+                <TextField
+                  label='Từ'
+                  value={filterList[index][0] || ''}
+                  onChange={event => {
+                    filterList[index][0] = event.target.value;
+                    onChange(filterList[index], index, column);
+                  }}
+                  style={{ width: '45%', marginRight: '5%' }}
+                />
+                <TextField
+                  label='Đến'
+                  value={filterList[index][1] || ''}
+                  onChange={event => {
+                    filterList[index][1] = event.target.value;
+                    onChange(filterList[index], index, column);
+                  }}
+                  style={{ width: '45%' }}
+                />
+                {/* <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={ageFilterChecked}
+                      onChange={event => setAgeFilterChecked(event.target.checked)}
+                    />
+                  }
+                  label='Separate Values'
+                  style={{ marginLeft: '0px' }}
+                /> */}
+              </FormGroup>
+            </div>
+          ),
+        },
+        print: false,
       },
     },
   )

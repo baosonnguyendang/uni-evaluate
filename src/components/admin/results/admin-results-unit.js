@@ -85,7 +85,7 @@ export default function Results(props) {
                   console.log(res.data.formUsers)
                   res.data.formUsers.map(user => {
                     temp.find(x => x.id == user.user_id.staff_id).status = user.evaluateForm ? 'Đang đánh giá' : 'Chưa đánh giá'
-                    temp.find(x => x.id == user.user_id.staff_id)._id = user.evaluateForm ? user.evaluateForm.userForm._id : null
+                    temp.find(x => x.id == user.user_id.staff_id)._id = user._id
                   })
                   setRows(temp)
                 })
