@@ -43,6 +43,7 @@ export default function FormEvaluation(props) {
   const [disableEdit, setDisableEdit] = useState(props.level > 1 ? true : false) //ấn hoàn thành rồi thì ko lưu được nữa, cấp trên ko sửa bài cấp dưới đc 
   const [disableEdit2, setDisableEdit2] = useState(props.level > 2 ? true : false)
   const [disableEdit3, setDisableEdit3] = useState(false)
+  const [wrong, setWrong] = useState(false) //kiem tra diem input
   const [max, setMax] = useState([]) // lưu điểm tối đa mỗi tiêu chuẩn
 
   var variable = props.level === 1 ? id1 : id3
