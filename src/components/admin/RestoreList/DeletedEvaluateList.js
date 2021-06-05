@@ -15,7 +15,7 @@ import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
-import { useParams } from 'react-router-dom'
+import moment from 'moment'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 
 const useStyles = makeStyles(theme => ({
@@ -70,7 +70,7 @@ const CustomTableCell = ({ row, name }) => {
     const classes = useStyles();
     return (
         <TableCell align="left" className={classes.tableCell}>
-            {row[name]}
+            {name === 'start_date' || name === 'end_date' ? moment(row[name]).format("HH:mm DD/MM/yyyy") : row[name]}
         </TableCell>
     );
 };
@@ -80,13 +80,12 @@ const DeletedEvaluateList = () => {
     const [rows, setRows] = useState(null);
     const token = localStorage.getItem('token')
     const config = { headers: { "Authorization": `Bearer ${token}` } }
-    const { id } = useParams()
 
     const fetchDeletedStandard = () => {
-        return axios.get('admin/standard/deleted', config)
+        return axios.get('/admin/review/deleted', config)
           .then(res => {
-            console.log(res.data.standards)
-            setRows(res.data.standards)
+            console.log(res.data)
+            setRows(res.data.reviews)
           })
           .catch(e => {
             console.log(e.response)
@@ -105,13 +104,13 @@ const DeletedEvaluateList = () => {
         setStatusDelete({ open: false })
     }
     const onRestore = id => {
-        setStatusDelete({ open: true, onClick: () => restoreCriterionWithAPI(id) })
+        setStatusDelete({ open: true, onClick: () => restoreEvaluateWithAPI(id) })
     }
     // khôi phục đợt đánh giá vs api
-    const restoreCriterionWithAPI = (id) => {
+    const restoreEvaluateWithAPI = (id) => {
         setLoading(true)
         closeDialog()
-        axios.post(`/admin/standard/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/review/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
             .then(res => {
                 const newRows = rows.filter(row => row.code !== id)
                 setRows(newRows)
@@ -140,7 +139,9 @@ const DeletedEvaluateList = () => {
                         <TableRow style={{ backgroundColor: '#f4f4f4' }}>
                             <TableCell className={classes.number} >Mã đợt đánh giá</TableCell>
                             <TableCell className={classes.name} >Tên đợt đánh giá</TableCell>
-                            <TableCell >Mô tả</TableCell>
+                            <TableCell style={{width:'20%'}} >Mô tả</TableCell>
+                            <TableCell >Bắt đầu</TableCell>
+                            <TableCell >Kết thúc</TableCell>
                             <TableCell />
                         </TableRow>
                     </TableHead>
@@ -150,6 +151,8 @@ const DeletedEvaluateList = () => {
                                 <CustomTableCell {...{ row, name: "code" }} />
                                 <CustomTableCell {...{ row, name: "name" }} />
                                 <CustomTableCell {...{ row, name: "description" }} />
+                                <CustomTableCell {...{ row, name: "start_date" }} />
+                                <CustomTableCell {...{ row, name: "end_date" }} />
                                 <TableCell align='right' className={classes.selectTableCell}>
                                     <IconButton
                                         aria-label="restore"
