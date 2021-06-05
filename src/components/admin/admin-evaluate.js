@@ -7,7 +7,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDateTimePicker,
 } from '@material-ui/pickers';
-import { Link, useHistory, useRouteMatch} from 'react-router-dom';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 
 import Skeleton from '../common/Skeleton';
 
@@ -80,12 +80,12 @@ export default function EvaluateList() {
           >
             <DeleteIcon />
           </IconButton>
-  
+
         </td>
       </tr>
     )
   }
-  
+
   function NumberList(props) {
     const numbers = props.numbers;
     const listItems = numbers.map((item) =>
@@ -95,7 +95,7 @@ export default function EvaluateList() {
         value={item.name}
         start={moment(item.start_date).format("HH:mm DD/MM/yyyy")}
         end={moment(item.end_date).format("HH:mm DD/MM/yyyy")}
-        description={props.description}
+        description={item.description}
       />
       //</Link>
     );
@@ -118,16 +118,16 @@ export default function EvaluateList() {
     );
   }
   const classes = useStyles();
- //open modal
- const [modal, setModal] = React.useState({ open: false, id: '' });
- const handleOpen = () => {
-   setModal({ open: true, id: '' });
-   setStartDate(new Date())
-   setEndDate(new Date())
- };
- const handleClose = () => {
-   setModal({ ...modal, open: false });
- };
+  //open modal
+  const [modal, setModal] = React.useState({ open: false, id: '' });
+  const handleOpen = () => {
+    setModal({ open: true, id: '' });
+    setStartDate(new Date())
+    setEndDate(new Date())
+  };
+  const handleClose = () => {
+    setModal({ ...modal, open: false });
+  };
 
   //date picker
   const [startDate, setStartDate] = useState(new Date());
@@ -198,17 +198,17 @@ export default function EvaluateList() {
   //modal delete
   const [statusDelete, setStatusDelete] = useState({ open: false })
   const onDelete = id => {
-    setStatusDelete({ open: true, onClick: () => deleteUserWithAPI(id) })
+    setStatusDelete({ open: true, onClick: () => deleteEvaluateWithAPI(id) })
   }
 
   const closeDialog = () => {
     setStatusDelete({ open: false })
   }
-  // xoá user vs api
-  const deleteUserWithAPI = (id) => {
+  // xoá đợt dánh giá vs api
+  const deleteEvaluateWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/user/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/review/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         const newLists = listStage.filter(row => row.code !== id)
         console.log(newLists)
@@ -234,6 +234,33 @@ export default function EvaluateList() {
       }
     })
     setModal({ open: true, id })
+  }
+  //api edit đợt đánh giá
+  const submitEditEvaluate = (e) => {
+    e.preventDefault()
+    const body = { new_rcode: id, name: evaluationName, start_date: startDate, end_date: endDate, description }
+    setLoading(true)
+    console.log(modal.id,body)
+    handleClose()
+    axios.post(`/admin/review/${modal.id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        setListStage(listStage.map(r => r.code === modal.id ? { ...r, code: id, name: evaluationName, start_date: startDate, end_date: endDate, description } : r))
+        setToast({ open: true, time: 3000, message: 'Cập nhật thông tin đợt đánh giá thành công', severity: "success" })
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        console.log(err.response)
+        switch (err.response?.status) {
+          case 409:
+            setToast({ open: true, time: 3000, message: 'Mã đợt đánh giá đã tồn tại', severity: "error" })
+            break;
+          default:
+            setToast({ open: true, time: 3000, message: 'Cập nhật thông tin đợt đánh giá thất bại', severity: "error" })
+            break;
+        }
+        setLoading(false)
+      })
   }
   let history = useHistory();
   const { url } = useRouteMatch()
@@ -272,7 +299,7 @@ export default function EvaluateList() {
             <Fade in={modal.open}>
               <div className={classes.paper1}>
                 <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? "Cập nhật đợt đánh giá" : "Thêm đợt đánh giá"}</Typography>
-                <form onSubmit={submit}>
+                <form onSubmit={modal.id ? submitEditEvaluate : submit}>
                   <TextField
                     variant="outlined"
                     margin="normal"
