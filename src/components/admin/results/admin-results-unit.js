@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 // var { url } = useRouteMatch();
 
 function createData(name, id, unit, status, _id) {
-  return { name, id, unit, status, link: 'Kết quả', _id }
+  return { name, id, unit, status, link: 'Kết quả', _id, already: false }
 }
 
 const CustomTableCell = ({ row, name }) => {
@@ -43,7 +43,7 @@ const CustomTableCell = ({ row, name }) => {
   else {
     return (
       <TableCell>
-        {name === 'link' ? (row.status != 'Chưa đánh giá' ? (<Link to={`${url}/` + row._id} >{row[name]}</Link>) : null) : (row[name])}
+        {name === 'link' ? (row.already == true ? (<Link to={`${url}/` + row._id} >{row[name]}</Link>) : null) : (row[name])}
       </TableCell>
     )
   }
@@ -77,13 +77,13 @@ export default function Results(props) {
                 .then(res => {
                   console.log(res.data.formUsers)
                   res.data.formUsers.map(user => {
-                    let pts = ['null', 'null', 'null']
+                    let pts = [' null', ' null', ' null']
                     if (user.evaluateForm) {
+                      temp.find(x => x.id == user.user_id.staff_id).already = true
                       user.evaluateForm.map(x => {
-                        pts[user.evaluateForm.indexOf(x)] = x.point
+                        pts[user.evaluateForm.indexOf(x)] = x.point ? x.point : ' null'
                       })
                     }
-                    console.log(pts)
                     temp.find(x => x.id == user.user_id.staff_id).status = pts.toString()
                     temp.find(x => x.id == user.user_id.staff_id)._id = user.userForm ? user.userForm._id : null
                   })
