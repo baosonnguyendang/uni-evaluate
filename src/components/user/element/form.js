@@ -8,7 +8,9 @@ import {
   Typography, Container
 } from "@material-ui/core";
 
-import axios from 'axios'
+import axios from 'axios';
+
+import './styles.css';
 
 import { useParams } from 'react-router-dom'
 import DialogConfirm from '../../common/DialogConfirm'
@@ -43,13 +45,12 @@ export default function FormEvaluation(props) {
   const [disableEdit, setDisableEdit] = useState(props.level > 1 ? true : false) //ấn hoàn thành rồi thì ko lưu được nữa, cấp trên ko sửa bài cấp dưới đc 
   const [disableEdit2, setDisableEdit2] = useState(props.level > 2 ? true : false)
   const [disableEdit3, setDisableEdit3] = useState(false)
-  const [wrong, setWrong] = useState(false) //kiem tra diem input
   const [max, setMax] = useState([]) // lưu điểm tối đa mỗi tiêu chuẩn
+  const [input, setInput] = useState([])
 
   var variable = props.level === 1 ? id1 : id3
 
   useEffect(() => {
-
     //lấy Form
     axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
@@ -62,14 +63,18 @@ export default function FormEvaluation(props) {
         setData(res.data.formStandards)
         let temp = []
         let t3mp = []
+        let t = []
         res.data.formStandards.map(standard => {
           t3mp.push({ order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null })
           standard.formCriteria.map(criteria => {
+            if (criteria.criteria_id.type == 'input') {
+              t.push({ code: criteria.criteria_id.code, point: criteria.point })
+            }
             let obj = { name: criteria.criteria_id.code, standard_order: standard.standard_order, value: criteria.criteria_id.type != 'radio' ? 0 : null }
             temp.push(obj)
           })
         })
-        console.log(t3mp)
+        setInput(t)
         //lấy dữ liệu đã làm nếu Form đã điền trước đó
         axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
@@ -351,7 +356,6 @@ export default function FormEvaluation(props) {
 
   const submitForm = () => {
     closeDialog()
-    setLoading(true)
     let list = []
     let dataToSend = []
     switch (level) {
@@ -389,10 +393,24 @@ export default function FormEvaluation(props) {
       default:
         break;
     }
+    if (dataToSend.some(x => x.value < 0)) {
+      let sai = 'Các tiêu chí sau điền sai:'
+      let b = dataToSend.filter(x => x.value < 0)
+      console.log(b)
+      data.map(x => {
+        x.formCriteria.map(y => {
+          if (b.some(z => z.name == y.criteria_id.code)) {
+            sai += '\n' + x.standard_order + '.' + y.criteria_order
+          }
+        })
+      })
+      alert(sai)
+    }
     if (list.length === 0) {
-      let data = { dataToSend, level }
-      console.log(data)
-      axios.post(`/form/${variable}/submitForm/v3`, data, { headers: { "Authorization": `Bearer ${token}` } })
+      let dataa = { dataToSend, level }
+      console.log(dataa)
+      setLoading(true)
+      axios.post(`/form/${variable}/submitForm/v3`, dataa, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
           setToast({ open: true, time: 3000, message: 'Kết quả đánh giá đã lưu', severity: "success" })
@@ -420,7 +438,6 @@ export default function FormEvaluation(props) {
   }
 
   const temporary = () => {
-    setDisabled(true)
     let dataToSend = []
     switch (props.level) {
       case 1:
@@ -438,20 +455,35 @@ export default function FormEvaluation(props) {
       default:
         break;
     }
-    let data = { dataToSend, level }
-    console.log(data)
-    setLoading(true)
-    axios.post(`/form/${variable}/saveForm/v2`, data, { headers: { "Authorization": `Bearer ${token}` } })
-      .then(res => {
-        console.log(res)
-        setToast({ open: true, time: 3000, message: 'Lưu tạm thành công', severity: "success" })
-        setLoading(false)
+    let dataa = { dataToSend, level }
+    if (dataToSend.some(x => x.value < 0)) {
+      let sai = 'Các tiêu chí sau điền sai:'
+      let b = dataToSend.filter(x => x.value < 0)
+      console.log(b)
+      data.map(x => {
+        x.formCriteria.map(y => {
+          if (b.some(z => z.name == y.criteria_id.code)) {
+            sai += '\n' + x.standard_order + '.' + y.criteria_order
+          }
+        })
       })
-      .catch(err => {
-        console.log(err)
-        setToast({ open: true, time: 3000, message: 'Lưu tạm thất bại', severity: "error" })
-        setLoading(false)
-      })
+      alert(sai)
+    }
+    else {
+      setLoading(true)
+      setDisabled(true)
+      axios.post(`/form/${variable}/saveForm/v2`, dataa, { headers: { "Authorization": `Bearer ${token}` } })
+        .then(res => {
+          console.log(res)
+          setToast({ open: true, time: 3000, message: 'Lưu tạm thành công', severity: "success" })
+          setLoading(false)
+        })
+        .catch(err => {
+          console.log(err)
+          setToast({ open: true, time: 3000, message: 'Lưu tạm thất bại', severity: "error" })
+          setLoading(false)
+        })
+    }
   }
 
 
@@ -536,6 +568,7 @@ export default function FormEvaluation(props) {
                                 <TableCell align='center'>
                                   {criteria.options.length > 0 ? null : (criteria.criteria_id.type == 'input' ? (
                                     <input
+                                      className='number'
                                       type="number"
                                       style={{ width: '40px', textAlign: 'center' }}
                                       disabled={disableEdit}
