@@ -3,7 +3,7 @@ import {
   TableContainer, Table,
   TableHead, TableRow, TableCell,
   TableBody, makeStyles, Paper, Grid,
-  Radio, Button, Checkbox,
+  Button,
   LinearProgress,
   Typography, Container
 } from "@material-ui/core";
@@ -12,7 +12,8 @@ import axios from 'axios'
 
 import { useParams } from 'react-router-dom'
 import DialogConfirm from '../../common/DialogConfirm'
-
+import Toast from '../../common/Snackbar'
+import Loading from '../../common/Loading'
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
@@ -21,7 +22,7 @@ const useStyles = makeStyles({
 
 export default function FormEvaluation(props) {
   const classes = useStyles();
-  const [loading, setLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
   // const [data, setData] = useState({})
   const token = localStorage.getItem('token')
   const { id1, id3 } = useParams()
@@ -61,7 +62,7 @@ export default function FormEvaluation(props) {
         let temp = []
         let t3mp = []
         res.data.formStandards.map(standard => {
-          t3mp.push({order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null})
+          t3mp.push({ order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null })
           standard.formCriteria.map(criteria => {
             let obj = { name: criteria.criteria_id.code, standard_order: standard.standard_order, value: criteria.criteria_id.type != 'radio' ? 0 : null }
             temp.push(obj)
@@ -98,10 +99,10 @@ export default function FormEvaluation(props) {
               })
               console.log(list)
               setAll([...list])
-              setLoading(false)
+              setIsLoading(false)
             }
             else {
-              setLoading(false)
+              setIsLoading(false)
             }
             console.log(temp)
             setSent([...temp])
@@ -110,12 +111,12 @@ export default function FormEvaluation(props) {
           })
           .catch(err => {
             console.log(err)
-            setLoading(false)
+            setIsLoading(false)
           })
       })
       .catch(err => {
         console.log(err)
-        setLoading(false)
+        setIsLoading(false)
       })
   }, [])
 
@@ -348,6 +349,8 @@ export default function FormEvaluation(props) {
   }
 
   const submitForm = () => {
+    closeDialog()
+    setLoading(true)
     let list = []
     let dataToSend = []
     switch (level) {
@@ -391,9 +394,13 @@ export default function FormEvaluation(props) {
       axios.post(`/form/${variable}/submitForm/v3`, data, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
+          setToast({ open: true, time: 3000, message: 'Kết quả đánh giá đã lưu', severity: "success" })
+          setLoading(false)
         })
         .catch(err => {
-          alert(err)
+          setToast({ open: true, time: 3000, message: 'Lưu kết quả đánh giá thất bại', severity: "error" })
+          setLoading(false)
+          // alert(err)
         })
     }
     else {
@@ -432,12 +439,17 @@ export default function FormEvaluation(props) {
     }
     let data = { dataToSend, level }
     console.log(data)
+    setLoading(true)
     axios.post(`/form/${variable}/saveForm/v2`, data, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res)
+        setToast({ open: true, time: 3000, message: 'Lưu tạm thành công', severity: "success" })
+        setLoading(false)
       })
       .catch(err => {
         console.log(err)
+        setToast({ open: true, time: 3000, message: 'Lưu tạm thất bại', severity: "error" })
+        setLoading(false)
       })
   }
 
@@ -465,12 +477,19 @@ export default function FormEvaluation(props) {
   const onSubmit = () => {
     setStatusDelete({ open: true, onClick: submitForm })
   }
+  // toast and loading message
+  // handle toast 
+  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
+  const handleCloseToast = () => setToast({ ...toast, open: false })
+  const [loading, setLoading] = useState(false)
   return (
     < >
+      <Toast toast={toast} handleClose={handleCloseToast} />
       {status ? (
         <div >
-          { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
+          { isLoading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
             <Container>
+              <Loading open={loading} />
               <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Không thể chỉnh sửa sau khi hoàn thành bài đánh giá. Bạn đã chắc chắn chưa ? ' />
               {info != null && (
                 <div style={{ display: 'flex', fontSize: '1.125rem', justifyContent: 'space-between', marginRight: '20%', marginTop: 30 }}>
