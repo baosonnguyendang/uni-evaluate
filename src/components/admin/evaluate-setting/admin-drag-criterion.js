@@ -326,13 +326,21 @@ export default function Drag(props) {
 
   const removeItem = (index) => {
     var itemsCopy = openCriteria ? itemsCriteria.slice() : items.slice();
+    console.log(itemsCopy[index])
     itemsCopy.splice(index, 1);
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
-    });
+    });      
+    itemsCopy.map(x => {
+      if (x.score >= itemsCopy[index].score){
+        x.score--
+      }
+    })
     if (openCriteria) {
+      console.log(itemsCriteria)
       setItemsCriteria(itemsCopy)
-    } else {
+    } 
+    else {
       setItems(itemsCopy)
       let temp = data.filter(x => x.clicked == true).map(y => y.code).filter(e => !itemsCopy.map(z => z.code).includes(e));
       if (data.find(x => x.code == temp)) {
@@ -352,7 +360,7 @@ export default function Drag(props) {
           order: item.score
         }
       }),
-    } 
+    }
     if (items.some(x => x.criteria.length == 0)) {
       alert('Có tiêu chuẩn chưa có tiêu chí, xem lại')
     }
