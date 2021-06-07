@@ -34,7 +34,7 @@ import DeletedUser from './RestoreList/DeletedUser'
 import DeletedEvaluateList from './RestoreList/DeletedEvaluateList'
 
 import ResultsDashboard from './results/admin-results-detailed3' // cai nay de test
-
+import Test from './test'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -82,7 +82,7 @@ const AdminPage = () => {
               <Switch>
                 <Route exact path='/admin/user' component={UserTable} />
                 <Route exact path='/admin/user/deleted' component={DeletedUser} />
-                <Route exact path='/admin/criteria' children={<ResultsDashboard code='8DP9W' />} />
+                <Route exact path='/admin/criteria' children={<Test />} />
                 <Route exact path='/admin/faculty' children={<Faculty />} />
                 <Route exact path='/admin/faculty/deleted' children={<DeletedFaculty />} />
                 <Route exact path='/admin/faculty/:id' children={<UserOfFaculty />} />

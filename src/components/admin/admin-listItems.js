@@ -35,40 +35,32 @@ export function MainListItems() {
   const classes = useStyles()
   return (
     <div>
-      <ListItem style={{paddingLeft: '23px' }} button component={NavLink} to={'/admin/user'} activeClassName={classes.active}>
+      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/user'} activeClassName={classes.active}>
         <ListItemIcon>
           <PersonIcon />
         </ListItemIcon>
         <ListItemText primary="Người dùng" />
       </ListItem>
-      <ListItem style={{paddingLeft: '23px' }} button component={NavLink} to={'/admin/faculty'}>
+      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/faculty'} activeClassName={classes.active}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Đơn vị" />
       </ListItem>
-      <ListItem style={{paddingLeft: '23px' }} button component={NavLink} to={'/admin/criteria'}>
+      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/criteria'} activeClassName={classes.active}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Reports" />
       </ListItem>
 
-      <Divider />
-
-      <ListItem style={{paddingLeft: '23px' }} button component={NavLink} to={'/admin/criterion'}>
-        {/* <Link to="/dashboard/user" style={{ display: 'contents', textDecoration: 'none' }}>
-          <ListItemIcon>
-            <AssignmentIcon />
-          </ListItemIcon>
-          <ListItemText primary="DS Tiêu chuẩn" className={classes.menuLink} />
-        </Link> */}
+      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/criterion'} activeClassName={classes.active}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="Tiêu chuẩn" />
       </ListItem>
-      <ListItem style={{paddingLeft: '23px' }} button component={Link} to={'/admin/evaluate-settings'}>
+      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/evaluate-settings'} activeClassName={classes.active}>
         <ListItemIcon>
           <AssessmentIcon />
         </ListItemIcon>

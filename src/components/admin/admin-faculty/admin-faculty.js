@@ -318,6 +318,7 @@ export default function Criterion() {
                     </TableRow>
                   )
                 })}
+              {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không tồn tại đơn vị</TableCell></TableRow>}
               </TableBody>
             </Table>
             <TablePagination

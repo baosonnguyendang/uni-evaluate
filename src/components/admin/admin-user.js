@@ -345,9 +345,10 @@ export default function ListUser() {
                   </TableRow>
                 )
               })}
+              {rows.length === 0 && <TableRow><TableCell colSpan={7}>Không tồn tại người dùng</TableCell></TableRow>}
             </TableBody>
           </Table>
-          {(rows.length) ? <TablePagination
+          <TablePagination
             rowsPerPageOptions={[5, 10, 20]}
             component="div"
             count={filterUser.length}
@@ -355,8 +356,7 @@ export default function ListUser() {
             page={page}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
-          /> : <Typography variant='body1'>Không tồn tại người dùng</Typography>}
-
+          />
           <div style={{ margin: '10px', display: 'flex' }}>
             <div style={{ flexGrow: 1 }}>
               <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
@@ -427,8 +427,8 @@ export default function ListUser() {
                           <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
                         </div>
                       </form>
-                    </> : 
-                    <UpLoadFile handleClose={handleClose} submit={submitExcel}/>}
+                    </> :
+                    <UpLoadFile handleClose={handleClose} submit={submitExcel} />}
                 </div>
 
 
