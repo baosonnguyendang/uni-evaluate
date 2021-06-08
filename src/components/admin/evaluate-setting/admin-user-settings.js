@@ -34,34 +34,38 @@ export default function UserSettings(props) {
   // const data = [
   //   ["Joe James", "1712970", "Khoa học máy tính"],
   // ];
-  console.log(props.unit, props.type, props.fcode)
   //fe to be
   const token = localStorage.getItem('token')
 
   const [data, setData] = React.useState([])
 
+  useEffect(() => {
+    setData(props.data)
+    console.log(props.data)
+  }, [props.data])
+
   const [fetched, setFetched] = React.useState(false)
 
-  useEffect(() => {
-    if (fetched == false) {
-      setFetched(true)
-      axios.get(`/admin/form/${props.fcode}/${props.unit}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
-        .then(res => {
-          let temp = []
-          res.data.formUser.map(x => {
-            let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
-            temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
-          })
-          console.log(temp)
-          setData(temp)
-        })
-        .catch(err => console.log(err))
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (fetched == false) {
+  //     setFetched(true)
+  //     axios.get(`/admin/form/${props.fcode}/${props.unit}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
+  //       .then(res => {
+  //         let temp = []
+  //         res.data.formUser.map(x => {
+  //           let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
+  //           temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
+  //         })
+  //         console.log(temp)
+  //         setData(temp)
+  //       })
+  //       .catch(err => console.log(err))
+  //   }
+  // }, [])
 
   const options = {
     filterType: 'checkbox',
-    selectableRows: true,
+    selectableRows: 'multiple',
     selectableRowsOnClick: true,
     onRowsDelete: (rowsDeleted) => {
       const idsToDelete = rowsDeleted.data.map(item => item.dataIndex)
@@ -95,45 +99,12 @@ export default function UserSettings(props) {
 
   return (
     <div>
-      {type !== '04' ? (
-        <MUIDataTable
-          title={"Các thành viên tham gia đánh giá"}
-          data={data}
-          columns={columns}
-          options={options}
-        />
-      ) : (
-        <Table className={classes.table} aria-label="caption table">
-          <TableHead>
-            {console.log(props.data)}
-            <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-              <TableCell className={classes.number} >Mã GV/VC</TableCell>
-              <TableCell className={classes.name} >Tên GV/VC</TableCell>
-              <TableCell >Bộ môn</TableCell>
-              <TableCell align="left" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {props.data.map(x => {
-              return (
-                <TableRow>
-                  <TableCell >{x[1]}</TableCell>
-                  <TableCell >{x[0]}</TableCell>
-                  <TableCell >{x[2]}</TableCell>
-                  <TableCell align="left" >
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => onDelete(x)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      )}
+      <MUIDataTable
+        title={"Các thành viên tham gia đánh giá"}
+        data={data}
+        columns={columns}
+        options={options}
+      />
     </div>
   );
 }

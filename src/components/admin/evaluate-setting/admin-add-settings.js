@@ -238,6 +238,17 @@ export default function AddSettings() {
 
     const openUnitt = (x) => {
       unit = x
+      axios.get(`/admin/form/${code}/${unit}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
+        .then(res => {
+          let temp = []
+          res.data.formUser.map(x => {
+            let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
+            temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
+          })
+          console.log(temp)
+          setUnitMember(temp)
+        })
+        .catch(err => console.log(err))
       setShowResults(true)
       // axios.get(`/admin/form/${code}/${x}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
       //   .then(res => {
@@ -294,14 +305,32 @@ export default function AddSettings() {
   };
 
   //chon truong don vi
+  const [headTemp, setHeadTemp] = useState({name: '', id: ''})//luu tam option dc chon trong chon truong don vi
   const [openHead, setOpenHead] = React.useState(false);
   const handleOpenHead = () => {
+    console.log(unitMember)
     setOpenHead(true);
     closeDialog();
   };
   const handleCloseHead = () => {
     setOpenHead(false);
   };
+  const submitHead = (e) => {
+    console.log(unit)
+    e.preventDefault()
+    console.log(headTemp)
+    axios.post(`/admin/form/${code}/${unit}/addHead`, {ucode: headTemp.id}, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res)
+        setHead(headTemp)
+        setOpenHead(false)
+      })
+      .catch(err => {
+        alert(err)
+        setOpenHead(false)
+      })
+  }
+
 
   //them nguoi rieng le vao danh gia vui
   const [idd, setId] = React.useState('')
@@ -313,6 +342,7 @@ export default function AddSettings() {
     setOpenAdd(false);
   };
   const submitAdd = (e) => {
+    e.preventDefault()
     setUnitMember(unitMember => [...unitMember, ['null', idd, 'null']])
     handleCloseAdd()
   }
@@ -367,7 +397,7 @@ export default function AddSettings() {
                       Nhóm 0{group} - {units.find(x => x.id == unit).name}
                     </Typography>
                     <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
-                      <UserSettings unit={unit} type={id1} fcode={code} />
+                      <UserSettings unit={unit} type={id1} fcode={code} data={unitMember} />
                       <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text={`Trưởng Đơn vị đang là ${head.name} (${head.id}), có muốn thay đổi?`} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                         <Button variant="contained" style={{ marginRight: 10, width: 200 }} onClick={() => { onAsk() }}>
@@ -394,9 +424,17 @@ export default function AddSettings() {
                       <Fade in={openHead}>
                         <div className={classes.paper1}>
                           <h2>Trưởng đơn vị</h2>
-                          <form>
+                          <form onSubmit={submitHead}>
+                            <Autocomplete
+                              id="combo-box-demo"
+                              options={unitMember}
+                              getOptionDisabled={(option) => option[1] == head.id}
+                              getOptionLabel={(option) => `${option[0]} (${option[1]})`}
+                              fullWidth
+                              onChange={(event, value) => value && setHeadTemp({name: value[0], id: value[1]})}
+                              renderInput={(params) => <TextField {...params} label="Trưởng đơn vị" variant="outlined" />}
+                            />
                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                              <TextField onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required fullWidth variant="outlined" className={classes.field} />
                               <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu và thoát</Button>
                               <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseHead}>Thoát</Button>
                             </div>
