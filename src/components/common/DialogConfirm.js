@@ -8,33 +8,33 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 export default function AlertDialog({ openDialog = false, onClick, onClose, text }) {
-    return (
-        <>
-            <Dialog
-                open={openDialog}
-                onClose={onClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-                fullWidth={true}
-                maxWidth={'xs'}
-            >
-                <DialogTitle id="alert-dialog-title">
-                    <ErrorOutlineIcon color="secondary" fontSize="large" />
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        {text ? text : 'Bạn có thực sự muốn xoá ?'}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button  onClick={onClose} variant="contained" >
-                        Huỷ
-                    </Button>
-                    <Button onClick={onClick} variant="contained" color="primary" autoFocus>
-                        Xác nhận
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
-    );
+  return (
+    <>
+      <Dialog
+        open={openDialog}
+        onClose={onClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        fullWidth={true}
+        maxWidth={'xs'}
+      >
+        <DialogTitle id="alert-dialog-title">
+          <ErrorOutlineIcon color="secondary" fontSize="large" />
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {text ? text : 'Bạn có thực sự muốn xoá ?'}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} variant="contained" >
+            Huỷ
+          </Button>
+          <Button onClick={onClick} variant="contained" color="primary" autoFocus>
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 }

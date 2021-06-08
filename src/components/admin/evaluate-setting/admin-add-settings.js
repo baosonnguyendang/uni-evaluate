@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
+import DialogConfirm from '../../common/DialogConfirm';
 import UserSettings from './admin-user-settings'
 import Drag from './admin-drag-criterion'
 import Council from './admin-init-council'
@@ -167,7 +168,7 @@ export default function AddSettings() {
       setInit(false)
       axios.post(`/admin/review/${id}/formtype/${id1}/form/addForm`, { name: name, code: code }, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
-
+          console.log(res)
         })
         .catch(e => {
           console.log(e)
@@ -296,6 +297,7 @@ export default function AddSettings() {
   const [openHead, setOpenHead] = React.useState(false);
   const handleOpenHead = () => {
     setOpenHead(true);
+    closeDialog();
   };
   const handleCloseHead = () => {
     setOpenHead(false);
@@ -319,6 +321,33 @@ export default function AddSettings() {
     setNewUnit(event.target.value);
   };
 
+  //lay truong don vi 
+  const [head, setHead] = useState({
+    name: '',
+    id: ''
+  })
+
+  //xac nhan thay doi truong don vi
+  const [statusDelete, setStatusDelete] = useState({ open: false })
+  const closeDialog = () => {
+    setStatusDelete({ open: false })
+  }
+  const onAsk = () => {
+    axios.get(`/admin/form/${code}/${unit}/getFormDepartment`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data)
+        let obj = {
+          name: res.data.formDepartment.head.lastname + ' ' + res.data.formDepartment.head.firstname,
+          id: res.data.formDepartment.head.staff_id
+        }
+        setHead(obj)
+        setStatusDelete({ open: true, onClick: handleOpenHead })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
   return (
     <div>
       { loading ? <Skeleton /> : (() => {
@@ -339,8 +368,9 @@ export default function AddSettings() {
                     </Typography>
                     <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
                       <UserSettings unit={unit} type={id1} fcode={code} />
+                      <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text={`Trưởng Đơn vị đang là ${head.name} (${head.id}), có muốn thay đổi?`} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
-                        <Button variant="contained" style={{ marginRight: 10, width: 200 }} onClick={() => { handleOpenHead() }}>
+                        <Button variant="contained" style={{ marginRight: 10, width: 200 }} onClick={() => { onAsk() }}>
                           Trưởng đơn vị
                         </Button>
                         <Button variant="contained" color="primary" style={{ marginRight: 10, width: 200 }} onClick={() => { handleOpenAdd() }}>
@@ -491,7 +521,7 @@ export default function AddSettings() {
                             )
                           case 0:
                             return (
-                              <Council fcode={code}/>
+                              <Council fcode={code} />
                             )
                           default:
                             return null
