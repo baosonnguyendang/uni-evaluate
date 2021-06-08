@@ -27,8 +27,14 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
+
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+
 import { useRouteMatch } from 'react-router-dom'
+
 import Skeleton from '../../common/Skeleton'
+
 import MUIDataTable from "mui-datatables";
 
 const useStyles = makeStyles(theme => ({
@@ -305,7 +311,7 @@ export default function AddSettings() {
   };
 
   //chon truong don vi
-  const [headTemp, setHeadTemp] = useState({name: '', id: ''})//luu tam option dc chon trong chon truong don vi
+  const [headTemp, setHeadTemp] = useState({ name: '', id: '' })//luu tam option dc chon trong chon truong don vi
   const [openHead, setOpenHead] = React.useState(false);
   const handleOpenHead = () => {
     console.log(unitMember)
@@ -319,7 +325,7 @@ export default function AddSettings() {
     console.log(unit)
     e.preventDefault()
     console.log(headTemp)
-    axios.post(`/admin/form/${code}/${unit}/addHead`, {ucode: headTemp.id}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${code}/${unit}/addHead`, { ucode: headTemp.id }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res)
         setHead(headTemp)
@@ -334,6 +340,23 @@ export default function AddSettings() {
 
   //them nguoi rieng le vao danh gia vui
   const [idd, setId] = React.useState('')
+  const [info, setInfo] = useState(null) //hien thi thong tin user sau khi bam tim kiem trong them user vao hddg
+  const [display, setDisplay] = useState('')
+
+  const getInfo = () => {
+    axios.get(`admin/user/${idd}/get`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res)
+        setInfo(res.data.user.lastname + ' ' + res.data.user.firstname)
+        setDisplay('Tên: ' + res.data.user.lastname + ' ' + res.data.user.firstname)
+      })
+      .catch(err => {
+        console.log(err)
+        setDisplay('Không tồn tại mã GV/VC')
+      })
+  }
+
+
   const [openAdd, setOpenAdd] = React.useState(false);
   const handleOpenAdd = () => {
     setOpenAdd(true);
@@ -343,9 +366,25 @@ export default function AddSettings() {
   };
   const submitAdd = (e) => {
     e.preventDefault()
-    setUnitMember(unitMember => [...unitMember, ['null', idd, 'null']])
-    handleCloseAdd()
+    axios.post(`/admin/form/${code}/${unit}/addFormUser`, { ucode: idd }, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        axios.get(`admin/user/${idd}/get`, { headers: { "Authorization": `Bearer ${token}` } })
+          .then(res => {
+            console.log(res.data)
+            setUnitMember(unitMember => [...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, '']])
+            handleCloseAdd()
+          })
+          .catch(err => {
+            console.log(err)
+            handleCloseAdd()
+          })
+      .catch(err => {
+        console.log(err)
+        handleCloseAdd()
+      })
+      })
   }
+
   const [newUnit, setNewUnit] = React.useState('');
   const handleChangeUnit = (event) => {
     setNewUnit(event.target.value);
@@ -431,7 +470,7 @@ export default function AddSettings() {
                               getOptionDisabled={(option) => option[1] == head.id}
                               getOptionLabel={(option) => `${option[0]} (${option[1]})`}
                               fullWidth
-                              onChange={(event, value) => value && setHeadTemp({name: value[0], id: value[1]})}
+                              onChange={(event, value) => value && setHeadTemp({ name: value[0], id: value[1] })}
                               renderInput={(params) => <TextField {...params} label="Trưởng đơn vị" variant="outlined" />}
                             />
                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
@@ -457,23 +496,10 @@ export default function AddSettings() {
                           <h2>Thêm GV/VC</h2>
                           <form onSubmit={submitAdd}>
                             <TextField onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required variant="outlined" className={classes.field} />
-                            <br />
-                            <FormControl variant="outlined" >
-                              <InputLabel >Đơn vị</InputLabel>
-                              <Select
-                                native
-                                value={newUnit}
-                                label='Đơn vị'
-                                onChange={handleChangeUnit}
-                              >
-                                <option value="" disabled />
-                                <option value={10}>Khoa học máy tính</option>
-                                <option value={20}>Hệ thống và Mạng</option>
-                                <option value={30}>Hệ thống thông tin</option>
-                                <option value={40}>Công nghệ phần mềm</option>
-                                <option value={50}>Kỹ thuật máy tính</option>
-                              </Select>
-                            </FormControl>
+                            <IconButton variant='contained' color='primary' onClick={getInfo}>
+                              <SearchIcon />
+                            </IconButton>
+                            <h5 style={{ marginTop: '10px' }}>{display}</h5>
                             <div style={{ textAlign: 'center', marginTop: '10px' }}>
                               <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Thêm</Button>
                               <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseAdd}>Thoát</Button>
