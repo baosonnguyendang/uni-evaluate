@@ -126,12 +126,14 @@ export default function FormEvaluation(props) {
       })
   }, [])
 
+  console.log(all)
+
   useEffect(() => {
     let pts = 0
     let pts2 = 0
     let pts3 = 0
-    if (loading === false) {
-      if (props.level == 1 || disableEdit) {
+    if (isLoading === false) {
+      if (props.level == 1 || (disableEdit && props.level < 2)) {
         if (sent.length > 0) {
           sent.map(x => {
             if (x.value != null) {
@@ -141,8 +143,9 @@ export default function FormEvaluation(props) {
         }
         setPoint(pts)
       }
-      if (props.level == 2 || (disableEdit2)) {
+      if (props.level == 2 || (disableEdit2 && props.level < 3)) {
         let tam = 0
+        console.log(all)
         all[0].map(x => {
           tam += parseInt(x.value)
         })
@@ -406,7 +409,7 @@ export default function FormEvaluation(props) {
       })
       alert(sai)
     }
-    if (list.length === 0) {
+    if (list.length === 0 && !dataToSend.some(x => x.value < 0)) {
       let dataa = { dataToSend, level }
       console.log(dataa)
       setLoading(true)
@@ -422,7 +425,7 @@ export default function FormEvaluation(props) {
           // alert(err)
         })
     }
-    else {
+    else if (list.length > 0) {
       let noti = 'Các tiêu chuẩn/tiêu chí sau chưa hoàn thành đánh giá:'
       data.map(x => {
         x.formCriteria.map(y => {
@@ -590,6 +593,7 @@ export default function FormEvaluation(props) {
                                   {(props.level > 1 || disableEdit2) && criteria.options.length == 0 ? (criteria.criteria_id.type == 'input' ? (
                                     <input
                                       type="number"
+                                      className='number'
                                       style={{ width: '40px', textAlign: 'center' }}
                                       disabled={disableEdit2}
                                       defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
@@ -612,6 +616,7 @@ export default function FormEvaluation(props) {
                                   {(props.level > 2 || disableEdit3) && criteria.options.length == 0 ? (criteria.criteria_id.type == 'input' ? (
                                     <input
                                       type="number"
+                                      className='number'
                                       style={{ width: '40px', textAlign: 'center' }}
                                       disabled={disableEdit3}
                                       defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
