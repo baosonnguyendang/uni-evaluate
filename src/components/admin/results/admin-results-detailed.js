@@ -121,31 +121,62 @@ export default function ResultsDetailed() {
                             <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                             <TableCell>{criteria.point}</TableCell>
                             <TableCell align='center'>
-                              {criteria.options.length > 0 ? null :
+                              {criteria.options.length > 0 ? null : (criteria.criteria_id.type == 'input' ? (
+                                <input
+                                  className='number'
+                                  type="number"
+                                  style={{ width: '40px', textAlign: 'center' }}
+                                  disabled
+                                  value={data.length > 0 && data[0].find(y => (y.name == criteria.criteria_id.code)).value}
+                                  name={criteria.criteria_id.code + '_1'}
+                                />
+                              ) : (
                                 <input
                                   disabled
                                   type="checkbox"
                                   name={criteria.criteria_id.code + '_1'}
                                   checked={data.length > 0 && data[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
-                                  value={criteria.point} />}
+                                  value={criteria.point}
+                                />
+                              ))}
                             </TableCell>
                             <TableCell align='center'>
-                              {criteria.options.length > 0 ? null :
+                              {criteria.options.length > 0 ? null : (criteria.criteria_id.type == 'input' ? (
+                                <input
+                                  className='number'
+                                  type="number"
+                                  style={{ width: '40px', textAlign: 'center' }}
+                                  disabled
+                                  value={data.length > 0 && data[1].find(y => (y.name == criteria.criteria_id.code)).value}
+                                  name={criteria.criteria_id.code + '_2'}
+                                />
+                              ) : (
                                 <input
                                   disabled
                                   checked={data.length > 1 && data[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                   type="checkbox"
                                   name={criteria.criteria_id.code + '_2'}
-                                  value={criteria.point} />}
+                                  value={criteria.point} />
+                              ))}
                             </TableCell>
                             <TableCell align='center'>
-                              {criteria.options.length > 0 ? null :
+                              {criteria.options.length > 0 ? null : (criteria.criteria_id.type == 'input' ? (
+                                <input
+                                  className='number'
+                                  type="number"
+                                  style={{ width: '40px', textAlign: 'center' }}
+                                  disabled
+                                  value={data.length > 0 && data[2].find(y => (y.name == criteria.criteria_id.code)).value}
+                                  name={criteria.criteria_id.code + '_3'}
+                                />
+                              ) : (
                                 <input
                                   disabled
                                   checked={data.length > 2 && data[2].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                   type="checkbox"
                                   name={criteria.criteria_id.code + '_3'}
-                                  value={criteria.point} />}
+                                  value={criteria.point} />
+                              ))}
                             </TableCell>
                           </TableRow>
                           {criteria.options.map((option, index) => (
