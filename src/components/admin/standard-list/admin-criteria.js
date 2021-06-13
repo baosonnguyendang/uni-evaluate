@@ -10,7 +10,6 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
@@ -24,11 +23,11 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import axios from 'axios'
-import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
-import { ErrorSharp } from "@material-ui/icons";
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -95,6 +94,7 @@ const CustomTableCell = ({ row, name }) => {
 };
 
 export default function Criteria() {
+  const dispatch = useDispatch()
   const [rows, setRows] = React.useState(null);
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true)
@@ -117,8 +117,6 @@ export default function Criteria() {
 
   // loading add criterion
   const [loading, setLoading] = useState(false)
-  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-  const handleCloseToast = () => setToast({ ...toast, open: false })
 
   // modal xoá
   const [statusDelete, setStatusDelete] = useState({ open: false })
@@ -137,12 +135,12 @@ export default function Criteria() {
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
-        setToast({ open: true, time: 3000, message: 'Xoá tiêu chí thành công', severity: 'success' })
+        dispatch(showSuccessSnackbar('Xoá tiêu chí thành công'))
         setLoading(false)
       })
       .catch(err => {
         console.log(err.response.status)
-        setToast({ open: true, time: 3000, message: 'Xoá tiêu chí thất bại', severity: 'error' })
+        dispatch(showErrorSnackbar('Xoá tiêu chí thất bại'))
         setLoading(false)
       })
   }
@@ -179,7 +177,7 @@ export default function Criteria() {
     axios.post(`/admin/standard/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setRows(rows.map(r => r.code === id ? { ...r, code, name, description, type } : r))
-        setToast({ open: true, time: 3000, message: 'Cập nhật tiêu chí thành công', severity: "success" })
+        dispatch(showSuccessSnackbar('Cập nhật tiêu chí thành công'))
         setLoading(false)
       })
       .catch(err => {
@@ -187,10 +185,10 @@ export default function Criteria() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã tiêu chí đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã tiêu chí đã tồn tại'))
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Cập nhật tiêu chí thất bại', severity: "error" })
+            dispatch(showErrorSnackbar('Cập nhật tiêu chí thất bại'))
             break;
         }
         setLoading(false)
@@ -214,7 +212,7 @@ export default function Criteria() {
         // chỗ này success thì fe tạo bảng
         console.log(res.data);
         setRows(row => [...row, { name, code, description, type }])
-        setToast({ open: true, time: 3000, message: 'Tạo tiêu chí thành công', severity: "success" })
+        dispatch(showSuccessSnackbar('Tạo tiêu chí thành công'))
         setLoading(false)
       })
       .catch(err => {
@@ -222,10 +220,10 @@ export default function Criteria() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã tiêu chí đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã tiêu chí đã tồn tại'))
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Tạo tiêu chí thất bại', severity: "error" })
+            dispatch(showErrorSnackbar('Tạo tiêu chí thất bại'))
             break;
         }
         setLoading(false)
@@ -250,7 +248,6 @@ export default function Criteria() {
       {isLoading ? <Skeleton /> : (
         <div>
           <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
-          <Toast toast={toast} handleClose={handleCloseToast} />
           <Loading open={loading} />
           <Typography component="h1" variant="h5" color="inherit" noWrap >
             Tiêu chuẩn {nameStandard} - Danh sách Tiêu chí

@@ -21,12 +21,13 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import EditIcon from "@material-ui/icons/EditOutlined";
 import DeleteIcon from '@material-ui/icons/Delete';
-import Toast from '../common/Snackbar'
 import Loading from '../common/Loading'
 import IconButton from "@material-ui/core/IconButton";
 import DialogConfirm from '../common/DialogConfirm'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-datepicker/dist/react-datepicker.css";
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../actions/notifyAction'
 
 
 
@@ -117,6 +118,7 @@ export default function EvaluateList() {
       </table>
     );
   }
+  const dispatch = useDispatch()
   const classes = useStyles();
   //open modal
   const [modal, setModal] = React.useState({ open: false, id: '' });
@@ -170,7 +172,7 @@ export default function EvaluateList() {
       .then(res => {
         console.log(res.data)
         setListStage(liststage => [...liststage, { code: id, name: evaluationName, start_date: moment(startDate).toString(), end_date: moment(endDate).toString(), description }])
-        setToast({ open: true, time: 3000, message: 'Tạo đợt đánh giá thành công', severity: "success" })
+        dispatch(showSuccessSnackbar('Tạo đợt đánh giá thành công'))
         setLoading(false)
       })
       .catch(err => {
@@ -178,10 +180,10 @@ export default function EvaluateList() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã đợt đánh giá đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã đợt đánh giá đã tồn tại'))
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Tạo đợt đánh giá thất bại', severity: "error" })
+            dispatch(showErrorSnackbar('Tạo đợt đánh giá thất bại'))
             break;
         }
         setLoading(false)
@@ -193,8 +195,7 @@ export default function EvaluateList() {
   }
   // loading thêm đợt
   const [loading, setLoading] = useState(false)
-  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-  const handleCloseToast = () => setToast({ ...toast, open: false })
+
   //modal delete
   const [statusDelete, setStatusDelete] = useState({ open: false })
   const onDelete = id => {
@@ -213,12 +214,12 @@ export default function EvaluateList() {
         const newLists = listStage.filter(row => row.code !== id)
         console.log(newLists)
         setListStage(newLists)
-        setToast({ open: true, time: 3000, message: 'Xoá đợt đánh giá thành công', severity: 'success' })
+        dispatch(showSuccessSnackbar('Xoá đợt đánh giá thành công'))
         setLoading(false)
       })
       .catch(err => {
         console.log(err.response.status)
-        setToast({ open: true, time: 3000, message: 'Xoá đợt đánh giá thất bại', severity: 'error' })
+        dispatch(showErrorSnackbar('Xoá đợt đánh giá thất bại'))
         setLoading(false)
       })
   }
@@ -240,12 +241,12 @@ export default function EvaluateList() {
     e.preventDefault()
     const body = { new_rcode: id, name: evaluationName, start_date: startDate, end_date: endDate, description }
     setLoading(true)
-    console.log(modal.id,body)
+    console.log(modal.id, body)
     handleClose()
     axios.post(`/admin/review/${modal.id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setListStage(listStage.map(r => r.code === modal.id ? { ...r, code: id, name: evaluationName, start_date: startDate, end_date: endDate, description } : r))
-        setToast({ open: true, time: 3000, message: 'Cập nhật thông tin đợt đánh giá thành công', severity: "success" })
+        dispatch(showSuccessSnackbar('Cập nhật thông tin đợt đánh giá thành công'))
         setLoading(false)
       })
       .catch(err => {
@@ -253,10 +254,10 @@ export default function EvaluateList() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã đợt đánh giá đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã đợt đánh giá đã tồn tại'))
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Cập nhật thông tin đợt đánh giá thất bại', severity: "error" })
+            dispatch(showErrorSnackbar('Cập nhật thông tin đợt đánh giá thất bại'))
             break;
         }
         setLoading(false)
@@ -269,19 +270,18 @@ export default function EvaluateList() {
   }
   return (
     <>
-      { !listStage ? <Skeleton /> : <div>
+      {!listStage ? <Skeleton /> : <div>
         <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
-        <Toast toast={toast} handleClose={handleCloseToast} />
         <Loading open={loading} />
         <Typography component="h1" variant="h5" color="inherit" noWrap>
           DANH SÁCH ĐỢT ĐÁNH GIÁ
-      </Typography>
+        </Typography>
         <Paper className={classes.paper}>
           <NumberList numbers={listStage} />
           <div style={{ margin: 10, justifyContent: 'space-between', display: 'flex' }}>
             <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
               Khôi phục
-              </Button>
+            </Button>
             <Button variant="contained" color='primary' type="button" onClick={handleOpen}>Thêm đợt đánh giá</Button>
           </div>
           <Modal

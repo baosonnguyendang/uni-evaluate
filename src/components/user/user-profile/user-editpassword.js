@@ -5,6 +5,8 @@ import axios from 'axios'
 import { makeStyles } from '@material-ui/core';
 import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 
 const useStyles = makeStyles(theme => ({
     error: {
@@ -13,6 +15,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const EditUserForm = ({ setDisableEditPassword }) => {
+    const dispatch = useDispatch()
     const classes = useStyles()
     const { register, handleSubmit, formState: { errors }, watch } = useForm()
     const newpassword = useRef({});
@@ -24,7 +27,7 @@ const EditUserForm = ({ setDisableEditPassword }) => {
         setLoading(true)
         if (data.oldpassword === data.newpassword) {
             console.log(data.oldpasword === data.newpassword)
-            setToast({ open: true, time: 3000, message: 'Mật khẩu mới không được giống mật khẩu cũ', severity: 'error' })
+            dispatch(showErrorSnackbar('Mật khẩu mới không được giống mật khẩu cũ'))
             setLoading(false)
             return
         }
@@ -34,17 +37,14 @@ const EditUserForm = ({ setDisableEditPassword }) => {
         }
         axios.post('/user/changePassword', postData, config)
             .then(res => {
-                setToast({ open: true, time: 3000, message: 'Đổi mật khẩu thành công', severity: "success" })
+                dispatch(showSuccessSnackbar('Đổi mật khẩu thành công'))
                 setLoading(false)
             })
             .catch(e => {
                 setLoading(false)
-                setToast({ open: true, time: 3000, message: 'Mật khẩu cũ không đúng', severity: "error" })
+                dispatch(showErrorSnackbar('Mật khẩu cũ không đúng'))
             })
     }
-    // handle toast 
-    const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-    const handleCloseToast = () => setToast({ open: false, time: 3000, message: '', severity: '' })
     const [loading, setLoading] = useState(false)
     return (
         <form onSubmit={handleSubmit(submit)}>
@@ -76,13 +76,12 @@ const EditUserForm = ({ setDisableEditPassword }) => {
                 <Grid item container xs={12} justify="flex-end">
                     <Button variant="contained" style={{ marginRight: '20px' }} onClick={setDisableEditPassword} type='submit'>
                         Huỷ
-                </Button>
+                    </Button>
                     <Button type='submit' variant="contained" color="primary">
                         Lưu
-                </Button>
+                    </Button>
                 </Grid>
             </Grid>
-            <Toast toast={toast} handleClose={handleCloseToast} />
         </form>
     )
 }

@@ -11,12 +11,13 @@ import IconButton from "@material-ui/core/IconButton";
 // Icons
 import Typography from '@material-ui/core/Typography';
 
-import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
 import { useParams } from 'react-router-dom'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -76,6 +77,7 @@ const CustomTableCell = ({ row, name }) => {
 };
 
 const DeletedCriterion = () => {
+    const dispatch = useDispatch()
     const classes = useStyles();
     const [rows, setRows] = useState(null);
     const token = localStorage.getItem('token')
@@ -97,8 +99,6 @@ const DeletedCriterion = () => {
       }, [])
       // loading restore criteron
     const [loading, setLoading] = useState(false)
-    const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-    const handleCloseToast = () => setToast({ ...toast, open: false })
     // modal xoá
     const [statusDelete, setStatusDelete] = useState({ open: false })
     const closeDialog = () => {
@@ -115,12 +115,12 @@ const DeletedCriterion = () => {
             .then(res => {
                 const newRows = rows.filter(row => row.code !== id)
                 setRows(newRows)
-                setToast({ open: true, time: 3000, message: 'Khôi phục tiêu chuẩn thành công', severity: 'success' })
+                dispatch(showSuccessSnackbar('Khôi phục tiêu chuẩn thành công'))
                 setLoading(false)
             })
             .catch(err => {
                 console.log(err.response.status)
-                setToast({ open: true, time: 3000, message: 'Khôi phục tiêu chuẩn thất bại', severity: 'error' })
+                dispatch(showErrorSnackbar('Khôi phục tiêu chuẩn thất bại'))
                 setLoading(false)
             })
     }
@@ -129,7 +129,6 @@ const DeletedCriterion = () => {
     return (
         <>
            <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick}  onClose={closeDialog} text='Bạn muốn khôi phục ?' />
-            <Toast toast={toast} handleClose={handleCloseToast} />
             <Loading open={loading} />
             <Typography component="h1" variant="h5" color="inherit" noWrap >
                 Danh sách tiêu chuẩn đã xoá

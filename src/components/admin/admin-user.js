@@ -28,6 +28,8 @@ import Toast from '../common/Snackbar'
 import Loading from '../common/Loading'
 import DialogConfirm from '../common/DialogConfirm'
 import UpLoadFile from '../common/UpLoadFile'
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../actions/notifyAction'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -91,6 +93,7 @@ const CustomTableCell = ({ row, name }) => {
 };
 
 export default function ListUser() {
+  const dispatch = useDispatch()
   const [rows, setRows] = React.useState([]);
   const token = localStorage.getItem('token')
   const fetchUser = () => {
@@ -134,12 +137,12 @@ export default function ListUser() {
         console.log(newRows)
         setRows(newRows)
         setFilterUser(newRows)
-        setToast({ open: true, time: 3000, message: 'Xoá người dùng thành công', severity: 'success' })
+        dispatch(showSuccessSnackbar('Xoá người dùng thành công'))
         setLoading(false)
       })
       .catch(err => {
         console.log(err.response.status)
-        setToast({ open: true, time: 3000, message: 'Xoá người dùng thất bại', severity: 'error' })
+        dispatch(showErrorSnackbar('Xoá người dùng thất bại'))
         setLoading(false)
       })
   }
@@ -209,7 +212,7 @@ export default function ListUser() {
       .then(res => {
         setRows(rows.map(r => r.staff_id === modal.id ? { ...r, staff_id: id, firstname: fname, lastname: lname, roles: role, email } : r))
         setFilterUser(rows.map(r => r.staff_id === modal.id ? { ...r, staff_id: id, firstname: fname, lastname: lname, roles: role, email } : r))
-        setToast({ open: true, time: 3000, message: 'Cập nhật thông tin thành công', severity: "success" })
+        dispatch(showSuccessSnackbar('Cập nhật thông tin thành công'))
         setLoading(false)
       })
       .catch(err => {
@@ -217,10 +220,10 @@ export default function ListUser() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã người dùng hoặc email đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã người dùng hoặc email đã tồn tại'))
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Cập nhật thông tin thất bại', severity: "error" })
+            dispatch(showErrorSnackbar('Cập nhật thông tin thất bại'))
             break;
         }
         setLoading(false)
@@ -235,7 +238,7 @@ export default function ListUser() {
     axios.post('/admin/user/add', body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         fetchUser().then((res) => {
-          setToast({ open: true, time: 3000, message: 'Thêm người dùng thành công', severity: "success" })
+          dispatch(showSuccessSnackbar('Thêm người dùng thành công'))
           setLoading(false)
         })
       })
@@ -244,10 +247,10 @@ export default function ListUser() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã người dùng hoặc email đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã người dùng hoặc email đã tồn tại'))
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Thêm người dùng thất bại', severity: "error" })
+            dispatch(showErrorSnackbar('Thêm người dùng thất bại'))
             break;
         }
         setLoading(false)
@@ -260,9 +263,6 @@ export default function ListUser() {
     setNewUnit(event.target.value);
   };
   const [isLoading, setIsLoading] = React.useState(true)
-  // handle toast 
-  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-  const handleCloseToast = () => setToast({ ...toast, open: false })
   const [loading, setLoading] = useState(false)
   // filter user
   const [filterUser, setFilterUser] = useState([])
@@ -293,15 +293,14 @@ export default function ListUser() {
     history.push(`${url}/deleted`)
   }
   return (<>
-    { isLoading ? <Skeleton /> : (
+    {isLoading ? <Skeleton /> : (
       <>
         <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
-        <Toast toast={toast} handleClose={handleCloseToast} />
         <Loading open={loading} />
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography component="h1" variant="h5" color="inherit" noWrap>
             DANH SÁCH NGƯỜI DÙNG
-        </Typography>
+          </Typography>
           <TextField id="standard-basic" type='search' label="Tìm kiếm" onChange={searchUser} />
         </div>
 
@@ -365,10 +364,10 @@ export default function ListUser() {
             </div>
             <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
               Thêm người dùng
-           </Button>
+            </Button>
             <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenImport}>
               Import File
-           </Button>
+            </Button>
             <Modal
               aria-labelledby="transition-modal-title"
               aria-describedby="transition-modal-description"

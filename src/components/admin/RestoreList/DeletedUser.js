@@ -11,11 +11,12 @@ import IconButton from "@material-ui/core/IconButton";
 // Icons
 import Typography from '@material-ui/core/Typography';
 
-import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -76,6 +77,7 @@ const CustomTableCell = ({ row, name }) => {
 
 const DeletedUser = () => {
     const classes = useStyles();
+    const dispatch = useDispatch()
     const [rows, setRows] = useState(null);
     const token = localStorage.getItem('token')
     const config = { headers: { "Authorization": `Bearer ${token}` } }
@@ -114,12 +116,12 @@ const DeletedUser = () => {
                 const newRows = rows.filter(row => row.staff_id !== id)
                 console.log(newRows)
                 setRows(newRows)
-                setToast({ open: true, time: 3000, message: 'Khôi phục người dùng thành công', severity: 'success' })
+                dispatch(showSuccessSnackbar('Khôi phục người dùng thành công'))
                 setLoading(false)
             })
             .catch(err => {
                 console.log(err.response.status)
-                setToast({ open: true, time: 3000, message: 'Khôi phục người dùng thất bại', severity: 'error' })
+                dispatch(showErrorSnackbar('Khôi phục người dùng thất bại'))
                 setLoading(false)
             })
     }
@@ -128,7 +130,6 @@ const DeletedUser = () => {
     return (
         <>
             <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Bạn muốn khôi phục ?' />
-            <Toast toast={toast} handleClose={handleCloseToast} />
             <Loading open={loading} />
             <Typography component="h1" variant="h5" color="inherit" noWrap >
                 Danh sách người dùng đã xoá

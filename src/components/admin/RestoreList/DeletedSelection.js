@@ -11,12 +11,13 @@ import IconButton from "@material-ui/core/IconButton";
 // Icons
 import Typography from '@material-ui/core/Typography';
 
-import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
 import { useParams } from 'react-router-dom'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -81,6 +82,7 @@ const CustomTableCell = ({ row, name }) => {
 };
 
 const DeletedSelection = () => {
+  const dispatch = useDispatch()
   const classes = useStyles();
   const [rows, setRows] = useState(null);
   const token = localStorage.getItem('token')
@@ -124,12 +126,12 @@ const DeletedSelection = () => {
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
-        setToast({ open: true, time: 3000, message: 'Khôi phục lựa chọn thành công', severity: 'success' })
+        dispatch(showSuccessSnackbar('Khôi phục lựa chọn thành công'))
         setLoading(false)
       })
       .catch(err => {
         console.log(err.response.status)
-        setToast({ open: true, time: 3000, message: 'Khôi phục lựa chọn thất bại', severity: 'error' })
+        dispatch(showErrorSnackbar('Khôi phục lựa chọn thất bại'))
         setLoading(false)
       })
   }
@@ -138,11 +140,10 @@ const DeletedSelection = () => {
   return (
     <>
       <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Bạn muốn khôi phục ?' />
-      <Toast toast={toast} handleClose={handleCloseToast} />
       <Loading open={loading} />
       <Typography component="h1" variant="h5" color="inherit" noWrap >
         Tiêu chí {nameCriteria} - Danh sách lựa chọn đã xoá
-            </Typography >
+      </Typography >
       <Paper className={classes.root}>
         <Table className={classes.table} aria-label="caption table">
           <TableHead>

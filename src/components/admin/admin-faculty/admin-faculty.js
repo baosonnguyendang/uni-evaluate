@@ -28,10 +28,10 @@ import Typography from '@material-ui/core/Typography';
 
 import axios from 'axios'
 import Skeleton from '../../common/Skeleton'
-import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 import DialogConfirm from '../../common/DialogConfirm'
-
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -88,6 +88,7 @@ const createData = (id, name, head, headId, under) => ({
 
 
 export default function Criterion() {
+  const dispatch = useDispatch()
   let { url } = useRouteMatch();
   const [rows, setRows] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true)
@@ -130,12 +131,12 @@ export default function Criterion() {
       .then(res => {
         const newRows = rows.filter(row => row.department_code !== id)
         setRows(newRows)
-        setToast({ open: true, time: 3000, message: 'Xoá đơn vị thành công', severity: 'success' })
+        dispatch(showSuccessSnackbar('Xoá đơn vị thành công'))
         setLoading(false)
       })
       .catch(err => {
         console.log(err.response.status)
-        setToast({ open: true, time: 3000, message: 'Xoá đơn vị thất bại', severity: 'error' })
+        dispatch(showErrorSnackbar('Xoá đơn vị thất bại'))
         setLoading(false)
       })
   }
@@ -197,7 +198,7 @@ export default function Criterion() {
     axios.post(`/admin/department/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setRows(rows.map(r => r.department_code === id ? { ...r, department_code: id, name } : r))
-        setToast({ open: true, time: 3000, message: 'Cập nhật đơn vị thành công', severity: "success" })
+        dispatch(showSuccessSnackbar('Cập nhật đơn vị thành công'))
         setLoading(false)
       })
       .catch(err => {
@@ -205,10 +206,10 @@ export default function Criterion() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã đơn vị đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã đơn vị đã tồn tại'))
             break;
-          default:
-            setToast({ open: true, time: 3000, message: 'Cập nhật đơn vị thất bại', severity: "error" })
+        default:
+            dispatch(showErrorSnackbar('Cập nhật đơn vị thất bại'))
             break;
         }
         setLoading(false)
@@ -217,8 +218,6 @@ export default function Criterion() {
 
   // loading add unit
   const [loading, setLoading] = useState(false)
-  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-  const handleCloseToast = () => setToast({ ...toast, open: false })
 
   //data dept
   const [id, setId] = React.useState('')
@@ -240,8 +239,8 @@ export default function Criterion() {
     axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         //console.log(res.data);
-        setToast({ open: true, time: 3000, message: 'Tạo đơn vị thành công', severity: "success" })
-        setRows(rows => [...rows, {department_code:id, name, manager: headUnit, parent: newUnit}])
+        dispatch(showSuccessSnackbar('Tạo đơn vị thành công'))
+        setRows(rows => [...rows, { department_code: id, name, manager: headUnit, parent: newUnit }])
         setLoading(false)
       })
       .catch(err => {
@@ -249,13 +248,13 @@ export default function Criterion() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã đơn vị đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã đơn vị đã tồn tại'))
             break;
           case 404:
-            setToast({ open: true, time: 3000, message: 'Mã trưởng đơn vị không đúng', severity: "error" })
+            dispatch(showErrorSnackbar('Mã trưởng đơn vị không đúng'))
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Tạo đơn vị thất bại', severity: "error" })
+            dispatch(showErrorSnackbar('Tạo đơn vị thất bại'))
             break;
         }
         setLoading(false)
@@ -274,10 +273,9 @@ export default function Criterion() {
   }
   return (
     <>
-      { isLoading ? <Skeleton /> : (
+      {isLoading ? <Skeleton /> : (
         <div>
           <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
-          <Toast toast={toast} handleClose={handleCloseToast} />
           <Loading open={loading} />
           <Typography component="h1" variant="h5" color="inherit" noWrap>
             DANH SÁCH ĐƠN VỊ
@@ -318,7 +316,7 @@ export default function Criterion() {
                     </TableRow>
                   )
                 })}
-              {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không tồn tại đơn vị</TableCell></TableRow>}
+                {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không tồn tại đơn vị</TableCell></TableRow>}
               </TableBody>
             </Table>
             <TablePagination
@@ -338,10 +336,10 @@ export default function Criterion() {
               </div>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                 Thêm đơn vị
-                </Button>
+              </Button>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                 import file
-                </Button>
+              </Button>
               <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"

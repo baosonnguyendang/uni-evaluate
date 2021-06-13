@@ -1,5 +1,5 @@
-import React, { Component, setState, useState } from 'react';
-import { Link, useHistory, Redirect } from 'react-router-dom';
+import React, {  useState } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 // import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';

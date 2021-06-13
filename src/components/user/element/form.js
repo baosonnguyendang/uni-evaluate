@@ -14,8 +14,10 @@ import './styles.css';
 
 import { useParams } from 'react-router-dom'
 import DialogConfirm from '../../common/DialogConfirm'
-import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
+
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
@@ -23,6 +25,7 @@ const useStyles = makeStyles({
 });
 
 export default function FormEvaluation(props) {
+  const dispatch = useDispatch()
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true)
   // const [data, setData] = useState({})
@@ -416,11 +419,11 @@ export default function FormEvaluation(props) {
       axios.post(`/form/${variable}/submitForm/v3`, dataa, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           setStatus(false)
-          setToast({ open: true, time: 3000, message: 'Kết quả đánh giá đã lưu', severity: "success" })
+          dispatch(showSuccessSnackbar('Kết quả đánh giá đã lưu'))
           setLoading(false)
         })
         .catch(err => {
-          setToast({ open: true, time: 3000, message: 'Lưu kết quả đánh giá thất bại', severity: "error" })
+          dispatch(showErrorSnackbar('Lưu kết quả đánh giá thất bại'))
           setLoading(false)
           // alert(err)
         })
@@ -478,12 +481,12 @@ export default function FormEvaluation(props) {
       axios.post(`/form/${variable}/saveForm/v2`, dataa, { headers: { "Authorization": `Bearer ${token}` } })
         .then(res => {
           console.log(res)
-          setToast({ open: true, time: 3000, message: 'Lưu tạm thành công', severity: "success" })
+          dispatch(showSuccessSnackbar('Lưu tạm thành công'))
           setLoading(false)
         })
         .catch(err => {
           console.log(err)
-          setToast({ open: true, time: 3000, message: 'Lưu tạm thất bại', severity: "error" })
+          dispatch(showErrorSnackbar('Lưu tạm thất bại'))
           setLoading(false)
         })
     }
@@ -513,17 +516,13 @@ export default function FormEvaluation(props) {
   const onSubmit = () => {
     setStatusDelete({ open: true, onClick: submitForm })
   }
-  // toast and loading message
-  // handle toast 
-  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-  const handleCloseToast = () => setToast({ ...toast, open: false })
+
   const [loading, setLoading] = useState(false)
   return (
     < >
-      <Toast toast={toast} handleClose={handleCloseToast} />
       {status ? (
         <div >
-          { isLoading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
+          {isLoading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
             <Container>
               <Loading open={loading} />
               <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Không thể chỉnh sửa sau khi hoàn thành bài đánh giá. Bạn đã chắc chắn chưa ? ' />

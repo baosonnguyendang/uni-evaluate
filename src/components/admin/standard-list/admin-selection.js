@@ -20,10 +20,11 @@ import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
-import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -80,13 +81,14 @@ const CustomTableCell = ({ row, name, }) => {
   const classes = useStyles();
   return (
     <TableCell align="left" className={classes.tableCell}>
-      { row[name]}
+      {row[name]}
     </TableCell>
   );
 };
 
 
 export default function Selection() {
+  const dispatch = useDispatch()
   const [rows, setRows] = React.useState(null);
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
@@ -124,12 +126,12 @@ export default function Selection() {
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
-        setToast({ open: true, time: 3000, message: 'Xoá lựa chọn thành công', severity: 'success' })
+        dispatch(showSuccessSnackbar('Xoá lựa chọn thành công'))
         setLoading(false)
       })
       .catch(err => {
         console.log(err.response.status)
-        setToast({ open: true, time: 3000, message: 'Xoá lựa chọn thất bại', severity: 'error' })
+        dispatch(showErrorSnackbar('Xoá lựa chọn thất bại'))
         setLoading(false)
       })
   }
@@ -163,7 +165,7 @@ export default function Selection() {
     axios.post(`/admin/criteria/option/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setRows(rows.map(r => r.code === id ? { ...r, code, name, description } : r))
-        setToast({ open: true, time: 3000, message: 'Cập nhật lựa chọn thành công', severity: "success" })
+        dispatch(showSuccessSnackbar('Cập nhật lựa chọn thành công'))
         setLoading(false)
       })
       .catch(err => {
@@ -171,10 +173,10 @@ export default function Selection() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã lựa chọn đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã lựa chọn đã tồn tại'))
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Cập nhật lựa chọn thất bại', severity: "error" })
+            dispatch(showErrorSnackbar('Cập nhật lựa chọn thất bại'))
             break;
         }
         setLoading(false)
@@ -182,8 +184,6 @@ export default function Selection() {
   }
   // loading add selection
   const [loading, setLoading] = useState(false)
-  const [toast, setToast] = useState({ open: false, time: 3000, message: '', severity: '' })
-  const handleCloseToast = () => setToast({ ...toast, open: false })
 
   // Tạo lựa chọn
   const submitAddSelection = (e) => {
@@ -201,7 +201,7 @@ export default function Selection() {
       .then(res => {
         console.log(res.data);
         setRows(row => [...row, { name, code, description, max_point: point }])
-        setToast({ open: true, time: 3000, message: 'Tạo lựa chọn thành công', severity: "success" })
+        dispatch(showSuccessSnackbar('Tạo lựa chọn thành công'))
         setLoading(false)
       })
       .catch(err => {
@@ -209,10 +209,10 @@ export default function Selection() {
         console.log(err.response)
         switch (err.response?.status) {
           case 409:
-            setToast({ open: true, time: 3000, message: 'Mã lựa chọn đã tồn tại', severity: "error" })
+            dispatch(showErrorSnackbar('Mã lựa chọn đã tồn tại'))
             break;
           default:
-            setToast({ open: true, time: 3000, message: 'Tạo lựa chọn thất bại', severity: "error" })
+            dispatch(showErrorSnackbar('Tạo lựa chọn thất bại'))
             break;
         }
         setLoading(false)
@@ -229,7 +229,7 @@ export default function Selection() {
     let { id1 } = useParams();
     return (
       < Typography component="h1" variant="h5" color="inherit" noWrap >
-        Tiêu chí { nameCriteria} - Danh sách lựa chọn
+        Tiêu chí {nameCriteria} - Danh sách lựa chọn
       </Typography >
     )
   }
@@ -244,7 +244,6 @@ export default function Selection() {
       {!rows ? <Skeleton /> :
         <div>
           <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
-          <Toast toast={toast} handleClose={handleCloseToast} />
           <Loading open={loading} />
           <Criteria />
           <Paper className={classes.root}>
@@ -290,7 +289,7 @@ export default function Selection() {
               </Button>
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                 Thêm lựa chọn
-          </Button>
+              </Button>
               <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"

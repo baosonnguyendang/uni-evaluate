@@ -33,8 +33,7 @@ import DeletedSubFaculty from './RestoreList/DeletedSubFaculty'
 import DeletedUser from './RestoreList/DeletedUser'
 import DeletedEvaluateList from './RestoreList/DeletedEvaluateList'
 
-import ResultsDashboard from './results/admin-results-detailed3' // cai nay de test
-import Test from './test'
+import Test from './CreateEvaluation/CreateForm/CreateForm'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
