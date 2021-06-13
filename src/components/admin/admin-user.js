@@ -302,7 +302,7 @@ export default function ListUser() {
           <Typography component="h1" variant="h5" color="inherit" noWrap>
             DANH SÁCH NGƯỜI DÙNG
         </Typography>
-          <TextField id="standard-basic" label="Tìm kiếm" onChange={searchUser} />
+          <TextField id="standard-basic" type='search' label="Tìm kiếm" onChange={searchUser} />
         </div>
 
         <Paper className={classes.root}>
@@ -421,7 +421,6 @@ export default function ListUser() {
                           </FormControl>
                         }
 
-                        {/* <TextField onChange={e => setP(e.target.value)} id="role" label="Chức vụ" variant="outlined" fullWidth margin='normal' /> */}
                         <div style={{ textAlign: 'center', marginTop: '10px' }}>
                           <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >{modal.id ? 'Cập nhật' : 'Tạo'}</Button>
                           <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>
