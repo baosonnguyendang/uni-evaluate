@@ -6,6 +6,7 @@ import DialogConfirm from '../../common/DialogConfirm';
 import UserSettings from './admin-user-settings'
 import Drag from './admin-drag-criterion'
 import Council from './admin-init-council'
+import Classify from './admin-classify'
 
 import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink, useParams, useHistory } from "react-router-dom";
 
@@ -520,10 +521,15 @@ export default function AddSettings() {
                         <Tab className={classes.tab} label="Lập HĐĐG cấp Trường" />
                         <Tab className={classes.tab} label="Cấu hình đơn vị" />
                         <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
+                        <Tab className={classes.tab} label="Xếp loại đánh giá" />
                       </Tabs>
                       {/* </AppBar> */}
                       {(() => {
                         switch (value) {
+                          case 3:
+                            return(
+                              <Classify fcode={code}/>
+                            )
                           case 2:
                             return (
                               <div>
@@ -534,7 +540,7 @@ export default function AddSettings() {
                             return (
                               <div>
                                 <Typography component="h3" variant="h5" color="inherit">
-                                  Các đơn vị tham gia đánh giá nằm trong nhóm
+                                  Các đơn vị tham gia đánh giá nằm trong Form
                                 </Typography>
                                 <SelectedUnit />
                                 <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
