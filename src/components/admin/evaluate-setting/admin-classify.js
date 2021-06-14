@@ -32,8 +32,8 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function createData(name, from, to) {
-  return { name, from, to };
+function createData(id, name, from, to) {
+  return { id, name, from, to };
 }
 
 export default function Classify(props) {
@@ -41,17 +41,31 @@ export default function Classify(props) {
 
   const [loading, setLoading] = useState(false)
 
-  const [rows, setRows] = useState([
-    createData('Không đạt', 0, 50),
-    createData('Trung bình', 50, 60)
-  ])
+  const [rows, setRows] = useState([])
+
+  //lấy phân loại từ be
+  const token = localStorage.getItem('token')
+  useEffect(() => {
+    axios.get(`/admin/form/${props.fcode}/formrating`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data)
+        let t = []
+        res.data.formRatings.map(rate => {
+          t.push(createData(rate._id, rate.name, rate.min_point, rate.max_point))
+        })
+        setRows([...t])
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, [])
 
   //edit phân loại
   const [chosen, setChosen] = useState() //index mốc được chọn
   const [info, setInfo] = useState([]) //mảng tạm để lưu trong modal
-  const edit = (id) => {
+  const edit = (id) => { //luu y id o day la index trong array rows[]
     setChosen(id)
-    setInfo([rows[id].name, rows[id].from, rows[id].to])
+    setInfo([rows[id].name, rows[id].from, rows[id].to, rows[id].id]) // con .id o day la id cua 1 xep loai, lay tu _id cua db
     handleOpenEdit()
   }
   //modal edit phân loại
@@ -86,15 +100,31 @@ export default function Classify(props) {
     temp[chosen].name = info[0]
     temp[chosen].from = info[1]
     temp[chosen].to = info[2]
-    setRows([...temp])
-    handleCloseEdit()
+    temp[chosen].id = info[3]
+    axios.post(`/admin/formrating/${info[3]}/edit`, { name: info[0], min_point: info[1], max_point: info[2] }, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        setRows([...temp])
+        handleCloseEdit()
+      })
+      .catch(err => {
+        console.log(err)
+        handleCloseEdit()
+      })
   }
 
   // xóa phân loại
   const del = (id) => {
-    let temp = rows.slice()
-    temp.splice(id, 1)
-    setRows(temp)
+    let temp = [...rows]
+    console.log(temp[id].id)
+    axios.post(`/admin/formrating/${temp[id].id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res)
+        temp.splice(id, 1)
+        setRows(temp)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   //modal thêm phân loại
@@ -112,15 +142,18 @@ export default function Classify(props) {
   //xác nhận thêm mốc
   const submit = (e) => {
     e.preventDefault()
-    let t = [...rows]
-    t.push(createData(name, from, to))
-    setRows(t)
-    setOpen(false)
-  }
-
-  //lưu phân loại
-  const save = () => {
-
+    axios.post(`/admin/form/${props.fcode}/formrating`, { name: name, min_point: from, max_point: to }, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res)
+        let t = [...rows]
+        t.push(createData(res.data.formRating._id, name, from, to))
+        setRows(t)
+        setOpen(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setOpen(false)
+      })
   }
 
   return (
@@ -141,8 +174,11 @@ export default function Classify(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
+                {rows.length == 0 && (
+                  <TableRow style={{ lineHeight: '60px', paddingLeft: 10 }}>Chưa có phân loại</TableRow>
+                )}
                 {rows.map((row, index) => (
-                  <TableRow key={row.name}>
+                  <TableRow key={row.id}>
                     <TableCell align='center' component="th" scope="row">
                       {row.name}
                     </TableCell>
@@ -219,7 +255,6 @@ export default function Classify(props) {
           </Modal>
           <div style={{ marginTop: 24 }}>
             <Button variant="contained" color="primary" onClick={handleOpen}>Thêm mốc</Button>
-            <Button style={{ marginLeft: 24 }} variant="contained" color="secondary" onClick={save}>Lưu</Button>
           </div>
         </div>
       )}
