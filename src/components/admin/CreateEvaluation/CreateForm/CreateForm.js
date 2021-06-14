@@ -11,7 +11,6 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import RestoreIcon from '@material-ui/icons/Restore';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import BlockIcon from '@material-ui/icons/Block';
 import Loading from '../../../common/Loading'
 import ModalEditStandard from './ModalEdit'
 import ModalAddStandard from './ModalAdd'
@@ -64,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function DisabledTabs() {
+export default function ModifyForm({ fcode }) {
     const dispatch = useDispatch()
     const [value, setValue] = React.useState(0);
     const classes = useStyles();
@@ -98,7 +97,7 @@ export default function DisabledTabs() {
     const [standards, setStandards] = React.useState(null)
     const token = localStorage.getItem('token')
     const config = { headers: { "Authorization": `Bearer ${token}` } }
-    const id = "TestForm"
+    const id = fcode || "TestForm"
     const fetchAllStandardOfForm = () => {
 
         return axios.get(`/admin/form/${id}/getFormStandard`, config)
@@ -147,7 +146,7 @@ export default function DisabledTabs() {
     const handleChangePoint = (e, i) => {
         console.log(e.target.value)
         setExistStandards(existStandards.map((c, index) =>
-            index == i ? { ...c, standard_point: parseInt(e.target.value) } : c
+            index === i ? { ...c, standard_point: parseInt(e.target.value) } : c
         ))
     }
     const restore = () => {
@@ -163,25 +162,19 @@ export default function DisabledTabs() {
         if (!name) return
         handleOpenAddModal()
         setModal({ id: idForm, code: codeStandard, name, stt: existStandards.length + 1 })
-        setTempStandard({})
     }
     // them moi va xoa tieu chuan trong combobox
-    const addStandard = () => {
-        const existStandardsTemp = [...existStandards, tempStandard]
+    const addStandard = (point) => {
+        const existStandardsTemp = [...existStandards, {...tempStandard,standard_point: point}]
         const standardstemp = standards.filter(s => s.code !== tempStandard.code)
+        console.log(existStandardsTemp)
+        console.log(standardstemp)
         setExistStandards(existStandardsTemp)
         setStandards(standardstemp)
         setTemp({ standards:standardstemp, existStandards:existStandardsTemp })
+        setTempStandard({})
     }
-    // luu chinh sua form
-    //     """standards"": [
-    //         {
-    //             ""standard_id"": ""TC001"",
-    //             ""standard_order"": 1,
-    //             ""standard_point"": 26
-    //         },
-    //         {}...
-    // ]"
+
     const filterStandard = (data) => {
         return data.map((d, index) => ({ standard_id: d.code, standard_order: index + 1, standard_point: d.standard_point }))
     }
@@ -203,19 +196,7 @@ export default function DisabledTabs() {
     }
 
     return (
-        <Paper square >
-            <Tabs
-                value={value}
-                indicatorColor="primary"
-                textColor="primary"
-                onChange={handleChange}
-                aria-label="disabled tabs example"
-            >
-                <Tab label="Active" />
-                <Tab label="Disabled" />
-                <Tab label="Active" />
-            </Tabs>
-            <TabPanel value={value} index={0}>
+  <>
                 <Typography gutterBottom variant='h5' id="transition-modal-title">Danh sách tiêu chuẩn</Typography>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Autocomplete
@@ -231,6 +212,7 @@ export default function DisabledTabs() {
                         noOptionsText='Không tồn tại'
                         getOptionLabel={(option) => option.name}
                         getOptionSelected={(option, value) => option.name === value.name}
+                        getOptionDisabled={(option) => !temp.standards.includes(option)}
                         onChange={(event, value) => setTempStandard(value)}
                         renderOption={(option) => (
                             <React.Fragment>
@@ -248,7 +230,6 @@ export default function DisabledTabs() {
                     <IconButton
                         aria-label="add"
                         color="primary"
-                        edge='end'
                         onClick={() => onAdd(id, tempStandard?.code, tempStandard?.name)}
                     >
                         <AddCircleIcon />
@@ -304,16 +285,10 @@ export default function DisabledTabs() {
                         onClick={saveForm}
                     >Lưu</Button>
                 </div>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                Item Two
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                Item Three
-            </TabPanel>
+           
             <Loading open={loading} />
             {openAddModal && <ModalAddStandard idForm={modal.id} codeStandard={modal.code} name={modal.name} open={openAddModal} handleClose={handleClose} stt={modal.stt} setCriterion={addStandard} />}
-            {open && <ModalEditStandard idForm={modal.id} codeStandard={modal.code} name={modal.name} open={open} handleClose={handleClose} setCriterion={() => setExistStandards(prev => [...prev, temp])} />}
-        </Paper>
+            {open && <ModalEditStandard idForm={modal.id} codeStandard={modal.code} name={modal.name} open={open} handleClose={handleClose} />}
+    </>
     );
 }

@@ -13,7 +13,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import Modal from '@material-ui/core/Modal';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../../actions/notifyAction'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 //fix out of drag
 let portal = document.createElement("div");
@@ -52,7 +53,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // listCriteria là standard chứa criteria
-const ModalEditStandard = ({ open, handleClose, listCriteria, setCriterion, idForm, codeStandard, name }) => {
+const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStandard, name }) => {
+    const dispatch = useDispatch()
     const [modalStyle] = React.useState(getModalStyle);
     const classes = useStyles();
     const [isEdit, setIsEdit] = useState(false)
@@ -103,8 +105,8 @@ const ModalEditStandard = ({ open, handleClose, listCriteria, setCriterion, idFo
     const [tempCriteria, setTempCriteria] = useState(null)
     // list tiêu chí được chọn 
     const [listTempCriteria, setListTempCriteria] = useState([])
-    // tiêu chuẩn và tiêu chí được chọn
-    const [standards, setStandards] = React.useState([])
+    // diem cua tieu chi them moi
+    const [pointNewCriteria, setPointNewCriteria] = React.useState('')
 
 
     const handleOnDragEnd = (result) => {
@@ -123,13 +125,39 @@ const ModalEditStandard = ({ open, handleClose, listCriteria, setCriterion, idFo
         console.log(e.target.value)
 
         setExistCriteria(existCriteria.map((c, index) =>
-            index == i ? { ...c, point: parseInt(e.target.value) } : c
+            index === i ? { ...c, point: parseInt(e.target.value) } : c
         ))
     }
-    console.log(listTempCriteria)
-    const submitCriterion = () => {
-        setCriterion(listCriteria)
-        handleClose()
+    //     criterions : [  //body
+    //         {
+    //             criteria_id,
+    //             criteria_order,
+    //             criteria_point
+    //         },{},{}
+    // ]
+    const filterCriteria = data => {
+        return {
+            criterions:
+                data.map((d, index) => ({ criteria_id: d.code, criteria_order: index + 1, criteria_point: d.point }))
+
+        }
+    }
+    const submitEditCriteria = () => {
+        const data = filterCriteria(existCriteria)
+        console.log(data)
+        setLoading(true)
+        axios.post(`/admin/form/${idForm}/standard/${codeStandard}/editFormCriteria`, data, config)
+            .then(res => {
+                console.log(res.data)
+                setTemp({ existCriteria, availableCriteria })
+                setLoading(false)
+                dispatch(showSuccessSnackbar("Cập nhật tiêu chí thành công"))
+            })
+            .catch(error => {
+                console.log(error)
+                setLoading(false)
+                dispatch(showErrorSnackbar("Cập nhật tiêu chí thất bại"))
+            })
     }
     const restore = () => {
         setAvailableCriteria(temp.availableCriteria)
@@ -137,12 +165,44 @@ const ModalEditStandard = ({ open, handleClose, listCriteria, setCriterion, idFo
     }
     //loading 
     const [loading, setLoading] = useState(false)
+    const addCriteria = () => {
+        if (tempCriteria.name === '') return
+        setLoading(true)
+
+        const data = {
+            criteria: {  //body
+                criteria_id: tempCriteria.code,
+                criteria_order: temp.existCriteria.length + 1,// luu trong restore
+                criteria_point: pointNewCriteria
+            }
+        }
+
+        axios.post(`/admin/form/${idForm}/standard/${codeStandard}/addSingleFormCriteria`, data, config)
+            .then(res => {
+                console.log(res.data)
+                const newExistCriteria = [...existCriteria, { ...tempCriteria, point: pointNewCriteria }]
+                const newEsetAvailableCriteria = availableCriteria.filter(l => l.code !== tempCriteria.code)
+                setExistCriteria(newExistCriteria)
+                setAvailableCriteria(newEsetAvailableCriteria)
+                setTemp({ existCriteria: newExistCriteria, availableCriteria: newEsetAvailableCriteria })
+                setTempCriteria({ name: '' })
+                setPointNewCriteria('')
+                setLoading(false)
+                dispatch(showSuccessSnackbar("Thêm tiêu chí mới thành công"))
+            })
+            .catch(err => {
+                console.log(err)
+                setLoading(false)
+                dispatch(showErrorSnackbar("Thêm tiêu chí mới thất bại"))
+            })
+    }
     const body = (
         <div style={modalStyle} className={classes.paper} >
             <Loading open={loading} />
-            <Typography variant='h5' gutterBottom id="simple-modal-title">{`${name} - Chọn tiêu chí`}</Typography>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant='h5' gutterBottom id="simple-modal-title">{`Cập nhật tiêu chuẩn - ${name}`}</Typography>
+            <Typography variant='h6' >{`Thêm tiêu chí`}</Typography>
 
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                 <Autocomplete
                     loading={!availableCriteria}
                     loadingText="Đang tải..."
@@ -155,6 +215,7 @@ const ModalEditStandard = ({ open, handleClose, listCriteria, setCriterion, idFo
                     autoHighlight
                     noOptionsText='Không tồn tại'
                     getOptionLabel={(option) => option.name}
+                    getOptionDisabled={(option) => !temp.availableCriteria.includes(option)}
                     getOptionSelected={(option, value) => option.name === value.name}
                     onChange={(event, value) => setTempCriteria(value)}
                     value={tempCriteria}
@@ -166,23 +227,21 @@ const ModalEditStandard = ({ open, handleClose, listCriteria, setCriterion, idFo
                         />
                     )}
                 />
-
+                <TextField style={{ width: "100px", marginLeft: '20px', marginRight: '10px' }} type="number" variant="outlined" autoFocus size="small" placeholder="Điểm"
+                   value={pointNewCriteria}  onChange={(e) => setPointNewCriteria(parseInt(e.target.value))}
+                />
                 <IconButton
                     aria-label="add"
                     color="primary"
                     edge='end'
-                    onClick={() => {
-                        if (tempCriteria.name === '') return
-                        setExistCriteria([...existCriteria, tempCriteria])
-                        setAvailableCriteria(availableCriteria.filter(l => l.code !== tempCriteria.code))
-                        setTempCriteria({ name: '' })
-                    }}
+                    onClick={addCriteria}
                 >
                     <AddCircleIcon />
                 </IconButton>
 
 
             </div>
+            <Typography variant='h6' gutterBottom>Danh sách tiêu chí</Typography>
             <DragDropContext onDragEnd={handleOnDragEnd}>
                 <Droppable droppableId='criteria'>
                     {(provided) => (
@@ -193,11 +252,10 @@ const ModalEditStandard = ({ open, handleClose, listCriteria, setCriterion, idFo
                                         (snapshot.isDragging) ?
                                             ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText primary={`${index + 1}. ${t.name}`} />
-
                                             </ListItem>, portal)
                                             : <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText style={{ width: '400px' }} primary={`${index + 1}. ${t.name}`} />
-                                                <TextField style={{ width: "100px" }} type="number" variant="outlined" autoFocus required size="small" placeholder="Điểm"
+                                                <TextField style={{ width: "100px" }} type="number" variant="outlined" autoFocus size="small" placeholder="Điểm"
                                                     onChange={(e) => handleChangePoint(e, index)}
                                                     defaultValue={t.point}
                                                     disabled={!isEdit}
@@ -243,7 +301,7 @@ const ModalEditStandard = ({ open, handleClose, listCriteria, setCriterion, idFo
                         </>}
                 </div>
                 <Button variant="contained" className={classes.btn} onClick={handleClose}>Thoát</Button>
-                <Button variant="contained" color='primary' className={classes.btn} onClick={submitCriterion} disabled={!existCriteria.length || JSON.stringify(existCriteria) === JSON.stringify(temp.existCriteria)  }>Lưu</Button>
+                <Button variant="contained" color='primary' className={classes.btn} onClick={submitEditCriteria} disabled={!existCriteria.length || JSON.stringify(existCriteria) === JSON.stringify(temp.existCriteria)}>Lưu</Button>
             </div>
 
 

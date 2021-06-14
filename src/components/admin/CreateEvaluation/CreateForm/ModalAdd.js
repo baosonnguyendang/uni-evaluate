@@ -62,7 +62,6 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
     // tiêu chí trong tiêu chuẩn
     const [availableCriteria, setAvailableCriteria] = useState(null)
     const [existCriteria, setExistCriteria] = useState([])
-    const [temp, setTemp] = useState([])
     const token = localStorage.getItem('token')
     const config = { headers: { "Authorization": `Bearer ${token}` } }
     const getCriteriaOfStandard = (codeStandard) => {
@@ -102,7 +101,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
     const handleChangePoint = (e, i) => {
         console.log(e.target.value)
         setExistCriteria(existCriteria.map((c, index) =>
-            index == i ? { ...c, point: parseInt(e.target.value) } : c
+            index === i ? { ...c, point: parseInt(e.target.value) } : c
         ))
     }
     // code: "TC002-01"
@@ -136,7 +135,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
             .then(res => {
                 console.log(res)
                 setLoading(false)
-                setCriterion()
+                setCriterion(pointStandard)
                 handleClose()
                 dispatch(showSuccessSnackbar("Thêm tiêu chuẩn thành công"))
             })

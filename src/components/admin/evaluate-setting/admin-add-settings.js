@@ -36,7 +36,7 @@ import { useRouteMatch } from 'react-router-dom'
 
 import Skeleton from '../../common/Skeleton'
 
-import MUIDataTable from "mui-datatables";
+import ModifyForm from "../CreateEvaluation/CreateForm/CreateForm";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -533,7 +533,7 @@ export default function AddSettings() {
                           case 2:
                             return (
                               <div>
-                                <Drag fcode={code} />
+                                <ModifyForm fcode={code} />
                               </div>
                             )
                           case 1:
