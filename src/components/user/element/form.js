@@ -568,25 +568,50 @@ export default function FormEvaluation(props) {
                                 <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                                 <TableCell align='center'>{criteria.point}</TableCell>
                                 <TableCell align='center'>
-                                  {criteria.options.length > 0 ? null : (criteria.criteria_id.type == 'input' ? (
-                                    <input
-                                      className='number'
-                                      type="number"
-                                      style={{ width: '40px', textAlign: 'center' }}
-                                      disabled={disableEdit}
-                                      defaultValue={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value}
-                                      onChange={handleInput}
-                                      name={criteria.criteria_id.code + '_1'}
-                                    />
-                                  ) : (
-                                    <input
-                                      type="checkbox"
-                                      disabled={disableEdit}
-                                      defaultChecked={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
-                                      onChange={handleCheck}
-                                      name={criteria.criteria_id.code + '_1'}
-                                      value={criteria.point} />
-                                  ))}
+                                  {criteria.options.length > 0 ? null : (() => {
+                                    switch (criteria.criteria_id.type) {
+                                      default:
+                                        return null
+                                      case 'input':
+                                        return (
+                                          <input
+                                            className='number'
+                                            type="number"
+                                            style={{ width: '40px', textAlign: 'center' }}
+                                            disabled={disableEdit}
+                                            defaultValue={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value}
+                                            onChange={handleInput}
+                                            name={criteria.criteria_id.code + '_1'}
+                                          />
+                                        )
+                                      case 'checkbox':
+                                        return (
+                                          <input
+                                            type="checkbox"
+                                            disabled={disableEdit}
+                                            defaultChecked={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                            onChange={handleCheck}
+                                            name={criteria.criteria_id.code + '_1'}
+                                            value={criteria.point}
+                                          />
+                                        )
+                                      case 'detail':
+                                        return (
+                                          <div>
+                                            <input
+                                              className='number'
+                                              type="number"
+                                              style={{ width: '40px', textAlign: 'center' }}
+                                              disabled={disableEdit}
+                                              defaultValue={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value}
+                                              onChange={handleInput}
+                                              name={criteria.criteria_id.code + '_1'}
+                                            />
+                                            <p type='button' onClick={() => alert('p')}>Click me</p>
+                                          </div>
+                                        )
+                                    }
+                                  })()}
                                 </TableCell>
                                 <TableCell align='center'>
                                   {(props.level > 1 || disableEdit2) && criteria.options.length == 0 ? (criteria.criteria_id.type == 'input' ? (

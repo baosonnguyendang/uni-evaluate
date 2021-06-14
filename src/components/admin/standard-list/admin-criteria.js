@@ -172,9 +172,9 @@ export default function Criteria() {
     const body = { new_ccode: code, name, description, type }
     setLoading(true)
     console.log(modal.id)
-
+    console.log(body)
     handleClose()
-    axios.post(`/admin/standard/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/criteria/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         setRows(rows.map(r => r.code === id ? { ...r, code, name, description, type } : r))
         dispatch(showSuccessSnackbar('Cập nhật tiêu chí thành công'))
@@ -236,6 +236,7 @@ export default function Criteria() {
   const [description, setDescription] = React.useState('')
   const [type, setType] = React.useState('');
   const handleChangeType = (event) => {
+    console.log(event.target.value)
     setType(event.target.value);
   };
   let history = useHistory();
@@ -297,8 +298,6 @@ export default function Criteria() {
                 Tạo tiêu chí mới
               </Button>
               <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
                 className={classes.modal}
                 open={modal.open}
                 onClose={handleClose}
@@ -328,6 +327,7 @@ export default function Criteria() {
                           <option value={'checkbox'}>Checkbox</option>
                           <option value={'radio'}>Radio</option>
                           <option value={'input'}>Input</option>
+                          <option value={'detail'}>Detail</option>
                         </Select>
                       </FormControl>
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
