@@ -171,8 +171,6 @@ export default function Criteria() {
     e.preventDefault()
     const body = { new_ccode: code, name, description, type }
     setLoading(true)
-    console.log(modal.id)
-    console.log(body)
     handleClose()
     axios.post(`/admin/criteria/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
