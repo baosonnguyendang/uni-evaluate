@@ -121,7 +121,7 @@ export default function ResultsDetailed() {
                             <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
                             <TableCell>{criteria.point}</TableCell>
                             <TableCell align='center'>
-                              {criteria.options.length > 0 ? null : (criteria.criteria_id.type == 'input' ? (
+                              {criteria.options.length > 0 ? null : (criteria.criteria_id.type != 'checkbox' ? (
                                 <input
                                   className='number'
                                   type="number"
@@ -141,7 +141,7 @@ export default function ResultsDetailed() {
                               ))}
                             </TableCell>
                             <TableCell align='center'>
-                              {criteria.options.length > 0 ? null : (criteria.criteria_id.type == 'input' ? (
+                              {criteria.options.length > 0 ? null : (criteria.criteria_id.type != 'checkbox' ? (
                                 <input
                                   className='number'
                                   type="number"
@@ -160,13 +160,13 @@ export default function ResultsDetailed() {
                               ))}
                             </TableCell>
                             <TableCell align='center'>
-                              {criteria.options.length > 0 ? null : (criteria.criteria_id.type == 'input' ? (
+                              {criteria.options.length > 0 ? null : (criteria.criteria_id.type != 'checkbox' ? (
                                 <input
                                   className='number'
                                   type="number"
                                   style={{ width: '40px', textAlign: 'center' }}
                                   disabled
-                                  value={data.length > 0 && data[2].find(y => (y.name == criteria.criteria_id.code)).value}
+                                  value={data.length > 2 && data[2].find(y => (y.name == criteria.criteria_id.code)).value}
                                   name={criteria.criteria_id.code + '_3'}
                                 />
                               ) : (

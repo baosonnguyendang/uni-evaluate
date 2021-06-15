@@ -60,7 +60,8 @@ export default function ResultsList(props) {
   //array gom so nguoi tham gia va khong tham gia
   const [participate, setParicipate] = useState([])
 
-  const [range, setRange] = useState([0, 0, 0, 0, 0, 0])
+  const [rate, setRate] = useState([]) //array luu moc diem
+  const [range, setRange] = useState([]) //array chua so luong gv moi moc diem
 
   //diem so
   const [point, setPoint] = useState([0])
@@ -81,44 +82,19 @@ export default function ResultsList(props) {
         }
       ]
     })
-    setChartOptions2({
-      scales: {
-        yAxes: [
-          {
-            ticks: {
-              max: 30,
-              min: 0,
-              stepSize: 2
-            }
-          }
-        ]
-      }
-    })
-    setChartData2({
-      labels: [
-        '< 50',
-        '50-59',
-        '60-69',
-        '70-79',
-        '80-89',
-        '90-100'
-      ],
-      datasets: [
-        {
-          label: 'Số GV/VC',
-          data: range,
-          //backgroundColor:'green',
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(255, 205, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(153, 102, 255, 0.2)'
-          ]
-        }
-      ]
-    })
+    // setChartOptions2({
+    //   scales: {
+    //     yAxes: [
+    //       {
+    //         ticks: {
+    //           max: 30,
+    //           min: 0,
+    //           stepSize: 2
+    //         }
+    //       }
+    //     ]
+    //   }
+    // })
   }
 
   //lấy mã form
@@ -126,24 +102,6 @@ export default function ResultsList(props) {
     axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         if (res.data.form) {
-          axios.get(`/admin/form/${res.data.form.code}/getPoints`, { headers: { "Authorization": `Bearer ${token}` } })
-            .then(res => {
-              console.log(res.data)
-              setPoint([...res.data.userforms])
-              let dat = []
-              dat[0] = res.data.userforms.filter(x => x < 50).length
-              dat[1] = res.data.userforms.filter(x => x >= 50 && x < 60).length
-              dat[2] = res.data.userforms.filter(x => x >= 60 && x < 70).length
-              dat[3] = res.data.userforms.filter(x => x >= 70 && x < 80).length
-              dat[4] = res.data.userforms.filter(x => x >= 80 && x < 90).length
-              dat[5] = res.data.userforms.filter(x => x >= 90).length
-              setRange([...dat])
-              setParicipate(participate => [res.data.userforms.length, res.data.total - res.data.userforms.length])
-            })
-            .catch(err => {
-              console.log(err)
-            })
-          // setCode(res.data.form.code)
           setCode(res.data.form.code)
           //lấy các đơn vị cha nằm trong đợt đánh giá
           axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -159,6 +117,56 @@ export default function ResultsList(props) {
         console.log(e)
       })
   }, [])
+
+  useEffect(() => {
+    axios.get(`/admin/form/${code}/formrating`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        //console.log(res.data)
+        let list = []
+        res.data.formRatings.map(r => {
+          list.push({ min: r.min_point, max: r.max_point })
+        })
+        console.log(list)
+        setRate([...list])
+        axios.get(`/admin/form/${code}/getPoints`, { headers: { "Authorization": `Bearer ${token}` } })
+          .then(res => {
+            console.log(list)
+            setPoint([...res.data.userforms])
+            let dat = []
+            let label = []
+            list.map((x, index) => {
+              index == 0 ? label.push(`< ${x.max}`) : label.push(`${x.min} - ${x.max}`)
+              index == list.length - 1 ? (dat[index] = res.data.userforms.filter(y => y >= x.min && y <= x.max).length) : (dat[index] = res.data.userforms.filter(y => y >= x.min && y < x.max).length)
+            })
+            setChartData2({
+              labels: label,
+              datasets: [
+                {
+                  label: 'Số GV/VC',
+                  data: dat,
+                  //backgroundColor:'green',
+                  backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 205, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                  ]
+                }
+              ]
+            })
+            setRange([...dat])
+            setParicipate(participate => [res.data.userforms.length, res.data.total - res.data.userforms.length])
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, [code])
 
   useEffect(() => {
     getChartData()
@@ -229,11 +237,11 @@ export default function ResultsList(props) {
             )
           case 1:
             return (
-              <div style={{marginTop: '24px'}}>
-                <ResultsDashboard code={code}/>
-                <div style={{marginTop: '24px'}}>
+              <div style={{ marginTop: '24px' }}>
+                <ResultsDashboard code={code} />
+                <div style={{ marginTop: '24px' }}>
                   <Button variant="contained" color="secondary" onClick={() => { setValue(0) }}>Trở lại trang thống kê chung</Button>
-                  <Button style={{ marginLeft: 10 }} variant="contained" color="inherit" ><Link style={{ textDecoration: 'none', color:'black' }} to={`${url}/formDetailed`}>Xem chi tiết Form GV/VC</Link></Button>
+                  <Button style={{ marginLeft: 10 }} variant="contained" color="inherit" ><Link style={{ textDecoration: 'none', color: 'black' }} to={`${url}/formDetailed`}>Xem chi tiết Form GV/VC</Link></Button>
                 </div>
               </div>
             )
