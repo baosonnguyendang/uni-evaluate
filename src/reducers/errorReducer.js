@@ -14,7 +14,10 @@ export default function (state = initialState, action) {
         type: action.payload.type,
       };
     case CLEAR_ERRORS:
-      return null;
+      return {
+        msg: '',
+        id: null
+      };
     default:
       return state;
   }
