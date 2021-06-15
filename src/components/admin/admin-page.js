@@ -33,7 +33,7 @@ import DeletedSubFaculty from './RestoreList/DeletedSubFaculty'
 import DeletedUser from './RestoreList/DeletedUser'
 import DeletedEvaluateList from './RestoreList/DeletedEvaluateList'
 
-import Test from './CreateEvaluation/CreateForm/CreateForm'
+import Test from './CreateEvaluation/AddCustom'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -67,11 +67,12 @@ const useStyles = makeStyles((theme) => ({
 
 const AdminPage = () => {
   const classes = useStyles()
-
-  let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
+  const token = localStorage.getItem('token')
+  let role = localStorage.getItem('token') && localStorage.getItem('role')
   return (
     <div className={classes.root}>
-      {isLogged ? (localStorage.getItem('role') !== 'admin' && <Redirect to='/user' />) : <Redirect to='/admin/user' />}
+      {!token && <Redirect to='/' />}
+      {role === 'admin' ? <Redirect to='/admin/user' /> : <Redirect to='/user' />}
       <Navbar />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

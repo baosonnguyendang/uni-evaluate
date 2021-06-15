@@ -3,10 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Loading from '../../../common/Loading'
-import RestoreIcon from '@material-ui/icons/Restore';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import BlockIcon from '@material-ui/icons/Block';
+
 import { Tab, Box, Typography, IconButton, TextField, Button, ListItem, ListItemIcon, List, ListItemText } from '@material-ui/core';
 import axios from 'axios';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -14,9 +12,8 @@ import Modal from '@material-ui/core/Modal';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Snackbar } from '../../../common/Snackbar'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../../actions/notifyAction'
 //fix out of drag
 let portal = document.createElement("div");
@@ -57,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, setCriterion }) => {
     const [modalStyle] = React.useState(getModalStyle);
-  const dispatch = useDispatch()
+    const dispatch = useDispatch()
     const classes = useStyles();
     // tiêu chí trong tiêu chuẩn
     const [availableCriteria, setAvailableCriteria] = useState(null)
@@ -80,11 +77,6 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
     }, [codeStandard])
     // tiêu chí đc chon
     const [tempCriteria, setTempCriteria] = useState(null)
-    // list tiêu chí được chọn 
-    const [listTempCriteria, setListTempCriteria] = useState([])
-    // tiêu chuẩn và tiêu chí được chọn
-    const [standards, setStandards] = React.useState([])
-
 
     const handleOnDragEnd = (result) => {
         if (!result.destination) return
@@ -104,14 +96,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
             index === i ? { ...c, point: parseInt(e.target.value) } : c
         ))
     }
-    // code: "TC002-01"
-    // description: "Cứ mỗi giờ NCKH sẽ được 0,02 điểm"
-    // isDeleted: false
-    // name: "Hoạt động khoa học"
-    // point: "1"
-    // type: "input"
-    // _id: "60a7d19adb9c5200042c730c"
-    console.log(existCriteria)
+
     const [pointStandard, setPointStandard] = useState('')
 
     const filterData = (data) => {

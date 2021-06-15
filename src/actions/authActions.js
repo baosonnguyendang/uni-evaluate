@@ -3,17 +3,18 @@ import { returnErrors, clearErrors } from './errorActions';
 import {
   USER_LOADED,
   USER_LOADING,
-  AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT_SUCCESS
 } from './types';
 // Check token & load user
 import jwt from 'jsonwebtoken'
+import moment from 'moment'
 export const checktoken = () => (dispatch, getState) => {
   const token = getState().auth.token;
+
   if ( token ){
-    if (jwt.decode(token).exp < Date.now() / 1000) {
+    if (moment(jwt.decode(token).exp * 1000).isBefore(Date.now())) {
       dispatch({type: LOGOUT_SUCCESS})
     } 
     else

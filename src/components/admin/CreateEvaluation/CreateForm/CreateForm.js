@@ -17,26 +17,6 @@ import ModalAddStandard from './ModalAdd'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../../actions/notifyAction'
 
-
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box p={3}>
-                    {children}
-                </Box>
-            )}
-        </div>
-    );
-}
 //fix out of drag
 let portal = document.createElement("div");
 document.body.appendChild(portal);
@@ -65,11 +45,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ModifyForm({ fcode }) {
     const dispatch = useDispatch()
-    const [value, setValue] = React.useState(0);
     const classes = useStyles();
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+
     // loading
     const [loading, setLoading] = useState(true)
     // modal edit
@@ -90,7 +67,7 @@ export default function ModifyForm({ fcode }) {
     // tiêu chuẩn đã có trong form và dùng để restore
     const [temp, setTemp] = React.useState([])
     // tiêu chí đc chonj
-    const [tempStandard, setTempStandard] = useState('')
+    const [tempStandard, setTempStandard] = useState(null)
     // tiêu chuẩn có sẵn trong form được chọn
     const [existStandards, setExistStandards] = React.useState([])
     // tất cả tiêu chuẩn 
@@ -165,13 +142,13 @@ export default function ModifyForm({ fcode }) {
     }
     // them moi va xoa tieu chuan trong combobox
     const addStandard = (point) => {
-        const existStandardsTemp = [...existStandards, {...tempStandard,standard_point: point}]
+        const existStandardsTemp = [...existStandards, { ...tempStandard, standard_point: point }]
         const standardstemp = standards.filter(s => s.code !== tempStandard.code)
         console.log(existStandardsTemp)
         console.log(standardstemp)
         setExistStandards(existStandardsTemp)
         setStandards(standardstemp)
-        setTemp({ standards:standardstemp, existStandards:existStandardsTemp })
+        setTemp({ standards: standardstemp, existStandards: existStandardsTemp })
         setTempStandard({})
     }
 
@@ -186,7 +163,7 @@ export default function ModifyForm({ fcode }) {
                 setLoading(false)
                 dispatch(showSuccessSnackbar('Lưu thành công'))
                 console.log(res.data)
-                setTemp({standards, existStandards})
+                setTemp({ standards, existStandards })
             })
             .catch(err => {
                 console.log(err)
@@ -196,99 +173,99 @@ export default function ModifyForm({ fcode }) {
     }
 
     return (
-  <>
-                <Typography gutterBottom variant='h5' id="transition-modal-title">Danh sách tiêu chuẩn</Typography>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Autocomplete
-                        loading={!standards}
-                        loadingText="Đang tải..."
-                        id="criterion-select"
-                        style={{ width: "40%" }}
-                        options={standards || []}
-                        classes={{
-                            option: classes.option,
-                        }}
-                        autoHighlight
-                        noOptionsText='Không tồn tại'
-                        getOptionLabel={(option) => option.name}
-                        getOptionSelected={(option, value) => option.name === value.name}
-                        getOptionDisabled={(option) => !temp.standards.includes(option)}
-                        onChange={(event, value) => setTempStandard(value)}
-                        renderOption={(option) => (
-                            <React.Fragment>
-                                {option.code} - {option.name}
-                            </React.Fragment>
-                        )}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Chọn tiêu chuẩn"
-                                variant="outlined"
-                            />
-                        )}
-                    />
+        <>
+            <Typography gutterBottom variant='h5' id="transition-modal-title">Danh sách tiêu chuẩn</Typography>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Autocomplete
+                    loading={!standards}
+                    loadingText="Đang tải..."
+                    id="criterion-select"
+                    style={{ width: "40%" }}
+                    options={standards || []}
+                    classes={{
+                        option: classes.option,
+                    }}
+                    autoHighlight
+                    noOptionsText='Không tồn tại'
+                    getOptionLabel={(option) => option.name}
+                    getOptionSelected={(option, value) => option.name === value.name}
+                    getOptionDisabled={(option) => !temp.standards.includes(option)}
+                    onChange={(event, value) => setTempStandard(value)}
+                    renderOption={(option) => (
+                        <React.Fragment>
+                            {option.code} - {option.name}
+                        </React.Fragment>
+                    )}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label="Chọn tiêu chuẩn"
+                            variant="outlined"
+                        />
+                    )}
+                />
+                <IconButton
+                    aria-label="add"
+                    color="primary"
+                    onClick={() => onAdd(id, tempStandard?.code, tempStandard?.name)}
+                >
+                    <AddCircleIcon />
+                </IconButton>
+            </div>
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+                <Droppable droppableId='criterion'>
+                    {(provided) => (
+                        <List {...provided.droppableProps} ref={provided.innerRef} style={{ minHeight: '300px' }}>
+                            {existStandards.map((t, index) =>
+                                <Draggable key={t._id} draggableId={t.code} index={index}>
+                                    {(provided, snapshot) => (
+                                        (snapshot.isDragging) ?
+                                            ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                                <ListItemText primary={`${index + 1}. ${t.name}`} />
+                                            </ListItem>, portal)
+                                            : <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                                <ListItemText primary={`${index + 1}. ${t.name}`} />
+                                                <TextField style={{ width: "100px" }} type="number" variant="outlined" required size="small" placeholder="Điểm"
+                                                    onChange={(e) => handleChangePoint(e, index)}
+                                                    defaultValue={t.standard_point}
+                                                />
+                                                <IconButton onClick={() => onEdit(id, t.code, t.name)} style={{ marginLeft: '10px' }}>
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton onClick={() => deleteCriterion(index)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </ListItem>
+                                    )
+                                    }
+                                </Draggable>
+                            )}
+                            {provided.placeholder}
+                        </List>
+                    )}
+                </Droppable >
+            </DragDropContext>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ flexGrow: 1 }}>
                     <IconButton
                         aria-label="add"
                         color="primary"
-                        onClick={() => onAdd(id, tempStandard?.code, tempStandard?.name)}
+                        onClick={restore}
                     >
-                        <AddCircleIcon />
+                        <RestoreIcon />
                     </IconButton>
                 </div>
-                <DragDropContext onDragEnd={handleOnDragEnd}>
-                    <Droppable droppableId='criterion'>
-                        {(provided) => (
-                            <List {...provided.droppableProps} ref={provided.innerRef} style={{ minHeight: '300px' }}>
-                                {existStandards.map((t, index) =>
-                                    <Draggable key={t._id} draggableId={t.code} index={index}>
-                                        {(provided, snapshot) => (
-                                            (snapshot.isDragging) ?
-                                                ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                    <ListItemText primary={`${index + 1}. ${t.name}`} />
-                                                </ListItem>, portal)
-                                                : <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                    <ListItemText primary={`${index + 1}. ${t.name}`} />
-                                                    <TextField style={{ width: "100px" }} type="number" variant="outlined" required size="small" placeholder="Điểm"
-                                                        onChange={(e) => handleChangePoint(e, index)}
-                                                        defaultValue={t.standard_point}
-                                                    />
-                                                    <IconButton onClick={() => onEdit(id, t.code, t.name)} style={{ marginLeft: '10px' }}>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                    <IconButton onClick={() => deleteCriterion(index)}>
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </ListItem>
-                                        )
-                                        }
-                                    </Draggable>
-                                )}
-                                {provided.placeholder}
-                            </List>
-                        )}
-                    </Droppable >
-                </DragDropContext>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ flexGrow: 1 }}>
-                        <IconButton
-                            aria-label="add"
-                            color="primary"
-                            onClick={restore}
-                        >
-                            <RestoreIcon />
-                        </IconButton>
-                    </div>
 
-                    <Button variant="contained" color='primary'
-                        className={classes.btn}
-                        disabled={JSON.stringify(temp.existStandards) === JSON.stringify(existStandards)}
-                        onClick={saveForm}
-                    >Lưu</Button>
-                </div>
-           
+                <Button variant="contained" color='primary'
+                    className={classes.btn}
+                    disabled={JSON.stringify(temp.existStandards) === JSON.stringify(existStandards)}
+                    onClick={saveForm}
+                >Lưu</Button>
+            </div>
+
             <Loading open={loading} />
             {openAddModal && <ModalAddStandard idForm={modal.id} codeStandard={modal.code} name={modal.name} open={openAddModal} handleClose={handleClose} stt={modal.stt} setCriterion={addStandard} />}
             {open && <ModalEditStandard idForm={modal.id} codeStandard={modal.code} name={modal.name} open={open} handleClose={handleClose} />}
-    </>
+        </>
     );
 }
