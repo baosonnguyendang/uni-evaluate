@@ -10,15 +10,16 @@ import axios from 'axios'
 import { checktoken } from './actions/authActions';
 import { useDispatch, useSelector } from 'react-redux'
 import Toast from './components/common/Snackbar'
-import { returnErrors, clearErrors } from './actions/errorActions'
 
 function App() {
-  axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
   const dispatch = useDispatch()
+  const token = useSelector(state => state.auth.token)
+  axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
+  axios.defaults.headers.common = {'Authorization': `Bearer ${token}`}
 
   useEffect(() => {
     dispatch(checktoken());
-  }, []);
+  }, [dispatch]);
   return (
     <Router >
       <Toast />

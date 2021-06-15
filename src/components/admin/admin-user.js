@@ -24,7 +24,6 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import axios from "axios";
 import Skeleton from '../common/Skeleton'
-import Toast from '../common/Snackbar'
 import Loading from '../common/Loading'
 import DialogConfirm from '../common/DialogConfirm'
 import UpLoadFile from '../common/UpLoadFile'
@@ -95,9 +94,8 @@ const CustomTableCell = ({ row, name }) => {
 export default function ListUser() {
   const dispatch = useDispatch()
   const [rows, setRows] = React.useState([]);
-  const token = localStorage.getItem('token')
   const fetchUser = () => {
-    return axios.get('/admin/user', { headers: { "Authorization": `Bearer ${token}` } })
+    return axios.get('/admin/user')
       .then(res => {
         console.log(res.data.users);
         setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
@@ -113,7 +111,7 @@ export default function ListUser() {
   // Danh sách đơn vị
   const [units, setUnits] = useState([])
   const fetchAllDept = () => {
-    axios.get('/admin/department', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('/admin/department')
       .then(res => {
         setUnits(res.data.departments)
       })
@@ -131,7 +129,7 @@ export default function ListUser() {
   const deleteUserWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/user/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/user/${id}/delete`, {})
       .then(res => {
         const newRows = rows.filter(row => row.staff_id !== id)
         console.log(newRows)
@@ -208,7 +206,7 @@ export default function ListUser() {
     console.log(modal.id)
 
     handleClose()
-    axios.post(`/admin/user/${modal.id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/user/${modal.id}/edit`, body)
       .then(res => {
         setRows(rows.map(r => r.staff_id === modal.id ? { ...r, staff_id: id, firstname: fname, lastname: lname, roles: role, email } : r))
         setFilterUser(rows.map(r => r.staff_id === modal.id ? { ...r, staff_id: id, firstname: fname, lastname: lname, roles: role, email } : r))
@@ -235,7 +233,7 @@ export default function ListUser() {
     setLoading(true)
     const body = { id, lname, fname, email, dcode: newUnit }
     handleClose()
-    axios.post('/admin/user/add', body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post('/admin/user/add', body)
       .then(res => {
         fetchUser().then((res) => {
           dispatch(showSuccessSnackbar('Thêm người dùng thành công'))
