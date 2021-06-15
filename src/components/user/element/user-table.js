@@ -164,11 +164,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import axios from 'axios';
-
 import FormEvaluation from '../element/form.js'
-
-import { Button, Typography } from '@material-ui/core'
 
 export default function EmployeeForm() {
 

@@ -709,9 +709,9 @@ export default function FormEvaluation(props) {
                         <TableCell></TableCell>
                         <TableCell><b>Tổng điểm</b></TableCell>
                         <TableCell></TableCell>
-                        <TableCell align='center'><h5>{point}</h5></TableCell>
-                        <TableCell align='center'><h5>{props.level > 1 || disableEdit2 ? point2 : null}</h5></TableCell>
-                        <TableCell align='center'><h5>{props.level > 2 || disableEdit3 ? point3 : null}</h5></TableCell>
+                        <TableCell align='center'><Typography >{point}</Typography></TableCell>
+                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 1 || disableEdit2 ? point2 : null}</Typography></TableCell>
+                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 2 || disableEdit3 ? point3 : null}</Typography></TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
@@ -733,6 +733,9 @@ export default function FormEvaluation(props) {
                         </Button>
                         <Button variant="contained" color="primary" onClick={onSubmit} style={{ marginLeft: '10px' }}>
                           Hoàn thành đánh giá
+                        </Button>
+                        <Button>
+                          In mẫu đánh giá
                         </Button>
                       </div>
                     }

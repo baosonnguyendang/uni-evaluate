@@ -23,49 +23,55 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   active: {
-    background:"rgba(224, 224, 224, 1)",
-    hover:{
+    background: "rgba(224, 224, 224, 1)",
+  },
+  navLink: {
+    textDecoration: 'none',
+    color: '#212529',
+    '&:hover': {
+      textDecoration: 'none',
+      color: '#212529',
       background: "rgba(224, 224, 224, 1)"
     }
   }
 }
-  ))
+))
 
 export function MainListItems() {
   const classes = useStyles()
   return (
-    <div>
-      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/user'} activeClassName={classes.active}>
+    <>
+      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/user'} activeClassName={classes.active}>
         <ListItemIcon>
           <PersonIcon />
         </ListItemIcon>
         <ListItemText primary="Người dùng" />
       </ListItem>
-      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/faculty'} activeClassName={classes.active}>
+      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/faculty'} activeClassName={classes.active}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Đơn vị" />
       </ListItem>
-      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/criteria'} activeClassName={classes.active}>
+      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/criteria'} activeClassName={classes.active}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Reports" />
       </ListItem>
 
-      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/criterion'} activeClassName={classes.active}>
+      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/criterion'} activeClassName={classes.active}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="Tiêu chuẩn" />
       </ListItem>
-      <ListItem style={{paddingLeft: '23px' }} component={NavLink} to={'/admin/evaluate-settings'} activeClassName={classes.active}>
+      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/evaluate-settings'} activeClassName={classes.active}>
         <ListItemIcon>
           <AssessmentIcon />
         </ListItemIcon>
         <ListItemText primary="Đợt đánh giá" />
       </ListItem>
-    </div>
+    </>
   )
 }
