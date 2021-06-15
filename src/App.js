@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import SignInSide from "./components/signin"
@@ -10,12 +10,13 @@ import axios from 'axios'
 import { checktoken } from './actions/authActions';
 import { useDispatch, useSelector } from 'react-redux'
 import Toast from './components/common/Snackbar'
+import NotFound from './components/common/NotFound'
 
 function App() {
   const dispatch = useDispatch()
   const token = useSelector(state => state.auth.token)
   axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
-  axios.defaults.headers.common = {'Authorization': `Bearer ${token}`}
+  axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` }
 
   useEffect(() => {
     dispatch(checktoken());
@@ -23,9 +24,14 @@ function App() {
   return (
     <Router >
       <Toast />
-      <Route path="/" exact component={SignInSide} />
-      <Route path="/admin" component={Dashboard} />
-      <Route path="/user" component={UserPage} />
+      <Switch>
+        <Route path="/" exact component={SignInSide} />
+        <Route path="/admin" component={Dashboard} />
+        <Route path="/user" component={UserPage} />
+        <Route path="*">
+          <NotFound />
+        </Route>
+      </Switch>
     </Router>
   );
 }

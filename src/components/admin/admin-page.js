@@ -72,7 +72,7 @@ const AdminPage = () => {
   return (
     <div className={classes.root}>
       {!token && <Redirect to='/' />}
-      {role === 'admin' ? <Redirect to='/admin/user' /> : <Redirect to='/user' />}
+      {role === 'user' && <Redirect to='/user' />}
       <Navbar />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
@@ -101,6 +101,9 @@ const AdminPage = () => {
                 <Route exact path='/admin/criterion/:id/deleted' children={<DeletedCriteria />} />
                 <Route exact path='/admin/criterion/:id/:id1' children={<Selection />} />
                 <Route exact path='/admin/criterion/:id/:id1/deleted' children={<DeletedSelection />} />
+                <Route path="*">
+                  <NotFound />
+                </Route>
               </Switch>
             </Grid>
           </Grid>
