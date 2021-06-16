@@ -81,5 +81,6 @@ react-calendar;
 @material/lab;
 jsonwebtoken;
 mui-datatables;
-react-drag-reorder;
-react-chartjs-2
+react-chartjs-2;
+react-to-pdf;
+react-beautiful-dnd;
