@@ -73,15 +73,18 @@ export default function FormEvaluation(props) {
         let t3mp = []
         let t = []
         res.data.formStandards.map(standard => {
-          t3mp.push({ order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null })
+          let list = []
           standard.formCriteria.map(criteria => {
-            if (criteria.criteria_id.type == 'input') {
+            if (criteria.criteria_id.type == 'input' || criteria.criteria_id.type == 'detail') {
               t.push({ code: criteria.criteria_id.code, point: criteria.point })
             }
+            list.push(criteria.criteria_id.code)
             let obj = { name: criteria.criteria_id.code, standard_order: standard.standard_order, value: criteria.criteria_id.type != 'radio' ? 0 : null }
             temp.push(obj)
           })
+          t3mp.push({ order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null, list: list })
         })
+        setMax(t3mp)
         setInput(t)
         //lấy dữ liệu đã làm nếu Form đã điền trước đó
         axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -134,8 +137,6 @@ export default function FormEvaluation(props) {
       })
   }, [])
 
-  console.log(all)
-
   useEffect(() => {
     let pts = 0
     let pts2 = 0
@@ -143,37 +144,52 @@ export default function FormEvaluation(props) {
     if (isLoading === false) {
       if (props.level == 1 || (disableEdit && props.level < 2)) {
         if (sent.length > 0) {
-          sent.map(x => {
-            if (x.value != null) {
-              pts += parseInt(x.value)
+          max.map(x => {
+            let diem = 0
+            x.list.map(y => {
+              if (sent.find(z => z.name == y).value != null) {
+                diem += sent.find(z => z.name == y).value
+              }
+            })
+            if (diem > x.max) {
+              diem = x.max
             }
+            pts += diem
           })
+          // sent.map(x => {
+          //   if (x.value != null) {
+          //     pts += parseInt(x.value)
+          //   }
+          // })
         }
         setPoint(pts)
       }
       if (props.level == 2 || (disableEdit2 && props.level < 3)) {
         let tam = 0
-        console.log(all)
-        all[0].map(x => {
-          tam += parseInt(x.value)
+        max.map(x => {
+          let diem = 0
+          let diem2 = 0
+          x.list.map(y => {
+            diem += all[0].find(z => z.name == y).value
+            diem2 += all[1].find(z => z.name == y).value
+          })
+          if (diem > x.max) {
+            diem = x.max
+          }
+          if (diem2 > x.max) {
+            diem2 = x.max
+          }
+          tam += diem
+          pts2 += diem2
         })
+        // all[0].map(x => {
+        //   tam += parseInt(x.value)
+        // })
         setPoint(tam)
-        all[1].map(x => {
-          pts2 += parseInt(x.value)
-        })
+        // all[1].map(x => {
+        //   pts2 += parseInt(x.value)
+        // })
         setPoint2(pts2)
-        // if (edited == true) {
-        //   sent2.map(x => {
-        //     pts2 += parseInt(x.value)
-        //   })
-        //   setPoint2(pts2)
-        // }
-        // else {
-        //   all[1].map(x => {
-        //     pts2 += parseInt(x.value)
-        //   })
-        //   setPoint2(pts2)
-        // }
       }
       if (props.level == 3 || disableEdit3) {
         let tam = 0
@@ -541,7 +557,7 @@ export default function FormEvaluation(props) {
                     </div>
                   </div>
                 )}
-                <Pdf targetRef={ref} filename={`${info.id}.pdf`}>
+                <Pdf targetRef={ref} filename={`${info.id}.pdf`} y={2} scale={0.4}>
                   {({ toPdf }) =>
                     <Tooltip title='In Biểu mẫu'>
                       <IconButton onClick={toPdf}>
@@ -551,7 +567,7 @@ export default function FormEvaluation(props) {
                 </Pdf>
 
               </div>
-              <Grid container justify='center' style={{ marginTop: '30px' }}>
+              <Grid container justify='center' style={{ marginTop: '20px' }}>
                 <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
                   <Table className={classes.table} >
                     <TableHead>
@@ -632,51 +648,96 @@ export default function FormEvaluation(props) {
                                   })()}
                                 </TableCell>
                                 <TableCell align='center'>
-                                  {(props.level > 1 || disableEdit2) && criteria.options.length == 0 ? (criteria.criteria_id.type == 'input' ? (
-                                    <input
-                                      type="number"
-                                      className='number'
-                                      style={{ width: '40px', textAlign: 'center' }}
-                                      disabled={disableEdit2}
-                                      defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
-                                      onChange={handleInput2}
-                                      name={criteria.criteria_id.code + '_2'}
-                                    />
-                                  ) : (
-                                    <input
-                                      type="checkbox"
-                                      disabled={disableEdit2}
-                                      defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
-                                      onChange={handleCheck2}
-                                      name={criteria.criteria_id.code + '_2'}
-                                      value={criteria.point}
-                                    />
-                                  ))
-                                    : null}
+                                  {(props.level > 1 || disableEdit2) && criteria.options.length == 0 ? (() => {
+                                    switch (criteria.criteria_id.type) {
+                                      default:
+                                        return null
+                                      case 'input':
+                                        return (
+                                          <input
+                                            type="number"
+                                            className='number'
+                                            style={{ width: '40px', textAlign: 'center' }}
+                                            disabled={disableEdit2}
+                                            defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
+                                            onChange={handleInput2}
+                                            name={criteria.criteria_id.code + '_2'}
+                                          />
+                                        )
+                                      case 'checkbox':
+                                        return (
+                                          <input
+                                            type="checkbox"
+                                            disabled={disableEdit2}
+                                            defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                            onChange={handleCheck2}
+                                            name={criteria.criteria_id.code + '_2'}
+                                            value={criteria.point}
+                                          />
+                                        )
+                                      case 'detail':
+                                        return (
+                                          <div>
+                                            <input
+                                              type="number"
+                                              className='number'
+                                              style={{ width: '40px', textAlign: 'center' }}
+                                              disabled={disableEdit2}
+                                              defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
+                                              onChange={handleInput2}
+                                              name={criteria.criteria_id.code + '_2'}
+                                            />
+                                            <p type='button' onClick={() => alert('p')}>Click me</p>
+                                          </div>
+                                        )
+                                    }
+                                  })() : null}
                                 </TableCell>
                                 <TableCell align='center'>
-                                  {(props.level > 2 || disableEdit3) && criteria.options.length == 0 ? (criteria.criteria_id.type == 'input' ? (
-                                    <input
-                                      type="number"
-                                      className='number'
-                                      style={{ width: '40px', textAlign: 'center' }}
-                                      disabled={disableEdit3}
-                                      defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
-                                      onChange={handleInput3}
-                                      name={criteria.criteria_id.code + '_3'}
-                                    />
-                                  ) : (
-                                    <input
-                                      type="checkbox"
-                                      disabled={disableEdit3}
-                                      onChange={handleCheck3}
-                                      defaultChecked={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
-                                      name={criteria.criteria_id.code + '_3'}
-                                      value={criteria.point}
-                                    />
-                                  ))
-
-                                    : null}
+                                  {(props.level > 2 || disableEdit3) && criteria.options.length == 0 ? (() => {
+                                    switch (criteria.criteria_id.type) {
+                                      default:
+                                        return null
+                                      case 'input':
+                                        return (
+                                          <input
+                                            type="number"
+                                            className='number'
+                                            style={{ width: '40px', textAlign: 'center' }}
+                                            disabled={disableEdit3}
+                                            defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
+                                            onChange={handleInput3}
+                                            name={criteria.criteria_id.code + '_3'}
+                                          />
+                                        )
+                                      case 'checkbox':
+                                        return (
+                                          <input
+                                            type="checkbox"
+                                            disabled={disableEdit3}
+                                            onChange={handleCheck3}
+                                            defaultChecked={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
+                                            name={criteria.criteria_id.code + '_3'}
+                                            value={criteria.point}
+                                          />
+                                        )
+                                      case 'detail':
+                                        return (
+                                          <div>
+                                            <input
+                                              type="number"
+                                              className='number'
+                                              style={{ width: '40px', textAlign: 'center' }}
+                                              disabled={disableEdit3}
+                                              defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
+                                              onChange={handleInput3}
+                                              name={criteria.criteria_id.code + '_3'}
+                                            />
+                                            <p type='button' onClick={() => alert('p')}>Click me</p>
+                                          </div>
+                                        )
+                                    }
+                                  })() : null}
                                 </TableCell>
                               </TableRow>
                               {criteria.options.map((option, index) => (
