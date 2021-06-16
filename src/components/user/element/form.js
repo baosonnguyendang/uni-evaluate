@@ -76,7 +76,7 @@ export default function FormEvaluation(props) {
           let list = []
           standard.formCriteria.map(criteria => {
             if (criteria.criteria_id.type == 'input' || criteria.criteria_id.type == 'detail') {
-              t.push({ code: criteria.criteria_id.code, point: criteria.point })
+              t.push({ code: criteria.criteria_id.code, point: criteria.point, order: standard.standard_order + '.' + criteria.criteria_order })
             }
             list.push(criteria.criteria_id.code)
             let obj = { name: criteria.criteria_id.code, standard_order: standard.standard_order, value: criteria.criteria_id.type != 'radio' ? 0 : null }
@@ -85,6 +85,7 @@ export default function FormEvaluation(props) {
           t3mp.push({ order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null, list: list })
         })
         setMax(t3mp)
+        console.log(t)
         setInput(t)
         //lấy dữ liệu đã làm nếu Form đã điền trước đó
         axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -151,7 +152,7 @@ export default function FormEvaluation(props) {
                 diem += sent.find(z => z.name == y).value
               }
             })
-            if (diem > x.max) {
+            if (diem > x.max && x.max != null) {
               diem = x.max
             }
             pts += diem
@@ -173,18 +174,15 @@ export default function FormEvaluation(props) {
             diem += all[0].find(z => z.name == y).value
             diem2 += all[1].find(z => z.name == y).value
           })
-          if (diem > x.max) {
+          if (diem > x.max && x.max != null) {
             diem = x.max
           }
-          if (diem2 > x.max) {
+          if (diem2 > x.max && x.max != null) {
             diem2 = x.max
           }
           tam += diem
           pts2 += diem2
         })
-        // all[0].map(x => {
-        //   tam += parseInt(x.value)
-        // })
         setPoint(tam)
         // all[1].map(x => {
         //   pts2 += parseInt(x.value)
@@ -193,18 +191,34 @@ export default function FormEvaluation(props) {
       }
       if (props.level == 3 || disableEdit3) {
         let tam = 0
-        all[0].map(x => {
-          tam += parseInt(x.value)
+        let tamm = 0
+        max.map(x => {
+          let diem = 0
+          let diem2 = 0
+          let diem3 = 0
+          x.list.map(y => {
+            diem += all[0].find(z => z.name == y).value
+            diem2 += all[1].find(z => z.name == y).value
+            diem3 += all[2].find(z => z.name == y).value
+          })
+          if (diem > x.max && x.max != null) {
+            diem = x.max
+          }
+          if (diem2 > x.max && x.max != null) {
+            diem2 = x.max
+          }
+          if (diem3 > x.max && x.max != null) {
+            diem3 = x.max
+          }
+          tam += diem
+          tamm += diem2
+          pts3 += diem3
         })
         setPoint(tam)
-        let tamm = 0
-        all[1].map(x => {
-          tamm += parseInt(x.value)
-        })
+        // all[1].map(x => {
+        //   pts2 += parseInt(x.value)
+        // })
         setPoint2(tamm)
-        all[2].map(x => {
-          pts3 += parseInt(x.value)
-        })
         setPoint3(pts3)
       }
     }
@@ -420,8 +434,17 @@ export default function FormEvaluation(props) {
       default:
         break;
     }
-    if (dataToSend.some(x => x.value < 0)) {
+
+    let loi = ''
+    input.map(x => {
+      if (dataToSend.find(y => y.name == x.code).value > x.point) {
+        loi += '\n' + x.order
+      }
+    })
+
+    if (dataToSend.some(x => x.value < 0) || loi.length > 0) {
       let sai = 'Các tiêu chí sau điền sai:'
+      sai += loi
       let b = dataToSend.filter(x => x.value < 0)
       console.log(b)
       data.map(x => {
@@ -433,7 +456,7 @@ export default function FormEvaluation(props) {
       })
       alert(sai)
     }
-    if (list.length === 0 && !dataToSend.some(x => x.value < 0)) {
+    if (list.length === 0 && !(dataToSend.some(x => x.value < 0) || loi.length > 0)) {
       let dataa = { dataToSend, level }
       console.log(dataa)
       setLoading(true)
