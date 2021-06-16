@@ -3,14 +3,17 @@ import {
   TableContainer, Table,
   TableHead, TableRow, TableCell,
   TableBody, makeStyles, Paper, Grid,
-  Button,
+  Button, IconButton, Tooltip,
   LinearProgress,
   Typography, Container
 } from "@material-ui/core";
+import PrintIcon from '@material-ui/icons/Print';
 
 import axios from 'axios';
 
 import './styles.css';
+
+import Pdf from "react-to-pdf";
 
 import { useParams } from 'react-router-dom'
 import DialogConfirm from '../../common/DialogConfirm'
@@ -23,6 +26,8 @@ const useStyles = makeStyles({
     minWidth: 700,
   },
 });
+
+const ref = React.createRef();
 
 export default function FormEvaluation(props) {
   const dispatch = useDispatch()
@@ -521,18 +526,31 @@ export default function FormEvaluation(props) {
   return (
     < >
       {status ? (
-        <div >
+        <div ref={ref} >
           {isLoading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
             <Container>
               <Loading open={loading} />
               <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Không thể chỉnh sửa sau khi hoàn thành bài đánh giá. Bạn đã chắc chắn chưa ? ' />
-              {info != null && (
-                <div style={{ display: 'flex', fontSize: '1.125rem', justifyContent: 'space-between', marginRight: '20%', marginTop: 30 }}>
-                  <span><b>Tên: </b>{info.name}</span>
-                  <span><b>Mã GV/VC: </b>{info.id}</span>
-                  <span><b>Đơn vị: </b>{info.unit}</span>
-                </div>
-              )}
+              <div style={{ marginTop: 30 }}>
+                {info != null && (
+                  <div style={{ display: 'inline-block', width: '90%', paddingRight: '15%' }}>
+                    <div style={{ display: 'flex', fontSize: '1.125rem', justifyContent: 'space-between' }}>
+                      <span><b>Tên: </b>{info.name}</span>
+                      <span><b>Mã GV/VC: </b>{info.id}</span>
+                      <span><b>Đơn vị: </b>{info.unit}</span>
+                    </div>
+                  </div>
+                )}
+                <Pdf targetRef={ref} filename={`${info.id}.pdf`}>
+                  {({ toPdf }) =>
+                    <Tooltip title='In Biểu mẫu'>
+                      <IconButton onClick={toPdf}>
+                        <PrintIcon />
+                      </IconButton>
+                    </Tooltip>}
+                </Pdf>
+
+              </div>
               <Grid container justify='center' style={{ marginTop: '30px' }}>
                 <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
                   <Table className={classes.table} >
@@ -733,9 +751,6 @@ export default function FormEvaluation(props) {
                         </Button>
                         <Button variant="contained" color="primary" onClick={onSubmit} style={{ marginLeft: '10px' }}>
                           Hoàn thành đánh giá
-                        </Button>
-                        <Button>
-                          In mẫu đánh giá
                         </Button>
                       </div>
                     }
