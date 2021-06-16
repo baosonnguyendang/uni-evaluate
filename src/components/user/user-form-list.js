@@ -90,7 +90,7 @@ export default function FormList() {
       {loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> :
         <Container>
           <Typography variant="h5" component="h2" style={{ marginTop: '24px' }}>
-            Danh sách các Form đánh giá:
+            Danh sách các Biểu mẫu đánh giá:
         </Typography>
           {
             list.map(x => {
@@ -100,10 +100,10 @@ export default function FormList() {
                   <Card key={x.code} style={{ marginTop: '24px' }}>
                     <CardContent>
                       <Typography variant="h6" component="h5">
-                        Tên Form: {x.name}
+                        Tên:  {x.name}
                       </Typography>
                       <Typography>
-                        Mã Form: {x.code}
+                        Mã:   {x.code}
                       </Typography>
                     </CardContent>
                     <CardActions style={{ paddingLeft: '16px' }}>
