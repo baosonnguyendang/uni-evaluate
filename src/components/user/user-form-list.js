@@ -12,8 +12,7 @@ export default function FormList() {
   const { url } = useRouteMatch()
 
   const [list, setList] = useState([])
-  const [isHeadUnit, setIsHeadUnit] = useState(false)
-  const [unit, setUnit] = useState([])
+  const [unit, setUnit] = useState([]) //ds cac don vi lam truong
   const [listH, setListH] = useState([])
   const [loading, setLoading] = useState(false)
   const [headH, setHeadH] = useState(false)
@@ -22,13 +21,15 @@ export default function FormList() {
     return axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
-        if (res.data.formDepartment.some(x => x.department_id.department_code == 'HDDG')){
-          setHeadH(true)
-        }
+        // if (res.data.formDepartment.some(x => x.department_id.department_code == 'HDDG')) {
+        //   setHeadH(true)
+        // }
         if (res.data.formDepartment.length > 0) {
-          setIsHeadUnit(true)
           let t = []
           res.data.formDepartment.map(x => {
+            // if (x.department_id.department_code != 'HDDG') {
+            //   t.push({ unit: x.department_id.department_code, form: x.form_id.code })
+            // }
             t.push({ unit: x.department_id.department_code, form: x.form_id.code })
           })
           console.log(t)
@@ -46,6 +47,9 @@ export default function FormList() {
       .then(res => {
         let temp = []
         let t3mp = []
+        if (res.data.formUsers.some(x => x.department_form_id.level == 3)) {
+          setHeadH(true)
+        } // xem co nam trong hddg ko
         console.log(res.data.formUsers)
         res.data.formUsers.map(x => {
           let obj = { code: x.form_id.code, name: x.form_id.name, id: x.userForm._id, level: x.department_form_id.level, department: x.department_form_id.department_id.department_code }
@@ -90,10 +94,11 @@ export default function FormList() {
         <Container>
           <Typography variant="h5" component="h2" style={{ marginTop: '24px' }}>
             Danh sách các biểu mẫu đánh giá:
-        </Typography>
+          </Typography>
           {
             list.map(x => {
               console.log(list)
+              console.log(unit)
               return (
                 x.level < 3 ? (
                   <Card key={x.code} style={{ marginTop: '24px' }}>
@@ -114,14 +119,20 @@ export default function FormList() {
                           <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.code}/${x.department}`}>Đánh giá với tư cách trưởng đơn vị</Link>
                         </Button>}
                       {listH.length > 0 && listH.some(y => y.code == x.code) && headH &&
-                        <Button variant='contained' color='default'>
-                          <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
-                        </Button>
+                        ((unit.some(y => y.unit == 'HDDG') && unit.some(z => z.form == x.code)) ? (
+                          <Button variant='contained' color='default'>
+                            <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
+                          </Button>
+                        ) : (
+                          <Button variant='contained' color='default'>
+                            <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Xem với tư cách HDDG</Link>
+                          </Button>
+                        ))
                       }
                     </CardActions>
                   </Card>
                 ) : (
-                  headH && 
+                  headH &&
                   <Card key={x.code} style={{ marginTop: '24px' }}>
                     <CardContent>
                       <Typography variant="h6" component="h5">
@@ -132,9 +143,15 @@ export default function FormList() {
                       </Typography>
                     </CardContent>
                     <CardActions style={{ paddingLeft: '16px' }}>
-                      <Button variant='contained' color='default'>
-                        <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
-                      </Button>
+                      {(unit.some(y => y.unit == 'HDDG') && unit.some(z => z.form == x.code)) ? (
+                        <Button variant='contained' color='default'>
+                          <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
+                        </Button>
+                      ) : (
+                        <Button variant='contained' color='default'>
+                          <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Xem với tư cách HDDG</Link>
+                        </Button>
+                      )}
                     </CardActions>
                   </Card>
                 )

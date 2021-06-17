@@ -32,9 +32,10 @@ const ref = React.createRef();
 export default function FormEvaluation(props) {
   const dispatch = useDispatch()
   const classes = useStyles();
+  const token = localStorage.getItem('token')
   const [isLoading, setIsLoading] = useState(true)
   // const [data, setData] = useState({})
-  const { id1, id3 } = useParams()
+  const { id, id1, id3 } = useParams()
   var level = props.level
 
   const [info, setInfo] = useState(null)
@@ -58,6 +59,15 @@ export default function FormEvaluation(props) {
   var variable = props.level === 1 ? id1 : id3
 
   useEffect(() => {
+    axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        if (!res.data.formDepartment.some(x => x.form_id.code == id1 && x.department_id.department_code == 'HDDG')){
+          setDisableEdit3(true)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
     //lấy Form
     axios.get(`/form/${variable}/v2`)
       .then(res => {

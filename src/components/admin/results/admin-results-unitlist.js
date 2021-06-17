@@ -47,7 +47,7 @@ export default function ResultsUnit() {
       <Paper className={classes.paper}>
         <Typography component="h4" variant="h6" color="inherit" noWrap>
           Các đơn vị tham gia đánh giá
-      </Typography>
+        </Typography>
         <div>
           <ul>
             {units.filter(x => x.department_code != 'HDDG').map(unit => {

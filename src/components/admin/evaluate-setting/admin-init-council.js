@@ -146,6 +146,7 @@ export default function Council(props) {
         console.log(res.data)
         setCode(res.data.formDepartment.department_id.department_code)
         if (res.data.formDepartment.department_id) {
+          setChose(true)
           setHead(res.data.formDepartment.head.staff_id)
           let h = res.data.formDepartment.head.staff_id
           axios.get(`/admin/form/${props.fcode}/${res.data.formDepartment.department_id.department_code}/formuser/get`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -158,7 +159,6 @@ export default function Council(props) {
               })
               man.find(x => x.id == h).role = 'Đại diện HĐĐG'
               setMember([...man])
-              setChose(true)
             })
             .catch(err => {
               console.log(err)
@@ -220,6 +220,8 @@ export default function Council(props) {
   const setHDDG = () => {
     axios.post(`/admin/form/${props.fcode}/${council}/addcouncil`, {}, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
+        console.log(res.data)
+        setCode(council)
         axios.get(`/admin/form/${props.fcode}/${council}/formuser/get`, { headers: { "Authorization": `Bearer ${token}` } })
           .then(res => {
             let man = []
@@ -227,6 +229,7 @@ export default function Council(props) {
               let obj = { id: x.user_id.staff_id, name: x.user_id.lastname + ' ' + x.user_id.firstname, role: null }
               man.push(obj)
             })
+            console.log(res.data)
             setMember([...man])
             setChose(true)
           })
