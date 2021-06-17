@@ -13,7 +13,6 @@ import Criteria from './standard-list/admin-criteria'
 import Criterion from './standard-list/admin-criterion'
 import Selection from './standard-list/admin-selection'
 
-import ResultsUnit from './results/admin-results-unitlist'
 import ResultsList from './results/admin-results-overall'
 import Results from './results/admin-results-unit'
 import ResultsDetailed from './results/admin-results-detailed'
@@ -91,10 +90,9 @@ const AdminPage = () => {
                 <Route exact path='/admin/evaluate-settings/deleted' children={<DeletedEvaluateList />} />
                 <Route exact path='/admin/evaluate-settings/:id' children={<EvaluateSetting />} />
                 <Route exact path='/admin/evaluate-settings/:id/:id1' children={<AddSettings />} />
-                <Route exact path='/admin/evaluate-settings/:id/:id1/results/formDetailed/:id2' children={<Results />} />
-                <Route exact path='/admin/evaluate-settings/:id/:id1/results/formDetailed/:id2/:id3' children={<ResultsDetailed />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2' children={<Results />} />
+                <Route exact path='/admin/evaluate-settings/:id/:id1/results/:id2/:id3' children={<ResultsDetailed />} />
                 <Route exact path='/admin/evaluate-settings/:id/:id1/results' children={<ResultsList />} />
-                <Route exact path='/admin/evaluate-settings/:id/:id1/results/formDetailed' children={<ResultsUnit />} />
                 <Route exact path='/admin/criterion' children={<Criterion />} />
                 <Route exact path='/admin/criterion/deleted' children={<DeletedCriterion />} />
                 <Route exact path='/admin/criterion/:id' children={<Criteria />} />

@@ -59,7 +59,7 @@ const MenuEvaluate = () => {
     return <List className={classes.list}>
       <ListItem button onClick={() => { setStage(1) }} >
         <ListItemAvatar>
-          <SupervisorAccountIcon fontSize='large' color='action'/>
+          <SupervisorAccountIcon fontSize='large' color='action' />
         </ListItemAvatar>
         <ListItemText
           primary={<>Hội đồng đánh giá</>}
@@ -69,7 +69,7 @@ const MenuEvaluate = () => {
       <Divider variant="inset" component="li" />
       <ListItem button onClick={() => { setStage(2) }}>
         <ListItemAvatar>
-          <GroupAddIcon fontSize='large' color='action'/>
+          <GroupAddIcon fontSize='large' color='action' />
         </ListItemAvatar>
         <ListItemText
           primary={<>Đơn vị đánh giá</>}
@@ -79,7 +79,7 @@ const MenuEvaluate = () => {
       <Divider variant="inset" component="li" />
       <ListItem button onClick={() => { setStage(3) }}>
         <ListItemAvatar>
-          <PostAddIcon fontSize='large' color='action'/>
+          <PostAddIcon fontSize='large' color='action' />
         </ListItemAvatar>
         <ListItemText
           primary={"Cấu hình tiêu chuẩn"}
@@ -114,7 +114,7 @@ const MenuEvaluate = () => {
       break
     default:
       body = <Menu />
-      
+
   }
   return (
     <div style={{ maxWidth: '100%', }}>
@@ -126,6 +126,7 @@ const MenuEvaluate = () => {
     </div>
   )
 }
+
 export default function PinnedSubheaderList() {
   const classes = useStyles();
   const dispatch = useDispatch()

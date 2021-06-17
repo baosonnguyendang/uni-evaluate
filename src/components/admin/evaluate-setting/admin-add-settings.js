@@ -24,9 +24,15 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import { List, ListItem, ListItemAvatar, ListItemText, Divider } from '@material-ui/core';
 
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import CategoryIcon from '@material-ui/icons/Category';
 
 import { useRouteMatch } from 'react-router-dom'
 
@@ -36,7 +42,7 @@ import ModifyForm from "../CreateEvaluation/CreateForm/CreateForm";
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    minHeight: 440,
+    minHeight: 350,
     marginTop: 24,
     position: 'relative',
   },
@@ -76,7 +82,10 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#abcdef',
     padding: 0,
     width: '100%',
-  }
+  },    
+  list: {
+    backgroundColor: theme.palette.background.paper,
+  },
 }))
 
 const createData = (name, id) => {
@@ -251,35 +260,7 @@ export default function AddSettings() {
         })
         .catch(err => console.log(err))
       setShowResults(true)
-      // axios.get(`/admin/form/${code}/${x}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
-      //   .then(res => {
-      //     let temp = []
-      //     res.data.formUser.map(x => {
-      //       let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
-      //       temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
-      //     })
-      //     setUnitMember(temp)
-      //     setShowResults(true)
-      //   })
-      //   .catch(err => console.log(err))
     }
-
-    // useEffect(() => {
-    //   axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
-    //     .then(res => {
-    //       let _id = res.data.formDepartments.map(x => x.department_id.department_code)
-    //       _id.map(x => {
-    //         units.map(y => {
-    //           if (y.id === x) {
-    //             y.check = true
-    //           }
-    //         })
-    //       })
-    //       setUnitChosen(units.filter(unit => unit.check === true))
-    //       setLoading(false)
-    //     })
-    //     .catch(e => console.log(e))
-    // }, [])
 
     return (
       <div>
@@ -373,10 +354,10 @@ export default function AddSettings() {
             console.log(err)
             handleCloseAdd()
           })
-      .catch(err => {
-        console.log(err)
-        handleCloseAdd()
-      })
+          .catch(err => {
+            console.log(err)
+            handleCloseAdd()
+          })
       })
   }
 
@@ -412,9 +393,134 @@ export default function AddSettings() {
       })
   }
 
+  const [stage, setStage] = useState(null) //menu
+
+  const MenuEvaluate = () => {
+    const classes = useStyles();
+    const Menu = () => {
+      return <List className={classes.list}>
+        <ListItem button onClick={() => { setStage(1) }} >
+          <ListItemAvatar>
+            <SupervisorAccountIcon fontSize='large' color='action' />
+          </ListItemAvatar>
+          <ListItemText
+            primary={<>Hội đồng đánh giá</>}
+            secondary={"Cấu hình thành viên hội đồng đánh giá"}
+          />
+        </ListItem>
+        <Divider variant="inset" component="li" />
+        <ListItem button onClick={() => { setStage(2) }}>
+          <ListItemAvatar>
+            <GroupAddIcon fontSize='large' color='action' />
+          </ListItemAvatar>
+          <ListItemText
+            primary={<>Đơn vị đánh giá</>}
+            secondary={"Cấu hình các đợi vị tham gia đánh giá"}
+          />
+        </ListItem>
+        <Divider variant="inset" component="li" />
+        <ListItem button onClick={() => { setStage(3) }}>
+          <ListItemAvatar>
+            <PostAddIcon fontSize='large' color='action' />
+          </ListItemAvatar>
+          <ListItemText
+            primary={"Cấu hình tiêu chuẩn"}
+            secondary={"Thêm, chỉnh sửa tiêu chuẩn tiêu chí biểu mẫu"}
+          />
+        </ListItem>
+        <Divider variant="inset" component="li" />
+        <ListItem button onClick={() => { setStage(4) }}>
+          <ListItemAvatar>
+            <CategoryIcon fontSize='large' color='action' />
+          </ListItemAvatar>
+          <ListItemText
+            primary={'Cấu hình xếp loại'}
+            secondary={"Các hạng mức xếp loại, điều kiện"}
+          />
+        </ListItem>
+      </List>
+    }
+    let body = null
+    switch (stage) {
+      case 1:
+        body = <Council fcode={code} />
+        break
+      case 2:
+        body = (
+          <div>
+            <Typography component="h3" variant="h5" color="inherit">
+              Các đơn vị tham gia đánh giá nằm trong Form
+            </Typography>
+            <SelectedUnit />
+            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
+              Thêm đơn vị vào nhóm
+            </Button>
+            <Modal
+              className={classes.modal}
+              open={openUnit}
+              onClose={handleCloseUnit}
+              closeAfterTransition
+              BackdropComponent={Backdrop}
+              BackdropProps={{
+                timeout: 500,
+              }}
+            >
+              <Fade in={openUnit}>
+                <div className={classes.paper1}>
+                  <h4>Thêm đơn vị vào nhóm</h4>
+                  <Autocomplete
+                    multiple
+                    options={units}
+                    disableCloseOnSelect
+                    defaultValue={unitChosen}
+                    getOptionLabel={(option) => option.name}
+                    renderOption={(option, { selected }) => (
+                      <React.Fragment>
+                        <Checkbox
+                          icon={icon}
+                          checkedIcon={checkedIcon}
+                          style={{ marginRight: 8 }}
+                          checked={option.check = selected}
+                          onChange={console.log(units.map(x => x.check))}
+                        />
+                        {option.name}
+                      </React.Fragment>
+                    )}
+                    style={{ width: 500 }}
+                    renderInput={(params) => (
+                      <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
+                    )}
+                  />
+                  <Button style={{ marginTop: '10px', marginRight: 10 }} variant="contained" color="primary" onClick={() => handleCloseUnit()}>Xong</Button>
+                  <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={() => setOpenUnit(false)}>Thoát</Button>
+                </div>
+              </Fade>
+            </Modal>
+          </div>
+        )
+        break
+      case 3:
+        body = <ModifyForm fcode={code} />
+        break
+      case 4:
+        body = <Classify fcode={code} />
+        break
+      default:
+        body = <Menu />
+    }
+    return (
+      <div style={{ maxWidth: '100%', }}>
+        <div style={{}} className={classes.root1}>
+          {!stage && <Typography style={{ flexGrow: 1, marginLeft: 10 }} variant='h5' gutterBottom>Cấu hình biểu mẫu</Typography>}
+        </div>
+        {body}
+      </div>
+    )
+  }
+
   return (
     <div>
-      { loading ? <Skeleton /> : (() => {
+      {loading ? <Skeleton /> : (() => {
         switch (init) {
           default:
             return null
@@ -510,88 +616,9 @@ export default function AddSettings() {
                       {name} (Mã biểu mẫu: {code})
                     </Typography>
                     <Paper style={{ padding: 10 }} className={classes.paper}>
-                      {/* <AppBar position="static"> */}
-                      <Tabs style={{ margin: '-10px 0 10px -10px', height: 36 }} value={value} onChange={handleChange}>
-                        <Tab className={classes.tab} label="Lập HĐĐG cấp Trường" />
-                        <Tab className={classes.tab} label="Cấu hình đơn vị" />
-                        <Tab className={classes.tab} label="Cấu hình tiêu chuẩn" />
-                        <Tab className={classes.tab} label="Xếp loại đánh giá" />
-                      </Tabs>
-                      {/* </AppBar> */}
-                      {(() => {
-                        switch (value) {
-                          case 3:
-                            return(
-                              <Classify fcode={code}/>
-                            )
-                          case 2:
-                            return (
-                              <div>
-                                <ModifyForm fcode={code} />
-                              </div>
-                            )
-                          case 1:
-                            return (
-                              <div>
-                                <Typography component="h3" variant="h5" color="inherit">
-                                  Các đơn vị tham gia đánh giá nằm trong Form
-                                </Typography>
-                                <SelectedUnit />
-                                <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
-                                  Thêm đơn vị vào nhóm
-                                </Button>
-                                <Modal
-                                  className={classes.modal}
-                                  open={openUnit}
-                                  onClose={handleCloseUnit}
-                                  closeAfterTransition
-                                  BackdropComponent={Backdrop}
-                                  BackdropProps={{
-                                    timeout: 500,
-                                  }}
-                                >
-                                  <Fade in={openUnit}>
-                                    <div className={classes.paper1}>
-                                      <h4>Thêm đơn vị vào nhóm</h4>
-                                      <Autocomplete
-                                        multiple
-                                        options={units}
-                                        disableCloseOnSelect
-                                        defaultValue={unitChosen}
-                                        getOptionLabel={(option) => option.name}
-                                        renderOption={(option, { selected }) => (
-                                          <React.Fragment>
-                                            <Checkbox
-                                              icon={icon}
-                                              checkedIcon={checkedIcon}
-                                              style={{ marginRight: 8 }}
-                                              checked={option.check = selected}
-                                              onChange={console.log(units.map(x => x.check))}
-                                            />
-                                            {option.name}
-                                          </React.Fragment>
-                                        )}
-                                        style={{ width: 500 }}
-                                        renderInput={(params) => (
-                                          <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
-                                        )}
-                                      />
-                                      <Button style={{ marginTop: '10px', marginRight: 10 }} variant="contained" color="primary" onClick={() => handleCloseUnit()}>Xong</Button>
-                                      <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={() => setOpenUnit(false)}>Thoát</Button>
-                                    </div>
-                                  </Fade>
-                                </Modal>
-                              </div>
-                            )
-                          case 0:
-                            return (
-                              <Council fcode={code} />
-                            )
-                          default:
-                            return null
-                        }
-                      })()}
+                      <MenuEvaluate />
                     </Paper>
+                    {stage && <Button style={{float: 'right', marginTop: 10}} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
                   </div >
                 )
                 }
