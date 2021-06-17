@@ -9,7 +9,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { useDispatch } from 'react-redux'
+import { showModal } from '../../../actions/modalAction'
+
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
@@ -36,7 +38,8 @@ const useStyles = makeStyles((theme) =>
 
 export default function PinnedSubheaderList() {
   const classes = useStyles();
-  const [type, setType] = React.useState('');
+    const dispatch = useDispatch()
+    const [type, setType] = React.useState('');
   const [value, setValue] = React.useState('');
 const [items, setItems] = useState([0, 1, 2, 3 ,4 ,5, 6 ,7])
   const handleChange = (event) => {
@@ -48,6 +51,9 @@ const [items, setItems] = useState([0, 1, 2, 3 ,4 ,5, 6 ,7])
   }
   return (
       <>
+      <div  onClick={() => {dispatch(showModal(null,1))}}>
+        <TextField type="number" value={1} onMouseUp={e => console.log(e.target.blur())} style={{ cursor: 'pointer'}}  variant="outlined"  />
+      </div>
       <Typography variant='h5' gutterBottom>Thêm gì đây</Typography>
       <form onSubmit={addNewItem}>
       <TextField  className={classes.formControl} onChange={(e) => setValue(e.target.value)} label="Tên" required autoFocus variant="outlined" />

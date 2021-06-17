@@ -29,7 +29,6 @@ export default function FormEvaluation(props) {
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true)
   // const [data, setData] = useState({})
-  const token = localStorage.getItem('token')
   const { id1, id3 } = useParams()
   var level = props.level
 
@@ -55,7 +54,7 @@ export default function FormEvaluation(props) {
 
   useEffect(() => {
     //lấy Form
-    axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/form/${variable}/v2`)
       .then(res => {
         console.log(res.data)
         setInfo({
@@ -79,7 +78,7 @@ export default function FormEvaluation(props) {
         })
         setInput(t)
         //lấy dữ liệu đã làm nếu Form đã điền trước đó
-        axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.get(`/form/${variable}/evaluation/get`)
           .then(res => {
             //console.log(temp)
             console.log(res.data.evaluateForms)
@@ -416,7 +415,7 @@ export default function FormEvaluation(props) {
       let dataa = { dataToSend, level }
       console.log(dataa)
       setLoading(true)
-      axios.post(`/form/${variable}/submitForm/v3`, dataa, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/form/${variable}/submitForm/v3`, dataa)
         .then(res => {
           setStatus(false)
           dispatch(showSuccessSnackbar('Kết quả đánh giá đã lưu'))
@@ -478,7 +477,7 @@ export default function FormEvaluation(props) {
     else {
       setLoading(true)
       setDisabled(true)
-      axios.post(`/form/${variable}/saveForm/v2`, dataa, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/form/${variable}/saveForm/v2`, dataa)
         .then(res => {
           console.log(res)
           dispatch(showSuccessSnackbar('Lưu tạm thành công'))
@@ -733,9 +732,6 @@ export default function FormEvaluation(props) {
                         </Button>
                         <Button variant="contained" color="primary" onClick={onSubmit} style={{ marginLeft: '10px' }}>
                           Hoàn thành đánh giá
-                        </Button>
-                        <Button>
-                          In mẫu đánh giá
                         </Button>
                       </div>
                     }

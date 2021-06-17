@@ -92,14 +92,11 @@ export default function Criterion() {
   let { url } = useRouteMatch();
   const [rows, setRows] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true)
-  const token = localStorage.getItem('token')
-  const [previous, setPrevious] = React.useState([]);
   const fetchDepartment = () => {
-    axios.get('/admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('/admin/department/parent')
       .then(res => {
         console.log(res.data.parents);
         setRows(res.data.parents.map(dep => ({ ...dep, namemanager: (dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`), idmanager: dep?.manager?.staff_id, parent: dep?.parent?.name, isEditMode: false })))
-        setPrevious([...rows])
         setIsLoading(false)
       })
   }
@@ -127,7 +124,7 @@ export default function Criterion() {
   const deleteDeptWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/department/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/department/${id}/delete`, {})
       .then(res => {
         const newRows = rows.filter(row => row.department_code !== id)
         setRows(newRows)
@@ -156,7 +153,7 @@ export default function Criterion() {
   //open modal, khi nay lay ds don vi cha tu be luon
   const [units, setUnits] = React.useState([])
   const handleOpen = () => {
-    axios.get('admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('admin/department/parent')
       .then(res => {
         console.log(res.data.parents)
         setUnits(res.data.parents)
@@ -195,7 +192,7 @@ export default function Criterion() {
     console.log(modal.id)
 
     handleClose()
-    axios.post(`/admin/department/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/department/${id}/edit`, body)
       .then(res => {
         setRows(rows.map(r => r.department_code === id ? { ...r, department_code: id, name } : r))
         dispatch(showSuccessSnackbar('Cập nhật đơn vị thành công'))
@@ -236,7 +233,7 @@ export default function Criterion() {
     }
     console.log(body)
     handleClose();
-    axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post('/admin/department/addDepartment', body)
       .then(res => {
         //console.log(res.data);
         dispatch(showSuccessSnackbar('Tạo đơn vị thành công'))

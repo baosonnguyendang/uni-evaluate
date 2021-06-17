@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
   navLink: {
     textDecoration: 'none',
     color: '#212529',
+    paddingLeft: '23px',
     '&:hover': {
       textDecoration: 'none',
       color: '#212529',
@@ -41,32 +42,32 @@ export function MainListItems() {
   const classes = useStyles()
   return (
     <>
-      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/user'} activeClassName={classes.active}>
+      <ListItem className={classes.navLink} component={NavLink} to={'/admin/user'} activeClassName={classes.active}>
         <ListItemIcon>
           <PersonIcon />
         </ListItemIcon>
         <ListItemText primary="Người dùng" />
       </ListItem>
-      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/faculty'} activeClassName={classes.active}>
+      <ListItem className={classes.navLink} component={NavLink} to={'/admin/faculty'} activeClassName={classes.active}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Đơn vị" />
       </ListItem>
-      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/criteria'} activeClassName={classes.active}>
+      <ListItem className={classes.navLink} component={NavLink} to={'/admin/criteria'} activeClassName={classes.active}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Reports" />
       </ListItem>
 
-      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/criterion'} activeClassName={classes.active}>
+      <ListItem className={classes.navLink} component={NavLink} to={'/admin/criterion'} activeClassName={classes.active}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="Tiêu chuẩn" />
       </ListItem>
-      <ListItem style={{ paddingLeft: '23px' }} className={classes.navLink} component={NavLink} to={'/admin/evaluate-settings'} activeClassName={classes.active}>
+      <ListItem className={classes.navLink} component={NavLink} to={'/admin/evaluate-settings'} activeClassName={classes.active}>
         <ListItemIcon>
           <AssessmentIcon />
         </ListItemIcon>

@@ -48,23 +48,22 @@ const Profile = () => {
   const [loading, setLoading] = useState(true)
   // info of user
   const [infoUser, setInfoUser] = useState({})
-  // config token
-  const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
-  const fetchInfoUser = () => {
-    axios.get('/user',config)
-      .then(res => {
-        console.log(res.data)
-        setInfoUser(res.data.user)
-        setLoading(false)
-      })
-      .catch(e => {
-        console.log(e)
-        setLoading(false)
-      })
-  }
+
+  
   //fetch user info
   useEffect(() => {
+    const fetchInfoUser = () => {
+      axios.get('/user')
+        .then(res => {
+          console.log(res.data)
+          setInfoUser(res.data.user)
+          setLoading(false)
+        })
+        .catch(e => {
+          console.log(e)
+          setLoading(false)
+        })
+    }
     fetchInfoUser()
   },[])
   const onEdit = () => {

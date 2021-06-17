@@ -9,3 +9,6 @@ export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 export const SNACKBAR_SUCCESS = "SNACKBAR_SUCCESS";
 export const SNACKBAR_ERROR = "SNACKBAR_ERROR";
 export const SNACKBAR_CLEAR = "SNACKBAR_CLEAR";
+export const MODAL_CUSTOM = "MODAL_CUSTOM";
+export const MODAL_CLEAR = "MODAL_CLEAR";
+

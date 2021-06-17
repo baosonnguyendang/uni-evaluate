@@ -11,7 +11,7 @@ import { checktoken } from './actions/authActions';
 import { useDispatch, useSelector } from 'react-redux'
 import Toast from './components/common/Snackbar'
 import NotFound from './components/common/NotFound'
-
+import Modal from './components/common/Modals/Modal'
 function App() {
   const dispatch = useDispatch()
   const token = useSelector(state => state.auth.token)
@@ -24,6 +24,7 @@ function App() {
   return (
     <Router >
       <Toast />
+      <Modal />
       <Switch>
         <Route path="/" exact component={SignInSide} />
         <Route path="/admin" component={Dashboard} />

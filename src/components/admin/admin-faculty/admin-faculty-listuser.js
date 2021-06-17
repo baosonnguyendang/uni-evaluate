@@ -82,7 +82,6 @@ const useStyles = makeStyles(theme => ({
 
 const CustomTableCell = ({ row, name }) => {
     const classes = useStyles();
-    let { url } = useRouteMatch();
     return (
         <TableCell align="left" className={classes.tableCell}>
             {name === 'namedepartment' ? (<Link to={`/admin/faculty/${row['department_code']}`} style={{ color: 'black' }}>{row['name']}</Link>) : (row[name])}
@@ -94,14 +93,13 @@ const UserOfFaculty = () => {
     let { id } = useParams();
 
     const [rows, setRows] = React.useState([]);
-    const token = localStorage.getItem('token')
     const [isLoading, setIsLoading] = React.useState(true)
     const classes = useStyles();
     // tên đơn vị
     const [nameDept, setLNameDept] = useState('')
     const [children, setChildren] = useState([])
     const fetchChildren = () => {
-        return axios.get(`/admin/department/${id}/children`, { headers: { "Authorization": `Bearer ${token}` } })
+        return axios.get(`/admin/department/${id}/children`)
             .then(res => {
                 console.log(res.data);
                 setLNameDept(res.data.parent.name)
@@ -112,7 +110,7 @@ const UserOfFaculty = () => {
             })
     }
     const fetchUserOfFaculty = () => {
-        return axios.get(`/admin/department/${id}/user`, { headers: { "Authorization": `Bearer ${token}` } })
+        return axios.get(`/admin/department/${id}/user`)
             .then(res => {
                 console.log(res.data);
                 setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
@@ -132,7 +130,7 @@ const UserOfFaculty = () => {
     // fetch deleted children
     const [deletedChildren, setDeletedChildren] = useState([])
     const fetchDeletedSubDept = (id) => {
-        return axios.get(`/admin/department/deleted/${id}/children`, { headers: { "Authorization": `Bearer ${token}` } })
+        return axios.get(`/admin/department/deleted/${id}/children`)
             .then(res => {
                 console.log(res.data)
                 setDeletedChildren(res.data.departments)
@@ -191,7 +189,7 @@ const UserOfFaculty = () => {
         console.log(modal.id)
 
         handleClose()
-        axios.post(`/admin/department/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/department/${id}/edit`, body)
             .then(res => {
                 setChildren(children.map(r => r.department_code === id ? { ...r, department_code: id, name } : r))
                 dispatch(showSuccessSnackbar('Cập nhật đơn vị thành công'))
@@ -222,7 +220,7 @@ const UserOfFaculty = () => {
         e.preventDefault()
         setLoading(true)
         handleClose()
-        axios.post(`/admin/department/${id}/user/add`, { user_id: iduser }, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/department/${id}/user/add`, { user_id: iduser })
             .then(res => {
                 fetchUserOfFaculty()
                     .then(() => {
@@ -251,7 +249,7 @@ const UserOfFaculty = () => {
         e.preventDefault()
         setLoading(true)
         handleClose()
-        axios.post(`/admin/department/${id}/user/create`, { id: iduser, lname, fname, email }, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/department/${id}/user/create`, { id: iduser, lname, fname, email })
             .then(res => {
                 console.log(res.data)
                 fetchUserOfFaculty().then(res => {
@@ -284,7 +282,7 @@ const UserOfFaculty = () => {
     const deleteSubDeptWithAPI = (id) => {
         setLoading(true)
         closeDialog()
-        axios.post(`/admin/department/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/department/${id}/delete`, {})
             .then(res => {
                 const newchildrens = children.filter(row => row.department_code !== id)
                 setChildren(newchildrens)
@@ -321,7 +319,7 @@ const UserOfFaculty = () => {
         }
         console.log(body)
         handleClose();
-        axios.post('/admin/department/addDepartment', body, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post('/admin/department/addDepartment', body)
             .then(res => {
                 //console.log(res.data);
                 dispatch(showSuccessSnackbar('Tạo đơn vị thành công'))
@@ -359,7 +357,7 @@ const UserOfFaculty = () => {
         console.log(modal.id)
 
         handleClose()
-        axios.post(`/admin/department/${id}/editHead`, body, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.post(`/admin/department/${id}/editHead`, body)
             .then(res => {
                 fetchUserOfFaculty()
                     .then(() => {

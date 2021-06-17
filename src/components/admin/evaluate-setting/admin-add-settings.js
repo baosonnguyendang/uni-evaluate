@@ -4,17 +4,13 @@ import axios from 'axios';
 
 import DialogConfirm from '../../common/DialogConfirm';
 import UserSettings from './admin-user-settings'
-import Drag from './admin-drag-criterion'
 import Council from './admin-init-council'
 import Classify from './admin-classify'
 
-import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink, useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
@@ -100,9 +96,7 @@ var name = ''
 
 export default function AddSettings() {
   const classes = useStyles()
-  let { url } = useRouteMatch()
   let { id, id1 } = useParams();
-  let history = useHistory();
   const [loading, setLoading] = useState(true)
   //check form da duoc tao hay chua
 
@@ -513,7 +507,7 @@ export default function AddSettings() {
                 ) : (
                   <div>
                     <Typography component="h1" variant="h5" color="inherit" noWrap>
-                      {name} (Mã Form: {code})
+                      {name} (Mã biểu mẫu: {code})
                     </Typography>
                     <Paper style={{ padding: 10 }} className={classes.paper}>
                       {/* <AppBar position="static"> */}

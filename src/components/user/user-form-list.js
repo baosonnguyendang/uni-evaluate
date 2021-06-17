@@ -5,7 +5,6 @@ import axios from 'axios';
 import { Card, CardActions, CardContent, Typography, Button, Container, LinearProgress } from '@material-ui/core'
 
 import { Link, useRouteMatch, useParams } from 'react-router-dom'
-import { PermDeviceInformationSharp } from '@material-ui/icons';
 
 export default function FormList() {
   const { id } = useParams()
@@ -90,7 +89,7 @@ export default function FormList() {
       {loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> :
         <Container>
           <Typography variant="h5" component="h2" style={{ marginTop: '24px' }}>
-            Danh sách các Form đánh giá:
+            Danh sách các biểu mẫu đánh giá:
         </Typography>
           {
             list.map(x => {
@@ -100,10 +99,10 @@ export default function FormList() {
                   <Card key={x.code} style={{ marginTop: '24px' }}>
                     <CardContent>
                       <Typography variant="h6" component="h5">
-                        Tên Form: {x.name}
+                        Tên biểu mẫu: {x.name}
                       </Typography>
                       <Typography>
-                        Mã Form: {x.code}
+                        Mã biểu mẫu: {x.code}
                       </Typography>
                     </CardContent>
                     <CardActions style={{ paddingLeft: '16px' }}>
