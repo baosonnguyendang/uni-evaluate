@@ -52,80 +52,7 @@ const useStyles = makeStyles((theme) =>
     },
   }),
 );
-const MenuEvaluate = () => {
-  const [stage, setStage] = useState(null)
-  const classes = useStyles();
-  const Menu = () => {
-    return <List className={classes.list}>
-      <ListItem button onClick={() => { setStage(1) }} >
-        <ListItemAvatar>
-          <SupervisorAccountIcon fontSize='large' color='action' />
-        </ListItemAvatar>
-        <ListItemText
-          primary={<>Hội đồng đánh giá</>}
-          secondary={"Cấu hình thành viên hội đồng đánh giá"}
-        />
-      </ListItem>
-      <Divider variant="inset" component="li" />
-      <ListItem button onClick={() => { setStage(2) }}>
-        <ListItemAvatar>
-          <GroupAddIcon fontSize='large' color='action' />
-        </ListItemAvatar>
-        <ListItemText
-          primary={<>Đơn vị đánh giá</>}
-          secondary={"Cấu hình các đợi vị tham gia đánh giá"}
-        />
-      </ListItem>
-      <Divider variant="inset" component="li" />
-      <ListItem button onClick={() => { setStage(3) }}>
-        <ListItemAvatar>
-          <PostAddIcon fontSize='large' color='action' />
-        </ListItemAvatar>
-        <ListItemText
-          primary={"Cấu hình tiêu chuẩn"}
-          secondary={"Thêm, chỉnh sửa tiêu chuẩn tiêu chí biểu mẫu"}
-        />
-      </ListItem>
-      <Divider variant="inset" component="li" />
-      <ListItem button onClick={() => { setStage(4) }}>
-        <ListItemAvatar>
-          <CategoryIcon fontSize='large' color='action' />
-        </ListItemAvatar>
-        <ListItemText
-          primary={<>Cấu hình xếp loại </>}
-          secondary={"Các hạng mức xếp loại"}
-        />
-      </ListItem>
-    </List>
-  }
-  let body = null
-  switch (stage) {
-    case 1:
-      body = 1
-      break
-    case 2:
-      body = 2
-      break
-    case 3:
-      body = 3
-      break
-    case 4:
-      body = 4
-      break
-    default:
-      body = <Menu />
 
-  }
-  return (
-    <div style={{ maxWidth: '100%', }}>
-      <div style={{}} className={classes.root1}>
-        <Typography style={{ flexGrow: 1 }} variant='h5' gutterBottom>Cấu hình biểu mẫu</Typography>
-        {stage && <Button variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
-      </div>
-      {body}
-    </div>
-  )
-}
 
 export default function PinnedSubheaderList() {
   const classes = useStyles();
@@ -142,44 +69,12 @@ export default function PinnedSubheaderList() {
   }
   return (
     <>
-      <div onClick={() => { dispatch(showModal(null, 1)) }}>
-        <TextField type="select" value={1} onMouseDown={(e) => console.log(e.target.blur())} onMouseUp={e => e.target.blur()} style={{ cursor: 'pointer' }} variant="outlined" />
-      </div>
-      <Typography variant='h5' gutterBottom>Thêm gì đây</Typography>
-      <form onSubmit={addNewItem}>
-        <TextField className={classes.formControl} onChange={(e) => setValue(e.target.value)} label="Tên" required autoFocus variant="outlined" />
-        <br />
-        <FormControl className={classes.formControl} variant="outlined">
 
-          <InputLabel id="demo-simple-select-label">Loại</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={type}
-            required
-            onChange={handleChange}
-            label='Loại'
-          >
-            <MenuItem value={'book'}>Sách, tài liệu</MenuItem>
-            <MenuItem value={'newpaper'}>Báo, tạp chí</MenuItem>
-            <MenuItem value={'subject'}>Đề tài, sáng kiến</MenuItem>
-          </Select>
-        </FormControl>
-        <br />
-        <Button className={classes.formControl} type="submit" variant="contained" color="primary" >
-          Thêm
-        </Button>
-      </form>
-      <List className={classes.root} >
-        <ul className={classes.ul}>
-          {items.map((item) => (
-            <ListItem key={`item-${1}-${item}`}>
-              <ListItemText primary={`${item}`} />
-            </ListItem>
-          ))}
-        </ul>
-      </List>
-      <MenuEvaluate />
+        <TextField  onClick={() => { dispatch(showModal(null, "TIMES_MODAL")) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{width:100}}  variant="outlined" />
+
+
+        <TextField onClick={() => { dispatch(showModal(null, "BOOKS_MODAL")) }} type="button" value={1}  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" />
+      
     </>
   );
 }

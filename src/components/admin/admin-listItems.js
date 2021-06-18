@@ -42,32 +42,32 @@ export function MainListItems() {
   const classes = useStyles()
   return (
     <>
-      <ListItem className={classes.navLink} component={NavLink} to={'/admin/user'} activeClassName={classes.active}>
+      <ListItem button className={classes.navLink} component={NavLink} to={'/admin/user'} activeClassName={classes.active}>
         <ListItemIcon>
           <PersonIcon />
         </ListItemIcon>
         <ListItemText primary="Người dùng" />
       </ListItem>
-      <ListItem className={classes.navLink} component={NavLink} to={'/admin/faculty'} activeClassName={classes.active}>
+      <ListItem button className={classes.navLink} component={NavLink} to={'/admin/faculty'} activeClassName={classes.active}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Đơn vị" />
       </ListItem>
-      <ListItem className={classes.navLink} component={NavLink} to={'/admin/criteria'} activeClassName={classes.active}>
+      <ListItem button className={classes.navLink} component={NavLink} to={'/admin/criteria'} activeClassName={classes.active}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Reports" />
       </ListItem>
 
-      <ListItem className={classes.navLink} component={NavLink} to={'/admin/criterion'} activeClassName={classes.active}>
+      <ListItem button className={classes.navLink} component={NavLink} to={'/admin/criterion'} activeClassName={classes.active}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="Tiêu chuẩn" />
       </ListItem>
-      <ListItem className={classes.navLink} component={NavLink} to={'/admin/evaluate-settings'} activeClassName={classes.active}>
+      <ListItem button className={classes.navLink} component={NavLink} to={'/admin/evaluate-settings'} activeClassName={classes.active}>
         <ListItemIcon>
           <AssessmentIcon />
         </ListItemIcon>
