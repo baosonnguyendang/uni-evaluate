@@ -127,11 +127,11 @@ export default function Council(props) {
             setLoadingButton(false)
             handleClose()
           })
-        .catch(err => {
-          console.log(err)
-          setLoadingButton(false)
-          handleClose()
-        })
+          .catch(err => {
+            console.log(err)
+            setLoadingButton(false)
+            handleClose()
+          })
       })
   }
 
@@ -157,7 +157,9 @@ export default function Council(props) {
                 let obj = { id: x.user_id.staff_id, name: x.user_id.lastname + ' ' + x.user_id.firstname, role: null }
                 man.push(obj)
               })
-              man.find(x => x.id == h).role = 'Đại diện HĐĐG'
+              if (man.some(x => x.id == h)) {
+                man.find(x => x.id == h).role = 'Đại diện HĐĐG'
+              }
               setMember([...man])
             })
             .catch(err => {
@@ -190,7 +192,7 @@ export default function Council(props) {
   const submitHead = () => {
     console.log(head)
     let dcode = 'HDDG'
-    axios.post(`/admin/form/${props.fcode}/${dcode}/addHead`, {ucode: head}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${props.fcode}/${dcode}/addHead`, { ucode: head }, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         member.map(x => x.role = null)
         member.find(x => x.id == head).role = 'Đại diện HĐĐG'
