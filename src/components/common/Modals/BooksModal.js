@@ -86,10 +86,13 @@ const TimesModal = () => {
                         <IconButton><DeleteIcon/></IconButton>
                     </ListItem>
                 </List>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-
-                    <Typography variant='body2' >Tổng điểm:</Typography>
-                    <TextField size="small" className={classes.input} type='number' variant="outlined" disabled defaultValue={point} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' ,flexDirection: 'column' }}>
+                    
+                    <Typography style={{marginRight: '10px'}} variant='subtitle1' >Điểm đạt được: 5</Typography>
+                    <Typography style={{marginRight: '10px'}} variant='subtitle1' >Điểm tối đa: 10</Typography>
+                    
+                    <Typography style={{marginRight: '10px'}} variant='subtitle1' >Tổng điểm: 5</Typography>
+                
                 </div>
 
                 <br />
