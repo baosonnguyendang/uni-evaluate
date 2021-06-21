@@ -676,7 +676,8 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
                                             />
-                                            <input type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: [] })) }} value={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value} onMouseUp={e => e.target.blur()} variant="outlined" /></div>
+                                            <input type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: [] })) }} value={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                          </div>
                                         )
                                       case 'number':
                                         return (
@@ -690,7 +691,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
                                             />
-                                            <p onClick={() => { dispatch(showModal(null, "TIMES_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
+                                            <input type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: {value: 5} })) }} value={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value} onMouseUp={e => e.target.blur()} variant="outlined" />
                                           </div>
                                         )
                                     }
