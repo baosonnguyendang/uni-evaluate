@@ -5,7 +5,8 @@ import {
   TableBody, makeStyles, Paper, Grid,
   Button, IconButton, Tooltip,
   LinearProgress,
-  Typography, Container
+  Typography, Container,
+  TextField
 } from "@material-ui/core";
 import PrintIcon from '@material-ui/icons/Print';
 
@@ -200,7 +201,7 @@ export default function FormEvaluation(props) {
         // })
         setPoint2(pts2)
       }
-      if (props.level == 3 || disableEdit3) {
+      if (props.level == 3) {
         let tam = 0
         let tamm = 0
         max.map(x => {
@@ -675,8 +676,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
                                             />
-                                            <p onClick={() => { dispatch(showModal(null, "BOOKS_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
-                                          </div>
+                                            <input type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: [] })) }} value={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value} onMouseUp={e => e.target.blur()} variant="outlined" /></div>
                                         )
                                       case 'number':
                                         return (
@@ -736,7 +736,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput2}
                                               name={criteria.criteria_id.code + '_2'}
                                             />
-                                            <p onClick={() => { dispatch(showModal(null, "BOOKS_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
+                                            <input type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: [] })) }} type="button" value={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value} onMouseUp={e => e.target.blur()} variant="outlined" />
                                           </div>
                                         )
                                       case 'number':
@@ -797,7 +797,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput3}
                                               name={criteria.criteria_id.code + '_3'}
                                             />
-                                            <p onClick={() => { dispatch(showModal(null, "BOOKS_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
+                                            <p onClick={() => { dispatch(showModal(null, "DETAIL_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
                                           </div>
                                         )
                                       case 'number':
