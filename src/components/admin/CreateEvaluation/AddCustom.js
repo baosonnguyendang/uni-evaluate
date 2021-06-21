@@ -70,11 +70,11 @@ export default function PinnedSubheaderList() {
   return (
     <>
 
-        <TextField  onClick={() => { dispatch(showModal(null, "TIMES_MODAL")) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{width:100}}  variant="outlined" />
+      <TextField onClick={() => { dispatch(showModal(null, "TIMES_MODAL")) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
 
 
-        <TextField onClick={() => { dispatch(showModal(null, "BOOKS_MODAL")) }} type="button" value={1}  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" />
-      
+      <TextField onClick={() => { dispatch(showModal(null, "BOOKS_MODAL")) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
+
     </>
   );
 }

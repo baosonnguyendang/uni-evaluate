@@ -21,6 +21,8 @@ import Loading from '../../common/Loading'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 
+import { showModal } from '../../../actions/modalAction'
+
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
@@ -61,7 +63,7 @@ export default function FormEvaluation(props) {
   useEffect(() => {
     axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        if (!res.data.formDepartment.some(x => x.form_id.code == id1 && x.department_id.department_code == 'HDDG')){
+        if (!res.data.formDepartment.some(x => x.form_id.code == id1 && x.department_id.department_code == 'HDDG')) {
           setDisableEdit3(true)
         }
       })
@@ -673,7 +675,22 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
                                             />
-                                            <p type='button' onClick={() => alert('p')}>Click me</p>
+                                            <p onClick={() => { dispatch(showModal(null, "BOOKS_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
+                                          </div>
+                                        )
+                                      case 'number':
+                                        return (
+                                          <div>
+                                            <input
+                                              className='number'
+                                              type="number"
+                                              style={{ width: '40px', textAlign: 'center' }}
+                                              disabled={disableEdit}
+                                              defaultValue={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value}
+                                              onChange={handleInput}
+                                              name={criteria.criteria_id.code + '_1'}
+                                            />
+                                            <p onClick={() => { dispatch(showModal(null, "TIMES_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
                                           </div>
                                         )
                                     }
@@ -719,7 +736,22 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput2}
                                               name={criteria.criteria_id.code + '_2'}
                                             />
-                                            <p type='button' onClick={() => alert('p')}>Click me</p>
+                                            <p onClick={() => { dispatch(showModal(null, "BOOKS_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
+                                          </div>
+                                        )
+                                      case 'number':
+                                        return (
+                                          <div>
+                                            <input
+                                              type="number"
+                                              className='number'
+                                              style={{ width: '40px', textAlign: 'center' }}
+                                              disabled={disableEdit2}
+                                              defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
+                                              onChange={handleInput2}
+                                              name={criteria.criteria_id.code + '_2'}
+                                            />
+                                            <p onClick={() => { dispatch(showModal(null, "TIMES_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
                                           </div>
                                         )
                                     }
@@ -765,7 +797,22 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput3}
                                               name={criteria.criteria_id.code + '_3'}
                                             />
-                                            <p type='button' onClick={() => alert('p')}>Click me</p>
+                                            <p onClick={() => { dispatch(showModal(null, "BOOKS_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
+                                          </div>
+                                        )
+                                      case 'number':
+                                        return (
+                                          <div>
+                                            <input
+                                              type="number"
+                                              className='number'
+                                              style={{ width: '40px', textAlign: 'center' }}
+                                              disabled={disableEdit3}
+                                              defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
+                                              onChange={handleInput3}
+                                              name={criteria.criteria_id.code + '_3'}
+                                            />
+                                            <p onClick={() => { dispatch(showModal(null, "TIMES_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
                                           </div>
                                         )
                                     }

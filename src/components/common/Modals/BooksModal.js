@@ -6,6 +6,7 @@ import { clearModal } from '../../../actions/modalAction'
 import InputAdornment from '@material-ui/core/InputAdornment';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+
 function getModalStyle() {
     const top = 50;
     const left = 50;
@@ -41,7 +42,9 @@ const useStyles = makeStyles((theme) =>
         }
     }),
 );
+
 const datatest = [{ name: "sách", percent: 0, point: 5, description: "" }, { name: "Báo", percent: 5, point: 5, description: "" }]
+
 const Line = ({ name, percent, point, description, onDelete }) => {
     const classes = useStyles()
     return (<div style={{ display: 'flex', alignItems: 'center', margin: '10px 0' }}>
