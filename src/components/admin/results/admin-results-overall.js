@@ -187,7 +187,7 @@ export default function ResultsList(props) {
     const Menu = () => {
       return (
         <Paper style={{ padding: 10 }} className={classes.paper}>
-          <Typography style={{ flexGrow: 1, marginLeft: 10 }} variant='h5' gutterBottom>Xem kết quả</Typography>
+          <Typography style={{ flexGrow: 1, marginLeft: 10 }} variant='h5' gutterBottom>Kết quả đánh giá</Typography>
           <List className={classes.list}>
             <ListItem button onClick={() => { setStage(1) }} >
               <ListItemAvatar>
@@ -214,8 +214,8 @@ export default function ResultsList(props) {
                 <AssignmentIndIcon fontSize='large' color='action' />
               </ListItemAvatar>
               <ListItemText
-                primary={"Xem chi tiết Biểu mẫu"}
-                secondary={"Xem chi tiết Biểu mẫu của từng cá nhân"}
+                primary={"Xem chi tiết biểu mẫu"}
+                secondary={"Xem chi tiết biểu mẫu của từng cá nhân"}
               />
             </ListItem>
           </List>
@@ -307,7 +307,7 @@ export default function ResultsList(props) {
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>
-        Đợt {id} - Nhóm {id1} - Mã Form: {code} {stage != null && (stage == 1 ? '- Thống kê chung' : '- Kết quả chi tiết')}
+        Đợt {id} - Nhóm {id1} - Mã biểu mẫu: {code} {stage != null && (stage == 1 ? '- Thống kê chung' : '- Kết quả chi tiết')}
       </Typography>
       <MenuEvaluate />
       {stage && <Button style={{ float: 'right', marginTop: 10 }} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
