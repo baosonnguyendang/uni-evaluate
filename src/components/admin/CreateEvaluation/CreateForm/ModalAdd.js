@@ -98,13 +98,13 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
     const handleChangePointPerTime = (e, i) => {
         console.log(e.target.value)
         setExistCriteria(existCriteria.map((c, index) =>
-            index === i ? { ...c, point_per_time: parseInt(e.target.value) } : c
+            index === i ? { ...c, base_point : parseInt(e.target.value) } : c
         ))
     }
     const [pointStandard, setPointStandard] = useState('')
 
     const filterData = (data) => {
-        const criterions = data.map((d, index) => ({ criteria_id: d.code, criteria_order: index + 1, criteria_point: d.point, point_per_time: d.point_per_time }))
+        const criterions = data.map((d, index) => ({ criteria_id: d.code, criteria_order: index + 1, criteria_point: d.point, base_point : d.base_point }))
         let temp = {
             standard: {
                 standard_id: codeStandard,
