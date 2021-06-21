@@ -87,7 +87,7 @@ const CustomTableCell = ({ row, name }) => {
   return (
     <TableCell align="left" className={classes.tableCell}>
       {
-        name === 'name' ? (<Link to={`${url}/${row['code']}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
+        name === 'name' && row['type'] =='radio' ? (<Link to={`${url}/${row['code']}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
       }
     </TableCell>
   );
