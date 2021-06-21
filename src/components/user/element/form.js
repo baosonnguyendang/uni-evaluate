@@ -56,6 +56,9 @@ export default function FormEvaluation(props) {
   const [disableEdit, setDisableEdit] = useState(props.level > 1 ? true : false) //ấn hoàn thành rồi thì ko lưu được nữa, cấp trên ko sửa bài cấp dưới đc 
   const [disableEdit2, setDisableEdit2] = useState(props.level > 2 ? true : false)
   const [disableEdit3, setDisableEdit3] = useState(false)
+  const [readOnly, setReadOnly] = useState(false)
+  const [readOnly2, setReadOnly2] = useState(false)
+  const [readOnly3, setReadOnly3] = useState(false)
   const [max, setMax] = useState([]) // lưu điểm tối đa mỗi tiêu chuẩn
   const [input, setInput] = useState([])
 
@@ -111,12 +114,15 @@ export default function FormEvaluation(props) {
               let d = res.data.evaluateForms
               if (d[0].status === 1) {
                 setDisableEdit(true)
+                setReadOnly(true)
               }
               if (d[1] && d[1].status === 1) {
                 setDisableEdit2(true)
+                setReadOnly2(true)
               }
               if (d[2] && d[2].status === 1) {
                 setDisableEdit3(true)
+                setReadOnly3(true)
               }
               let list = []
               d.map(level => {
@@ -201,7 +207,7 @@ export default function FormEvaluation(props) {
         // })
         setPoint2(pts2)
       }
-      if (props.level == 3) {
+      if (props.level == 3 || readOnly3 == true) {
         let tam = 0
         let tamm = 0
         max.map(x => {
@@ -647,7 +653,7 @@ export default function FormEvaluation(props) {
                                             className='number'
                                             type="number"
                                             style={{ width: '40px', textAlign: 'center' }}
-                                            disabled={disableEdit}
+                                            disabled={disableEdit || readOnly}
                                             defaultValue={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value}
                                             onChange={handleInput}
                                             name={criteria.criteria_id.code + '_1'}
@@ -657,7 +663,7 @@ export default function FormEvaluation(props) {
                                         return (
                                           <input
                                             type="checkbox"
-                                            disabled={disableEdit}
+                                            disabled={disableEdit || readOnly}
                                             defaultChecked={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                             onChange={handleCheck}
                                             name={criteria.criteria_id.code + '_1'}
@@ -671,7 +677,7 @@ export default function FormEvaluation(props) {
                                               className='number'
                                               type="number"
                                               style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit}
+                                              disabled={disableEdit || readOnly}
                                               defaultValue={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
@@ -686,7 +692,7 @@ export default function FormEvaluation(props) {
                                               className='number'
                                               type="number"
                                               style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit}
+                                              disabled={disableEdit || readOnly}
                                               defaultValue={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
@@ -698,7 +704,7 @@ export default function FormEvaluation(props) {
                                   })()}
                                 </TableCell>
                                 <TableCell align='center'>
-                                  {(props.level > 1 || disableEdit2) && criteria.options.length == 0 ? (() => {
+                                  {(props.level > 1 || readOnly2) && criteria.options.length == 0 ? (() => {
                                     switch (criteria.criteria_id.type) {
                                       default:
                                         return null
@@ -708,7 +714,7 @@ export default function FormEvaluation(props) {
                                             type="number"
                                             className='number'
                                             style={{ width: '40px', textAlign: 'center' }}
-                                            disabled={disableEdit2}
+                                            disabled={disableEdit2 || readOnly2}
                                             defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
                                             onChange={handleInput2}
                                             name={criteria.criteria_id.code + '_2'}
@@ -718,7 +724,7 @@ export default function FormEvaluation(props) {
                                         return (
                                           <input
                                             type="checkbox"
-                                            disabled={disableEdit2}
+                                            disabled={disableEdit2 || readOnly2}
                                             defaultChecked={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                             onChange={handleCheck2}
                                             name={criteria.criteria_id.code + '_2'}
@@ -732,7 +738,7 @@ export default function FormEvaluation(props) {
                                               type="number"
                                               className='number'
                                               style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit2}
+                                              disabled={disableEdit2 || readOnly2}
                                               defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onChange={handleInput2}
                                               name={criteria.criteria_id.code + '_2'}
@@ -747,7 +753,7 @@ export default function FormEvaluation(props) {
                                               type="number"
                                               className='number'
                                               style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit2}
+                                              disabled={disableEdit2 || readOnly2}
                                               defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onChange={handleInput2}
                                               name={criteria.criteria_id.code + '_2'}
@@ -759,7 +765,7 @@ export default function FormEvaluation(props) {
                                   })() : null}
                                 </TableCell>
                                 <TableCell align='center'>
-                                  {(props.level > 2 || disableEdit3) && criteria.options.length == 0 ? (() => {
+                                  {(props.level > 2 || readOnly3) && criteria.options.length == 0 ? (() => {
                                     switch (criteria.criteria_id.type) {
                                       default:
                                         return null
@@ -769,7 +775,7 @@ export default function FormEvaluation(props) {
                                             type="number"
                                             className='number'
                                             style={{ width: '40px', textAlign: 'center' }}
-                                            disabled={disableEdit3}
+                                            disabled={disableEdit3 || readOnly3}
                                             defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
                                             onChange={handleInput3}
                                             name={criteria.criteria_id.code + '_3'}
@@ -779,7 +785,7 @@ export default function FormEvaluation(props) {
                                         return (
                                           <input
                                             type="checkbox"
-                                            disabled={disableEdit3}
+                                            disabled={disableEdit3 || readOnly3}
                                             onChange={handleCheck3}
                                             defaultChecked={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code && y.value == criteria.point))}
                                             name={criteria.criteria_id.code + '_3'}
@@ -793,7 +799,7 @@ export default function FormEvaluation(props) {
                                               type="number"
                                               className='number'
                                               style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit3}
+                                              disabled={disableEdit3 || readOnly3}
                                               defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onChange={handleInput3}
                                               name={criteria.criteria_id.code + '_3'}
@@ -808,7 +814,7 @@ export default function FormEvaluation(props) {
                                               type="number"
                                               className='number'
                                               style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit3}
+                                              disabled={disableEdit3 || readOnly3}
                                               defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onChange={handleInput3}
                                               name={criteria.criteria_id.code + '_3'}
@@ -869,8 +875,8 @@ export default function FormEvaluation(props) {
                         <TableCell><b>Tổng điểm</b></TableCell>
                         <TableCell></TableCell>
                         <TableCell align='center'><Typography >{point}</Typography></TableCell>
-                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 1 || disableEdit2 ? point2 : null}</Typography></TableCell>
-                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 2 || disableEdit3 ? point3 : null}</Typography></TableCell>
+                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 1 || readOnly2 ? point2 : null}</Typography></TableCell>
+                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 2 || readOnly3 ? point3 : null}</Typography></TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
