@@ -32,7 +32,7 @@ function getModalStyle() {
 const useStyles = makeStyles((theme) => ({
     paper: {
         position: 'absolute',
-        width: '648px',
+        minWidth: '800px',
         backgroundColor: theme.palette.background.paper,
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
@@ -59,20 +59,19 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
     // tiêu chí trong tiêu chuẩn
     const [availableCriteria, setAvailableCriteria] = useState(null)
     const [existCriteria, setExistCriteria] = useState([])
-    const token = localStorage.getItem('token')
-    const config = { headers: { "Authorization": `Bearer ${token}` } }
-    const getCriteriaOfStandard = (codeStandard) => {
 
-        return axios.get(`/admin/standard/${codeStandard}/criteria/get`, config)
-            .then(res => {
-                console.log(res.data)
-                setAvailableCriteria(res.data.criterions)
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
     useEffect(() => {
+        const getCriteriaOfStandard = (codeStandard) => {
+
+            return axios.get(`/admin/standard/${codeStandard}/criteria/get`)
+                .then(res => {
+                    console.log(res.data)
+                    setAvailableCriteria(res.data.criterions)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
         getCriteriaOfStandard(codeStandard)
     }, [codeStandard])
     // tiêu chí đc chon
@@ -96,11 +95,16 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
             index === i ? { ...c, point: parseInt(e.target.value) } : c
         ))
     }
-
+    const handleChangePointPerTime = (e, i) => {
+        console.log(e.target.value)
+        setExistCriteria(existCriteria.map((c, index) =>
+            index === i ? { ...c, point_per_time: parseInt(e.target.value) } : c
+        ))
+    }
     const [pointStandard, setPointStandard] = useState('')
 
     const filterData = (data) => {
-        const criterions = data.map((d, index) => ({ criteria_id: d.code, criteria_order: index + 1, criteria_point: d.point }))
+        const criterions = data.map((d, index) => ({ criteria_id: d.code, criteria_order: index + 1, criteria_point: d.point, point_per_time: d.point_per_time }))
         let temp = {
             standard: {
                 standard_id: codeStandard,
@@ -116,7 +120,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
         setLoading(true)
         const data = filterData(existCriteria)
         console.log(data)
-        axios.post(`/admin/form/${idForm}/addFormStandard/v2`, data, config)
+        axios.post(`/admin/form/${idForm}/addFormStandard/v2`, data)
             .then(res => {
                 console.log(res)
                 setLoading(false)
@@ -134,6 +138,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
     }
     //loading 
     const [loading, setLoading] = useState(false)
+
     const body = (
         <div style={modalStyle} className={classes.paper} >
             <Loading open={loading} />
@@ -142,7 +147,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
             <List>
                 <ListItem>
                     <ListItemText style={{ width: '400px' }} primary={`${codeStandard} - ${name}`} />
-                    <TextField style={{ width: "100px" }} type="number" variant="outlined" autoFocus size="small" placeholder="Điểm"
+                    <TextField style={{ width: "100px" }} type="number" variant="outlined" autoFocus size="small" label="Điểm"
                         onChange={(e) => setPointStandard(parseInt(e.target.value))}
                     />
                     <IconButton style={{ visibility: 'hidden' }} >
@@ -207,10 +212,20 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
 
                                                 </ListItem>, portal)
                                                 : <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                    <ListItemText style={{ width: '400px' }} primary={`${index + 1}. ${t.name}`} />
-                                                    <TextField style={{ width: "100px" }} type="number" variant="outlined" autoFocus size="small" placeholder="Điểm"
-                                                        onChange={(e) => handleChangePoint(e, index)}
-                                                    />
+                                                    <ListItemText style={{ flexGrow: 1 }} primary={`${index + 1}. ${t.name}`} />
+                                                    {(t.type === 'number' || t.type === 'detail') ? (
+                                                        <>
+                                                            <TextField style={{ width: "100px", marginRight: 10 }} type="number" variant="outlined" autoFocus size="small" label="Điểm"
+                                                                onChange={(e) => handleChangePointPerTime(e, index)}
+                                                            />
+                                                            <TextField style={{ width: "130px" }} type="number" variant="outlined" autoFocus size="small" label="Điểm tối đa"
+                                                                onChange={(e) => handleChangePoint(e, index)}
+                                                            />
+                                                        </>) : (
+                                                        <TextField style={{ width: "100px", marginRight: 10 }} type="number" variant="outlined" autoFocus size="small" label="Điểm"
+                                                            onChange={(e) => handleChangePoint(e, index)}
+                                                        />
+                                                    )}
                                                     <IconButton onClick={() => deleteCriteria(index)} >
                                                         <DeleteIcon />
                                                     </IconButton>

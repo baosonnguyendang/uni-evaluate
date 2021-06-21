@@ -12,8 +12,7 @@ export default function (state = initialState, action) {
         case MODAL_CUSTOM:
             return {
                 ...state,
-                type: action.payload.type,
-                submit: action.payload.submit
+                ...action.payload
             };
         case MODAL_CLEAR:
             return {

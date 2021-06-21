@@ -4,7 +4,7 @@ import { Button, Modal, Typography, TextField } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux'
 import { clearModal } from '../../../actions/modalAction'
 import TimesModal from './TimesModal'
-import BooksModal from './BooksModal'
+import DetailModal from './DetailModal'
 function getModalStyle() {
   const top = 50;
   const left = 50;
@@ -62,8 +62,8 @@ const ModalCustom = () => {
     case "TIMES_MODAL":
       body = <TimesModal />
       break
-    case "BOOKS_MODAL":
-      body = <BooksModal />
+    case "DETAIL_MODAL":
+      body = <DetailModal />
       break
     default:
 
