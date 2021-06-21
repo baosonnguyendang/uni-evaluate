@@ -682,7 +682,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
                                             />
-                                            <input type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: [] })) }} value={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] })) }} value={100} onMouseUp={e => e.target.blur()} variant="outlined" />
                                           </div>
                                         )
                                       case 'number':
@@ -697,7 +697,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
                                             />
-                                            <input type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: { value: 5 } })) }} value={0} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: { value: 5 } })) }} value={0} onMouseUp={e => e.target.blur()} variant="outlined" />
                                           </div>
                                         )
                                     }
@@ -743,7 +743,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput2}
                                               name={criteria.criteria_id.code + '_2'}
                                             />
-                                            <input type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: [] })) }} type="button" value={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] })) }} value={100} onMouseUp={e => e.target.blur()} variant="outlined" />
                                           </div>
                                         )
                                       case 'number':
@@ -758,7 +758,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput2}
                                               name={criteria.criteria_id.code + '_2'}
                                             />
-                                            <input type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: { value: 5 } })) }} value={0} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: { value: 5 } })) }} value={0} onMouseUp={e => e.target.blur()} variant="outlined" />
                                           </div>
                                         )
                                     }
@@ -804,7 +804,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput3}
                                               name={criteria.criteria_id.code + '_3'}
                                             />
-                                            <p onClick={() => { dispatch(showModal(null, "DETAIL_MODAL")) }} type="button" onMouseUp={e => e.target.blur()} style={{ width: 100 }}>Click me</p>
+                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: { value: 5 } })) }} value={1} onMouseUp={e => e.target.blur()} variant="outlined" />
                                           </div>
                                         )
                                       case 'number':
@@ -819,7 +819,7 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput3}
                                               name={criteria.criteria_id.code + '_3'}
                                             />
-                                            <input type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point, base_point: 5, details: { value: 5 } })) }} value={0} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: { value: 5 } })) }} value={0} onMouseUp={e => e.target.blur()} variant="outlined" />
                                           </div>
                                         )
                                     }
