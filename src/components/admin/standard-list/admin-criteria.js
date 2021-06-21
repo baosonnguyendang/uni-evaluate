@@ -105,14 +105,27 @@ export default function Criteria() {
   const fetchCriteriaOfStandard = () => {
     axios.get(`admin/standard/${id}/criteria`, config)
       .then(res => {
-        console.log(res.data.criterions)
         setRows(res.data.criterions)
         setNameStandard(res.data.standard.name)
         setIsLoading(false)
       })
   }
+
+  //criteriaTypes
+  const [criteriaTypes, setCriteriaTypes] = useState([])
+  const fetchCriteriaTypes = () =>{
+    axios.get(`admin/criteria/types`, config)
+      .then(res => {
+        setCriteriaTypes(res.data.types)
+      })
+  }
+
   useEffect(() => {
-    fetchCriteriaOfStandard()
+    // fetchCriteriaOfStandard()
+    Promise.all([
+      fetchCriteriaOfStandard(),
+      fetchCriteriaTypes()
+    ])
   }, [])
 
   // loading add criterion
@@ -321,11 +334,21 @@ export default function Criteria() {
                           label='Kiểu đánh giá'
                           onChange={handleChangeType}
                         >
-                          <option aria-label="None" value="" />
-                          <option value={'checkbox'}>Checkbox</option>
-                          <option value={'radio'}>Radio</option>
-                          <option value={'input'}>Input</option>
-                          <option value={'detail'}>Detail</option>
+                        <option aria-label="None" value="" />
+                        { //map criteria types
+                          criteriaTypes.map(opt => (
+                            <option value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>
+                          ))
+                        }
+                          
+                        {/* 
+                        <option aria-label="None" value="" />
+                        <option value={'checkbox'}>Checkbox</option>
+                        <option value={'radio'}>Radio</option>
+                        <option value={'input'}>Input</option>
+                        <option value={'detail'}>Detail</option> 
+                        */}
+
                         </Select>
                       </FormControl>
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
