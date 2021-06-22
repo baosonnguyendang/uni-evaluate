@@ -88,8 +88,8 @@ export default function FormEvaluation(props) {
         res.data.formStandards.map(standard => {
           let list = []
           standard.formCriteria.map(criteria => {
-            if (criteria.criteria_id.type == 'input' || criteria.criteria_id.type == 'detail') {
-              t.push({ code: criteria.criteria_id.code, point: criteria.point, order: standard.standard_order + '.' + criteria.criteria_order })
+            if (criteria.criteria_id.type == 'input' || criteria.criteria_id.type == 'detail' || criteria.criteria_id.type == 'number') {
+              t.push({ code: criteria.criteria_id.code, point: criteria.point ? criteria.point : null, order: standard.standard_order + '.' + criteria.criteria_order })
             }
             list.push(criteria.criteria_id.code)
             let obj = { name: criteria.criteria_id.code, standard_order: standard.standard_order, value: criteria.criteria_id.type != 'radio' ? 0 : null }
@@ -552,6 +552,36 @@ export default function FormEvaluation(props) {
     }
   }
 
+  const sendDetails = (criteria, level) => {
+    switch (level) {
+      case 1:
+        return (
+          sent.find(x => x.name == criteria).details ? sent.find(x => x.name == criteria).details : []
+        )
+      default:
+        return null
+    }
+  }
+
+  const setDetails = (data) => { //hàm này để xử lí cái time_modal và detail_modal
+    console.log(data)
+    setDisabled(false)
+    let t = []
+    switch (props.level) {
+      case 1:
+        t = [...sent]
+        t.find(x => x.name == data.code).value = data.point
+        t.find(x => x.name == data.code).details = data.details
+        setSent(t)
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      default:
+        return null
+    }
+  }
 
   const [status, setStatus] = useState(true)//hoàn thành đánh giá thì chuyển qua UI hoàn thành đánh giá
 
@@ -578,7 +608,7 @@ export default function FormEvaluation(props) {
   }
 
   const [loading, setLoading] = useState(false)
-  const handlePrint =  useReactToPrint({
+  const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: info?.id,
   });
@@ -590,7 +620,7 @@ export default function FormEvaluation(props) {
             <Container>
               <Loading open={loading} />
               <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Không thể chỉnh sửa sau khi hoàn thành bài đánh giá. Bạn đã chắc chắn chưa ? ' />
-              <div style={{ marginTop: 30, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{ marginTop: 30, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 {info != null && (
                   <div style={{ display: 'inline-block', width: '90%', paddingRight: '15%' }}>
                     <div style={{ display: 'flex', fontSize: '1.125rem', justifyContent: 'space-between' }}>
@@ -601,11 +631,11 @@ export default function FormEvaluation(props) {
                   </div>
                 )}
 
-                    <Tooltip title='In Biểu mẫu' displayPrint="none" component={Box}>
-                      <IconButton onClick={handlePrint}>
-                        <PrintIcon />
-                      </IconButton>
-                    </Tooltip>
+                <Tooltip title='In Biểu mẫu' displayPrint="none" component={Box}>
+                  <IconButton onClick={handlePrint}>
+                    <PrintIcon />
+                  </IconButton>
+                </Tooltip>
 
               </div>
               <Grid container justify='center' style={{ marginTop: '20px' }}>
@@ -682,7 +712,16 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
                                             />
-                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] })) }} value={100} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input
+                                              style={{ width: 40 }}
+                                              type='button'
+                                              onClick={() => {
+                                                console.log(sent);
+                                                dispatch(showModal(data => setDetails(data), "DETAIL_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) }))
+                                              }}
+                                              value={sent.find(x => x.name == criteria.criteria_id.code) ? sent.find(x => x.name == criteria.criteria_id.code).value : 0}
+                                              onMouseUp={e => e.target.blur()}
+                                            />
                                           </div>
                                         )
                                       case 'number':
@@ -697,7 +736,13 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
                                             />
-                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 })) }} value={0} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input
+                                              style={{ width: 40 }}
+                                              type='button'
+                                              onClick={() => { dispatch(showModal(data => setDetails(data), "TIMES_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 })) }}
+                                              value={0}
+                                              onMouseUp={e => e.target.blur()}
+                                            />
                                           </div>
                                         )
                                     }
@@ -743,7 +788,13 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput2}
                                               name={criteria.criteria_id.code + '_2'}
                                             />
-                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { disableEdit: disableEdit2 || readOnly2, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] })) }} value={100} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input
+                                              style={{ width: 40 }}
+                                              type='button'
+                                              onClick={() => { dispatch(showModal(data => setDetails(data), "DETAIL_MODAL", { disableEdit: disableEdit2 || readOnly2, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] })) }}
+                                              value={100}
+                                              onMouseUp={e => e.target.blur()}
+                                            />
                                           </div>
                                         )
                                       case 'number':
@@ -758,7 +809,15 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput2}
                                               name={criteria.criteria_id.code + '_2'}
                                             />
-                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { disableEdit: disableEdit2 || readOnly2, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 })) }} value={0} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input
+                                              style={{ width: 40 }}
+                                              type='button'
+                                              onClick={() => {
+                                                dispatch(showModal(data => setDetails(data), "TIMES_MODAL", { disableEdit: disableEdit2 || readOnly2, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 }))
+                                              }}
+                                              value={0}
+                                              onMouseUp={e => e.target.blur()}
+                                            />
                                           </div>
                                         )
                                     }
@@ -804,7 +863,15 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput3}
                                               name={criteria.criteria_id.code + '_3'}
                                             />
-                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "DETAIL_MODAL", { disableEdit: disableEdit3 || readOnly3, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] })) }} value={1} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input
+                                              style={{ width: 40 }}
+                                              type='button'
+                                              onClick={() => {
+                                                dispatch(showModal(data => setDetails(data), "DETAIL_MODAL", { disableEdit: disableEdit3 || readOnly3, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] }))
+                                              }}
+                                              value={1}
+                                              onMouseUp={e => e.target.blur()}
+                                            />
                                           </div>
                                         )
                                       case 'number':
@@ -819,7 +886,15 @@ export default function FormEvaluation(props) {
                                               onChange={handleInput3}
                                               name={criteria.criteria_id.code + '_3'}
                                             />
-                                            <input style={{width: 40}} type='button' onClick={() => { dispatch(showModal(null, "TIMES_MODAL", { disableEdit: disableEdit3 || readOnly3, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 })) }} value={0} onMouseUp={e => e.target.blur()} variant="outlined" />
+                                            <input
+                                              style={{ width: 40 }}
+                                              type='button'
+                                              onClick={() => {
+                                                dispatch(showModal(data => setDetails(data), "TIMES_MODAL", { disableEdit: disableEdit3 || readOnly3, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 }))
+                                              }}
+                                              value={0}
+                                              onMouseUp={e => e.target.blur()}
+                                            />
                                           </div>
                                         )
                                     }
