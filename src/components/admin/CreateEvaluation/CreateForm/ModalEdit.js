@@ -33,7 +33,7 @@ function getModalStyle() {
 const useStyles = makeStyles((theme) => ({
     paper: {
         position: 'absolute',
-        width: '648px',
+        width: '900px',
         backgroundColor: theme.palette.background.paper,
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
@@ -53,19 +53,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // listCriteria là standard chứa criteria
-const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStandard, name }) => {
+const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) => {
     const dispatch = useDispatch()
     const [modalStyle] = React.useState(getModalStyle);
     const classes = useStyles();
     const [isEdit, setIsEdit] = useState(false)
     // tiêu chí trong tiêu chuẩn
-    const [availableCriteria, setAvailableCriteria] = useState([])
+    const [availableCriteria, setAvailableCriteria] = useState(null)
     const [existCriteria, setExistCriteria] = useState([])
-    const [temp, setTemp] = useState([])
-    const token = localStorage.getItem('token')
-    const config = { headers: { "Authorization": `Bearer ${token}` } }
+    const [temp, setTemp] = useState({ existCriteria: [], availableCriteria: [] })
     const getFormCriteria = (idForm, codeStandard) => {
-        return axios.get(`/admin/form/${idForm}/standard/${codeStandard}/getFormCriteria`, config)
+        return axios.get(`/admin/form/${idForm}/standard/${codeStandard}/getFormCriteria`)
             .then(res => {
                 console.log(res.data)
                 setExistCriteria(res.data.formCriteria.map(c => ({ ...c, ...c.criteria_id })))
@@ -77,7 +75,7 @@ const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStanda
             })
     }
     const getCriteriaOfStandard = (codeStandard) => {
-        return axios.get(`/admin/standard/${codeStandard}/criteria/get`, config)
+        return axios.get(`/admin/standard/${codeStandard}/criteria/get`)
             .then(res => {
                 console.log(res.data)
                 return res.data.criterions
@@ -103,12 +101,11 @@ const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStanda
     }, [codeStandard])
     // tiêu chí đc chon
     const [tempCriteria, setTempCriteria] = useState(null)
-    // list tiêu chí được chọn 
-    const [listTempCriteria, setListTempCriteria] = useState([])
+
     // diem cua tieu chi them moi
     const [pointNewCriteria, setPointNewCriteria] = React.useState('')
-
-
+    // điểm 1 lần của tiêu chí
+    const [basePoint, setBasePoint] = useState('')
     const handleOnDragEnd = (result) => {
         if (!result.destination) return
 
@@ -128,25 +125,25 @@ const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStanda
             index === i ? { ...c, point: parseInt(e.target.value) } : c
         ))
     }
-    //     criterions : [  //body
-    //         {
-    //             criteria_id,
-    //             criteria_order,
-    //             criteria_point
-    //         },{},{}
-    // ]
+    const handleChangeBasePoint =(e, i) => {
+        console.log(e.target.value)
+
+        setExistCriteria(existCriteria.map((c, index) =>
+            index === i ? { ...c, base_point: parseInt(e.target.value) } : c
+        ))
+    }
+
     const filterCriteria = data => {
         return {
             criterions:
-                data.map((d, index) => ({ criteria_id: d.code, criteria_order: index + 1, criteria_point: d.point }))
-
+                data.map((d, index) => ({ criteria_id: d.code, criteria_order: index + 1, criteria_point: d.point, base_point: d.base_point }))
         }
     }
     const submitEditCriteria = () => {
         const data = filterCriteria(existCriteria)
         console.log(data)
         setLoading(true)
-        axios.post(`/admin/form/${idForm}/standard/${codeStandard}/editFormCriteria`, data, config)
+        axios.post(`/admin/form/${idForm}/standard/${codeStandard}/editFormCriteria`, data)
             .then(res => {
                 console.log(res.data)
                 setTemp({ existCriteria, availableCriteria })
@@ -173,14 +170,15 @@ const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStanda
             criteria: {  //body
                 criteria_id: tempCriteria.code,
                 criteria_order: temp.existCriteria.length + 1,// luu trong restore
-                criteria_point: pointNewCriteria
+                criteria_point: pointNewCriteria,
+                base_point: basePoint
             }
         }
 
-        axios.post(`/admin/form/${idForm}/standard/${codeStandard}/addSingleFormCriteria`, data, config)
+        axios.post(`/admin/form/${idForm}/standard/${codeStandard}/addSingleFormCriteria`, data)
             .then(res => {
                 console.log(res.data)
-                const newExistCriteria = [...existCriteria, { ...tempCriteria, point: pointNewCriteria }]
+                const newExistCriteria = [...existCriteria, { ...tempCriteria, point: pointNewCriteria, base_point: basePoint }]
                 const newEsetAvailableCriteria = availableCriteria.filter(l => l.code !== tempCriteria.code)
                 setExistCriteria(newExistCriteria)
                 setAvailableCriteria(newEsetAvailableCriteria)
@@ -196,6 +194,7 @@ const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStanda
                 dispatch(showErrorSnackbar("Thêm tiêu chí mới thất bại"))
             })
     }
+    console.log(existCriteria)
     const body = (
         <div style={modalStyle} className={classes.paper} >
             <Loading open={loading} />
@@ -227,9 +226,21 @@ const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStanda
                         />
                     )}
                 />
-                <TextField style={{ width: "100px", marginLeft: '20px', marginRight: '10px' }} type="number" variant="outlined" autoFocus size="small" placeholder="Điểm"
-                   value={pointNewCriteria}  onChange={(e) => setPointNewCriteria(parseInt(e.target.value))}
-                />
+                {!(tempCriteria?.type === 'number' || tempCriteria?.type === 'detail') ? (
+                    <TextField style={{ width: "100px", marginLeft: '20px', marginRight: '10px' }} type="number" variant="outlined" autoFocus size="small" label="Điểm"
+                        value={pointNewCriteria} onChange={(e) => setPointNewCriteria(parseInt(e.target.value))}
+                    />
+                ) : (
+                    <>
+                        <TextField required style={{ width: "110px", marginLeft: '20px', marginRight: '10px' }} type="number" variant="outlined" autoFocus size="small" label="Điểm/lần"
+                            value={basePoint} onChange={(e) => setBasePoint(parseInt(e.target.value))}
+                        />
+                        <TextField style={{ width: "140px", marginRight: '10px' }} type="number" variant="outlined" autoFocus size="small" label="Điểm tối đa"
+                            value={pointNewCriteria} onChange={(e) => setPointNewCriteria(parseInt(e.target.value))}
+                        />
+                    </>
+                )}
+
                 <IconButton
                     aria-label="add"
                     color="primary"
@@ -238,7 +249,6 @@ const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStanda
                 >
                     <AddCircleIcon />
                 </IconButton>
-
 
             </div>
             <Typography variant='h6' gutterBottom>Danh sách tiêu chí</Typography>
@@ -255,11 +265,27 @@ const ModalEditStandard = ({ open, handleClose, setCriterion, idForm, codeStanda
                                             </ListItem>, portal)
                                             : <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText style={{ width: '400px' }} primary={`${index + 1}. ${t.name}`} />
-                                                <TextField style={{ width: "100px" }} type="number" variant="outlined" autoFocus size="small" placeholder="Điểm"
-                                                    onChange={(e) => handleChangePoint(e, index)}
-                                                    defaultValue={t.point}
-                                                    disabled={!isEdit}
-                                                />
+                                                {(t.type === 'number' || t.type === 'detail') ? (
+                                                    <>
+                                                        <TextField style={{ width: "110px",}} type="number" variant="outlined" autoFocus size="small" label="Điểm/lần"
+                                                            onChange={(e) => handleChangeBasePoint(e, index)}
+                                                            defaultValue={t.base_point}
+                                                            disabled={!isEdit}
+                                                        />
+                                                        <TextField style={{ width: "140px", marginLeft: '10px' }} type="number" variant="outlined" size="small" label="Điểm tối đa"
+                                                            onChange={(e) => handleChangePoint(e, index)}
+                                                            defaultValue={t.point}
+                                                            disabled={!isEdit}
+                                                        />
+                                                    </>
+                                                ) :
+                                                    (<TextField style={{ width: "100px" }} type="number" variant="outlined" autoFocus size="small" label="Điểm"
+                                                        onChange={(e) => handleChangePoint(e, index)}
+                                                        defaultValue={t.point}
+                                                        disabled={!isEdit}
+                                                    />)}
+
+
                                                 <IconButton style={{ visibility: isEdit ? 'visible' : 'hidden' }} onClick={() => deleteCriteria(index)} >
                                                     <DeleteIcon />
                                                 </IconButton>

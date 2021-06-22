@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { Button, Typography, TextField, ListItemText, ListItem, } from '@material-ui/core';
@@ -36,32 +36,46 @@ const TimesModal = () => {
     const dispatch = useDispatch()
     const classes = useStyles()
     // getModalStyle is not a pure function, we roll the style only on the first render
+    const submit = useSelector(state => state.modal.submit)
+    const dataStore = useSelector(state => state.modal.data)
+    const [data, setData] = useState(null)
     const [modalStyle] = React.useState(getModalStyle);
     const handleClose = () => {
         dispatch(clearModal())
     };
-    const modal = useSelector(state => state.modal)
-    const [point, setPoint] = useState(5)
-    const [times, setTimes] = useState(0)
-    const [rows, setRows] = useState([])
-    const [previous, setPrevious] = useState([])
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        submit(filterData(data))
+        handleClose()
+    }
+    const filterData = (data) => {
+        return {point, code: data.code, details: [{value: times}]}
+    }
+
+    useEffect(() => {
+        setData(dataStore)
+        setPoint(dataStore?.details[0]?.value * dataStore?.base_point)
+    }, [dataStore])
+    const [point, setPoint] = useState(0)
+    const [times, setTimes] = useState('')
+    if (!data) return null
     return (
         <>
-            <form style={modalStyle} className={classes.paper}>
-                <Typography variant='h5' >Nhập số lần</Typography>
+            <form onSubmit={handleSubmit} style={modalStyle} className={classes.paper}>
+                <Typography variant='h5' >Nhập số lần cụ thể</Typography>
 
                 <ListItem>
                     <ListItemText style={{ width: '300px' }} primary="Mỗi lần vi phạm quy chế" />
-                    <TextField className={classes.input} type='number' variant="outlined" label="Điểm" disabled defaultValue={point} />
-                    <TextField className={classes.input} type='number' variant="outlined" label="Số lần" onChange={(e) => setTimes(e.target.value)} />
-                    <TextField className={classes.input} type='number' variant="outlined" label="Tổng" disabled value={point * times} defaultValue={0} />
+                    <TextField className={classes.input} type='number' variant="outlined" label="Điểm" disabled defaultValue={data.base_point} />
+                    <TextField className={classes.input} type='number' variant="outlined" required label="Số lần" onChange={(e) => {setTimes(e.target.value); setPoint(e.target.value * data.base_point)}} disabled={data.disableEdit} defaultValue={data.details[0]?.value}/>
+                    <TextField className={classes.input} type='number' variant="outlined" label="Tổng" disabled value={point}  />
                 </ListItem>
 
                 <br />
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                     <Button onClick={handleClose} variant="contained">Thoát</Button>
                     &nbsp;  &nbsp;
-                    <Button onClick={modal.submit} variant="contained" color="primary">Xác nhận</Button>
+                    <Button type='submit' variant="contained" color="primary" disabled={data.disableEdit}>Xác nhận</Button>
                 </div>
 
 

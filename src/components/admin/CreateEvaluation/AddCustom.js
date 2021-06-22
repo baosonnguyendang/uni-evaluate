@@ -68,20 +68,30 @@ export default function PinnedSubheaderList() {
     setItems([value, ...items])
   }
   const data = {
-    disableEdit: true,
+    disableEdit: false,
     name: 'Tham gia viết sách',
     code: 'TC002-A',
     max_point: 20,
     base_point: 4,
-    details: []
+    details: [ {name: "danh", value: "10"},
+    {name: "danh2", value: "10"},
+    {name: "danh3", value: "103"}]
+}
+const data1 = {
+  disableEdit: true,
+  name: 'Tham gia viết sách',
+  code: 'TC002-A',
+  max_point: 20,
+  base_point: 4,
+  details: []
 }
   return (
     <>
 
-      <TextField onClick={() => { dispatch(showModal(null, "TIMES_MODAL")) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
+      <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "TIMES_MODAL", data1)) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
 
 
-        <TextField onClick={() => { dispatch(showModal(null, "DETAIL_MODAL",data)) }} type="button" value={1}  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" />
+        <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "DETAIL_MODAL",data)) }} type="button" value={1}  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" />
       
     </>
   );

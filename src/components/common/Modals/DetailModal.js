@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) =>
         }
     }),
 );
-const datatest = [{ name: "sách", percent: 0, point: 5, description: "" }, { name: "Báo", percent: 5, point: 5, description: "" }]
 const Line = ({ name, value, description, onDelete, base_point, disableEdit }) => {
     const classes = useStyles()
     return (<div style={{ display: 'flex', alignItems: 'center', margin: '10px 0' }}>
@@ -55,18 +54,24 @@ const Line = ({ name, value, description, onDelete, base_point, disableEdit }) =
         <IconButton onClick={onDelete} disabled={disableEdit}><DeleteIcon /></IconButton>
     </div>)
 }
-const DetailModal = ({ name, max_point, base_point, disableEdit, code, details }) => {
+const DetailModal = () => {
     const dispatch = useDispatch()
     const classes = useStyles()
     // getModalStyle is not a pure function, we roll the style only on the first render
+    const submit = useSelector(state => state.modal.submit)
     const [modalStyle] = React.useState(getModalStyle);
     const handleClose = () => {
         dispatch(clearModal())
     };
+    const handleSubmit = () => {
+        submit(filterData(data))
+        handleClose()
+    }
     const dataStore = useSelector(state => state.modal.data)
     const [data, setData] = useState(null)
     useEffect(() => {
         setData(dataStore)
+        setPoint(dataStore.details.reduce((a,d) => a += d.value*dataStore.base_point/100, 0))
     }, [dataStore])
     const [point, setPoint] = useState(0)
     const [value, setValue] = useState(null)
@@ -86,7 +91,7 @@ const DetailModal = ({ name, max_point, base_point, disableEdit, code, details }
     const filterData = (data) => {
         return {point, code: data.code, details: data.details}
     }
-    const submit = useSelector(state => state.modal.submit)
+
     if (!data) return null
     const dataSend = filterData(data)
     console.log(dataSend)
@@ -106,7 +111,7 @@ const DetailModal = ({ name, max_point, base_point, disableEdit, code, details }
 
                     <TextField size="small" className={classes.input} type='number' variant="outlined" label="Điểm" disabled value={value?.value * data.base_point / 100} />
                     <TextField size="small" className={classes.text} type='text' variant="outlined" label="Mô tả" onChange={(e) => setValue({ ...value, description: e.target.value })} />
-                    <IconButton type='submit' disabled={data.disableEdit}><AddCircleIcon /></IconButton>
+                    <IconButton type='submit' disabled={data.disableEdit}><AddCircleIcon color="primary" /></IconButton>
                 </form>
                 <Divider />
                 <div style={{ maxHeight: '300px', overflowY: "auto" }}>
@@ -127,7 +132,7 @@ const DetailModal = ({ name, max_point, base_point, disableEdit, code, details }
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                     <Button onClick={handleClose} variant="contained">Thoát</Button>
                     &nbsp;  &nbsp;
-                    <Button onClick={() => submit(filterData(data))} variant="contained" color="primary" disabled={!data.details.length || data.disableEdit}>Xác nhận</Button>
+                    <Button onClick={handleSubmit} variant="contained" color="primary" disabled={!data.details.length || data.disableEdit}>Xác nhận</Button>
                 </div>
 
 
