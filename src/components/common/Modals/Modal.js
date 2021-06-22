@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     paper: {
       position: 'absolute',
-      width: 400,
+      minWidth: 400,
       backgroundColor: theme.palette.background.paper,
       border: '2px solid #000',
       boxShadow: theme.shadows[5],
@@ -43,26 +43,27 @@ const ModalCustom = () => {
     dispatch(clearModal())
   };
 
+
   let body = (
     <form style={modalStyle} className={classes.paper}>
       <Typography variant='h5' >Tiêu chí A</Typography>
       Mỗi lần vi phạm quy chế
-      <TextField label="Điểm" />
-      <TextField label="Số lần" />
-      <TextField label="Tổng" />
+      <TextField label='Điểm' />
+      <TextField label='Số lần' />
+      <TextField label='Tổng' />
       <br />
-      <Button onClick={handleClose} variant="contained">Cancel</Button>
+      <Button onClick={handleClose} variant='contained'>Cancel</Button>
       &nbsp;
-      <Button onClick={modal.submit} variant="contained" color="primary">submit</Button>
+      <Button onClick={modal.submit} variant='contained' color='primary'>submit</Button>
 
     </form>
 
   );
   switch (modal.type) {
-    case "TIMES_MODAL":
+    case 'TIMES_MODAL':
       body = <TimesModal />
       break
-    case "DETAIL_MODAL":
+    case 'DETAIL_MODAL':
       body = <DetailModal />
       break
     default:
@@ -72,8 +73,8 @@ const ModalCustom = () => {
     <Modal
       open={Boolean(modal.type)}
       onClose={handleClose}
-      aria-labelledby="simple-modal-title"
-      aria-describedby="simple-modal-description"
+      aria-labelledby='simple-modal-title'
+      aria-describedby='simple-modal-description'
     >
       {body}
     </Modal>

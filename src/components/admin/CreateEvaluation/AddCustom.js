@@ -67,13 +67,21 @@ export default function PinnedSubheaderList() {
     e.preventDefault()
     setItems([value, ...items])
   }
+  const data = {
+    disableEdit: true,
+    name: 'Tham gia viết sách',
+    code: 'TC002-A',
+    max_point: 20,
+    base_point: 4,
+    details: []
+}
   return (
     <>
 
       <TextField onClick={() => { dispatch(showModal(null, "TIMES_MODAL")) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
 
 
-        <TextField onClick={() => { dispatch(showModal(null, "DETAIL_MODAL")) }} type="button" value={1}  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" />
+        <TextField onClick={() => { dispatch(showModal(null, "DETAIL_MODAL",data)) }} type="button" value={1}  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" />
       
     </>
   );
