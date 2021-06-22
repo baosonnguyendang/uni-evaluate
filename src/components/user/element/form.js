@@ -13,7 +13,6 @@ import axios from 'axios';
 
 import './styles.css';
 
-import Pdf from "react-to-pdf";
 import { useReactToPrint } from 'react-to-print';
 import { useParams } from 'react-router-dom'
 import DialogConfirm from '../../common/DialogConfirm'
@@ -29,7 +28,6 @@ const useStyles = makeStyles({
   },
 });
 
-const ref = React.createRef();
 
 export default function FormEvaluation(props) {
   const componentRef = React.useRef();
@@ -582,7 +580,7 @@ export default function FormEvaluation(props) {
   const [loading, setLoading] = useState(false)
   const handlePrint =  useReactToPrint({
     content: () => componentRef.current,
-    documentTitle: info.id,
+    documentTitle: info?.id,
   });
   return (
     < >
@@ -592,7 +590,7 @@ export default function FormEvaluation(props) {
             <Container>
               <Loading open={loading} />
               <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text='Không thể chỉnh sửa sau khi hoàn thành bài đánh giá. Bạn đã chắc chắn chưa ? ' />
-              <div style={{ marginTop: 30 }}>
+              <div style={{ marginTop: 30, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                 {info != null && (
                   <div style={{ display: 'inline-block', width: '90%', paddingRight: '15%' }}>
                     <div style={{ display: 'flex', fontSize: '1.125rem', justifyContent: 'space-between' }}>
