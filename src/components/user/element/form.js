@@ -88,7 +88,7 @@ export default function FormEvaluation(props) {
         res.data.formStandards.map(standard => {
           let list = []
           standard.formCriteria.map(criteria => {
-            if (criteria.criteria_id.type == 'input' || criteria.criteria_id.type == 'detail' || criteria.criteria_id.type == 'number') {
+            if (criteria.criteria_id.type == 'input') {
               t.push({ code: criteria.criteria_id.code, point: criteria.point ? criteria.point : null, order: standard.standard_order + '.' + criteria.criteria_order })
             }
             list.push(criteria.criteria_id.code)
@@ -108,6 +108,9 @@ export default function FormEvaluation(props) {
             if (res.data.evaluateForms.length > 0) {
               res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
                 temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
+                if (criteria.details) {
+                  temp.find(x => x.name == criteria.form_criteria.criteria_id.code).details = criteria.details
+                }
               })
               let d = res.data.evaluateForms
               if (d[0].status === 1) {
@@ -127,7 +130,11 @@ export default function FormEvaluation(props) {
                 let inside = []
                 level.evaluateCriteria.map(criteria => {
                   //inside.push(temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point)
-                  inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point })
+                  if (criteria.details) {
+                    inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point, details: criteria.details })
+                  } else {
+                    inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point })
+                  }
                 })
                 list.push(inside)
               })
@@ -522,6 +529,7 @@ export default function FormEvaluation(props) {
         break;
     }
     let dataa = { dataToSend, level }
+    console.log(dataa)
     if (dataToSend.some(x => x.value < 0)) {
       let sai = 'Các tiêu chí sau điền sai:'
       let b = dataToSend.filter(x => x.value < 0)
@@ -538,7 +546,8 @@ export default function FormEvaluation(props) {
     else {
       setLoading(true)
       setDisabled(true)
-      axios.post(`/form/${variable}/saveForm/v2`, dataa)
+      console.log(dataa)
+      axios.post(`/form/${variable}/saveForm`, dataa)
         .then(res => {
           console.log(res)
           dispatch(showSuccessSnackbar('Lưu tạm thành công'))
@@ -558,15 +567,24 @@ export default function FormEvaluation(props) {
         return (
           sent.find(x => x.name == criteria).details ? sent.find(x => x.name == criteria).details : []
         )
+      case 2:
+        return (
+          all[1].find(x => x.name == criteria).details ? sent.find(x => x.name == criteria).details : []
+        )
+      case 3:
+        return (
+          all[2].find(x => x.name == criteria).details ? sent.find(x => x.name == criteria).details : []
+        )
       default:
         return null
     }
   }
 
-  const setDetails = (data) => { //hàm này để xử lí cái time_modal và detail_modal
+  const setDetails = (data, type) => { //hàm này để xử lí cái time_modal và detail_modal
     console.log(data)
     setDisabled(false)
     let t = []
+    let temp = []
     switch (props.level) {
       case 1:
         t = [...sent]
@@ -575,6 +593,19 @@ export default function FormEvaluation(props) {
         setSent(t)
         break;
       case 2:
+        let temp = []
+        all[1].map(x => {
+          temp.push(x)
+        })
+        temp.find(x => x.name == data.code).value = data.point
+        temp.find(x => x.name == data.code).details = data.details
+        let luu = []
+        all.map(x => {
+          luu.push(x)
+        })
+        luu[1] = [...temp]
+        setSent2(temp)
+        setAll(luu)
         break;
       case 3:
         break;
@@ -703,7 +734,7 @@ export default function FormEvaluation(props) {
                                       case 'detail':
                                         return (
                                           <div>
-                                            <input
+                                            {/* <input
                                               className='number'
                                               type="number"
                                               style={{ width: '40px', textAlign: 'center' }}
@@ -711,13 +742,13 @@ export default function FormEvaluation(props) {
                                               defaultValue={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
-                                            />
+                                            /> */}
                                             <input
                                               style={{ width: 40 }}
                                               type='button'
                                               onClick={() => {
                                                 console.log(sent);
-                                                dispatch(showModal(data => setDetails(data), "DETAIL_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) }))
+                                                dispatch(showModal(data => setDetails(data, 1), "DETAIL_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) }))
                                               }}
                                               value={sent.find(x => x.name == criteria.criteria_id.code) ? sent.find(x => x.name == criteria.criteria_id.code).value : 0}
                                               onMouseUp={e => e.target.blur()}
@@ -727,7 +758,7 @@ export default function FormEvaluation(props) {
                                       case 'number':
                                         return (
                                           <div>
-                                            <input
+                                            {/* <input
                                               className='number'
                                               type="number"
                                               style={{ width: '40px', textAlign: 'center' }}
@@ -735,12 +766,12 @@ export default function FormEvaluation(props) {
                                               defaultValue={all.length > 0 && all[0].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onChange={handleInput}
                                               name={criteria.criteria_id.code + '_1'}
-                                            />
+                                            /> */}
                                             <input
                                               style={{ width: 40 }}
                                               type='button'
-                                              onClick={() => { dispatch(showModal(data => setDetails(data), "TIMES_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 })) }}
-                                              value={0}
+                                              onClick={() => { dispatch(showModal(data => setDetails(data, 2), "TIMES_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) })) }}
+                                              value={sent.find(x => x.name == criteria.criteria_id.code) ? sent.find(x => x.name == criteria.criteria_id.code).value : 0}
                                               onMouseUp={e => e.target.blur()}
                                             />
                                           </div>
@@ -780,19 +811,12 @@ export default function FormEvaluation(props) {
                                         return (
                                           <div>
                                             <input
-                                              type="number"
-                                              className='number'
-                                              style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit2 || readOnly2}
-                                              defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
-                                              onChange={handleInput2}
-                                              name={criteria.criteria_id.code + '_2'}
-                                            />
-                                            <input
                                               style={{ width: 40 }}
                                               type='button'
-                                              onClick={() => { dispatch(showModal(data => setDetails(data), "DETAIL_MODAL", { disableEdit: disableEdit2 || readOnly2, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] })) }}
-                                              value={100}
+                                              onClick={() => {
+                                                dispatch(showModal(data => setDetails(data, 1), "DETAIL_MODAL", { disableEdit: disableEdit2 || readOnly2, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 2) }))
+                                              }}
+                                              value={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onMouseUp={e => e.target.blur()}
                                             />
                                           </div>
@@ -801,21 +825,12 @@ export default function FormEvaluation(props) {
                                         return (
                                           <div>
                                             <input
-                                              type="number"
-                                              className='number'
-                                              style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit2 || readOnly2}
-                                              defaultValue={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
-                                              onChange={handleInput2}
-                                              name={criteria.criteria_id.code + '_2'}
-                                            />
-                                            <input
                                               style={{ width: 40 }}
                                               type='button'
                                               onClick={() => {
-                                                dispatch(showModal(data => setDetails(data), "TIMES_MODAL", { disableEdit: disableEdit2 || readOnly2, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 }))
+                                                dispatch(showModal(data => setDetails(data, 2), "TIMES_MODAL", { disableEdit: disableEdit2 || readOnly2, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 2) }))
                                               }}
-                                              value={0}
+                                              value={all.length > 1 && all[1].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onMouseUp={e => e.target.blur()}
                                             />
                                           </div>
@@ -855,19 +870,10 @@ export default function FormEvaluation(props) {
                                         return (
                                           <div>
                                             <input
-                                              type="number"
-                                              className='number'
-                                              style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit3 || readOnly3}
-                                              defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
-                                              onChange={handleInput3}
-                                              name={criteria.criteria_id.code + '_3'}
-                                            />
-                                            <input
                                               style={{ width: 40 }}
                                               type='button'
                                               onClick={() => {
-                                                dispatch(showModal(data => setDetails(data), "DETAIL_MODAL", { disableEdit: disableEdit3 || readOnly3, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] }))
+                                                dispatch(showModal(data => setDetails(data, 1), "DETAIL_MODAL", { disableEdit: disableEdit3 || readOnly3, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: [] }))
                                               }}
                                               value={1}
                                               onMouseUp={e => e.target.blur()}
@@ -878,19 +884,10 @@ export default function FormEvaluation(props) {
                                         return (
                                           <div>
                                             <input
-                                              type="number"
-                                              className='number'
-                                              style={{ width: '40px', textAlign: 'center' }}
-                                              disabled={disableEdit3 || readOnly3}
-                                              defaultValue={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
-                                              onChange={handleInput3}
-                                              name={criteria.criteria_id.code + '_3'}
-                                            />
-                                            <input
                                               style={{ width: 40 }}
                                               type='button'
                                               onClick={() => {
-                                                dispatch(showModal(data => setDetails(data), "TIMES_MODAL", { disableEdit: disableEdit3 || readOnly3, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 }))
+                                                dispatch(showModal(data => setDetails(data, 2), "TIMES_MODAL", { disableEdit: disableEdit3 || readOnly3, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: 5 }))
                                               }}
                                               value={0}
                                               onMouseUp={e => e.target.blur()}
