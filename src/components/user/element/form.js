@@ -5,8 +5,7 @@ import {
   TableBody, makeStyles, Paper, Grid,
   Button, IconButton, Tooltip,
   LinearProgress,
-  Typography, Container,
-  TextField
+  Typography, Container, Box,
 } from "@material-ui/core";
 import PrintIcon from '@material-ui/icons/Print';
 
@@ -15,7 +14,7 @@ import axios from 'axios';
 import './styles.css';
 
 import Pdf from "react-to-pdf";
-
+import { useReactToPrint } from 'react-to-print';
 import { useParams } from 'react-router-dom'
 import DialogConfirm from '../../common/DialogConfirm'
 import Loading from '../../common/Loading'
@@ -33,6 +32,7 @@ const useStyles = makeStyles({
 const ref = React.createRef();
 
 export default function FormEvaluation(props) {
+  const componentRef = React.useRef();
   const dispatch = useDispatch()
   const classes = useStyles();
   const token = localStorage.getItem('token')
@@ -580,10 +580,14 @@ export default function FormEvaluation(props) {
   }
 
   const [loading, setLoading] = useState(false)
+  const handlePrint =  useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: info.id,
+  });
   return (
     < >
       {status ? (
-        <div ref={ref} >
+        <div ref={componentRef} >
           {isLoading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
             <Container>
               <Loading open={loading} />
@@ -598,14 +602,12 @@ export default function FormEvaluation(props) {
                     </div>
                   </div>
                 )}
-                <Pdf targetRef={ref} filename={`${info.id}.pdf`} y={2} scale={0.4}>
-                  {({ toPdf }) =>
-                    <Tooltip title='In Biểu mẫu'>
-                      <IconButton onClick={toPdf}>
+
+                    <Tooltip title='In Biểu mẫu' displayPrint="none" component={Box}>
+                      <IconButton onClick={handlePrint}>
                         <PrintIcon />
                       </IconButton>
-                    </Tooltip>}
-                </Pdf>
+                    </Tooltip>
 
               </div>
               <Grid container justify='center' style={{ marginTop: '20px' }}>
