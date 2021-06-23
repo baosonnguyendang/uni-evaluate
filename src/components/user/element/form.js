@@ -483,7 +483,7 @@ export default function FormEvaluation(props) {
       let dataa = { dataToSend, level }
       console.log(dataa)
       setLoading(true)
-      axios.post(`/form/${variable}/submitForm/v3`, dataa)
+      axios.post(`/form/${variable}/submitForm`, dataa)
         .then(res => {
           setStatus(false)
           dispatch(showSuccessSnackbar('Kết quả đánh giá đã lưu'))
