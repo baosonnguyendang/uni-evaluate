@@ -460,12 +460,12 @@ export default function FormEvaluation(props) {
 
     let loi = ''
     input.map(x => {
-      if (dataToSend.find(y => y.name == x.code).value > x.point) {
+      if (dataToSend.find(y => y.name == x.code).value > x.point || dataToSend.find(y => y.name == x.code).value < 0) {
         loi += '\n' + x.order
       }
     })
 
-    if (dataToSend.some(x => x.value < 0) || loi.length > 0) {
+    if (loi.length > 0) {
       let sai = 'Các tiêu chí sau điền sai:'
       sai += loi
       let b = dataToSend.filter(x => x.value < 0)
@@ -479,7 +479,7 @@ export default function FormEvaluation(props) {
       })
       alert(sai)
     }
-    if (list.length === 0 && !(dataToSend.some(x => x.value < 0) || loi.length > 0)) {
+    if (list.length === 0 && !(loi.length > 0)) {
       let dataa = { dataToSend, level }
       console.log(dataa)
       setLoading(true)
@@ -530,17 +530,17 @@ export default function FormEvaluation(props) {
     }
     let dataa = { dataToSend, level }
     console.log(dataa)
-    if (dataToSend.some(x => x.value < 0)) {
+
+    let loi = ''
+    input.map(x => {
+      if (dataToSend.find(y => y.name == x.code).value > x.point || dataToSend.find(y => y.name == x.code).value < 0) {
+        loi += '\n' + x.order
+      }
+    })
+
+    if (loi.length > 0) {
       let sai = 'Các tiêu chí sau điền sai:'
-      let b = dataToSend.filter(x => x.value < 0)
-      console.log(b)
-      data.map(x => {
-        x.formCriteria.map(y => {
-          if (b.some(z => z.name == y.criteria_id.code)) {
-            sai += '\n' + x.standard_order + '.' + y.criteria_order
-          }
-        })
-      })
+      sai += loi
       alert(sai)
     }
     else {
