@@ -562,6 +562,8 @@ export default function FormEvaluation(props) {
   }
 
   const sendDetails = (criteria, level) => {
+    console.log(level)
+    console.log(all[1].find(x => x.name == criteria).details)
     switch (level) {
       case 1:
         return (
@@ -569,11 +571,11 @@ export default function FormEvaluation(props) {
         )
       case 2:
         return (
-          all[1].find(x => x.name == criteria).details ? sent.find(x => x.name == criteria).details : []
+          all[1].find(x => x.name == criteria).details ? all[1].find(x => x.name == criteria).details : []
         )
       case 3:
         return (
-          all[2].find(x => x.name == criteria).details ? sent.find(x => x.name == criteria).details : []
+          all[2].find(x => x.name == criteria).details ? all[2].find(x => x.name == criteria).details : []
         )
       default:
         return null
@@ -604,6 +606,7 @@ export default function FormEvaluation(props) {
           luu.push(x)
         })
         luu[1] = [...temp]
+        console.log(temp)
         setSent2(temp)
         setAll(luu)
         break;
@@ -747,7 +750,7 @@ export default function FormEvaluation(props) {
                                               style={{ width: 40 }}
                                               type='button'
                                               onClick={() => {
-                                                console.log(sent);
+                                                console.log(disableEdit, readOnly);
                                                 dispatch(showModal(data => setDetails(data, 1), "DETAIL_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) }))
                                               }}
                                               value={sent.find(x => x.name == criteria.criteria_id.code) ? sent.find(x => x.name == criteria.criteria_id.code).value : 0}
