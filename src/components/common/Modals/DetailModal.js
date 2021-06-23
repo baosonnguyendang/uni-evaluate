@@ -54,6 +54,10 @@ const Line = ({ name, value, description, onDelete, base_point, disableEdit }) =
         <IconButton onClick={onDelete} disabled={disableEdit}><DeleteIcon /></IconButton>
     </div>)
 }
+function roundHalf(num) {
+    return Math.round(num*2)/2;
+}
+
 const DetailModal = () => {
     const dispatch = useDispatch()
     const classes = useStyles()
@@ -71,7 +75,8 @@ const DetailModal = () => {
     const [data, setData] = useState(null)
     useEffect(() => {
         setData(dataStore)
-        setPoint(dataStore.details.reduce((a,d) => a += d.value*dataStore.base_point/100, 0))
+        const temp = dataStore.details.reduce((a,d) => a += d.value*dataStore.base_point/100, 0)
+        setPoint(roundHalf(temp))
     }, [dataStore])
     const [point, setPoint] = useState(0)
     const [value, setValue] = useState(null)
@@ -89,9 +94,9 @@ const DetailModal = () => {
         setData({ ...data, details: temp })
     }
     const filterData = (data) => {
-        return {point: data.max_point > point ? point : data.max_point, code: data.code, details: data.details}
+        return {point: data.max_point > roundHalf(point) ? point : data.max_point, code: data.code, details: data.details}
     }
-
+    
     if (!data) return null
     const dataSend = filterData(data)
     console.log(dataSend)
@@ -123,8 +128,8 @@ const DetailModal = () => {
                         <Typography style={{ marginRight: '10px' }} variant='subtitle1' >Điểm đạt được: {point}</Typography>
                         {data.max_point ? (<>
                             <Typography style={{ marginRight: '10px' }} variant='subtitle1' >Điểm tối đa: {data.max_point}</Typography>
-                            <Typography style={{ marginRight: '10px' }} variant='subtitle1' >Tổng điểm: {data.max_point > point ? point : data.max_point}</Typography>
-                        </>) : <Typography style={{ marginRight: '10px' }} variant='subtitle1' >Tổng điểm: {point}</Typography>}
+                            <Typography style={{ marginRight: '10px' }} variant='subtitle1' >Tổng điểm: {data.max_point > point ? roundHalf(point) : data.max_point}</Typography>
+                        </>) : <Typography style={{ marginRight: '10px' }} variant='subtitle1' >Tổng điểm: {roundHalf(point)}</Typography>}
 
                     </div>}
 
