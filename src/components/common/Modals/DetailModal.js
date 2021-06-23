@@ -89,7 +89,7 @@ const DetailModal = () => {
         setData({ ...data, details: temp })
     }
     const filterData = (data) => {
-        return {point, code: data.code, details: data.details}
+        return {point: data.max_point > point ? point : data.max_point, code: data.code, details: data.details}
     }
 
     if (!data) return null
