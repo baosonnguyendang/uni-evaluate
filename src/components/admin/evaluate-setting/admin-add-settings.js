@@ -115,7 +115,7 @@ export default function AddSettings() {
   //fe to be
   const token = localStorage.getItem('token')
   const fetchUnits = () => {
-    axios.get('admin/department/parent', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('admin/department/parent')
       .then(res => {
         console.log(res.data.parents)
         let temp = []
@@ -123,7 +123,7 @@ export default function AddSettings() {
           temp.push(createData(x.name, x.department_code))
           //setUnits(units => [...units, createData(x.name, x.department_code)])
         })
-        axios.get(`/admin/form/${code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.get(`/admin/form/${code}/getFormDepartments`)
           .then(res => {
             console.log(res.data)
             let _id = res.data.formDepartments.map(x => x.department_id.department_code)
@@ -148,7 +148,7 @@ export default function AddSettings() {
   //khoi tao Form, check form da duoc tao hay chua
   const [init, setInit] = React.useState(0)
   useEffect(() => {
-    axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/review/${id}/formtype/${id1}/form/`)
       .then(res => {
         // (res.data) && (setInit(false))
         if (res.data.form) {
@@ -176,7 +176,7 @@ export default function AddSettings() {
     const handleSubmitInit = (e) => {
       e.preventDefault()
       setInit(false)
-      axios.post(`/admin/review/${id}/formtype/${id1}/form/addForm`, { name: name, code: code }, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/admin/review/${id}/formtype/${id1}/form/addForm`, { name: name, code: code })
         .then(res => {
           console.log(res)
         })
@@ -227,7 +227,7 @@ export default function AddSettings() {
   const handleCloseUnit = () => {
     setUnitChosen(units.filter(unit => unit.check === true))
     console.log(units.filter(unit => unit.check === true).map(x => x.id))
-    axios.post(`/admin/form/${code}/addFormDepartments/v2`, { dcodes: units.filter(unit => unit.check === true).map(x => x.id) }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${code}/addFormDepartments/v2`, { dcodes: units.filter(unit => unit.check === true).map(x => x.id) })
       .then(res => {
         setOpenUnit(false);
       })
@@ -244,11 +244,10 @@ export default function AddSettings() {
 
   const SelectedUnit = () => {
     let bool = false;
-    let { url } = useRouteMatch();
 
     const openUnitt = (x) => {
       unit = x
-      axios.get(`/admin/form/${code}/${unit}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.get(`/admin/form/${code}/${unit}/getFormUser`)
         .then(res => {
           let temp = []
           res.data.formUser.map(x => {
@@ -301,7 +300,7 @@ export default function AddSettings() {
     console.log(unit)
     e.preventDefault()
     console.log(headTemp)
-    axios.post(`/admin/form/${code}/${unit}/addHead`, { ucode: headTemp.id }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${code}/${unit}/addHead`, { ucode: headTemp.id })
       .then(res => {
         console.log(res)
         setHead(headTemp)
@@ -320,7 +319,7 @@ export default function AddSettings() {
   const [display, setDisplay] = useState('')
 
   const getInfo = () => {
-    axios.get(`admin/user/${idd}/get`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`admin/user/${idd}/get`)
       .then(res => {
         console.log(res)
         setInfo(res.data.user.lastname + ' ' + res.data.user.firstname)
@@ -342,9 +341,9 @@ export default function AddSettings() {
   };
   const submitAdd = (e) => {
     e.preventDefault()
-    axios.post(`/admin/form/${code}/${unit}/addFormUser`, { ucode: idd }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${code}/${unit}/addFormUser`, { ucode: idd })
       .then(res => {
-        axios.get(`admin/user/${idd}/get`, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.get(`admin/user/${idd}/get`)
           .then(res => {
             console.log(res.data)
             setUnitMember(unitMember => [...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, '']])
@@ -378,7 +377,7 @@ export default function AddSettings() {
     setStatusDelete({ open: false })
   }
   const onAsk = () => {
-    axios.get(`/admin/form/${code}/${unit}/getFormDepartment`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/form/${code}/${unit}/getFormDepartment`)
       .then(res => {
         console.log(res.data)
         let obj = {

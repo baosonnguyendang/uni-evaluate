@@ -44,9 +44,8 @@ export default function Classify(props) {
   const [rows, setRows] = useState([])
 
   //lấy phân loại từ be
-  const token = localStorage.getItem('token')
   useEffect(() => {
-    axios.get(`/admin/form/${props.fcode}/formrating`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/form/${props.fcode}/formrating`)
       .then(res => {
         console.log(res.data)
         let t = []
@@ -101,7 +100,7 @@ export default function Classify(props) {
     temp[chosen].from = info[1]
     temp[chosen].to = info[2]
     temp[chosen].id = info[3]
-    axios.post(`/admin/formrating/${info[3]}/edit`, { name: info[0], min_point: info[1], max_point: info[2] }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/formrating/${info[3]}/edit`, { name: info[0], min_point: info[1], max_point: info[2] })
       .then(res => {
         setRows([...temp])
         handleCloseEdit()
@@ -116,7 +115,7 @@ export default function Classify(props) {
   const del = (id) => {
     let temp = [...rows]
     console.log(temp[id].id)
-    axios.post(`/admin/formrating/${temp[id].id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/formrating/${temp[id].id}/delete`, {})
       .then(res => {
         console.log(res)
         temp.splice(id, 1)
@@ -142,7 +141,7 @@ export default function Classify(props) {
   //xác nhận thêm mốc
   const submit = (e) => {
     e.preventDefault()
-    axios.post(`/admin/form/${props.fcode}/formrating`, { name: name, min_point: from, max_point: to }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${props.fcode}/formrating`, { name: name, min_point: from, max_point: to })
       .then(res => {
         console.log(res)
         let t = [...rows]
@@ -163,6 +162,7 @@ export default function Classify(props) {
           <Typography component="h3" variant="h5" color="inherit" style={{ marginBottom: 18 }}>
             Cấu hình xếp loại đánh giá
           </Typography>
+          <div style={{minHeight: 250}}>
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
               <TableHead>
@@ -175,7 +175,7 @@ export default function Classify(props) {
               </TableHead>
               <TableBody>
                 {rows.length == 0 && (
-                  <TableRow style={{ lineHeight: '60px', paddingLeft: 10 }}>Chưa có phân loại</TableRow>
+                  <TableRow style={{ lineHeight: '60px', paddingLeft: 10 }}><TableCell colSpan={4}>Chưa có phân loại</TableCell></TableRow>
                 )}
                 {rows.map((row, index) => (
                   <TableRow key={row.id}>
@@ -197,6 +197,7 @@ export default function Classify(props) {
               </TableBody>
             </Table>
           </TableContainer>
+          </div>
           <Modal
             className={classes.modal}
             open={open}

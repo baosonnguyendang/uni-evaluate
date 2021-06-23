@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Loading from '../../../common/Loading'
@@ -7,7 +5,7 @@ import RestoreIcon from '@material-ui/icons/Restore';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import BlockIcon from '@material-ui/icons/Block';
-import { Typography, IconButton, TextField, Button, ListItem, List, ListItemText } from '@material-ui/core';
+import { Typography, IconButton, TextField, Button, ListItem, List, ListItemText, Tooltip } from '@material-ui/core';
 import axios from 'axios';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import Modal from '@material-ui/core/Modal';
@@ -263,7 +261,8 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
                                             ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText primary={`${index + 1}. ${t.name}`} />
                                             </ListItem>, portal)
-                                            : <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                            : <Tooltip title={t.description}> 
+                                            <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText style={{ width: '400px' }} primary={`${index + 1}. ${t.name}`} />
                                                 {(t.type === 'number' || t.type === 'detail') ? (
                                                     <>
@@ -290,6 +289,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
                                                     <DeleteIcon />
                                                 </IconButton>
                                             </ListItem>
+                                            </Tooltip>
                                     )
                                     }
                                 </Draggable>
