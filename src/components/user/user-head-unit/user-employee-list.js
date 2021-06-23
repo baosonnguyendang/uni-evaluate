@@ -22,24 +22,6 @@ export default function EmployeeList() {
   const { url } = useRouteMatch()
   const token = localStorage.getItem('token')
 
-  const displayStatus = (status) => {
-    let display = ''
-    switch (status) {
-      case -1:
-        display = 'Chưa đánh giá'
-        break;
-      case 0:
-        display = 'Đang đánh giá'
-        break;
-      case 1:
-        display = 'Đã đánh giá'
-        break;
-      default:
-        display = 'Chưa đánh giá'
-    }
-    return display
-  }
-
   const [data, setData] = useState(null)
 
   useEffect(() => {
@@ -48,7 +30,20 @@ export default function EmployeeList() {
         console.log(res.data)
         let temp = []
         res.data.formUsers.map(user => {
-          let obj = { id: user.evaluateForm ? user.evaluateForm.userForm._id : null, code: user.user_id.staff_id, name: user.user_id.lastname + ' ' + user.user_id.firstname, unit: user.user_id.department.length > 0 ? user.user_id.department[0].name : '', status: user.evaluateForm ? user.evaluateForm.status : null }
+          let point = ['null', 'null', 'null']
+          user.evaluateForm.map((x, index) => {
+            if (x.point) {
+              point[index] = x.point
+            }
+          })
+          let obj = {
+            id: user.evaluateForm ? user.userForm._id : null,
+            code: user.user_id.staff_id,
+            name: user.user_id.lastname + ' ' + user.user_id.firstname,
+            unit: user.user_id.department.length > 0 ? user.user_id.department[0].name : '',
+            status: user.evaluateForm.length,
+            point: point
+          }
           temp.push(obj)
         })
         setData(temp)
@@ -57,8 +52,9 @@ export default function EmployeeList() {
         console.log(err)
       })
   }, [])
+
   if (!data)
-    return <LinearProgress style={{position:"absolute", width:"100%" }} />
+    return <LinearProgress style={{ position: "absolute", width: "100%" }} />
   return (
     <div style={{ margin: '24px' }}>
       <Typography component="h3" variant="h5" color="inherit">
@@ -70,7 +66,7 @@ export default function EmployeeList() {
             <TableCell><b>Mã GV/VC</b></TableCell>
             <TableCell><b>Tên GV/VC</b></TableCell>
             <TableCell><b>Bộ môn</b></TableCell>
-            <TableCell align="center"><b>Trạng thái</b></TableCell>
+            <TableCell align="center"><b>Điểm thành phần</b></TableCell>
             <TableCell style={{ minWidth: '200px' }}></TableCell>
           </TableRow>
         </TableHead>
@@ -82,8 +78,8 @@ export default function EmployeeList() {
               </TableCell>
               <TableCell align="left">{row.name}</TableCell>
               <TableCell align="left">{row.unit}</TableCell>
-              <TableCell align="center">{displayStatus(row.status)}</TableCell>
-              <TableCell align="center" style={{ minWidth: '200px' }}> {row.status == 1 && <Link to={`${url}/${row.id}`}>Bấm vào đây để đánh giá GV/VC</Link>}</TableCell>
+              <TableCell align="center">{row.point.toString()}</TableCell>
+              <TableCell align="center" style={{ minWidth: '200px' }}> {row.status > 1 && <Link to={`${url}/${row.id}`}>{row.status == 2 ? 'Bấm vào đây để đánh giá GV/VC' : 'Bấm vào đây để xem kết quả đánh giá GV/VC'}</Link>}</TableCell>
             </TableRow>
           ))}
         </TableBody>
