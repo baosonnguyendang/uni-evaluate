@@ -563,7 +563,6 @@ export default function FormEvaluation(props) {
 
   const sendDetails = (criteria, level) => {
     console.log(level)
-    console.log(all[1].find(x => x.name == criteria).details)
     switch (level) {
       case 1:
         return (
