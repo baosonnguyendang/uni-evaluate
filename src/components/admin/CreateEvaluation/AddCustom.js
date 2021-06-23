@@ -78,7 +78,7 @@ export default function PinnedSubheaderList() {
     {name: "danh3", value: "103"}]
 }
 const data1 = {
-  disableEdit: true,
+  disableEdit: false,
   name: 'Tham gia viết sách',
   code: 'TC002-A',
   max_point: 20,

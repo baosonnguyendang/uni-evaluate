@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import { Tab, Box, Typography, IconButton, TextField, Button, ListItem, ListItemIcon, List, ListItemText } from '@material-ui/core';
+import { Tooltip, Typography, IconButton, TextField, Button, ListItem, List, ListItemText } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
@@ -16,7 +14,7 @@ import ModalEditStandard from './ModalEdit'
 import ModalAddStandard from './ModalAdd'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../../actions/notifyAction'
-
+import HelpIcon from '@material-ui/icons/Help';
 //fix out of drag
 let portal = document.createElement("div");
 document.body.appendChild(portal);
@@ -72,12 +70,10 @@ export default function ModifyForm({ fcode }) {
     const [existStandards, setExistStandards] = React.useState([])
     // tất cả tiêu chuẩn 
     const [standards, setStandards] = React.useState(null)
-    const token = localStorage.getItem('token')
-    const config = { headers: { "Authorization": `Bearer ${token}` } }
     const id = fcode || "TestForm"
     const fetchAllStandardOfForm = () => {
 
-        return axios.get(`/admin/form/${id}/getFormStandard`, config)
+        return axios.get(`/admin/form/${id}/getFormStandard`)
             .then(res => {
                 console.log(res.data)
                 console.log(res.data.formStandards.map(t => ({ ...t, ...t.standard_id })))
@@ -89,7 +85,7 @@ export default function ModifyForm({ fcode }) {
             })
     }
     const fetchAllStandard = () => {
-        return axios.get(`/admin/standard`, config)
+        return axios.get(`/admin/standard`)
             .then(res => {
                 console.log(res.data)
                 return res.data.standards
@@ -158,7 +154,7 @@ export default function ModifyForm({ fcode }) {
     const saveForm = () => {
         setLoading(true)
         const data = { standards: filterStandard(existStandards) }
-        axios.post(`/admin/form/${id}/editFormStandard`, data, config)
+        axios.post(`/admin/form/${id}/editFormStandard`, data)
             .then(res => {
                 setLoading(false)
                 dispatch(showSuccessSnackbar('Lưu thành công'))
@@ -174,7 +170,15 @@ export default function ModifyForm({ fcode }) {
 
     return (
         <>
-            <Typography gutterBottom variant='h5' id="transition-modal-title">Danh sách tiêu chuẩn</Typography>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography gutterBottom variant='h5' id="transition-modal-title">Danh sách tiêu chuẩn</Typography>
+                <Tooltip title="Kéo thả tiêu chuẩn để thay đổi thứ tự hiển thị trong biểu mẫu">
+                    <IconButton aria-label="info">
+                        <HelpIcon fontSize='small' />
+                    </IconButton>
+                </Tooltip>
+            </div>
+
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Autocomplete
                     loading={!standards}
@@ -211,6 +215,7 @@ export default function ModifyForm({ fcode }) {
                 >
                     <AddCircleIcon />
                 </IconButton>
+
             </div>
             <DragDropContext onDragEnd={handleOnDragEnd}>
                 <Droppable droppableId='criterion'>
@@ -223,9 +228,10 @@ export default function ModifyForm({ fcode }) {
                                             ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText primary={`${index + 1}. ${t.name}`} />
                                             </ListItem>, portal)
-                                            : <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                            : <Tooltip title={t.description}>
+                                            <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText primary={`${index + 1}. ${t.name}`} />
-                                                <TextField style={{ width: "100px" }} type="number" variant="outlined" required size="small" placeholder="Điểm"
+                                                <TextField style={{ width: "100px" }} type="number" variant="outlined" required size="small" label="Điểm"
                                                     onChange={(e) => handleChangePoint(e, index)}
                                                     defaultValue={t.standard_point}
                                                 />
@@ -236,6 +242,7 @@ export default function ModifyForm({ fcode }) {
                                                     <DeleteIcon />
                                                 </IconButton>
                                             </ListItem>
+                                            </Tooltip>
                                     )
                                     }
                                 </Draggable>
@@ -247,13 +254,15 @@ export default function ModifyForm({ fcode }) {
             </DragDropContext>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ flexGrow: 1 }}>
-                    <IconButton
-                        aria-label="add"
-                        color="primary"
-                        onClick={restore}
-                    >
-                        <RestoreIcon />
-                    </IconButton>
+                    <Tooltip title="Khôi phục">
+                        <IconButton
+                            aria-label="add"
+                            color="primary"
+                            onClick={restore}
+                        >
+                            <RestoreIcon />
+                        </IconButton>
+                    </Tooltip>
                 </div>
 
                 <Button variant="contained" color='primary'

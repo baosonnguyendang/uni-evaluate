@@ -14,7 +14,7 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
 import Backdrop from '@material-ui/core/Backdrop';
-import Button from '@material-ui/core/Button';
+import { Button, Tooltip } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import EditIcon from "@material-ui/icons/EditOutlined";
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -28,6 +28,7 @@ import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
+import HelpIcon from '@material-ui/icons/Help';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -320,7 +321,21 @@ export default function Criteria() {
               >
                 <Fade in={modal.open}>
                   <div className={classes.paper1}>
+                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? "Cập nhật tiêu chí" : 'Thêm tiêu chí'}</Typography>
+                    <Tooltip title={<>
+                    <Typography variant='subtitle2' >Radio: Đánh giá nhiều lựa chọn </Typography>
+                    <Typography variant='subtitle2' >Checkbox: Đánh giá một lựa chọn </Typography>
+                    <Typography variant='subtitle2' >Input: Nhập vào đánh giá </Typography>
+                    <Typography variant='subtitle2' >Number: Đánh giá theo số lần </Typography>
+                    <Typography variant='body2'>Detail: Kê khai và đánh giá theo số % đóng góp </Typography>
+                    </>} placement="right-start">
+                        <IconButton
+                        >
+                            <HelpIcon fontSize='small' />
+                        </IconButton>
+                    </Tooltip>
+                    </div>
                     <form onSubmit={modal.id ? ((e) => editCriteria(e, modal.id)) : submitAddCriteria}>
                       <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth autoFocus margin='normal' defaultValue={modal.id && code} />
                       <TextField onChange={e => setName(e.target.value)} id="name" required label="Tên tiêu chí" variant="outlined" fullWidth margin='normal' defaultValue={modal.id && name} />
@@ -340,15 +355,6 @@ export default function Criteria() {
                             <option value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>
                           ))
                         }
-                          
-                        {/* 
-                        <option aria-label="None" value="" />
-                        <option value={'checkbox'}>Checkbox</option>
-                        <option value={'radio'}>Radio</option>
-                        <option value={'input'}>Input</option>
-                        <option value={'detail'}>Detail</option> 
-                        */}
-
                         </Select>
                       </FormControl>
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>
