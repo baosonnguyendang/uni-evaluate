@@ -241,7 +241,7 @@ export default function ResultsList(props) {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
-                    {Math.max(...point)}
+                    {point.length > 0 ? Math.max(...point) : '!'}
                   </Typography>
                   <Typography align='center' variant="body2" component="p">
                     Điểm số cao nhất trong Form
@@ -251,7 +251,7 @@ export default function ResultsList(props) {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
-                    {Math.min(...point)}
+                    {point.length > 0 ? Math.max(...point) : '!'}
                   </Typography>
                   <Typography align='center' variant="body2" component="p">
                     Điểm số thấp nhất trong Form

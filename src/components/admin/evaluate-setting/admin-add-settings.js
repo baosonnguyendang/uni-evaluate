@@ -33,6 +33,7 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import CategoryIcon from '@material-ui/icons/Category';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 
 import { useRouteMatch } from 'react-router-dom'
 
@@ -82,7 +83,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#abcdef',
     padding: 0,
     width: '100%',
-  },    
+  },
   list: {
     backgroundColor: theme.palette.background.paper,
   },
@@ -437,6 +438,16 @@ export default function AddSettings() {
             secondary={"Các hạng mức xếp loại, điều kiện"}
           />
         </ListItem>
+        <Divider variant="inset" component="li" />
+        <ListItem button onClick={() => { setStage(5) }}>
+          <ListItemAvatar>
+            <ImportContactsIcon fontSize='large' color='action' />
+          </ListItemAvatar>
+          <ListItemText
+            primary={'Thêm dữ liệu có sẵn'}
+            secondary={"Các dữ liệu để xét điểm cho tiêu chí"}
+          />
+        </ListItem>
       </List>
     }
     let body = null
@@ -617,7 +628,7 @@ export default function AddSettings() {
                     <Paper style={{ padding: 10 }} className={classes.paper}>
                       <MenuEvaluate />
                     </Paper>
-                    {stage && <Button style={{float: 'right', marginTop: 10}} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
+                    {stage && <Button style={{ float: 'right', marginTop: 10 }} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
                   </div >
                 )
                 }
