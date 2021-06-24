@@ -6,6 +6,7 @@ import DialogConfirm from '../../common/DialogConfirm';
 import UserSettings from './admin-user-settings'
 import Council from './admin-init-council'
 import Classify from './admin-classify'
+import Import from './admin-import-data'
 
 import { useParams } from "react-router-dom";
 
@@ -514,6 +515,9 @@ export default function AddSettings() {
         break
       case 4:
         body = <Classify fcode={code} />
+        break
+      case 5:
+        body = <Import />
         break
       default:
         body = <Menu />
