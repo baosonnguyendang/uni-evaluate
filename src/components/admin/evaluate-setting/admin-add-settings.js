@@ -115,7 +115,6 @@ export default function AddSettings() {
   const [units, setUnits] = useState([])
 
   //fe to be
-  const token = localStorage.getItem('token')
   const fetchUnits = () => {
     axios.get('admin/department/parent')
       .then(res => {

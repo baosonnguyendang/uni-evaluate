@@ -82,7 +82,7 @@ const data1 = {
   name: 'Tham gia viết sách',
   code: 'TC002-A',
   max_point: 20,
-  base_point: 4,
+  base_point: 4.2223,
   details: []
 }
   return (

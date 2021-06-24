@@ -49,7 +49,10 @@ const TimesModal = () => {
         handleClose()
     }
     const filterData = (data) => {
-        return {point, code: data.code, details: [{value: times}]}
+        function round(num) {
+            return Math.round((num + Number.EPSILON) * 100) / 100;
+        }
+        return {point: round(point), code: data.code, details: [{value: times}]}
     }
 
     useEffect(() => {
