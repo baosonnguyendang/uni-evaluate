@@ -72,9 +72,9 @@ export default function PinnedSubheaderList() {
     name: 'Tham gia viết sách',
     code: 'TC002-A',
     max_point: 20,
-    base_point: 4,
-    details: [ {name: "danh", value: "10"},
-    {name: "danh2", value: "10"},
+    base_point: 4.5,
+    details: [ {name: "danh", value: ""},
+    {name: "danh2", value: "10", description: "hahahaahahhahaahahahaaaaaaaaaaaaaaaaaaaaaaa"},
     {name: "danh3", value: "103"}]
 }
 const data1 = {
