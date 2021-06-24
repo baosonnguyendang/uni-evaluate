@@ -67,7 +67,12 @@ const TimesModal = () => {
                 <ListItem>
                     <ListItemText style={{ width: '300px' }} primary="Mỗi lần vi phạm quy chế" />
                     <TextField className={classes.input} type='number' variant="outlined" label="Điểm" disabled defaultValue={data.base_point} />
-                    <TextField className={classes.input} type='number' variant="outlined" required label="Số lần" onChange={(e) => {setTimes(e.target.value); setPoint(e.target.value * data.base_point)}} disabled={data.disableEdit} defaultValue={data.details[0]?.value}/>
+                    <TextField className={classes.input} type='number' variant="outlined" required label="Số lần" 
+                    onChange={(e) => {setTimes(e.target.value); setPoint(e.target.value * data.base_point)}} 
+                    disabled={data.disableEdit} 
+                    defaultValue={data.details[0]?.value}
+                    InputProps={{inputProps: { min: 0 }}}
+                    />
                     <TextField className={classes.input} type='number' variant="outlined" label="Tổng" disabled value={point}  />
                 </ListItem>
 
