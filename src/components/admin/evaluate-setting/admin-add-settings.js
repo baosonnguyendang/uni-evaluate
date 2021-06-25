@@ -516,7 +516,7 @@ export default function AddSettings() {
         body = <Classify fcode={code} />
         break
       case 5:
-        body = <Import />
+        body = <Import fcode={code} />
         break
       default:
         body = <Menu />
