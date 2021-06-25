@@ -50,11 +50,17 @@ const useStyles = makeStyles(theme => ({
     height: 30
   },
   name: {
-    width: '30%',
+    width: '15%',
     height: 30,
   },
   number: {
     width: '10%'
+  },
+  unit: {
+    width: '28%'
+  },
+  email:{
+    width: '20%'
   },
   modal: {
     display: 'flex',
@@ -110,13 +116,14 @@ export default function ListUser() {
   }
   // Danh sách đơn vị
   const [units, setUnits] = useState([])
-  const fetchAllDept = () => {
-    axios.get('/admin/department')
-      .then(res => {
-        setUnits(res.data.departments)
-      })
-  }
+
   useEffect(() => {
+    const fetchAllDept = () => {
+      axios.get('/admin/department')
+        .then(res => {
+          setUnits(res.data.departments)
+        })
+    }
     fetchUser()
     fetchAllDept()
   }, [])
@@ -306,11 +313,11 @@ export default function ListUser() {
           <Table className={classes.table} aria-label="caption table">
             <TableHead>
               <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-                <TableCell align="left">ID</TableCell>
-                <TableCell align="left">Họ và tên đệm</TableCell>
-                <TableCell align="left">Tên</TableCell>
-                <TableCell align="left">Email</TableCell>
-                <TableCell align="left">Đơn vị</TableCell>
+                <TableCell className={classes.number} align="left">ID</TableCell>
+                <TableCell className={classes.name} align="left">Họ và tên đệm</TableCell>
+                <TableCell className={classes.number} align="left">Tên</TableCell>
+                <TableCell className={classes.email} align="left">Email</TableCell>
+                <TableCell className={classes.unit} align="left">Đơn vị</TableCell>
                 <TableCell align="left">Vai trò</TableCell>
                 <TableCell align="left" />
               </TableRow>

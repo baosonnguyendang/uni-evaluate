@@ -262,9 +262,18 @@ export default function Criteria() {
         <div>
           <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
           <Loading open={loading} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography component="h1" variant="h5" color="inherit" noWrap >
             Tiêu chuẩn {nameStandard} - Danh sách Tiêu chí
           </Typography >
+          <Tooltip title={
+              <>
+                <Typography variant='subtitle2'>Chọn tên tiêu chí để xem danh sách lựa chọn nếu có</Typography>
+              </>
+            }>
+                <HelpIcon fontSize='small' color="action" />
+            </Tooltip>
+          </div>
           <Paper className={classes.root}>
             <Table className={classes.table} aria-label="caption table">
               <TableHead>

@@ -172,10 +172,10 @@ export default function ModifyForm({ fcode }) {
         <>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Typography gutterBottom variant='h5' id="transition-modal-title">Danh sách tiêu chuẩn</Typography>
-                <Tooltip title="Kéo thả tiêu chuẩn để thay đổi thứ tự hiển thị trong biểu mẫu">
-                    <IconButton aria-label="info">
-                        <HelpIcon fontSize='small' />
-                    </IconButton>
+                <Tooltip title={
+                    <Typography variant='subtitle2'>Kéo thả tiêu chuẩn để thay đổi thứ tự hiển thị trong biểu mẫu</Typography>
+                }>
+                        <HelpIcon fontSize='small' color='action' />
                 </Tooltip>
             </div>
 
@@ -228,7 +228,9 @@ export default function ModifyForm({ fcode }) {
                                             ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText primary={`${index + 1}. ${t.name}`} />
                                             </ListItem>, portal)
-                                            : <Tooltip title={t.description}>
+                                            : <Tooltip title={
+                                                t.description && <Typography variant='subtitle2'>{t.description}</Typography>
+                                            }>
                                             <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText primary={`${index + 1}. ${t.name}`} />
                                                 <TextField style={{ width: "100px" }} type="number" variant="outlined" required size="small" label="Điểm"

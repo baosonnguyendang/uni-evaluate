@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { Button, Typography, TextField, Divider, IconButton, Tooltip, Fab } from '@material-ui/core';
+import { Button, Typography, TextField, Divider, IconButton, Tooltip } from '@material-ui/core';
 import { clearModal } from '../../../actions/modalAction'
 import InputAdornment from '@material-ui/core/InputAdornment';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -170,12 +170,8 @@ const DetailModal = () => {
                                 <Typography variant='subtitle2'>Tổng điểm nhỏ hoặc bằng điểm tối đa</Typography>
                                 </>
                             }>
-                                <IconButton >
-                                    <HelpIcon fontSize='small'/>
-                                </IconButton>
-                               
+                                    <HelpIcon fontSize='small' color='action'/>
                             </Tooltip>
-
                     </div>
                     <Button onClick={handleClose} variant="contained">Thoát</Button>
                     &nbsp;  &nbsp;

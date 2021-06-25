@@ -9,7 +9,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from "@material-ui/core/TableRow";
-import Input from "@material-ui/core/Input";
+import Tooltip from "@material-ui/core/Tooltip";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
@@ -19,7 +19,7 @@ import Fade from '@material-ui/core/Fade';
 import EditIcon from "@material-ui/icons/EditOutlined";
 import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
-import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
+import HelpIcon from '@material-ui/icons/Help';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import axios from "axios";
@@ -94,10 +94,8 @@ export default function Criterion() {
   const { url } = useRouteMatch()
   const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
-  const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
   const fetchStandard = () => {
-    return axios.get('admin/standard', config)
+    return axios.get('admin/standard')
       .then(res => {
         console.log(res.data.standards)
         setRows(res.data.standards)
@@ -121,7 +119,7 @@ export default function Criterion() {
   const deleteStandardWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/standard/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/standard/${id}/delete`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -163,7 +161,7 @@ export default function Criterion() {
     e.preventDefault()
     handleClose()
     setLoading(true)
-    axios.post('/admin/standard/add', data, config)
+    axios.post('/admin/standard/add', data)
       .then(res => {
         fetchStandard()
           .then(() => {
@@ -213,7 +211,7 @@ export default function Criterion() {
     setLoading(true)
 
     handleClose()
-    axios.post(`/admin/standard/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/standard/${id}/edit`, body)
       .then(res => {
         setRows(rows.map(r => r.code === id ? { ...r, code, name, description } : r))
         dispatch(showSuccessSnackbar('Cập nhật tiêu chuẩn thành công'))
@@ -243,9 +241,18 @@ export default function Criterion() {
         <div>
           <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
           <Loading open={loading} />
-          <Typography component="h1" variant="h5" color="inherit" noWrap>
-            DANH SÁCH TIÊU CHUẨN
-          </Typography>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography component="h1" variant="h5" color="inherit" noWrap>
+              DANH SÁCH TIÊU CHUẨN
+            </Typography>
+            <Tooltip title={
+              <>
+                <Typography variant='subtitle2'>Chọn tên tiêu chuẩn để xem danh sách tiêu chí</Typography>
+              </>
+            }>
+                <HelpIcon fontSize='small' color='action' />
+            </Tooltip>
+          </div>
           <Paper className={classes.root}>
             <Table className={classes.table} aria-label="caption table">
               <TableHead>

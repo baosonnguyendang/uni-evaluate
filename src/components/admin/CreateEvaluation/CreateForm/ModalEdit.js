@@ -261,7 +261,9 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
                                             ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText primary={`${index + 1}. ${t.name}`} />
                                             </ListItem>, portal)
-                                            : <Tooltip title={t.description}> 
+                                            : <Tooltip title={
+                                                t.description && <Typography variant='subtitle2'>{t.description}</Typography>
+                                            }> 
                                             <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                                                 <ListItemText style={{ width: '400px' }} primary={`${index + 1}. ${t.name}`} />
                                                 {(t.type === 'number' || t.type === 'detail') ? (

@@ -344,7 +344,7 @@ export default function Council(props) {
           </Modal>
         </div>
       ) : (
-        <div>
+        <>
           <Typography component="h4" variant="h5" color="inherit" >
             Thêm Hội đồng đánh giá cấp Trường:
           </Typography>
@@ -366,9 +366,10 @@ export default function Council(props) {
                 )
               })}
             </Select>
-            <ButtonCustom loading={loadingButton} onClick={setHDDG} variant="contained" color="primary">Thêm HĐĐG</ButtonCustom>
           </FormControl>
-        </div>
+            <div style={{ minHeight: 190}}></div>
+            <Button style={{ minWidth: 150}} onClick={setHDDG} variant="contained" color="primary">Thêm HĐĐG</Button>
+        </>
       )}
 
     </div>

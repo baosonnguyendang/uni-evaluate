@@ -25,6 +25,7 @@ import Modal from '@material-ui/core/Modal';
 
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import axios from 'axios'
 import Skeleton from '../../common/Skeleton'
@@ -32,6 +33,8 @@ import Loading from '../../common/Loading'
 import DialogConfirm from '../../common/DialogConfirm'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
+import HelpIcon from '@material-ui/icons/Help';
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -80,12 +83,6 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 10,
   }
 }));
-
-const createData = (id, name, head, headId, under) => ({
-  id, name, head, headId, under, isEditMode: false
-})
-
-
 
 export default function Criterion() {
   const dispatch = useDispatch()
@@ -205,7 +202,7 @@ export default function Criterion() {
           case 409:
             dispatch(showErrorSnackbar('Mã đơn vị đã tồn tại'))
             break;
-        default:
+          default:
             dispatch(showErrorSnackbar('Cập nhật đơn vị thất bại'))
             break;
         }
@@ -274,9 +271,18 @@ export default function Criterion() {
         <div>
           <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
           <Loading open={loading} />
-          <Typography component="h1" variant="h5" color="inherit" noWrap>
-            DANH SÁCH ĐƠN VỊ
-          </Typography>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography component="h1" variant="h5" color="inherit" noWrap>
+              DANH SÁCH ĐƠN VỊ
+            </Typography>
+            <Tooltip title={
+              <>
+                <Typography variant='subtitle2'>Chọn tên đơn vị để xem danh sách người dùng và đơn vị trực thuộc</Typography>
+              </>
+            }>
+                <HelpIcon fontSize='small' color='action'/>
+            </Tooltip>
+          </div>
           <Paper className={classes.root}>
             <Table className={classes.table} aria-label="caption table">
               <TableHead>
