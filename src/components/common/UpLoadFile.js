@@ -4,20 +4,22 @@ import { Button, Typography } from '@material-ui/core'
 
 const FileUploader = props => {
     const hiddenFileInput = React.useRef(null);
-    const [name, setName] = React.useState(null)
+    const [file, setFile] = React.useState({})
 
     const handleClick = event => {
         hiddenFileInput.current.click();
     };
     const handleChange = event => {
-        const fileUploaded = event.target.files[0];
-        setName(event.target.files[0].name)
-        // props.handleFile(fileUploaded);
+        setFile(event.target.files[0])
     };
+    const submit = (e) => {
+        e.preventDefault()
+        console.log(file)    
+    }
     return (
         <>
         <Typography variant='h5' gutterBottom >Thêm danh sách người dùng</Typography>
-            <form onSubmit={props.submit} >
+            <form onSubmit={submit} >
                 <Button onClick={handleClick} variant="contained" size="small">
                     Chọn file excel
                 </Button>
@@ -29,7 +31,7 @@ const FileUploader = props => {
                     style={{ display: 'none' }}
                 />
                 <div style={{height:'150px'}}>
-                <Typography>{name}</Typography>
+                <Typography>{file.name}</Typography>
                 </div>
                 <br />
                 <div style={{ textAlign: 'center', marginTop: '10px' }}>

@@ -29,6 +29,7 @@ import DialogConfirm from '../common/DialogConfirm'
 import UpLoadFile from '../common/UpLoadFile'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../actions/notifyAction'
+import { useForm } from 'react-hook-form'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -100,6 +101,7 @@ const CustomTableCell = ({ row, name }) => {
 export default function ListUser() {
   const dispatch = useDispatch()
   const [rows, setRows] = React.useState([]);
+  const { register, handleSubmit } = useForm()
   const fetchUser = () => {
     return axios.get('/admin/user')
       .then(res => {
@@ -288,9 +290,10 @@ export default function ListUser() {
     setOpenImport(true)
   }
   // submit file excel
-  const submitExcel = (e) => {
-    e.preventDefault()
-    console.log(e.target.files[0].name)
+  const submitExcel = (data) => {
+    const formData = new FormData()
+    formData.append("file", data.file[0])
+    console.log(data.file[0].name)
   }
   let history = useHistory();
   const { url } = useRouteMatch()
@@ -431,7 +434,7 @@ export default function ListUser() {
                         </div>
                       </form>
                     </> :
-                    <UpLoadFile handleClose={handleClose} submit={submitExcel} />}
+                    <UpLoadFile handleClose={handleClose} submit={handleSubmit(submitExcel)} />}
                 </div>
 
 
