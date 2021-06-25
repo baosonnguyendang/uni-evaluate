@@ -95,6 +95,29 @@ export default function Import(props) {
     }
   }, [standardChosen])
 
+  const exportTemplate = ()=>{
+    const fcode = "mã form";
+    const body = {
+      dcode : "mã đơn vị",
+      scode : "mã tiêu chuẩn",
+      ccode : "mã tiêu chí"
+    }
+    axios({
+      url: `/admin/form/${fcode}/file/export`,
+      method: 'POST',
+      data: body,
+      responseType: 'blob', // important
+    })
+    .then(async res=>{
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${body.dcode}-${body.ccode}.xlsx`); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+    })
+  }
+
   return (
     <div>
       <Typography style={{ marginBottom: 18 }} component="h3" variant="h5" color="inherit">
@@ -130,7 +153,7 @@ export default function Import(props) {
       }
       {criteriaChosen &&
         <div>
-          <Button variant="contained" color="primary" onClick={() => { alert('a') }}>
+          <Button variant="contained" color="primary" onClick={exportTemplate}>
             Xuất
           </Button>
           <Button style={{ marginLeft: 10 }} variant="contained" color="secondary" onClick={() => { console.log('a') }}>
