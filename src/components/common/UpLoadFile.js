@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Typography } from '@material-ui/core'
-
+import axios from "axios";
 
 const FileUploader = props => {
     const hiddenFileInput = React.useRef(null);
@@ -14,7 +14,17 @@ const FileUploader = props => {
     };
     const submit = (e) => {
         e.preventDefault()
-        console.log(file)    
+        //new formData
+        const formData = new FormData()
+        formData.append("file", file)
+
+        axios.post("/admin/user/file/import", formData)
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(e => {
+
+        })    
     }
     return (
         <>

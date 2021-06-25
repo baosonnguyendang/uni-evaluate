@@ -105,10 +105,10 @@ export default function ListUser() {
   const fetchUser = () => {
     return axios.get('/admin/user')
       .then(res => {
-        console.log(res.data.users);
+        // console.log(res.data.users);
         setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
         setFilterUser(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
-        console.log(rows)
+        // console.log(rows)
         setIsLoading(false)
       })
       .catch(err => {
@@ -290,11 +290,25 @@ export default function ListUser() {
     setOpenImport(true)
   }
   // submit file excel
-  const submitExcel = (data) => {
-    const formData = new FormData()
-    formData.append("file", data.file[0])
-    console.log(data.file[0].name)
+  const submitExcel = (data) => {}
+
+  // submit file excel
+  const exportExcel = (data) => {
+    axios({
+      url: `/admin/user/file/download?file=user`,
+      method: 'GET',
+      responseType: 'blob', // important
+    })
+    .then(async res=>{
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `User.xlsx`); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+    })
   }
+
   let history = useHistory();
   const { url } = useRouteMatch()
   const redirectStorePage = () => {
@@ -372,6 +386,9 @@ export default function ListUser() {
             </div>
             <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
               Thêm người dùng
+            </Button>
+            <Button variant="contained" color="primary" className={classes.btn} onClick={exportExcel}>
+              Xuất mẫu nhập liệu
             </Button>
             <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenImport}>
               Import File
