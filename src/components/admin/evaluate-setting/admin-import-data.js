@@ -4,16 +4,29 @@ import axios from 'axios'
 
 import { useParams } from 'react-router-dom'
 
+import UpLoadFile from '../../common/UpLoadFile'
+
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Typography, TextField, Button } from '@material-ui/core';
+import { Typography, TextField, Button, Modal, Fade, Backdrop } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { mapValues } from 'async';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
   dropdown: {
     marginBottom: 10,
   }
-});
+}));
 
 export default function Import(props) {
   const classes = useStyles(); //css
@@ -120,6 +133,30 @@ export default function Import(props) {
       })
   }
 
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const submitExcel = (data) => {
+    const formData = new FormData()
+    formData.append("file", data)
+    console.log(formData)
+    return
+    axios.post("/admin/user/file/import", formData)
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(e => {
+
+      })
+  }
+
   return (
     <div>
       <Typography style={{ marginBottom: 18 }} component="h3" variant="h5" color="inherit">
@@ -158,10 +195,27 @@ export default function Import(props) {
           <Button variant="contained" color="primary" onClick={exportTemplate}>
             Xuất
           </Button>
-          <Button style={{ marginLeft: 10 }} variant="contained" color="secondary" onClick={() => { console.log('a') }}>
+          <Button style={{ marginLeft: 10 }} variant="contained" color="secondary" onClick={handleOpen}>
             Nhập
           </Button>
+          <Modal
+            className={classes.modal}
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={open}>
+              <div className={classes.paper}>
+                <UpLoadFile title={'Thêm dữ liệu cho tiêu chí'} handleClose={handleClose} submit={submitExcel} />
+              </div>
+            </Fade>
+          </Modal>
         </div>
+
       }
     </div>
   )

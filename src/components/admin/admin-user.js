@@ -290,18 +290,18 @@ export default function ListUser() {
     setOpenImport(true)
   }
   // submit file excel
-  const submitExcel = (data) => { 
+  const submitExcel = (data) => {
     const formData = new FormData()
-        formData.append("file", data)
-        console.log(formData)
-        return
-        axios.post("/admin/user/file/import", formData)
-        .then(res => {
-            console.log(res.data);
-        })
-        .catch(e => {
+    formData.append("file", data)
+    console.log(formData)
+    return
+    axios.post("/admin/user/file/import", formData)
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(e => {
 
-        })    
+      })
   }
 
   // submit file excel
@@ -390,7 +390,7 @@ export default function ListUser() {
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
-          <div style={{ margin: '10px', display: 'flex', alignItems: 'center'}}>
+          <div style={{ margin: '10px', display: 'flex', alignItems: 'center' }}>
             <div style={{ flexGrow: 1 }}>
               <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                 Khôi phục
@@ -474,7 +474,7 @@ export default function ListUser() {
                         </div>
                       </form>
                     </> :
-                    <UpLoadFile handleClose={handleClose} submit={submitExcel} />}
+                    <UpLoadFile title={'Thêm danh sách người dùng'} handleClose={handleClose} submit={submitExcel} />}
                 </div>
 
 
