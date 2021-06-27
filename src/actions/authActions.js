@@ -52,7 +52,7 @@ export const login = ({ email, password }) => (dispatch) => {
     )
     .catch(err => {
       dispatch(
-        returnErrors(err.response.data.message,'LOGIN_FAIL')
+        returnErrors("Đăng nhập thất bại",'LOGIN_FAIL')
       );
       dispatch({
         type: LOGIN_FAIL

@@ -22,6 +22,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Modal from '@material-ui/core/Modal';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 import axios from "axios";
 import Skeleton from '../common/Skeleton'
 import Loading from '../common/Loading'
@@ -29,8 +30,8 @@ import DialogConfirm from '../common/DialogConfirm'
 import UpLoadFile from '../common/UpLoadFile'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../actions/notifyAction'
-import { useForm } from 'react-hook-form'
-
+import UnarchiveIcon from '@material-ui/icons/Unarchive';
+import AssignmentReturnedIcon from '@material-ui/icons/AssignmentReturned';
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -60,7 +61,7 @@ const useStyles = makeStyles(theme => ({
   unit: {
     width: '28%'
   },
-  email:{
+  email: {
     width: '20%'
   },
   modal: {
@@ -101,7 +102,6 @@ const CustomTableCell = ({ row, name }) => {
 export default function ListUser() {
   const dispatch = useDispatch()
   const [rows, setRows] = React.useState([]);
-  const { register, handleSubmit } = useForm()
   const fetchUser = () => {
     return axios.get('/admin/user')
       .then(res => {
@@ -290,7 +290,19 @@ export default function ListUser() {
     setOpenImport(true)
   }
   // submit file excel
-  const submitExcel = (data) => {}
+  const submitExcel = (data) => { 
+    const formData = new FormData()
+        formData.append("file", data)
+        console.log(formData)
+        return
+        axios.post("/admin/user/file/import", formData)
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(e => {
+
+        })    
+  }
 
   // submit file excel
   const exportExcel = (data) => {
@@ -299,14 +311,14 @@ export default function ListUser() {
       method: 'GET',
       responseType: 'blob', // important
     })
-    .then(async res=>{
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `User.xlsx`); //or any other extension
-      document.body.appendChild(link);
-      link.click();
-    })
+      .then(async res => {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `User.xlsx`); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+      })
   }
 
   let history = useHistory();
@@ -378,21 +390,32 @@ export default function ListUser() {
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
-          <div style={{ margin: '10px', display: 'flex' }}>
+          <div style={{ margin: '10px', display: 'flex', alignItems: 'center'}}>
             <div style={{ flexGrow: 1 }}>
               <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                 Khôi phục
               </Button>
             </div>
+            <Tooltip title={<Typography variant='subtitle2'>Xuất excel mẫu</Typography>}>
+              <IconButton
+                onClick={exportExcel}
+              >
+                <AssignmentReturnedIcon fontSize='large' />
+              </IconButton>
+            </Tooltip>
+            &nbsp;
+            <Tooltip title={<Typography variant='subtitle2'>Nhập dữ liệu excel</Typography>}>
+              <IconButton
+                onClick={handleOpenImport}
+              >
+                <UnarchiveIcon fontSize='large' />
+              </IconButton>
+            </Tooltip>
+            &nbsp;
             <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
               Thêm người dùng
             </Button>
-            <Button variant="contained" color="primary" className={classes.btn} onClick={exportExcel}>
-              Xuất mẫu nhập liệu
-            </Button>
-            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenImport}>
-              Import File
-            </Button>
+
             <Modal
               aria-labelledby="transition-modal-title"
               aria-describedby="transition-modal-description"
@@ -451,7 +474,7 @@ export default function ListUser() {
                         </div>
                       </form>
                     </> :
-                    <UpLoadFile handleClose={handleClose} submit={handleSubmit(submitExcel)} />}
+                    <UpLoadFile handleClose={handleClose} submit={submitExcel} />}
                 </div>
 
 
