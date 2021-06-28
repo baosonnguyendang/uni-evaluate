@@ -34,11 +34,11 @@ th; td {
       /* table, th, td {
         border: 1px solid black;
       } */
-.root {
+/* .root {
   font-size: 18px;
 };
 .root table {
-  /* margin-top: 30; */
+  margin-top: 30;
   border: 1px solid black;
 };
 .table th, .table td {
@@ -59,4 +59,30 @@ th; td {
 };
 .tr {
 
-  }
+  } */
+
+#exportTable {
+  width: 100%;
+  border: 1px solid #666;
+  border-collapse: collapse;
+  page-break-inside: auto;
+}
+
+#exportTable th td {
+  border: 1px solid #666;
+}
+
+.th {
+  text-align: center;
+};
+
+.th__stt {
+  vertical-align: middle;
+};
+.th_content {
+  justify-content: center;
+};
+
+.th_evaluation {
+  width: 10%;
+};

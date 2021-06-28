@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { List, Button, TextField, Typography } from '@material-ui/core';
+
+import axios from 'axios'
 
 import { useDispatch } from 'react-redux'
 import Table from '@material-ui/core/Table';
@@ -12,6 +14,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useReactToPrint, ReactToPrint } from 'react-to-print';
 import './style.css';
+
 const useStyles = makeStyles((theme) =>
   createStyles({
 
@@ -33,10 +36,25 @@ const rows = [
 const PrintComponent = () => {
   const classes = useStyles()
   const [value, setValue] = useState('0')
+  const [form, setForm] = useState([])
+
+  useEffect(() => {
+    axios.get(`/admin/form/8DP9W/getFormStandard`)
+      .then(res => {
+        console.log(res.data)
+        res.data.formStandards.map(standard => {
+
+        })
+        setForm(res.data.formStandards)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, [])
 
   return (
     <div id='print' className={'root'} >
-      <div style={{margin: '0 auto', width: '23cm'}}>
+      <div style={{ margin: '0 auto', width: '23cm' }}>
         <div style={{ float: 'left', textAlign: 'center' }}>
           ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH
           <br />
@@ -66,73 +84,29 @@ const PrintComponent = () => {
         <table id="exportTable" className="table" >
           <thead className={'th'}>
             <tr>
-              <th rowspan={2} className={'th__stt'}>Tiêu chuẩn/Tiêu chí</th>
-              <th rowspan={2} className={'th_content'}>Nội dung đánh giá</th>
+              <th rowspan={2} style={{ verticalAlign: 'middle' }} >TT</th>
+              <th rowspan={2} style={{ verticalAlign: 'middle', width: '50%' }} >Nội dung đánh giá</th>
+              <th rowspan={2} style={{ verticalAlign: 'middle' }} >Điểm quy định</th>
               <th colspan={3} >Điểm đánh giá</th>
-
             </tr>
             <tr>
-              <th className={'th_evaluation'}>Phần mềm đánh giá</th>
-              <th className={'th_evaluation'}>Sinh viên tự đánh giá</th>
-              <th className={'th_evaluation'}>Lớp đánh giá</th>
+              <th className='th_evaluation'>Cá nhân tự chấm</th>
+              <th className='th_evaluation'>Trưởng Đơn vị</th>
+              <th className='th_evaluation'>HĐĐG Trường</th>
             </tr>
           </thead>
           <tbody>
-            <tr className={'tr'}>
-              <td>1</td>
-              <td>Đánh giá về ý thức tham gia học tập (tối đa 20 điểm)</td>
-              <td>13</td>
-              <td></td>
-              <td>2</td>
-            </tr>
-            <tr className={'tr'}>
-              <td>1.1</td>
-              <td>Ý thức và thái độ trong học tập (10 điểm)</td>
-              <td>10</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr className={'tr'}>
-              <td>1.1.1</td>
-              <td>Đi học đầy đủ đúng giờ; thái độ học tập tích cực</td>
-              <td>10</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr className={'tr'}>
-              <td>1.2</td>
-              <td>Ý thức và thái độ tham gia các cuộc thi kỳ thi (3 điểm)</td>
-              <td>3</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr className={'tr'}>
-              <td>1.2.1</td>
-              <td>Ý thức và thái độ tham gia các cuộc thi, kỳ thi</td>
-              <td>3</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr className={'tr'}>
-              <td>1.3</td>
-              <td>Kết quả học tập (9 điểm)</td>
-              <td>5</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr className={'tr'}>
-              <td>1.3.1</td>
-              <td>Kết quả học tập(KQHT:)</td>
-              <td>0</td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr className={'tr'}>
-              <td colspan={2} style={{ textAlign: 'center' }}>Tổng điểm</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
+            {form.map(standard => {
+              return (
+                <>
+                  <tr key={standard._id}>
+                    <td><b>{standard.standard_order}</b></td>
+                    <td><b>{standard.standard_id.name}</b></td>
+                    <td><b>{standard.standard_point}</b></td>
+                  </tr>
+                </>
+              )
+            })}
           </tbody>
         </table>
       </div>
