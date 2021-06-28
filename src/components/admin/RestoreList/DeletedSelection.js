@@ -6,6 +6,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
@@ -135,6 +136,20 @@ const DeletedSelection = () => {
         setLoading(false)
       })
   }
+
+  //qua trang
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
   if (!rows)
     return <Skeleton />
   return (
@@ -156,7 +171,7 @@ const DeletedSelection = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map(row => (
+            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => (
               <TableRow key={row._id}>
                 <CustomTableCell {...{ row, name: "code" }} />
                 <CustomTableCell {...{ row, name: "name" }} />
@@ -176,6 +191,15 @@ const DeletedSelection = () => {
           </TableBody>
         </Table>
       </Paper>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 20]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </>
   )
 }
