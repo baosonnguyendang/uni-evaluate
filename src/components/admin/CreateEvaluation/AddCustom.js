@@ -33,95 +33,111 @@ const rows = [
 const PrintComponent = () => {
   const classes = useStyles()
   const [value, setValue] = useState('0')
-  return (<div id='print' className={'root'} >
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 258 }}>
-      <h5 style={{ fontWeigth: 300 }}><b>Đại học quốc gia TP.HCM</b></h5>
-      <h5><b>Trường Đại học bách khoa{value}</b></h5>
-      -----------
+
+  return (
+    <div id='print' className={'root'} >
+      <div style={{margin: '0 auto', width: '23cm'}}>
+        <div style={{ float: 'left', textAlign: 'center' }}>
+          ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH
+          <br />
+          <strong>TRƯỜNG ĐẠI HỌC BÁCH KHOA</strong>
+          <br />
+          ----------
+        </div>
+        <div style={{ clear: 'both', height: '20px' }}></div>
+        <div style={{ textAlign: 'center', width: '100%', fontWeight: 'bold', fontSize: '13pt !important', marginBottom: 25 }}>
+          <b>PHIẾU ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN</b>
+          <div style={{ fontSize: '95%' }}>
+            Học kỳ 1 - Năm học 2020-2021
+          </div>
+        </div>
+        <table style={{ width: '100%' }}>
+          <tbody>
+            <tr>
+              <td style={{ width: '60%', textAlign: 'left' }}>Họ Tên: Zone Lành</td>
+              <td style={{ textAlign: 'left' }}>MSSV: 1111111</td>
+            </tr>
+            <tr>
+              <td style={{ textAlign: 'left' }}>Đơn vị:</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style={{ clear: 'both', height: '15px' }}></div>
+        <table id="exportTable" className="table" >
+          <thead className={'th'}>
+            <tr>
+              <th rowspan={2} className={'th__stt'}>Tiêu chuẩn/Tiêu chí</th>
+              <th rowspan={2} className={'th_content'}>Nội dung đánh giá</th>
+              <th colspan={3} >Điểm đánh giá</th>
+
+            </tr>
+            <tr>
+              <th className={'th_evaluation'}>Phần mềm đánh giá</th>
+              <th className={'th_evaluation'}>Sinh viên tự đánh giá</th>
+              <th className={'th_evaluation'}>Lớp đánh giá</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className={'tr'}>
+              <td>1</td>
+              <td>Đánh giá về ý thức tham gia học tập (tối đa 20 điểm)</td>
+              <td>13</td>
+              <td></td>
+              <td>2</td>
+            </tr>
+            <tr className={'tr'}>
+              <td>1.1</td>
+              <td>Ý thức và thái độ trong học tập (10 điểm)</td>
+              <td>10</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr className={'tr'}>
+              <td>1.1.1</td>
+              <td>Đi học đầy đủ đúng giờ; thái độ học tập tích cực</td>
+              <td>10</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr className={'tr'}>
+              <td>1.2</td>
+              <td>Ý thức và thái độ tham gia các cuộc thi kỳ thi (3 điểm)</td>
+              <td>3</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr className={'tr'}>
+              <td>1.2.1</td>
+              <td>Ý thức và thái độ tham gia các cuộc thi, kỳ thi</td>
+              <td>3</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr className={'tr'}>
+              <td>1.3</td>
+              <td>Kết quả học tập (9 điểm)</td>
+              <td>5</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr className={'tr'}>
+              <td>1.3.1</td>
+              <td>Kết quả học tập(KQHT:)</td>
+              <td>0</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr className={'tr'}>
+              <td colspan={2} style={{ textAlign: 'center' }}>Tổng điểm</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: "center", margin: '30px 0', marginBottom: 50 }}>
-
-      <h5><b>PHIẾU ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN</b></h5>
-      <h5><b>Học kỳ 1 Năm học 2020-2021</b></h5>
-    </div>
-    <div style={{ width: "60%", display: 'inline-block' }}>Họ tên: Trần Bình Cát Luận</div>
-    MSSV: 16030441
-    <div style={{ width: "60%", display: 'inline-block' }}>Lớp: NCDUDPM10B</div>
-    Khoa/viện: Khoa Công nghệ Thông tin
-    <table id="exportTable" className="table" >
-      <thead className={'th'}>
-        <tr>
-          <th rowspan={2} className={'th__stt'}>Tiêu chuẩn/Tiêu chí</th>
-          <th rowspan={2} className={'th_content'}>Nội dung đánh giá</th>
-          <th colspan={3} >Điểm đánh giá</th>
-
-        </tr>
-        <tr>
-          <th className={'th_evaluation'}>Phần mềm đánh giá</th>
-          <th className={'th_evaluation'}>Sinh viên tự đánh giá</th>
-          <th className={'th_evaluation'}>Lớp đánh giá</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr className={'tr'}>
-          <td>1</td>
-          <td>Đánh giá về ý thức tham gia học tập (tối đa 20 điểm)</td>
-          <td>13</td>
-          <td></td>
-          <td>2</td>
-        </tr>
-        <tr className={'tr'}>
-          <td>1.1</td>
-          <td>Ý thức và thái độ trong học tập (10 điểm)</td>
-          <td>10</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr className={'tr'}>
-          <td>1.1.1</td>
-          <td>Đi học đầy đủ đúng giờ; thái độ học tập tích cực</td>
-          <td>10</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr className={'tr'}>
-          <td>1.2</td>
-          <td>Ý thức và thái độ tham gia các cuộc thi kỳ thi (3 điểm)</td>
-          <td>3</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr className={'tr'}>
-          <td>1.2.1</td>
-          <td>Ý thức và thái độ tham gia các cuộc thi, kỳ thi</td>
-          <td>3</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr className={'tr'}>
-          <td>1.3</td>
-          <td>Kết quả học tập (9 điểm)</td>
-          <td>5</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr className={'tr'}>
-          <td>1.3.1</td>
-          <td>Kết quả học tập(KQHT:)</td>
-          <td>0</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr className={'tr'}>
-          <td colspan={2} style={{ textAlign: 'center' }}>Tổng điểm</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-
-  </div>)
+  )
 }
 
 export default function PinnedSubheaderList() {

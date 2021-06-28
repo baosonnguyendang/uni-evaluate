@@ -31,17 +31,19 @@ export default function EmployeeList() {
         let temp = []
         res.data.formUsers.map(user => {
           let point = ['null', 'null', 'null']
-          user.evaluateForm.map((x, index) => {
-            if (x.point) {
-              point[index] = x.point
-            }
-          })
+          if (user.evaluateForm) {
+            user.evaluateForm.map((x, index) => {
+              if (x.point) {
+                point[index] = x.point
+              }
+            })
+          }
           let obj = {
             id: user.evaluateForm ? user.userForm._id : null,
             code: user.user_id.staff_id,
             name: user.user_id.lastname + ' ' + user.user_id.firstname,
             unit: user.user_id.department.length > 0 ? user.user_id.department[0].name : '',
-            status: user.evaluateForm.length,
+            status: user.evaluateForm ? user.evaluateForm.length : 0,
             point: point
           }
           temp.push(obj)
