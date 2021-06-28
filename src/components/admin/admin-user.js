@@ -105,10 +105,9 @@ export default function ListUser() {
   const fetchUser = () => {
     return axios.get('/admin/user')
       .then(res => {
-        // console.log(res.data.users);
         setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
         setFilterUser(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
-        // console.log(rows)
+        console.log(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
         setIsLoading(false)
       })
       .catch(err => {
@@ -457,7 +456,6 @@ export default function ListUser() {
                             <InputLabel htmlFor="outlined-newUnit-native">Đơn vị</InputLabel>
                             <Select
                               native
-                              required
                               value={newUnit}
                               label='Đơn vị'
                               onChange={handleChangeUnit}
