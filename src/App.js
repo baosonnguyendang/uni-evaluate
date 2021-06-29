@@ -16,11 +16,6 @@ function App() {
   const dispatch = useDispatch()
   const token = useSelector(state => state.auth.token)
   axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
-<<<<<<< HEAD
-  //axios.defaults.baseURL = 'http://localhost:5000';
-=======
-  // axios.defaults.baseURL = 'http://localhost:5000';
->>>>>>> 31590c36a41c9c6dd61119fb0ddc050f298037f3
   axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` }
 
   useEffect(() => {
