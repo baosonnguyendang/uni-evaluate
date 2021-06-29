@@ -59,6 +59,7 @@ export default function FormEvaluation(props) {
   const [readOnly3, setReadOnly3] = useState(false)
   const [max, setMax] = useState([]) // lưu điểm tối đa mỗi tiêu chuẩn
   const [input, setInput] = useState([])
+  const [importList, setImportList] = useState([]) //lưu các tiêu chí đã imoprt file
 
   var variable = props.level === 1 ? id1 : id3
 
@@ -106,12 +107,17 @@ export default function FormEvaluation(props) {
             //console.log(temp)
             console.log(res.data.evaluateForms)
             if (res.data.evaluateForms.length > 0) {
+              let tam = []
               res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
+                if (criteria.read_only == true) {
+                  tam.push(criteria.form_criteria.criteria_id.code)
+                }
                 temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
                 if (criteria.details) {
                   temp.find(x => x.name == criteria.form_criteria.criteria_id.code).details = criteria.details
                 }
               })
+              setImportList([...tam])
               let d = res.data.evaluateForms
               if (d[0].status === 1) {
                 setDisableEdit(true)
@@ -786,7 +792,7 @@ export default function FormEvaluation(props) {
                                             <input
                                               style={{ width: 40 }}
                                               type='button'
-                                              onClick={() => { dispatch(showModal(data => setDetails(data, 2), "TIMES_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) })) }}
+                                              onClick={() => { dispatch(showModal(data => setDetails(data, 2), "TIMES_MODAL", { disableEdit: disableEdit || readOnly || importList.some(x => x == criteria.criteria_id.code), name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) })) }}
                                               value={sent.find(x => x.name == criteria.criteria_id.code) ? sent.find(x => x.name == criteria.criteria_id.code).value : 0}
                                               onMouseUp={e => e.target.blur()}
                                             />
