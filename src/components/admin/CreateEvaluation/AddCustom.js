@@ -37,6 +37,7 @@ const PrintComponent = () => {
   const classes = useStyles()
   const [value, setValue] = useState('0')
   const [form, setForm] = useState([])
+  const [data, setData] = useState([])
 
   useEffect(() => {
     axios.get(`/admin/userForm/60ba462f81ed560004f90f9d/get`)
@@ -46,6 +47,12 @@ const PrintComponent = () => {
         axios.get(`/admin/userForm/60ba462f81ed560004f90f9d/evaluation/get`)
           .then(res => {
             console.log(res.data)
+            let t = []
+            if (res.data.evaluateForms){
+              res.data.evaluateForms.map(level => {
+                
+              })
+            }
           })
           .catch(err => {
             console.log(err)

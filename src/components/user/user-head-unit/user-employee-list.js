@@ -48,6 +48,7 @@ export default function EmployeeList() {
           }
           temp.push(obj)
         })
+        console.log(temp)
         setData(temp)
       })
       .catch(err => {

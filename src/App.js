@@ -15,8 +15,8 @@ import Modal from './components/common/Modals/Modal'
 function App() {
   const dispatch = useDispatch()
   const token = useSelector(state => state.auth.token)
-  // axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
-  axios.defaults.baseURL = 'http://localhost:5000';
+  axios.defaults.baseURL = 'https://university-evaluation.herokuapp.com';
+  //axios.defaults.baseURL = 'http://localhost:5000';
   axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` }
 
   useEffect(() => {
