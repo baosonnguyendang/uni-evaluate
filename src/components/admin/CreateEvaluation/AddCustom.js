@@ -15,12 +15,12 @@ import Paper from '@material-ui/core/Paper';
 import { useReactToPrint, ReactToPrint } from 'react-to-print';
 import './style.css';
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
+const useStyles = makeStyles((theme) => ({
+  tab: {
+    width: '10%'
+  }
+}));
 
-
-  }),
-);
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
@@ -39,13 +39,17 @@ const PrintComponent = () => {
   const [form, setForm] = useState([])
 
   useEffect(() => {
-    axios.get(`/admin/form/8DP9W/getFormStandard`)
+    axios.get(`/admin/userForm/60ba462f81ed560004f90f9d/get`)
       .then(res => {
         console.log(res.data)
-        res.data.formStandards.map(standard => {
-
-        })
         setForm(res.data.formStandards)
+        axios.get(`/admin/userForm/60ba462f81ed560004f90f9d/evaluation/get`)
+          .then(res => {
+            console.log(res.data)
+          })
+          .catch(err => {
+            console.log(err)
+          })
       })
       .catch(err => {
         console.log(err)
@@ -81,18 +85,18 @@ const PrintComponent = () => {
           </tbody>
         </table>
         <div style={{ clear: 'both', height: '15px' }}></div>
-        <table id="exportTable" className="table" >
+        <table id="exportTable" className="table" style={{ borderCollapse: 'collapse' }} >
           <thead className={'th'}>
             <tr>
-              <th rowspan={2} style={{ verticalAlign: 'middle' }} >TT</th>
-              <th rowspan={2} style={{ verticalAlign: 'middle', width: '50%' }} >Nội dung đánh giá</th>
-              <th rowspan={2} style={{ verticalAlign: 'middle' }} >Điểm quy định</th>
-              <th colspan={3} >Điểm đánh giá</th>
+              <th rowspan={2} style={{ verticalAlign: 'middle', width: '8%', border: '1px solid #666' }} >TT</th>
+              <th rowspan={2} style={{ verticalAlign: 'middle', width: '52%', border: '1px solid #666' }} >Nội dung đánh giá</th>
+              <th rowspan={2} style={{ verticalAlign: 'middle', width: '10%', border: '1px solid #666' }} >Điểm quy định</th>
+              <th colspan={3} style={{ border: '1px solid #666' }}>Điểm đánh giá</th>
             </tr>
             <tr>
-              <th className='th_evaluation'>Cá nhân tự chấm</th>
-              <th className='th_evaluation'>Trưởng Đơn vị</th>
-              <th className='th_evaluation'>HĐĐG Trường</th>
+              <th className={classes.tab} style={{ border: '1px solid #666' }}>Cá nhân tự chấm</th>
+              <th className={classes.tab} style={{ border: '1px solid #666' }}>Trưởng Đơn vị</th>
+              <th className={classes.tab} style={{ border: '1px solid #666' }}>HĐĐG Trường</th>
             </tr>
           </thead>
           <tbody>
@@ -100,10 +104,27 @@ const PrintComponent = () => {
               return (
                 <>
                   <tr key={standard._id}>
-                    <td><b>{standard.standard_order}</b></td>
-                    <td><b>{standard.standard_id.name}</b></td>
-                    <td><b>{standard.standard_point}</b></td>
+                    <td style={{ border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}><b>{standard.standard_order}</b></td>
+                    <td style={{ border: '1px solid #666', padding: '5px' }}><b>{standard.standard_id.name}</b></td>
+                    <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{standard.standard_point}</b></td>
+                    <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                    <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                    <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
                   </tr>
+                  {standard.formCriteria.map(criteria => {
+                    return (
+                      <>
+                        <tr>
+                          <td style={{ border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{standard.standard_order}.{criteria.criteria_order}</td>
+                          <td style={{ border: '1px solid #666', padding: '5px' }}>{criteria.criteria_id.name}</td>
+                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{criteria.point}</td>
+                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                        </tr>
+                      </>
+                    )
+                  })}
                 </>
               )
             })}

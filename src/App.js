@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import "bootstrap/dist/css/bootstrap.min.css";
 
 import SignInSide from "./components/signin"
 import Dashboard from "./components/admin/admin-page"
@@ -12,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Toast from './components/common/Snackbar'
 import NotFound from './components/common/NotFound'
 import Modal from './components/common/Modals/Modal'
+
 function App() {
   const dispatch = useDispatch()
   const token = useSelector(state => state.auth.token)

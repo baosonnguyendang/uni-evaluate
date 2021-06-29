@@ -64,7 +64,6 @@ th; td {
 #exportTable {
   width: 100%;
   border: 1px solid #666;
-  border-collapse: collapse;
   page-break-inside: auto;
 }
 
