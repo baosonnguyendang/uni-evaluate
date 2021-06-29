@@ -3,7 +3,7 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { List, Button, TextField, Typography } from '@material-ui/core';
 
 import axios from 'axios'
-
+import {showModal} from '../../../actions/modalAction'
 import { useDispatch } from 'react-redux'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -159,7 +159,7 @@ export default function PinnedSubheaderList() {
     disableEdit: false,
     name: 'Tham gia viết sách',
     code: 'TC002-A',
-    max_point: 20,
+    max_point: null,
     base_point: 4.5,
     details: [{ name: "danh", value: "" },
     { name: "danh2", value: "10", description: "hahahaahahhahaahahahaaaaaaaaaaaaaaaaaaaaaaa" },
@@ -202,10 +202,10 @@ export default function PinnedSubheaderList() {
   return (
     <div>
       <Button onClick={() => printContent('print')}>Print</Button>
-      {/* <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "TIMES_MODAL", data1)) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
+      <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "TIMES_MODAL", data1)) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
   
 
-        <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "DETAIL_MODAL",data)) }} type="button" value={1}  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" /> */}
+        <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "DETAIL_MODAL",data)) }} type="button" value={ 'detail' }  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" />
       {/* <ReactToPrint
         trigger={() => <button>Print this out!</button>}
         content={() => componentRef.current}
