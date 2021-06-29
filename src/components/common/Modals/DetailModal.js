@@ -99,6 +99,7 @@ const DetailModal = () => {
         setData({ ...data, details: temp })
     }
     const filterData = (data) => {
+        if (!data.max_point) return { point: round(calculate(data.details, 'value', data.base_point)), code: data.code, details: data.details }
         return { point: data.max_point > calculate(data.details, 'value', data.base_point) ? round(calculate(data.details, 'value', data.base_point)) : data.max_point, code: data.code, details: data.details }
     }
 
