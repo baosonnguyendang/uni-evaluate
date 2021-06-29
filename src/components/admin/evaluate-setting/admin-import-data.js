@@ -115,22 +115,36 @@ export default function Import(props) {
       scode: standardChosen.code,
       ccode: criteriaChosen.code
     }
-    console.log(body)
     axios({
-      url: `/admin/form/${fcode}/file/export`,
+      url: `/admin/file/form/${fcode}/evaluation/export`,
       method: 'POST',
       data: body,
       responseType: 'blob', // important
     })
-      .then(async res => {
-        console.log(body)
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${body.dcode}-${body.ccode}.xlsx`); //or any other extension
-        document.body.appendChild(link);
-        link.click();
-      })
+    .then(async res => {
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${body.dcode}-${body.ccode}.xlsx`); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+    })
+    .catch(error => {
+      if(error.response) {
+        if(error.response.status === 405){
+          // Trả lỗi
+          // Message: "Tiêu chí chưa được hỗ trợ để xuất file"
+        }
+        if(error.response.status === 404){
+          // Trả lỗi
+          // Message: "Không tìm thấy tài nguyên yêu cầu"
+        }
+        if(error.response.status === 500){
+          // Trả lỗi
+          // Message: "Phát sinh lỗi hệ thống. Xin thử lại lần sau."
+        }
+      }
+    })
   }
 
   const [open, setOpen] = React.useState(false);
@@ -144,16 +158,37 @@ export default function Import(props) {
   };
 
   const submitExcel = (data) => {
+    const fcode = props.fcode;
+    const body = {
+      dcode: unitChosen.code,
+      scode: standardChosen.code,
+      ccode: criteriaChosen.code
+    }
     const formData = new FormData()
     formData.append("file", data)
-    console.log(formData)
-    return
-    axios.post("/admin/user/file/import", formData)
+    formData.append("dcode", body.dcode)
+    formData.append("scode",  body.scode)
+    formData.append("ccode",  body.ccode)
+
+    axios.post(`/admin/file/form/${fcode}/evaluation/import`, formData)
       .then(res => {
         console.log(res.data);
       })
-      .catch(e => {
-
+      .catch(error => {
+        if(error.response) {
+          if(error.response.status === 400){
+            // Trả lỗi
+            // Message: "Tiêu chí trong excel không phù hợp"
+          }
+          if(error.response.status === 404){
+            // Trả lỗi
+            // Message: "Không tìm thấy tài nguyên yêu cầu"
+          }
+          if(error.response.status === 500){
+            // Trả lỗi
+            // Message: "Phát sinh lỗi hệ thống. Xin thử lại lần sau."
+          }
+        }
       })
   }
 

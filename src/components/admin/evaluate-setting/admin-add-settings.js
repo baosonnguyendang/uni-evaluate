@@ -124,9 +124,9 @@ export default function AddSettings() {
           temp.push(createData(x.name, x.department_code))
           //setUnits(units => [...units, createData(x.name, x.department_code)])
         })
-        axios.get(`/admin/form/${code}/getFormDepartments`)
+        axios.get(`/admin/form/${code}/getFormDepartments?level=2`)
           .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             let _id = res.data.formDepartments.map(x => x.department_id.department_code)
             _id.map(x => {
               temp.map(y => {
