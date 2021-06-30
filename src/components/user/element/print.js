@@ -15,6 +15,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useReactToPrint, ReactToPrint } from 'react-to-print';
 import './styles.css';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   tab: {
@@ -39,12 +40,14 @@ const PrintComponent = (props) => {
   const [value, setValue] = useState('0')
   const [form, setForm] = useState([])
   const [sumPoint, setSumPoint] = useState([0, 0, 0])
+  const [info, setInfo] = useState()
 
   useEffect(() => {
     const getFormStandard = () => {
       return axios.get(`/form/${props.userForm}/v2`)
         .then(res => {
           console.log(res.data)
+          setInfo({ name: res.data.user.lastname + ' ' + res.data.user.firstname, id: res.data.user.staff_id, department: res.data.department.name, form: res.data.form.name })
           return res.data
         })
         .catch(err => {
@@ -89,7 +92,7 @@ const PrintComponent = (props) => {
 
         console.log(formStandards)
         setForm(formStandards)
-
+        props.setBool(true)
       })
       .catch(err => {
         console.log(err)
@@ -99,91 +102,107 @@ const PrintComponent = (props) => {
 
 
   return (
-    <div id='print' className={'root'} style={{ display: 'none' }} >
-      <div style={{ margin: '0 auto', width: '23cm' }}>
-        <div style={{ float: 'left', textAlign: 'center' }}>
-          ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH
-          <br />
-          <strong>TRƯỜNG ĐẠI HỌC BÁCH KHOA</strong>
-          <br />
-          ----------
-        </div>
-        <div style={{ clear: 'both', height: '20px' }}></div>
-        <div style={{ textAlign: 'center', width: '100%', fontWeight: 'bold', fontSize: '13pt !important', marginBottom: 25 }}>
-          <b>PHIẾU ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN</b>
-          <div style={{ fontSize: '95%' }}>
-            Học kỳ 1 - Năm học 2020-2021
+    <div>
+      {info && form && (
+        <div id='print' className={'root'} style={{ display: 'none' }} >
+          <div style={{ margin: '0 auto', width: '23cm' }}>
+            <div style={{ float: 'left', textAlign: 'center' }}>
+              ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH
+              <br />
+              <strong>TRƯỜNG ĐẠI HỌC BÁCH KHOA</strong>
+              <br />
+              ----------
+            </div>
+            <div style={{ clear: 'both', height: '20px' }}></div>
+            <div style={{ textAlign: 'center', width: '100%', fontSize: '13pt !important', marginBottom: 25 }}>
+              <b>PHIẾU ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN</b>
+              <div style={{ fontSize: '95%' }}>
+                {info.form}
+              </div>
+            </div>
+            <table style={{ width: '100%' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '60%', textAlign: 'left' }}>Họ Tên: {info.name}</td>
+                  <td style={{ textAlign: 'left' }}>MSVC: {info.id}</td>
+                </tr>
+                <tr>
+                  <td style={{ textAlign: 'left' }}>Đơn vị: {info.department}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style={{ clear: 'both', height: '15px' }}></div>
+            <table id="exportTable" className="table" style={{ borderCollapse: 'collapse' }} >
+              <thead className={'th'}>
+                <tr>
+                  <th rowspan={2} style={{ verticalAlign: 'middle', width: '8%', border: '1px solid #666' }} >TT</th>
+                  <th rowspan={2} style={{ verticalAlign: 'middle', width: '52%', border: '1px solid #666' }} >Nội dung đánh giá</th>
+                  <th rowspan={2} style={{ verticalAlign: 'middle', width: '10%', border: '1px solid #666' }} >Điểm quy định</th>
+                  <th colspan={3} style={{ border: '1px solid #666' }}>Điểm đánh giá</th>
+                </tr>
+                <tr>
+                  <th className={classes.tab} style={{ border: '1px solid #666' }}>Cá nhân tự chấm</th>
+                  <th className={classes.tab} style={{ border: '1px solid #666' }}>Trưởng Đơn vị</th>
+                  <th className={classes.tab} style={{ border: '1px solid #666' }}>HĐĐG Trường</th>
+                </tr>
+              </thead>
+              <tbody>
+                {form.map(standard => {
+                  return (
+                    <>
+                      <tr key={standard._id}>
+                        <td style={{ border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}><b>{standard.standard_order}</b></td>
+                        <td style={{ border: '1px solid #666', padding: '5px' }}><b>{standard.standard_id.name}</b></td>
+                        <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{standard.standard_point}</b></td>
+                        <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                        <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                        <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                      </tr>
+                      {standard.formCriteria.map(criteria => {
+                        return (
+                          <>
+                            <tr>
+                              <td style={{ border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{standard.standard_order}.{criteria.criteria_order}</td>
+                              <td style={{ border: '1px solid #666', padding: '5px' }}>{criteria.criteria_id.name}</td>
+                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{criteria.point}</td>
+                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                            </tr>
+                          </>
+                        )
+                      })}
+                    </>
+                  )
+                })}
+                <tr>
+                  <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={3}><b>Tổng điểm</b></td>
+                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{sumPoint[0]}</b></td>
+                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{Number((sumPoint[1]).toFixed(2))}</b></td>
+                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{!NaN ? null : sumPoint[2]}</b></td>
+                </tr>
+                <tr>
+                  <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={6}><b>Xếp loại:</b> Chưa có</td>
+                </tr>
+              </tbody>
+            </table>
+            <table style={{ width: '100%', marginTop: 10 }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '33%' }}></td>
+                  <td style={{ width: '33%' }}></td>
+                  <td style={{ width: '33%', textAlign: 'center' }}>Ngày ... tháng ... năm</td>
+                </tr>
+                <tr>
+                  <td style={{ width: '33%', textAlign: 'center' }}><b>{props.level == 3 && 'Hội đồng Đánh giá'}</b></td>
+                  <td style={{ width: '33%', textAlign: 'center' }}><b>{props.level == 2 && 'Trưởng Đơn vị'}</b></td>
+                  <td style={{ width: '33%', textAlign: 'center' }}><b>Giảng viên/Viên chức</b></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <table style={{ width: '100%' }}>
-          <tbody>
-            <tr>
-              <td style={{ width: '60%', textAlign: 'left' }}>Họ Tên: Zone Lành</td>
-              <td style={{ textAlign: 'left' }}>MSSV: 1111111</td>
-            </tr>
-            <tr>
-              <td style={{ textAlign: 'left' }}>Đơn vị:</td>
-            </tr>
-          </tbody>
-        </table>
-        <div style={{ clear: 'both', height: '15px' }}></div>
-        <table id="exportTable" className="table" style={{ borderCollapse: 'collapse' }} >
-          <thead className={'th'}>
-            <tr>
-              <th rowspan={2} style={{ verticalAlign: 'middle', width: '8%', border: '1px solid #666' }} >TT</th>
-              <th rowspan={2} style={{ verticalAlign: 'middle', width: '52%', border: '1px solid #666' }} >Nội dung đánh giá</th>
-              <th rowspan={2} style={{ verticalAlign: 'middle', width: '10%', border: '1px solid #666' }} >Điểm quy định</th>
-              <th colspan={3} style={{ border: '1px solid #666' }}>Điểm đánh giá</th>
-            </tr>
-            <tr>
-              <th className={classes.tab} style={{ border: '1px solid #666' }}>Cá nhân tự chấm</th>
-              <th className={classes.tab} style={{ border: '1px solid #666' }}>Trưởng Đơn vị</th>
-              <th className={classes.tab} style={{ border: '1px solid #666' }}>HĐĐG Trường</th>
-            </tr>
-          </thead>
-          <tbody>
-            {form.map(standard => {
-              return (
-                <>
-                  <tr key={standard._id}>
-                    <td style={{ border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}><b>{standard.standard_order}</b></td>
-                    <td style={{ border: '1px solid #666', padding: '5px' }}><b>{standard.standard_id.name}</b></td>
-                    <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{standard.standard_point}</b></td>
-                    <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                    <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                    <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                  </tr>
-                  {standard.formCriteria.map(criteria => {
-                    return (
-                      <>
-                        <tr>
-                          <td style={{ border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{standard.standard_order}.{criteria.criteria_order}</td>
-                          <td style={{ border: '1px solid #666', padding: '5px' }}>{criteria.criteria_id.name}</td>
-                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{criteria.point}</td>
-                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                        </tr>
-                      </>
-                    )
-                  })}
-                </>
-              )
-            })}
-            <tr>
-              <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={2}><b>Tổng điểm</b></td>
-              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{sumPoint[0]}</b></td>
-              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{sumPoint[1]}</b></td>
-              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{!NaN ? null : sumPoint[2]}</b></td>
-            </tr>
-            <tr>
-              <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={2}><b>Xếp loại</b></td>
-              <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={4}><b>Chưa có</b></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      )}
     </div>
   )
 }
@@ -241,18 +260,21 @@ export default function PinnedSubheaderList(props) {
     printPage.document.body.innerHTML = printcontent;
     printPage.focus();
     printPage.print();
-    printPage.close();
+    //printPage.close();
   }
 
+  const [bool, setBool] = useState(false)
 
   return (
     <div>
       {/* <Button onClick={() => printContent('print')}>Print</Button> */}
-      <Tooltip title='In Biểu mẫu' displayPrint="none" component={Box}>
-        <IconButton onClick={() => printContent('print')}>
-          <PrintIcon />
-        </IconButton>
-      </Tooltip>
+      {bool ? (
+        <Tooltip title='In Biểu mẫu' displayPrint="none" component={Box}>
+          <IconButton onClick={() => printContent('print')}>
+            <PrintIcon />
+          </IconButton>
+        </Tooltip>
+      ) : <CircularProgress />}
       {/* <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "TIMES_MODAL", data1)) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
   
 
@@ -261,7 +283,7 @@ export default function PinnedSubheaderList(props) {
         trigger={() => <button>Print this out!</button>}
         content={() => componentRef.current}
       /> */}
-      <PrintComponent userForm={props.userForm} />
+      <PrintComponent setBool={setBool} userForm={props.userForm} level={props.level} />
     </div>
   );
 }

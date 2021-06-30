@@ -38,7 +38,8 @@ export default function FormEvaluation(props) {
   const [isLoading, setIsLoading] = useState(true)
   // const [data, setData] = useState({})
   const { id, id1, id3 } = useParams()
-  var level = props.level
+  //var level = props.level
+  const [level, setLevel] = useState(props.level)
 
   const [info, setInfo] = useState(null)
   const [point, setPoint] = useState(0) //điểm tự đánh giá
@@ -81,7 +82,8 @@ export default function FormEvaluation(props) {
         setInfo({
           name: res.data.user.lastname + ' ' + res.data.user.firstname,
           id: res.data.user.staff_id,
-          unit: res.data.department.name
+          unit: res.data.department.name,
+          form: res.data.form.name
         })
         setData(res.data.formStandards)
         let temp = []
@@ -691,7 +693,7 @@ export default function FormEvaluation(props) {
                     <PrintIcon />
                   </IconButton>
                 </Tooltip> */}
-                <PinnedSubheaderList userForm={variable} />
+                <PinnedSubheaderList userForm={variable} level={level}/>
 
               </div>
               <Grid container justify='center' style={{ marginTop: '20px' }}>
