@@ -573,6 +573,7 @@ export default function FormEvaluation(props) {
     console.log(level)
     switch (level) {
       case 1:
+        console.log(sent.find(x => x.name == criteria))
         return (
           sent.find(x => x.name == criteria).details ? sent.find(x => x.name == criteria).details : []
         )
@@ -850,7 +851,7 @@ export default function FormEvaluation(props) {
                                               style={{ width: 40 }}
                                               type='button'
                                               onClick={() => {
-                                                dispatch(showModal(data => setDetails(data, 2), "TIMES_MODAL", { disableEdit: disableEdit2 || readOnly2, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 2) }))
+                                                dispatch(showModal(data => setDetails(data, 2), "TIMES_MODAL", { disableEdit: disableEdit2 || readOnly2 || importList.some(x => x == criteria.criteria_id.code), name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 2) }))
                                               }}
                                               value={all[1].find(y => (y.name == criteria.criteria_id.code)) ? all[1].find(y => (y.name == criteria.criteria_id.code)).value : 0}
                                               onMouseUp={e => e.target.blur()}
@@ -909,7 +910,7 @@ export default function FormEvaluation(props) {
                                               style={{ width: 40 }}
                                               type='button'
                                               onClick={() => {
-                                                dispatch(showModal(data => setDetails(data, 2), "TIMES_MODAL", { disableEdit: disableEdit3 || readOnly3, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 3) }))
+                                                dispatch(showModal(data => setDetails(data, 2), "TIMES_MODAL", { disableEdit: disableEdit3 || readOnly3 || importList.some(x => x == criteria.criteria_id.code), name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 3) }))
                                               }}
                                               value={all.length > 2 && all[2].find(y => (y.name == criteria.criteria_id.code)).value}
                                               onMouseUp={e => e.target.blur()}
@@ -968,9 +969,9 @@ export default function FormEvaluation(props) {
                         <TableCell></TableCell>
                         <TableCell><b>Tổng điểm</b></TableCell>
                         <TableCell></TableCell>
-                        <TableCell align='center'><Typography >{point}</Typography></TableCell>
-                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 1 || readOnly2 ? point2 : null}</Typography></TableCell>
-                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 2 || readOnly3 ? point3 : null}</Typography></TableCell>
+                        <TableCell align='center'><Typography >{Number((point).toFixed(2))}</Typography></TableCell>
+                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 1 || readOnly2 ? Number((point2).toFixed(2)) : null}</Typography></TableCell>
+                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 2 || readOnly3 ? Number((point3).toFixed(2)) : null}</Typography></TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
