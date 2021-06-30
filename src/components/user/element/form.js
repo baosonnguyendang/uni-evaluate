@@ -11,6 +11,7 @@ import PrintIcon from '@material-ui/icons/Print';
 
 import axios from 'axios';
 
+import PinnedSubheaderList from './print.js'
 import './styles.css';
 
 import { useReactToPrint } from 'react-to-print';
@@ -936,7 +937,7 @@ export default function FormEvaluation(props) {
                                     />
                                   </TableCell>
                                   <TableCell align='center' colSpan={1}>
-                                    {(props.level > 1 || disableEdit2) ?
+                                    {(props.level > 1 || readOnly2) ?
                                       <input
                                         onChange={handleCheckRadio2}
                                         type="radio"
@@ -948,7 +949,7 @@ export default function FormEvaluation(props) {
                                       null}
                                   </TableCell>
                                   <TableCell align='center' colSpan={1}>
-                                    {(props.level > 2 || disableEdit3) ?
+                                    {(props.level > 2 || readOnly3) ?
                                       <input
                                         onChange={handleCheckRadio3}
                                         disabled={disableEdit3}
