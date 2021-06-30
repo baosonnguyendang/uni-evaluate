@@ -138,12 +138,12 @@ const PrintComponent = (props) => {
                   <th rowspan={2} style={{ verticalAlign: 'middle', width: '8%', border: '1px solid #666' }} >TT</th>
                   <th rowspan={2} style={{ verticalAlign: 'middle', width: '52%', border: '1px solid #666' }} >Nội dung đánh giá</th>
                   <th rowspan={2} style={{ verticalAlign: 'middle', width: '10%', border: '1px solid #666' }} >Điểm quy định</th>
-                  <th colspan={3} style={{ border: '1px solid #666' }}>Điểm đánh giá</th>
+                  <th colSpan={3} style={{ border: '1px solid #666' }}>Điểm đánh giá</th>
                 </tr>
                 <tr>
-                  <th className={classes.tab} style={{ border: '1px solid #666' }}>Cá nhân tự chấm</th>
-                  <th className={classes.tab} style={{ border: '1px solid #666' }}>Trưởng Đơn vị</th>
-                  <th className={classes.tab} style={{ border: '1px solid #666' }}>HĐĐG Trường</th>
+                  <th className={classes.tab} style={{ border: '1px solid #666', width: '10%' }}>Cá nhân tự chấm</th>
+                  <th className={classes.tab} style={{ border: '1px solid #666', width: '10%' }}>Trưởng Đơn vị</th>
+                  <th className={classes.tab} style={{ border: '1px solid #666', width: '10%' }}>HĐĐG Trường</th>
                 </tr>
               </thead>
               <tbody>

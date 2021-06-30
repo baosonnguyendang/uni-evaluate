@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
+import PrintList from './user-print-list'
+
 import { Link, useRouteMatch, useParams } from 'react-router-dom';
 
 import { Table, TableHead, TableBody, TableCell, TableRow, Typography, LinearProgress } from '@material-ui/core';
@@ -60,9 +62,12 @@ export default function EmployeeList() {
     return <LinearProgress style={{ position: "absolute", width: "100%" }} />
   return (
     <div style={{ margin: '24px' }}>
-      <Typography component="h3" variant="h5" color="inherit">
-        Danh sách các GV/VC đánh giá:
-      </Typography>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography component="h3" variant="h5" color="inherit">
+          Danh sách các GV/VC đánh giá:
+        </Typography>
+        <PrintList />
+      </div>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
