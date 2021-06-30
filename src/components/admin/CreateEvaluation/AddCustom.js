@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import { List, Button, TextField, Typography } from '@material-ui/core';
+import { List, Button, TextField, Typography, Box } from '@material-ui/core';
 
 import axios from 'axios'
 import {showModal} from '../../../actions/modalAction'
@@ -37,37 +37,70 @@ const PrintComponent = () => {
   const classes = useStyles()
   const [value, setValue] = useState('0')
   const [form, setForm] = useState([])
-  const [data, setData] = useState([])
+  const [sumPoint, setSumPoint] = useState([0,0,0])
 
   useEffect(() => {
-    axios.get(`/admin/userForm/60ba462f81ed560004f90f9d/get`)
+    const getFormStandard = () => {
+      return axios.get(`/admin/userForm/60bb13d69eed6c00042f3e75/get`)
       .then(res => {
         console.log(res.data)
-        setForm(res.data.formStandards)
-        axios.get(`/admin/userForm/60ba462f81ed560004f90f9d/evaluation/get`)
-          .then(res => {
-            console.log(res.data)
-            let t = []
-            if (res.data.evaluateForms){
-              res.data.evaluateForms.map(level => {
-                
-              })
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
+        return res.data
       })
       .catch(err => {
         console.log(err)
       })
+    }
+    const getFormEvaluate = () => {
+      return axios.get(`/admin/userForm/60bb13d69eed6c00042f3e75/evaluation/get`)
+      .then(res => {
+        console.log(res.data)
+        const evaluateForms = res.data.evaluateForms
+        const temp = evaluateForms[0].evaluateCriteria.map(e => [])
+        console.log(temp)
+
+        const point = evaluateForms.map( ef => ef.evaluateCriteria.map( (ec, i) => {temp[i].push(ec.point)}))
+        // const point = evaluateForms[0].evaluateCriteria.map(e => [e.point])
+        console.log(temp)
+        // điểm [[1,2,1], [1,2,1] ] 3 lv tương ứng
+        return temp
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+    Promise.all([getFormStandard(), getFormEvaluate()])
+      .then(res => {
+        console.log(res)
+        const formStandards = res[0].formStandards
+        let pointAllLevel = []
+        pointAllLevel = res[1]
+        console.log(pointAllLevel)
+        console.log(formStandards)
+        setSumPoint(pointAllLevel.reduce(([a,b,c], [a1,b1,c1]) => [a+a1, b+b1, c+c1],[0,0,0])) 
+
+        formStandards.map( (e) => {
+          const pointOfStandard = pointAllLevel.slice(0,e.formCriteria.length)
+          console.log(e.formCriteria.length)
+          // xoá điểm đã lấy
+         pointAllLevel = pointAllLevel.slice(e.formCriteria.length)
+          e.point = pointOfStandard
+        })
+
+        console.log(formStandards)
+        setForm(formStandards)
+
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    
   }, [])
 
   return (
     <div id='print' className={'root'} >
       <div style={{ margin: '0 auto', width: '23cm' }}>
         <div style={{ float: 'left', textAlign: 'center' }}>
-          ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH
+        <strong>ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH</strong>
           <br />
           <strong>TRƯỜNG ĐẠI HỌC BÁCH KHOA</strong>
           <br />
@@ -95,10 +128,10 @@ const PrintComponent = () => {
         <table id="exportTable" className="table" style={{ borderCollapse: 'collapse' }} >
           <thead className={'th'}>
             <tr>
-              <th rowspan={2} style={{ verticalAlign: 'middle', width: '8%', border: '1px solid #666' }} >TT</th>
-              <th rowspan={2} style={{ verticalAlign: 'middle', width: '52%', border: '1px solid #666' }} >Nội dung đánh giá</th>
-              <th rowspan={2} style={{ verticalAlign: 'middle', width: '10%', border: '1px solid #666' }} >Điểm quy định</th>
-              <th colspan={3} style={{ border: '1px solid #666' }}>Điểm đánh giá</th>
+              <th rowSpan={2} style={{ verticalAlign: 'middle', width: '8%', border: '1px solid #666' }} >TT</th>
+              <th rowSpan={2} style={{ verticalAlign: 'middle', width: '52%', border: '1px solid #666' }} >Nội dung đánh giá</th>
+              <th rowSpan={2} style={{ verticalAlign: 'middle', width: '10%', border: '1px solid #666' }} >Điểm quy định</th>
+              <th colSpan={3} style={{ border: '1px solid #666' }}>Điểm đánh giá</th>
             </tr>
             <tr>
               <th className={classes.tab} style={{ border: '1px solid #666' }}>Cá nhân tự chấm</th>
@@ -118,16 +151,16 @@ const PrintComponent = () => {
                     <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
                     <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
                   </tr>
-                  {standard.formCriteria.map(criteria => {
+                  {standard.formCriteria.map((criteria, i) => {
                     return (
                       <>
                         <tr>
                           <td style={{ border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{standard.standard_order}.{criteria.criteria_order}</td>
                           <td style={{ border: '1px solid #666', padding: '5px' }}>{criteria.criteria_id.name}</td>
-                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{criteria.point}</td>
-                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{criteria.point}</td>
+                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{standard.point[i][0]}</td>
+                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{standard.point[i][1]}</td>
+                          <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{standard.point[i][2]}</td>
                         </tr>
                       </>
                     )
@@ -135,6 +168,13 @@ const PrintComponent = () => {
                 </>
               )
             })}
+            <tr>
+              <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={2}><b>Tổng điểm</b></td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{sumPoint[0]}</td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{sumPoint[1]}</td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{!NaN ? null : sumPoint[2]}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -210,7 +250,9 @@ export default function PinnedSubheaderList() {
         trigger={() => <button>Print this out!</button>}
         content={() => componentRef.current}
       /> */}
+      <Box display="block">
       <PrintComponent />
+      </Box>
     </div>
   );
 }
