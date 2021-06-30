@@ -969,9 +969,9 @@ export default function FormEvaluation(props) {
                         <TableCell></TableCell>
                         <TableCell><b>Tổng điểm</b></TableCell>
                         <TableCell></TableCell>
-                        <TableCell align='center'><Typography >{point}</Typography></TableCell>
-                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 1 || readOnly2 ? point2 : null}</Typography></TableCell>
-                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 2 || readOnly3 ? point3 : null}</Typography></TableCell>
+                        <TableCell align='center'><Typography >{Number((point).toFixed(2))}</Typography></TableCell>
+                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 1 || readOnly2 ? Number((point2).toFixed(2)) : null}</Typography></TableCell>
+                        <TableCell align='center'><Typography variant="subtitle1">{props.level > 2 || readOnly3 ? Number((point3).toFixed(2)) : null}</Typography></TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
