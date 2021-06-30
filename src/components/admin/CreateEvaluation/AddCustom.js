@@ -154,7 +154,7 @@ const PrintComponent = () => {
                   {standard.formCriteria.map((criteria, i) => {
                     return (
                       <>
-                        <tr>
+                        <tr key={criteria.criteria_id._id}>
                           <td style={{ border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{standard.standard_order}.{criteria.criteria_order}</td>
                           <td style={{ border: '1px solid #666', padding: '5px' }}>{criteria.criteria_id.name}</td>
                           <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{criteria.point}</td>
@@ -238,14 +238,14 @@ export default function PinnedSubheaderList() {
 
   }
 
-
+  
   return (
     <div>
       <Button onClick={() => printContent('print')}>Print</Button>
-      <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "TIMES_MODAL", data1)) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
+      {/* <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "TIMES_MODAL", data1)) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
   
 
-        <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "DETAIL_MODAL",data)) }} type="button" value={ 'detail' }  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" />
+        <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "DETAIL_MODAL",data)) }} type="button" value={ 'detail' }  onMouseUp={e => e.target.blur()} style={{width:100}} variant="outlined" /> */}
       {/* <ReactToPrint
         trigger={() => <button>Print this out!</button>}
         content={() => componentRef.current}
