@@ -686,11 +686,12 @@ export default function FormEvaluation(props) {
                   </div>
                 )}
 
-                <Tooltip title='In Biểu mẫu' displayPrint="none" component={Box}>
+                {/* <Tooltip title='In Biểu mẫu' displayPrint="none" component={Box}>
                   <IconButton onClick={handlePrint}>
                     <PrintIcon />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
+                <PinnedSubheaderList userForm={variable} />
 
               </div>
               <Grid container justify='center' style={{ marginTop: '20px' }}>

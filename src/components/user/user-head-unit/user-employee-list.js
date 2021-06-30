@@ -30,7 +30,7 @@ export default function EmployeeList() {
         console.log(res.data)
         let temp = []
         res.data.formUsers.map(user => {
-          let point = ['null', 'null', 'null']
+          let point = ['-', '-', '-']
           if (user.evaluateForm) {
             user.evaluateForm.map((x, index) => {
               if (x.point) {

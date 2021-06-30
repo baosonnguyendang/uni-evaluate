@@ -116,7 +116,7 @@ const PrintComponent = () => {
         <table style={{ width: '100%' }}>
           <tbody>
             <tr>
-              <td style={{ width: '60%', textAlign: 'left' }}>Họ Tên: Zone Lành</td>
+              <td style={{ width: '60%', textAlign: 'left' }}>Họ Tên: Nguyễn Thị Công Danh</td>
               <td style={{ textAlign: 'left' }}>MSSV: 1111111</td>
             </tr>
             <tr>
@@ -171,9 +171,13 @@ const PrintComponent = () => {
             <tr>
               <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={2}><b>Tổng điểm</b></td>
               <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{sumPoint[0]}</td>
-              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{sumPoint[1]}</td>
-              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{!NaN ? null : sumPoint[2]}</td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{sumPoint[0]}</b></td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{sumPoint[1]}</b></td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{!NaN ? null : sumPoint[2]}</b></td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={2}><b>Xếp loại</b></td>
+              <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={4}><b>Chưa có</b></td>
             </tr>
           </tbody>
         </table>

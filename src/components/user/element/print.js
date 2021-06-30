@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import { List, Button, TextField, Typography } from '@material-ui/core';
+import { List, Button, TextField, Typography, IconButton, Tooltip, Box } from '@material-ui/core';
+import PrintIcon from '@material-ui/icons/Print';
 
 import axios from 'axios'
-import {showModal} from '../../../actions/modalAction'
+import { showModal } from '../../../actions/modalAction'
 import { useDispatch } from 'react-redux'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -37,34 +38,68 @@ const PrintComponent = (props) => {
   const classes = useStyles()
   const [value, setValue] = useState('0')
   const [form, setForm] = useState([])
-  const [data, setData] = useState([])
+  const [sumPoint, setSumPoint] = useState([0, 0, 0])
 
   useEffect(() => {
-    axios.get(`/admin/userForm/${props.userForm}/get`)
+    const getFormStandard = () => {
+      return axios.get(`/form/${props.userForm}/v2`)
+        .then(res => {
+          console.log(res.data)
+          return res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    const getFormEvaluate = () => {
+      return axios.get(`/form/${props.userForm}/evaluation/get`)
+        .then(res => {
+          console.log(res.data)
+          const evaluateForms = res.data.evaluateForms
+          const temp = evaluateForms[0].evaluateCriteria.map(e => [])
+          console.log(temp)
+
+          const point = evaluateForms.map(ef => ef.evaluateCriteria.map((ec, i) => { temp[i].push(ec.point) }))
+          // const point = evaluateForms[0].evaluateCriteria.map(e => [e.point])
+          console.log(temp)
+          // điểm [[1,2,1], [1,2,1] ] 3 lv tương ứng
+          return temp
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    Promise.all([getFormStandard(), getFormEvaluate()])
       .then(res => {
-        console.log(res.data)
-        setForm(res.data.formStandards)
-        axios.get(`/admin/userForm/${props.userForm}/evaluation/get`)
-          .then(res => {
-            console.log(res.data)
-            let t = []
-            if (res.data.evaluateForms){
-              res.data.evaluateForms.map(level => {
-                
-              })
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
+        console.log(res)
+        const formStandards = res[0].formStandards
+        let pointAllLevel = []
+        pointAllLevel = res[1]
+        console.log(pointAllLevel)
+        console.log(formStandards)
+        setSumPoint(pointAllLevel.reduce(([a, b, c], [a1, b1, c1]) => [a + a1, b + b1, c + c1], [0, 0, 0]))
+
+        formStandards.map((e) => {
+          const pointOfStandard = pointAllLevel.slice(0, e.formCriteria.length)
+          console.log(e.formCriteria.length)
+          // xoá điểm đã lấy
+          pointAllLevel = pointAllLevel.slice(e.formCriteria.length)
+          e.point = pointOfStandard
+        })
+
+        console.log(formStandards)
+        setForm(formStandards)
+
       })
       .catch(err => {
         console.log(err)
       })
+
   }, [])
 
+
   return (
-    <div id='print' className={'root'} >
+    <div id='print' className={'root'} style={{ display: 'none' }} >
       <div style={{ margin: '0 auto', width: '23cm' }}>
         <div style={{ float: 'left', textAlign: 'center' }}>
           ĐẠI HỌC QUỐC GIA TP. HỒ CHÍ MINH
@@ -135,6 +170,17 @@ const PrintComponent = (props) => {
                 </>
               )
             })}
+            <tr>
+              <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={2}><b>Tổng điểm</b></td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{sumPoint[0]}</b></td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{sumPoint[1]}</b></td>
+              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{!NaN ? null : sumPoint[2]}</b></td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={2}><b>Xếp loại</b></td>
+              <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={4}><b>Chưa có</b></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -195,13 +241,18 @@ export default function PinnedSubheaderList(props) {
     printPage.document.body.innerHTML = printcontent;
     printPage.focus();
     printPage.print();
-
+    printPage.close();
   }
 
 
   return (
     <div>
-      <Button onClick={() => printContent('print')}>Print</Button>
+      {/* <Button onClick={() => printContent('print')}>Print</Button> */}
+      <Tooltip title='In Biểu mẫu' displayPrint="none" component={Box}>
+        <IconButton onClick={() => printContent('print')}>
+          <PrintIcon />
+        </IconButton>
+      </Tooltip>
       {/* <TextField onClick={() => { dispatch(showModal((data)=>console.log(data), "TIMES_MODAL", data1)) }} type="button" value={1} onMouseUp={e => e.target.blur()} style={{ width: 100 }} variant="outlined" />
   
 
@@ -210,7 +261,7 @@ export default function PinnedSubheaderList(props) {
         trigger={() => <button>Print this out!</button>}
         content={() => componentRef.current}
       /> */}
-      {props.display && <PrintComponent userForm={props.userForm} />}
+      <PrintComponent userForm={props.userForm} />
     </div>
   );
 }
