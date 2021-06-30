@@ -77,11 +77,11 @@ export default function Results(props) {
                 .then(res => {
                   console.log(res.data.formUsers)
                   res.data.formUsers.map(user => {
-                    let pts = [' null', ' null', ' null']
+                    let pts = [' -', ' -', ' -']
                     if (user.evaluateForm) {
                       temp.find(x => x.id == user.user_id.staff_id).already = true
                       user.evaluateForm.map(x => {
-                        pts[user.evaluateForm.indexOf(x)] = x.point ? x.point : ' null'
+                        pts[user.evaluateForm.indexOf(x)] = x.point ? x.point : ' -'
                       })
                     }
                     temp.find(x => x.id == user.user_id.staff_id).status = pts.toString()
