@@ -80,17 +80,22 @@ const DetailModal = () => {
         submit(filterData(data))
         handleClose()
     }
+    function compareTwoArray (arr1, arr2) {
+        return JSON.stringify(arr1) === JSON.stringify(arr2)
+    }
     const dataStore = useSelector(state => state.modal.data)
     const [data, setData] = useState(null)
     useEffect(() => {
         setData(dataStore)
+        setTempData(dataStore.details)
     }, [dataStore])
     const [value, setValue] = useState(null)
-
+    const [tempData, setTempData] = useState([])
     const addItem = (e) => {
         e.preventDefault()
         if (!value) return
         setData({ ...data, details: [...data.details, value] })
+        document.getElementById("form-create-detail").reset();
     }
     const deleteItem = (index) => {
         console.log(index)
@@ -99,6 +104,7 @@ const DetailModal = () => {
         setData({ ...data, details: temp })
     }
     const filterData = (data) => {
+        if ( data.details.length === 0 ) return { point: 0, code: data.code, details: data.details }
         if (!data.max_point) return { point: round(calculate(data.details, 'value', data.base_point)), code: data.code, details: data.details }
         return { point: data.max_point > calculate(data.details, 'value', data.base_point) ? round(calculate(data.details, 'value', data.base_point)) : data.max_point, code: data.code, details: data.details }
     }
@@ -132,7 +138,7 @@ const DetailModal = () => {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Typography gutterBottom variant='subtitle1' style={{ flexGrow: 1 }} >{`Mỗi lượt đóng góp tối đa ${data.base_point} điểm/lượt`}</Typography>
                 </div>
-                <form onSubmit={addItem} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                <form onSubmit={addItem} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }} id ='form-create-detail'>
                     <TextField disabled={data.disableEdit} size="small" required className={classes.name} type='text' variant="outlined" label="Tên" onChange={(e) => setValue({ ...value, name: e.target.value })} />
                     <TextField disabled={data.disableEdit} size="small" required className={classes.inputpercent} type='number' variant="outlined" label="Đóng góp"
                         InputProps={{
@@ -148,7 +154,7 @@ const DetailModal = () => {
                 </form>
                 <Divider />
                 <form onSubmit={handleSubmit}>
-                    <div style={{ maxHeight: '300px', overflowY: "auto" }}>
+                    <div style={{ height: '300px', overflowY: "auto" }}>
                         {data.details.map((d, i) => <Line {...d} key={i} index={i} disableEdit={data.disableEdit} base_point={data.base_point} onDelete={() => deleteItem(i)} {...{ onChangeName, onChangeDescription, onChangePercent }} />)}
                     </div>
                     {data.details.length !== 0 &&
@@ -176,7 +182,7 @@ const DetailModal = () => {
                     </div>
                     <Button onClick={handleClose} variant="contained">Thoát</Button>
                     &nbsp;  &nbsp;
-                    <Button type='submit' variant="contained" color="primary" disabled={!data.details.length || data.disableEdit}>Xác nhận</Button>
+                    <Button type='submit' variant="contained" color="primary" disabled={ compareTwoArray(data.details,tempData) || data.disableEdit}>Xác nhận</Button>
                     </div>
                 </form>
 

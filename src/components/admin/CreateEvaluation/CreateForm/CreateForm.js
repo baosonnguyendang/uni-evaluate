@@ -145,7 +145,7 @@ export default function ModifyForm({ fcode }) {
         setExistStandards(existStandardsTemp)
         setStandards(standardstemp)
         setTemp({ standards: standardstemp, existStandards: existStandardsTemp })
-        setTempStandard({})
+        setTempStandard({name: ''})
     }
 
     const filterStandard = (data) => {
@@ -195,6 +195,7 @@ export default function ModifyForm({ fcode }) {
                     getOptionSelected={(option, value) => option.name === value.name}
                     getOptionDisabled={(option) => !temp.standards.includes(option)}
                     onChange={(event, value) => setTempStandard(value)}
+                    value={tempStandard}
                     renderOption={(option) => (
                         <React.Fragment>
                             {option.code} - {option.name}
@@ -232,7 +233,7 @@ export default function ModifyForm({ fcode }) {
                                                 t.description && <Typography variant='subtitle2'>{t.description}</Typography>
                                             }>
                                             <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                <ListItemText primary={`${index + 1}. ${t.name}`} />
+                                                <ListItemText primary={`${index + 1}. ${t.name}`} style={{flexBasis: 0}} />
                                                 <TextField style={{ width: "100px" }} type="number" variant="outlined" required size="small" label="Điểm"
                                                     onChange={(e) => handleChangePoint(e, index)}
                                                     defaultValue={t.standard_point}

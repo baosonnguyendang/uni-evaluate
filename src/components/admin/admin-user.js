@@ -293,13 +293,16 @@ export default function ListUser() {
     const formData = new FormData()
     formData.append("file", data)
     console.log(formData)
-    return
+    setLoading(true)
+    handleClose()
     axios.post("/admin/user/file/import", formData)
       .then(res => {
         console.log(res.data);
+        dispatch(showSuccessSnackbar('Import excel người dùng thành công'))
       })
       .catch(e => {
-
+        console.log(e)
+        dispatch(showErrorSnackbar('Import excel người dùng thất bại'))
       })
   }
 

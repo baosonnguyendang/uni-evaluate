@@ -133,8 +133,6 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
                 setLoading(false)
                 dispatch(showErrorSnackbar("Thêm tiêu chuẩn thất bại"))
             })
-        // setCriterion(listCriteria)
-
     }
     //loading 
     const [loading, setLoading] = useState(false)
@@ -202,7 +200,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
                 <DragDropContext onDragEnd={handleOnDragEnd}>
                     <Droppable droppableId='criteria'>
                         {(provided) => (
-                            <List {...provided.droppableProps} ref={provided.innerRef} style={{ minHeight: '300px' }}>
+                            <List {...provided.droppableProps} ref={provided.innerRef} style={{ height: 300,  overflowY: 'auto' }}>
                                 {existCriteria.map((t, index) =>
                                     <Draggable key={t._id} draggableId={t.code} index={index} >
                                         {(provided, snapshot) => (
@@ -212,7 +210,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
 
                                                 </ListItem>, portal)
                                                 : <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                    <ListItemText style={{ flexGrow: 1 }} primary={`${index + 1}. ${t.name}`} />
+                                                    <ListItemText style={{ flexBasis: 0 }} primary={`${index + 1}. ${t.name}`} />
                                                     {(t.type === 'number' || t.type === 'detail') ? (
                                                         <>
                                                             <TextField style={{ width: "100px", marginRight: 10 }} type="number" variant="outlined" autoFocus size="small" label="Điểm"

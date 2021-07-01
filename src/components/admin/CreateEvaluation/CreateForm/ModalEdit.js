@@ -253,7 +253,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
             <DragDropContext onDragEnd={handleOnDragEnd}>
                 <Droppable droppableId='criteria'>
                     {(provided) => (
-                        <List {...provided.droppableProps} ref={provided.innerRef} style={{ minHeight: '300px' }}>
+                        <List {...provided.droppableProps} ref={provided.innerRef} style={{ height: 300,  overflowY: 'auto' }}>
                             {existCriteria.map((t, index) =>
                                 <Draggable key={t._id} draggableId={t.code} index={index} isDragDisabled={!isEdit} >
                                     {(provided, snapshot) => (
