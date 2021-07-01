@@ -80,13 +80,17 @@ const DetailModal = () => {
         submit(filterData(data))
         handleClose()
     }
+    function compareTwoArray (arr1, arr2) {
+        return JSON.stringify(arr1) === JSON.stringify(arr2)
+    }
     const dataStore = useSelector(state => state.modal.data)
     const [data, setData] = useState(null)
     useEffect(() => {
         setData(dataStore)
+        setTempData(dataStore.details)
     }, [dataStore])
     const [value, setValue] = useState(null)
-
+    const [tempData, setTempData] = useState([])
     const addItem = (e) => {
         e.preventDefault()
         if (!value) return
@@ -100,6 +104,7 @@ const DetailModal = () => {
         setData({ ...data, details: temp })
     }
     const filterData = (data) => {
+        if ( data.details.length === 0 ) return { point: 0, code: data.code, details: data.details }
         if (!data.max_point) return { point: round(calculate(data.details, 'value', data.base_point)), code: data.code, details: data.details }
         return { point: data.max_point > calculate(data.details, 'value', data.base_point) ? round(calculate(data.details, 'value', data.base_point)) : data.max_point, code: data.code, details: data.details }
     }
@@ -177,7 +182,7 @@ const DetailModal = () => {
                     </div>
                     <Button onClick={handleClose} variant="contained">Thoát</Button>
                     &nbsp;  &nbsp;
-                    <Button type='submit' variant="contained" color="primary" disabled={!data.details.length || data.disableEdit}>Xác nhận</Button>
+                    <Button type='submit' variant="contained" color="primary" disabled={ compareTwoArray(data.details,tempData) || data.disableEdit}>Xác nhận</Button>
                     </div>
                 </form>
 
