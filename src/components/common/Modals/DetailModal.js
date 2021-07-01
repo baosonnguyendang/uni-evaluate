@@ -148,7 +148,7 @@ const DetailModal = () => {
                 </form>
                 <Divider />
                 <form onSubmit={handleSubmit}>
-                    <div style={{ maxHeight: '300px', overflowY: "auto" }}>
+                    <div style={{ height: '300px', overflowY: "auto" }}>
                         {data.details.map((d, i) => <Line {...d} key={i} index={i} disableEdit={data.disableEdit} base_point={data.base_point} onDelete={() => deleteItem(i)} {...{ onChangeName, onChangeDescription, onChangePercent }} />)}
                     </div>
                     {data.details.length !== 0 &&

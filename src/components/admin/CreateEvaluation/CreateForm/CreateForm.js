@@ -232,7 +232,7 @@ export default function ModifyForm({ fcode }) {
                                                 t.description && <Typography variant='subtitle2'>{t.description}</Typography>
                                             }>
                                             <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                <ListItemText primary={`${index + 1}. ${t.name}`} />
+                                                <ListItemText primary={`${index + 1}. ${t.name}`} style={{flexBasis: 0}} />
                                                 <TextField style={{ width: "100px" }} type="number" variant="outlined" required size="small" label="Điểm"
                                                     onChange={(e) => handleChangePoint(e, index)}
                                                     defaultValue={t.standard_point}
