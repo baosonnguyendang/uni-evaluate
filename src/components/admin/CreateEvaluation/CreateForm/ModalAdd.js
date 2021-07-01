@@ -133,8 +133,6 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
                 setLoading(false)
                 dispatch(showErrorSnackbar("Thêm tiêu chuẩn thất bại"))
             })
-        // setCriterion(listCriteria)
-
     }
     //loading 
     const [loading, setLoading] = useState(false)

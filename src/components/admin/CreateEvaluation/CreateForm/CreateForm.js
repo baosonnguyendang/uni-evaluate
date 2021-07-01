@@ -145,7 +145,7 @@ export default function ModifyForm({ fcode }) {
         setExistStandards(existStandardsTemp)
         setStandards(standardstemp)
         setTemp({ standards: standardstemp, existStandards: existStandardsTemp })
-        setTempStandard({})
+        setTempStandard({name: ''})
     }
 
     const filterStandard = (data) => {
@@ -195,6 +195,7 @@ export default function ModifyForm({ fcode }) {
                     getOptionSelected={(option, value) => option.name === value.name}
                     getOptionDisabled={(option) => !temp.standards.includes(option)}
                     onChange={(event, value) => setTempStandard(value)}
+                    value={tempStandard}
                     renderOption={(option) => (
                         <React.Fragment>
                             {option.code} - {option.name}

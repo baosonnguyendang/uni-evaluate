@@ -91,6 +91,7 @@ const DetailModal = () => {
         e.preventDefault()
         if (!value) return
         setData({ ...data, details: [...data.details, value] })
+        document.getElementById("form-create-detail").reset();
     }
     const deleteItem = (index) => {
         console.log(index)
@@ -132,7 +133,7 @@ const DetailModal = () => {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Typography gutterBottom variant='subtitle1' style={{ flexGrow: 1 }} >{`Mỗi lượt đóng góp tối đa ${data.base_point} điểm/lượt`}</Typography>
                 </div>
-                <form onSubmit={addItem} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                <form onSubmit={addItem} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }} id ='form-create-detail'>
                     <TextField disabled={data.disableEdit} size="small" required className={classes.name} type='text' variant="outlined" label="Tên" onChange={(e) => setValue({ ...value, name: e.target.value })} />
                     <TextField disabled={data.disableEdit} size="small" required className={classes.inputpercent} type='number' variant="outlined" label="Đóng góp"
                         InputProps={{
