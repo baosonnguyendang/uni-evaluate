@@ -17,6 +17,8 @@ import { useReactToPrint, ReactToPrint } from 'react-to-print';
 import './styles.css';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import { useParams } from 'react-router-dom'
+
 const useStyles = makeStyles((theme) => ({
   tab: {
     width: '10%'
@@ -41,8 +43,14 @@ const PrintComponent = (props) => {
   const [form, setForm] = useState([])
   const [sumPoint, setSumPoint] = useState([0, 0, 0])
   const [info, setInfo] = useState()
+  const [name, setName] = useState()
+  const { id } = useParams()
 
   useEffect(() => {
+    axios.get(`/review/${id}`)
+    .then(res => {
+      setName(res.data.review.name)
+    })
     const getFormStandard = () => {
       return axios.get(`/form/${props.userForm}/v2`)
         .then(res => {
@@ -115,9 +123,9 @@ const PrintComponent = (props) => {
             </div>
             <div style={{ clear: 'both', height: '20px' }}></div>
             <div style={{ textAlign: 'center', width: '100%', fontSize: '13pt !important', marginBottom: 25 }}>
-              <b>PHIẾU ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN</b>
+              <b>PHIẾU ĐÁNH GIÁ KẾT QUẢ GIẢNG VIÊN/VIÊN CHỨC</b>
               <div style={{ fontSize: '95%' }}>
-                {info.form}
+                {name}
               </div>
             </div>
             <table style={{ width: '100%' }}>
@@ -178,8 +186,8 @@ const PrintComponent = (props) => {
                 <tr>
                   <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={3}><b>Tổng điểm</b></td>
                   <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{sumPoint[0]}</b></td>
-                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{Number((sumPoint[1]).toFixed(2))}</b></td>
-                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{!NaN ? null : sumPoint[2]}</b></td>
+                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{props.level == 2 && props.point2}</b></td>
+                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{props.level == 3 && props.point3}</b></td>
                 </tr>
                 <tr>
                   <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={6}><b>Xếp loại:</b> Chưa có</td>
@@ -191,7 +199,7 @@ const PrintComponent = (props) => {
                 <tr>
                   <td style={{ width: '33%' }}></td>
                   <td style={{ width: '33%' }}></td>
-                  <td style={{ width: '33%', textAlign: 'center' }}>Ngày ... tháng ... năm</td>
+                  <td style={{ width: '33%', textAlign: 'center' }}>{`Ngày ${new Date().getDate()} tháng ${new Date().getMonth() + 1} năm ${new Date().getFullYear()}`}</td>
                 </tr>
                 <tr>
                   <td style={{ width: '33%', textAlign: 'center' }}><b>{props.level == 3 && 'Hội đồng Đánh giá'}</b></td>
@@ -283,7 +291,7 @@ export default function PinnedSubheaderList(props) {
         trigger={() => <button>Print this out!</button>}
         content={() => componentRef.current}
       /> */}
-      <PrintComponent setBool={setBool} userForm={props.userForm} level={props.level} />
+      <PrintComponent setBool={setBool} userForm={props.userForm} level={props.level} point={props.point} point2={props.point2} point3={props.point3}/>
     </div>
   );
 }

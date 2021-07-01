@@ -204,6 +204,7 @@ export default function FormEvaluation(props) {
           let diem = 0
           let diem2 = 0
           x.list.map(y => {
+            console.log(all[0])
             console.log(y)
             diem += all[0].find(z => z.name == y).value
             diem2 += all[1].find(z => z.name == y).value
@@ -693,7 +694,7 @@ export default function FormEvaluation(props) {
                     <PrintIcon />
                   </IconButton>
                 </Tooltip> */}
-                <PinnedSubheaderList userForm={variable} level={level}/>
+                <PinnedSubheaderList userForm={variable} level={level} point={Number((point).toFixed(2))} point2={Number((point2).toFixed(2))} point3={Number((point3).toFixed(2))}/>
 
               </div>
               <Grid container justify='center' style={{ marginTop: '20px' }}>

@@ -25,17 +25,19 @@ export default function EmployeeList() {
   const token = localStorage.getItem('token')
 
   const [data, setData] = useState(null)
+  const [info, setInfo] = useState() // tên đvị
 
   useEffect(() => {
     axios.get(`/user/head/${id1}/${id2}/get`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
+        setInfo(res.data.formDepartment)
         let temp = []
         res.data.formUsers.map(user => {
-          let point = ['-', '-', '-']
+          let point = [' -', ' -', ' -']
           if (user.evaluateForm) {
             user.evaluateForm.map((x, index) => {
-              if (x.point) {
+              if (x.point || x.point === 0) {
                 point[index] = x.point
               }
             })
@@ -43,7 +45,8 @@ export default function EmployeeList() {
           let obj = {
             id: user.evaluateForm ? user.userForm._id : null,
             code: user.user_id.staff_id,
-            name: user.user_id.lastname + ' ' + user.user_id.firstname,
+            lname: user.user_id.lastname,
+            fname: user.user_id.firstname,
             unit: user.user_id.department.length > 0 ? user.user_id.department[0].name : '',
             status: user.evaluateForm ? user.evaluateForm.length : 0,
             point: point
@@ -66,7 +69,7 @@ export default function EmployeeList() {
         <Typography component="h3" variant="h5" color="inherit">
           Danh sách các GV/VC đánh giá:
         </Typography>
-        <PrintList />
+        <PrintList unit={info} data={data} />
       </div>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
@@ -84,7 +87,7 @@ export default function EmployeeList() {
               <TableCell component="th" scope="row">
                 {row.code}
               </TableCell>
-              <TableCell align="left">{row.name}</TableCell>
+              <TableCell align="left">{row.lname + ' ' + row.fname}</TableCell>
               <TableCell align="left">{row.unit}</TableCell>
               <TableCell align="center">{row.point.toString()}</TableCell>
               <TableCell align="center" style={{ minWidth: '200px' }}> {row.status > 1 && <Link to={`${url}/${row.id}`}>{row.status == 2 ? 'Bấm vào đây để đánh giá GV/VC' : 'Bấm vào đây để xem kết quả đánh giá GV/VC'}</Link>}</TableCell>
