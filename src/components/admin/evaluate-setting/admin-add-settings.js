@@ -21,22 +21,20 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography'
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import { List, ListItem, ListItemAvatar, ListItemText, Divider } from '@material-ui/core';
 
 import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import SearchIcon from '@material-ui/icons/Search';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import CategoryIcon from '@material-ui/icons/Category';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
-
-import { useRouteMatch } from 'react-router-dom'
+import HelpIcon from '@material-ui/icons/Help';
 
 import Skeleton from '../../common/Skeleton'
 
@@ -66,9 +64,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 10
   },
   btn: {
-    textTransform: 'none',
-    width: '16vw',
-    marginBottom: 10
+    minWidth: 150,
   },
   formControl: {
     margin: theme.spacing(3),
@@ -263,18 +259,20 @@ export default function AddSettings() {
     }
 
     return (
-      <div>
-        <ol style={{ marginTop: 10 }}>
+      <div style={{ minHeight: '250px', }}>
+        <List  style={{ marginTop: 10 }}>
           {units.filter(x => x.id != 'HDDG').map(unit => {
             if (unit.check) {
               bool = true;
               return (
-                <li key={unit.id} id={unit.id} style={{ marginBottom: 10 }} type='button' onClick={() => openUnitt(unit.id)}>- {unit.name}</li>
+                <ListItem button key={unit.id} id={unit.id} onClick={() => openUnitt(unit.id)}>
+                  <ListItemText primary={unit.name} />
+                </ListItem>
               )
             }
           })}
-        </ol>
-        {!bool && <p>(Không có đơn vị nào nằm trong nhóm)</p>}
+        </List>
+        {!bool && <Typography>(Không có đơn vị nào nằm trong nhóm)</Typography>}
       </div>
     )
   }
@@ -458,12 +456,19 @@ export default function AddSettings() {
       case 2:
         body = (
           <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography component="h3" variant="h5" color="inherit">
-              Các đơn vị tham gia đánh giá nằm trong Form
+              Các đơn vị tham gia đánh giá 
             </Typography>
+            <Tooltip title={
+                    <Typography variant='subtitle2'>Chọn đơn vị để xem thành viên tham gia đánh giá</Typography>
+                }>
+                        <HelpIcon fontSize='small' color='action' />
+                </Tooltip>
+            </div>
             <SelectedUnit />
             <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
-              Thêm đơn vị vào nhóm
+              Thêm đơn vị 
             </Button>
             <Modal
               className={classes.modal}
