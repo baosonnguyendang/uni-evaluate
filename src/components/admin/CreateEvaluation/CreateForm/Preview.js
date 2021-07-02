@@ -20,29 +20,36 @@ export default function Preview(props) {
 
   const [form, setForm] = useState([])
 
+  const [done, setDone] = useState(false)
+
   useEffect(() => {
-    console.log(props.id)
-    axios.get(`/admin/form/${props.id}/getFormStandard`)
+    console.log(props.standards)
+    axios.get(`/admin/form/${props.id}/getReviewForm`)
       .then(res => {
         console.log(res.data)
         setForm(res.data.formStandards)
-        res.data.formStandards.map(standard => (
-          axios.get(`/admin/form/${props.id}/standard/${standard.standard_id.code}/getFormCriteria`)
-            .then(res => {
-              console.log(res.data)
-            })
-            .catch(err => (
-              console.log(err)
-            ))
-        ))
+        setDone(true)
       })
       .catch(err => {
         console.log(err)
       })
+    // props.standards.map(standard => {
+    //   axios.get(`/admin/form/${props.id}/standard/${standard.code}/getFormCriteria`)
+    //     .then(res => {
+    //       console.log(res.data)
+    //       standard.criteria = res.data.formCriteria
+    //     })
+    //     .catch(err => (
+    //       console.log(err)
+    //     ))
+    // })
+    // console.log(props.standards)
+    // setForm([...props.standards])
+    // setDone(true)
   }, [])
 
-  const PrintComponent = () => {
-    return (
+  return (
+    <div>
       <Grid container xs={12} justify='center' style={{ marginTop: '30px' }}>
         <TableContainer component={Paper} >
           <Table className={classes.table} >
@@ -55,45 +62,48 @@ export default function Preview(props) {
               </TableRow>
               <TableRow>
                 <TableCell align="center">Cá nhân tự chấm</TableCell>
-                <TableCell align="center">Trưởng bộ môn</TableCell>
+                <TableCell align="center">Trưởng Đơn vị</TableCell>
                 <TableCell align="center">Hội đồng nhà trường</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {form.map(standard => (
-                <>
-                  <TableRow>
-                    <TableCell>{standard.standard_order}</TableCell>
-                    <TableCell><b>{standard.standard_id.name}</b></TableCell>
-                    <TableCell>{standard.standard_point}</TableCell>
-                    <TableCell />
-                    <TableCell />
-                    <TableCell />
-                  </TableRow>
-
-                  {/* {standard.formCriteria.map((criteria, index) => (
-                      <>
-                        <TableRow>
-                          <TableCell rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
-                          <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
-                          <TableCell>{criteria.point}</TableCell>
-                          <TableCell align='center'></TableCell>
-                          <TableCell align='center'></TableCell>
-                          <TableCell align='center'></TableCell>
-                        </TableRow>
-                        {criteria.options.map((option, index) => (
+              {done && form.map(standard => {
+                return (
+                  (
+                    <>
+                      <TableRow>
+                        <TableCell align='center'>{standard.standard_order}</TableCell>
+                        <TableCell><b>{standard.standard_id.name}</b></TableCell>
+                        <TableCell align='center'>{standard.standard_point}</TableCell>
+                        <TableCell />
+                        <TableCell />
+                        <TableCell />
+                      </TableRow>
+                      {standard.formCriteria && standard.formCriteria.map((criteria, index) => (
+                        <>
                           <TableRow>
-                            <TableCell>{option.name}</TableCell>
-                            <TableCell>{option.max_point}</TableCell>
-                            <TableCell align='center' colSpan={1}></TableCell>
-                            <TableCell align='center' colSpan={1}></TableCell>
-                            <TableCell align='center' colSpan={1}></TableCell>
+                            <TableCell align='center' rowSpan={criteria.options.length + 1} >{standard.standard_order}.{criteria.criteria_order}</TableCell>
+                            <TableCell><b>{criteria.criteria_id.name}</b></TableCell>
+                            <TableCell align='center'>{criteria.point}</TableCell>
+                            <TableCell align='center'></TableCell>
+                            <TableCell align='center'></TableCell>
+                            <TableCell align='center'></TableCell>
                           </TableRow>
-                        ))}
-                      </>
-                    ))} */}
-                </>
-              ))}
+                          {criteria.options.map((option, index) => (
+                            <TableRow>
+                              <TableCell>{option.name}</TableCell>
+                              <TableCell align='center'>{option.max_point}</TableCell>
+                              <TableCell align='center' colSpan={1}></TableCell>
+                              <TableCell align='center' colSpan={1}></TableCell>
+                              <TableCell align='center' colSpan={1}></TableCell>
+                            </TableRow>
+                          ))}
+                        </>
+                      ))}
+                    </>
+                  )
+                )
+              })}
               <TableRow>
                 <TableCell></TableCell>
                 <TableCell><b>Tổng điểm</b></TableCell>
@@ -106,12 +116,6 @@ export default function Preview(props) {
           </Table>
         </TableContainer>
       </Grid>
-    )
-  }
-
-  return (
-    <div>
-      <PrintComponent />
     </div>
   );
 }

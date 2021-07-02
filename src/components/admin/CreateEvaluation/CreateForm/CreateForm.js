@@ -17,12 +17,19 @@ import { showSuccessSnackbar, showErrorSnackbar } from '../../../../actions/noti
 import HelpIcon from '@material-ui/icons/Help';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
+import { Fade, Modal, Backdrop } from '@material-ui/core'
+
 import Preview from './Preview'
 //fix out of drag
 let portal = document.createElement("div");
 document.body.appendChild(portal);
 
 const useStyles = makeStyles((theme) => ({
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   paper: {
     position: 'absolute',
     width: '648px',
@@ -41,7 +48,16 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     minWidth: '80px',
     marginLeft: '10px'
-  }
+  },
+  paper1: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    maxWidth: '80%',
+    maxHeight: '90vh',
+    overflowY: 'overlay'
+  },
 }));
 
 export default function ModifyForm({ fcode }) {
@@ -171,6 +187,16 @@ export default function ModifyForm({ fcode }) {
       })
   }
 
+  const [openn, setOpenn] = React.useState(false);
+
+  const handleOpenn = () => {
+    setOpenn(true);
+  };
+
+  const handleClosee = () => {
+    setOpenn(false);
+  };
+
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -273,7 +299,7 @@ export default function ModifyForm({ fcode }) {
 
         <div style={{ display: 'contents' }}>
           <Tooltip title='Xem trước Form' component={Box}>
-            <IconButton onClick={() => alert('a')}>
+            <IconButton onClick={handleOpenn}>
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
@@ -284,6 +310,23 @@ export default function ModifyForm({ fcode }) {
           >Lưu</Button>
         </div>
       </div>
+
+      <Modal
+        className={classes.modal}
+        open={openn}
+        onClose={handleClosee}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={openn}>
+          <div className={classes.paper1}>
+            <Preview id={id} standards={existStandards}/>
+          </div>
+        </Fade>
+      </Modal>
 
       <Loading open={loading} />
       {openAddModal && <ModalAddStandard idForm={modal.id} codeStandard={modal.code} name={modal.name} open={openAddModal} handleClose={handleClose} stt={modal.stt} setCriterion={addStandard} />}
