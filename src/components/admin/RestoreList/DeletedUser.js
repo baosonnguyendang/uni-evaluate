@@ -79,7 +79,7 @@ const CustomTableCell = ({ row, name }) => {
 const DeletedUser = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
-  const [rows, setRows] = React.useState([]);
+  const [rows, setRows] = React.useState(null);
   const token = localStorage.getItem('token')
   const config = { headers: { "Authorization": `Bearer ${token}` } }
 
@@ -184,7 +184,7 @@ const DeletedUser = () => {
                 </TableRow>
               )
             })}
-            {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không có người dùng</TableCell></TableRow>}
+            {rows.length === 0 && <TableRow><TableCell colSpan={7}>Không có người dùng</TableCell></TableRow>}
           </TableBody>
         </Table>
         <TablePagination

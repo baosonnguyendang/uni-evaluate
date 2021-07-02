@@ -15,6 +15,7 @@ import Button from '@material-ui/core/Button';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Modal from '@material-ui/core/Modal';
+import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -28,6 +29,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../actions/notifyAction'
+import HelpIcon from '@material-ui/icons/Help';
 
 
 
@@ -63,7 +65,7 @@ export default function EvaluateList() {
     return (
       // <li>{props.id}</li>
       <tr>
-        <td style={{ lineHeight: '50px', paddingLeft: 10 }}><Link to={'/admin/evaluate-settings/' + props.id}>{props.value}</Link></td>
+        <td style={{ lineHeight: '50px', paddingLeft: 10 }}><Link to={'/admin/evaluate-settings/' + props.id} style={{ color: 'black' }}>{props.value}</Link></td>
         <td style={{ textAlign: 'center', lineHeight: '50px' }}>{props.id}</td>
         <td style={{ textAlign: 'center', lineHeight: '50px', width: '30%' }}>{props.description}</td>
         <td align='center'>{props.start.toString()}</td>
@@ -159,12 +161,6 @@ export default function EvaluateList() {
   const [description, setDescription] = useState('')
 
   const submit = e => {
-    // const date = ["18:30 11/05/2098", "18:30 11/05/2078", "18:30 11/05/2088"]
-    // console.log(date.sort((a, b) => moment(a).diff(moment(b))))
-    // console.log(moment(startDate, "HH:mm DD/MM/yyyy"))
-
-    // console.log((startDate).format("HH:mm DD/MM/yyyy"))
-    // console.log(moment(endDate)._i)
     e.preventDefault()
     setLoading(true)
     handleClose()
@@ -188,10 +184,6 @@ export default function EvaluateList() {
         }
         setLoading(false)
       })
-
-    // // useEffect
-    // console.log(number)
-    // console.log(listEvaluate)
   }
   // loading thêm đợt
   const [loading, setLoading] = useState(false)
@@ -273,9 +265,18 @@ export default function EvaluateList() {
       {!listStage ? <Skeleton /> : <div>
         <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
         <Loading open={loading} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography component="h1" variant="h5" color="inherit" noWrap>
           DANH SÁCH ĐỢT ĐÁNH GIÁ
         </Typography>
+        <Tooltip title={
+              <>
+                <Typography variant='subtitle2'>Chọn tên đợt đánh giá để xem chi tiết</Typography>
+              </>
+            }>
+                <HelpIcon fontSize='small' color='action' />
+            </Tooltip>
+          </div>
         <Paper className={classes.paper}>
           <NumberList numbers={listStage} />
           <div style={{ margin: 10, justifyContent: 'space-between', display: 'flex' }}>
@@ -305,7 +306,6 @@ export default function EvaluateList() {
                     margin="normal"
                     required
                     fullWidth
-                    id="evaluateName"
                     label="Mã đợt đánh giá"
                     autoFocus
                     onChange={e => setId(e.target.value)}
@@ -316,7 +316,6 @@ export default function EvaluateList() {
                     margin="normal"
                     required
                     fullWidth
-                    id="evaluateName"
                     label="Tên đợt đánh giá"
                     onChange={e => setName(e.target.value)}
                     defaultValue={modal.id && evaluationName}
@@ -325,7 +324,6 @@ export default function EvaluateList() {
                     variant="outlined"
                     margin="normal"
                     fullWidth
-                    id="evaluateName"
                     label="Mô tả"
                     onChange={e => setDescription(e.target.value)}
                     defaultValue={modal.id && description}

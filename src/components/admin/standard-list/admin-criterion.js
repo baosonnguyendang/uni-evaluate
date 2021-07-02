@@ -68,10 +68,6 @@ const useStyles = makeStyles(theme => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
-  field: {
-    marginBottom: 10,
-    width: '100%'
-  },
   btn: {
     marginRight: 5,
     minWidth: 180,
@@ -257,7 +253,7 @@ export default function Criterion() {
             <Table className={classes.table} aria-label="caption table">
               <TableHead>
                 <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-                  <TableCell className={classes.number} align="left">Mã TC</TableCell>
+                  <TableCell className={classes.number} align="left">Mã tiêu chuẩn</TableCell>
                   <TableCell className={classes.name} align="left">Tên tiêu chuẩn</TableCell>
                   <TableCell align="left">Mô tả</TableCell>
                   <TableCell align="left" />

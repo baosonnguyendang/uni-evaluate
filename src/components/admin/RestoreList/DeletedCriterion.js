@@ -36,9 +36,6 @@ const useStyles = makeStyles(theme => ({
   tableCell: {
     height: 40,
   },
-  input: {
-    height: 40
-  },
   name: {
     width: '30%',
     height: 40,
@@ -46,27 +43,7 @@ const useStyles = makeStyles(theme => ({
   number: {
     width: '15%',
   },
-  modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  paper1: {
-    position: 'absolute',
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-  field: {
-    marginBottom: 10,
-    width: '100%'
-  },
-  btn: {
-    marginRight: 5,
-    minWidth: 180,
-  },
+
 }));
 const CustomTableCell = ({ row, name }) => {
   const classes = useStyles();

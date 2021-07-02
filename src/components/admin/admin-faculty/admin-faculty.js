@@ -287,7 +287,7 @@ export default function Criterion() {
             <Table className={classes.table} aria-label="caption table">
               <TableHead>
                 <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-                  <TableCell align="left">ID</TableCell>
+                  <TableCell align="left" style={{ width: '10%'}}>ID</TableCell>
                   <TableCell className={classes.name} align="left">Tên đơn vị</TableCell>
                   <TableCell className={classes.name} align="left">Trưởng đơn vị</TableCell>
                   <TableCell className={classes.name} align="left">ID Trưởng đơn vị</TableCell>
@@ -359,8 +359,8 @@ export default function Criterion() {
                   <div className={classes.paper1}>
                     <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật đơn vị' : "Thêm đơn vị"}</Typography>
                     <form onSubmit={modal.id ? (e) => submitEditDept(e, modal.id) : submitAddDepartment}>
-                      <TextField onChange={e => setId(e.target.value)} id="id" label="ID" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && id} />
-                      <TextField onChange={e => setName(e.target.value)} id="name" label="Tên" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && name} />
+                      <TextField onChange={e => setId(e.target.value)} id="id" label="Mã đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && id} />
+                      <TextField onChange={e => setName(e.target.value)} id="name" label="Tên đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && name} />
                       {!modal.id && <TextField onChange={e => setHeadUnit(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" margin='normal' />}
                       {!modal.id &&
                         <FormControl variant="outlined" fullWidth margin='normal'>
