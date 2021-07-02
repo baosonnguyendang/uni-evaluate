@@ -34,7 +34,9 @@ import DialogConfirm from '../../common/DialogConfirm'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 import HelpIcon from '@material-ui/icons/Help';
-
+import UnarchiveIcon from '@material-ui/icons/Unarchive';
+import AssignmentReturnedIcon from '@material-ui/icons/AssignmentReturned';
+import UpLoadFile from '../../common/UpLoadFile'
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -163,6 +165,7 @@ export default function Criterion() {
       .catch(e => {
         console.log(e)
       })
+    setOpenImport(false)
     setModal({ open: true, id: '' });
   };
   //open modal
@@ -265,6 +268,46 @@ export default function Criterion() {
   const redirectStorePage = () => {
     history.push(`${url}/deleted`)
   }
+  // open import
+  const [openImport, setOpenImport] = useState(false)
+  const handleOpenImport = () => {
+    handleOpen()
+    setOpenImport(true)
+  }
+  // submit file excel
+  const submitExcel = (data) => {
+    const formData = new FormData()
+    formData.append("file", data)
+    console.log(formData)
+    setLoading(true)
+    handleClose()
+    axios.post("/admin/user/file/import", formData)
+      .then(res => {
+        console.log(res.data);
+        dispatch(showSuccessSnackbar('Import excel người dùng thành công'))
+      })
+      .catch(e => {
+        console.log(e)
+        dispatch(showErrorSnackbar('Import excel người dùng thất bại'))
+      })
+  }
+
+  // submit file excel
+  const exportExcel = (data) => {
+    axios({
+      url: `/admin/user/file/download?file=user`,
+      method: 'GET',
+      responseType: 'blob', // important
+    })
+      .then(async res => {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `User.xlsx`); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+      })
+  }
   return (
     <>
       {isLoading ? <Skeleton /> : (
@@ -331,17 +374,30 @@ export default function Criterion() {
               onChangePage={handleChangePage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-            <div style={{ margin: '10px', display: 'flex' }}>
+            <div style={{ margin: '10px', display: 'flex', alignItems: 'center'}}>
               <div style={{ flexGrow: 1 }}>
                 <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                   Khôi phục
                 </Button>
               </div>
+              <Tooltip title={<Typography variant='subtitle2'>Xuất excel mẫu</Typography>}>
+              <IconButton
+                onClick={exportExcel}
+              >
+                <AssignmentReturnedIcon fontSize='large' />
+              </IconButton>
+            </Tooltip>
+            &nbsp;
+            <Tooltip title={<Typography variant='subtitle2'>Nhập dữ liệu excel</Typography>}>
+              <IconButton
+                onClick={handleOpenImport}
+              >
+                <UnarchiveIcon fontSize='large' />
+              </IconButton>
+            </Tooltip>
+            &nbsp;
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                 Thêm đơn vị
-              </Button>
-              <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
-                import file
               </Button>
               <Modal
                 aria-labelledby="transition-modal-title"
@@ -357,6 +413,8 @@ export default function Criterion() {
               >
                 <Fade in={modal.open}>
                   <div className={classes.paper1}>
+                  {!openImport ?
+                    <>
                     <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật đơn vị' : "Thêm đơn vị"}</Typography>
                     <form onSubmit={modal.id ? (e) => submitEditDept(e, modal.id) : submitAddDepartment}>
                       <TextField onChange={e => setId(e.target.value)} id="id" label="Mã đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && id} />
@@ -384,6 +442,8 @@ export default function Criterion() {
                         <Button style={{ marginLeft: '10px' }} onClick={handleClose} variant="contained" color="primary">Thoát</Button>
                       </div>
                     </form>
+                    </> :
+                    <UpLoadFile title={'Thêm danh sách đơn vị'} handleClose={handleClose} submit={submitExcel} />}
                   </div>
                 </Fade>
               </Modal>

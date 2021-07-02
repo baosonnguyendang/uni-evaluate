@@ -43,7 +43,7 @@ const FileUploader = props => {
         </div>
         <br />
         <div style={{ textAlign: 'center', marginTop: '10px' }}>
-          <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary"  >Import</Button>
+          <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary"  >Nhập dữ liệu</Button>
           <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={props.handleClose}>Thoát</Button>
         </div>
       </form>
