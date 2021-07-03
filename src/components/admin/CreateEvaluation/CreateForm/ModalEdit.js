@@ -209,6 +209,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
                     classes={{
                         option: classes.option,
                     }}
+                    size='small'
                     autoHighlight
                     noOptionsText='Không tồn tại'
                     getOptionLabel={(option) => option.name}

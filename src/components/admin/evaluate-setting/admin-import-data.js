@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react'
 
 import axios from 'axios'
 
-import { useParams } from 'react-router-dom'
-
 import UpLoadFile from '../../common/UpLoadFile'
-
+import { useDispatch } from 'react-redux'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Typography, TextField, Button, Modal, Fade, Backdrop } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { mapValues } from 'async';
-
+import { showErrorSnackbar, showSuccessSnackbar } from '../../../actions/notifyAction'
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -24,16 +21,17 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
   dropdown: {
-    marginBottom: 10,
+    marginBottom: 20,
   }
 }));
 
 export default function Import(props) {
   const classes = useStyles(); //css
+  const dispatch = useDispatch()
 
-  const [units, setUnits] = useState([])
-  const [standards, setStandards] = useState([])
-  const [criteria, setCriteria] = useState([])
+  const [units, setUnits] = useState(null)
+  const [standards, setStandards] = useState(null)
+  const [criteria, setCriteria] = useState(null)
 
   const [unitChosen, setUnitChosen] = useState()
   const [standardChosen, setStandardChosen] = useState()
@@ -121,30 +119,33 @@ export default function Import(props) {
       data: body,
       responseType: 'blob', // important
     })
-    .then(async res => {
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${body.dcode}-${body.ccode}.xlsx`); //or any other extension
-      document.body.appendChild(link);
-      link.click();
-    })
-    .catch(error => {
-      if(error.response) {
-        if(error.response.status === 405){
-          // Trả lỗi
-          // Message: "Tiêu chí chưa được hỗ trợ để xuất file"
+      .then(async res => {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${body.dcode}-${body.ccode}.xlsx`); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch(error => {
+        if (error.response) {
+          if (error.response.status === 405) {
+            // Trả lỗi
+            // Message: "Tiêu chí chưa được hỗ trợ để xuất file"
+            dispatch(showErrorSnackbar('Tiêu chí chưa được hỗ trợ để xuất file'))
+          }
+          if (error.response.status === 404) {
+            // Trả lỗi
+            // Message: "Không tìm thấy tài nguyên yêu cầu"
+            dispatch(showErrorSnackbar('Không tìm thấy tài nguyên yêu cầu'))
+          }
+          if (error.response.status === 500) {
+            // Trả lỗi
+            // Message: "Phát sinh lỗi hệ thống. Xin thử lại lần sau."
+            dispatch(showErrorSnackbar('Phát sinh lỗi hệ thống. Xin thử lại lần sau'))
+          }
         }
-        if(error.response.status === 404){
-          // Trả lỗi
-          // Message: "Không tìm thấy tài nguyên yêu cầu"
-        }
-        if(error.response.status === 500){
-          // Trả lỗi
-          // Message: "Phát sinh lỗi hệ thống. Xin thử lại lần sau."
-        }
-      }
-    })
+      })
   }
 
   const [open, setOpen] = React.useState(false);
@@ -167,26 +168,30 @@ export default function Import(props) {
     const formData = new FormData()
     formData.append("file", data)
     formData.append("dcode", body.dcode)
-    formData.append("scode",  body.scode)
-    formData.append("ccode",  body.ccode)
+    formData.append("scode", body.scode)
+    formData.append("ccode", body.ccode)
 
     axios.post(`/admin/file/form/${fcode}/evaluation/import`, formData)
       .then(res => {
         console.log(res.data);
+        dispatch(showSuccessSnackbar('Thêm điểm cho tiêu chí thành công'))
       })
       .catch(error => {
-        if(error.response) {
-          if(error.response.status === 400){
+        if (error.response) {
+          if (error.response.status === 400) {
             // Trả lỗi
             // Message: "Tiêu chí trong excel không phù hợp"
+            dispatch(showErrorSnackbar('Tiêu chí trong excel không phù hợp'))
           }
-          if(error.response.status === 404){
+          if (error.response.status === 404) {
             // Trả lỗi
             // Message: "Không tìm thấy tài nguyên yêu cầu"
+            dispatch(showErrorSnackbar('Không tìm thấy tài nguyên yêu cầu'))
           }
-          if(error.response.status === 500){
+          if (error.response.status === 500) {
             // Trả lỗi
             // Message: "Phát sinh lỗi hệ thống. Xin thử lại lần sau."
+            dispatch(showErrorSnackbar('Phát sinh lỗi hệ thống. Xin thử lại lần sau'))
           }
         }
       })
@@ -199,7 +204,10 @@ export default function Import(props) {
       </Typography>
       <Autocomplete
         className={classes.dropdown}
-        options={units}
+        loadingText="Đang tải..."
+        noOptionsText='Không tồn tại'
+        loading={!units}
+        options={units || []}
         onChange={(event, value) => setChosen(value, 1)}
         getOptionLabel={(option) => option.name + ' (' + option.code + ')'}
         style={{ width: 300 }}
@@ -207,8 +215,12 @@ export default function Import(props) {
       />
       {unitChosen &&
         <Autocomplete
+          margin='normal'
           className={classes.dropdown}
-          options={standards}
+          options={standards || []}
+          loadingText="Đang tải..."
+          noOptionsText='Không tồn tại'
+          loading={!standards}
           onChange={(event, value) => setChosen(value, 2)}
           getOptionLabel={(option) => option.name + ' (' + option.code + ')'}
           style={{ width: 300 }}
@@ -218,7 +230,11 @@ export default function Import(props) {
       {standardChosen &&
         <Autocomplete
           className={classes.dropdown}
-          options={criteria}
+          margin='normal'
+          options={criteria || []}
+          loadingText="Đang tải..."
+          noOptionsText='Không tồn tại'
+          loading={!criteria}
           onChange={(event, value) => setChosen(value, 3)}
           getOptionLabel={(option) => option.name + ' (' + option.code + ')'}
           style={{ width: 300 }}
@@ -226,7 +242,7 @@ export default function Import(props) {
         />
       }
       {criteriaChosen &&
-        <div>
+        <div style={{marginTop: 35}}>
           <Button variant="contained" color="primary" onClick={exportTemplate}>
             Xuất
           </Button>

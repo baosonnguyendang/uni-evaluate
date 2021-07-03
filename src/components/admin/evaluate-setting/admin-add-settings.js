@@ -636,7 +636,7 @@ export default function AddSettings() {
                     <Paper style={{ padding: 10 }} className={classes.paper}>
                       <MenuEvaluate />
                     </Paper>
-                    {stage && <Button style={{ float: 'right', marginTop: 10 }} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
+                    {stage && <Button style={{width: 80, float: 'right', marginTop: 10 }} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
                   </div >
                 )
                 }

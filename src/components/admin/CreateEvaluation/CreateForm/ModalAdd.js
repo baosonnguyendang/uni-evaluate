@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import Loading from '../../../common/Loading'
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { Tab, Box, Typography, IconButton, TextField, Button, ListItem, ListItemIcon, List, ListItemText } from '@material-ui/core';
+import { Typography, IconButton, TextField, Button, ListItem, ListItemIcon, List, ListItemText } from '@material-ui/core';
 import axios from 'axios';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import Modal from '@material-ui/core/Modal';
@@ -165,6 +165,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
                     classes={{
                         option: classes.option,
                     }}
+                    size='small'
                     autoHighlight
                     noOptionsText='Không tồn tại'
                     getOptionLabel={(option) => option.name}
