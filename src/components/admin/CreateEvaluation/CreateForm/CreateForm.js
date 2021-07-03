@@ -19,7 +19,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import { Fade, Modal, Backdrop } from '@material-ui/core'
 
-import Preview from './Preview'
+import PreviewModal from './PreviewModal'
 //fix out of drag
 let portal = document.createElement("div");
 document.body.appendChild(portal);
@@ -48,15 +48,6 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     minWidth: '80px',
     marginLeft: '10px'
-  },
-  paper1: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-    maxWidth: '80%',
-    maxHeight: '90vh',
-    overflowY: 'overlay'
   },
 }));
 
@@ -218,6 +209,7 @@ export default function ModifyForm({ fcode }) {
           classes={{
             option: classes.option,
           }}
+          size="small"
           autoHighlight
           noOptionsText='Không tồn tại'
           getOptionLabel={(option) => option.name}
@@ -298,7 +290,7 @@ export default function ModifyForm({ fcode }) {
         </div>
 
         <div style={{ display: 'contents' }}>
-          <Tooltip title='Xem trước Form' component={Box}>
+          <Tooltip title='Xem trước biểu mẫu' component={Box}>
             <IconButton onClick={handleOpenn}>
               <VisibilityIcon />
             </IconButton>
@@ -311,22 +303,8 @@ export default function ModifyForm({ fcode }) {
         </div>
       </div>
 
-      <Modal
-        className={classes.modal}
-        open={openn}
-        onClose={handleClosee}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={openn}>
-          <div className={classes.paper1}>
-            <Preview id={id} standards={existStandards}/>
-          </div>
-        </Fade>
-      </Modal>
+      {openn && <PreviewModal id={id} standards={existStandards} open={openn} handleClose={handleClosee}/>}
+      
 
       <Loading open={loading} />
       {openAddModal && <ModalAddStandard idForm={modal.id} codeStandard={modal.code} name={modal.name} open={openAddModal} handleClose={handleClose} stt={modal.stt} setCriterion={addStandard} />}

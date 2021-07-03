@@ -2,18 +2,31 @@ import React, { useState, useEffect } from 'react'
 
 import axios from 'axios'
 
-import { Tooltip, IconButton, Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Grid, } from '@material-ui/core'
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import { Modal,Backdrop, Fade, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Grid, } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles';
+import Loading from '../../../common/Loading'
 
-import { useParams } from 'react-router-dom'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 700,
   },
-});
+  paper1: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    maxWidth: '80%',
+    maxHeight: '90vh',
+    overflowY: 'overlay'
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+}));
 
 export default function Preview(props) {
   const classes = useStyles();
@@ -47,17 +60,28 @@ export default function Preview(props) {
     // setForm([...props.standards])
     // setDone(true)
   }, [])
-
+  if (!done) return <Loading open />
   return (
-    <div>
-      <Grid container xs={12} justify='center' style={{ marginTop: '30px' }}>
+    <Modal
+        className={classes.modal}
+        open={props.open}
+        onClose={props.handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={props.open}>
+          <div className={classes.paper1}>
+            <Grid container xs={12} justify='center' style={{ marginTop: '30px' }}>
         <TableContainer component={Paper} >
           <Table className={classes.table} >
             <TableHead>
               <TableRow>
                 <TableCell rowSpan={2}>Tiêu chuẩn/ Tiêu chí</TableCell>
-                <TableCell rowSpan={2}>Nội dung</TableCell>
-                <TableCell rowSpan={2}>Điểm quy định</TableCell>
+                <TableCell rowSpan={2} align="center">Nội dung</TableCell>
+                <TableCell rowSpan={2} align="center">Điểm quy định</TableCell>
                 <TableCell colSpan={3} align="center">Điểm đánh giá</TableCell>
               </TableRow>
               <TableRow>
@@ -116,6 +140,8 @@ export default function Preview(props) {
           </Table>
         </TableContainer>
       </Grid>
-    </div>
+          </div>
+        </Fade>
+      </Modal>
   );
 }
