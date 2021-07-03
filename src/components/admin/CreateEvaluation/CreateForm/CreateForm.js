@@ -190,8 +190,8 @@ export default function ModifyForm({ fcode }) {
 
   return (
     <>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography gutterBottom variant='h5' id="transition-modal-title">Danh sách tiêu chuẩn</Typography>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+        <Typography gutterBottom variant='h5' id="transition-modal-title">Danh sách tiêu chuẩn, tiêu chí trong biểu mẫu</Typography>
         <Tooltip title={
           <Typography variant='subtitle2'>Kéo thả tiêu chuẩn để thay đổi thứ tự hiển thị trong biểu mẫu</Typography>
         }>

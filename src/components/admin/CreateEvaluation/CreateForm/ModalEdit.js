@@ -83,6 +83,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
             })
     }
     useEffect(() => {
+        setLoading(true)
         Promise.all([getFormCriteria(idForm, codeStandard), getCriteriaOfStandard(codeStandard)])
             .then(([existCriteria, criterions]) => {
                 if (existCriteria) {
@@ -94,9 +95,10 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
                 else {
                     setAvailableCriteria(criterions)
                 }
+                setLoading(false)
             })
 
-    }, [codeStandard])
+    }, [codeStandard, idForm])
     // tiêu chí đc chon
     const [tempCriteria, setTempCriteria] = useState(null)
 
