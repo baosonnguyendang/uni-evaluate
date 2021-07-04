@@ -31,7 +31,7 @@ import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../actions/notifyAction'
 import HelpIcon from '@material-ui/icons/Help';
 
-
+import TablePagination from '@material-ui/core/TablePagination';
 
 //create modal
 
@@ -90,6 +90,19 @@ export default function EvaluateList() {
   }
 
   function NumberList(props) {
+    //qua trang
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(+event.target.value);
+      setPage(0);
+    };
+
     const numbers = props.numbers;
     const listItems = numbers.map((item) =>
       // Correct! Key should be specified inside the array.
@@ -103,21 +116,40 @@ export default function EvaluateList() {
       //</Link>
     );
     return (
-      <table style={{ width: '100%', marginBottom: 10 }}>
-        <thead style={{ backgroundColor: '#f4f4f4', lineHeight: '50px' }}>
-          <tr>
-            <th style={{ width: '20%', paddingLeft: 10 }}>Tên đợt đánh giá</th>
-            <th style={{ textAlign: 'center', }}>Mã đợt</th>
-            <th style={{ width: '30%', textAlign: 'center', }}>Mô tả</th>
-            <th style={{ textAlign: 'center' }}>Ngày bắt đầu</th>
-            <th style={{ textAlign: 'center' }}>Ngày kết thúc</th>
-            <th style={{ textAlign: 'center' }}></th>
-          </tr>
-        </thead>
-        <tbody>
-          {listItems}
-        </tbody>
-      </table>
+      <div>
+        <table style={{ width: '100%', marginBottom: 10 }}>
+          <thead style={{ backgroundColor: '#f4f4f4', lineHeight: '50px' }}>
+            <tr>
+              <th style={{ width: '20%', paddingLeft: 10 }}>Tên đợt đánh giá</th>
+              <th style={{ textAlign: 'center', }}>Mã đợt</th>
+              <th style={{ width: '30%', textAlign: 'center', }}>Mô tả</th>
+              <th style={{ textAlign: 'center' }}>Ngày bắt đầu</th>
+              <th style={{ textAlign: 'center' }}>Ngày kết thúc</th>
+              <th style={{ textAlign: 'center' }}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {numbers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) =>
+              <ListItem key={item.code} id={item.code}
+                value={item.name}
+                start={moment(item.start_date).format("HH:mm DD/MM/yyyy")}
+                end={moment(item.end_date).format("HH:mm DD/MM/yyyy")}
+                description={item.description}
+              />
+            )}
+          </tbody>
+        </table>
+        <TablePagination
+          style={{ borderTop: '1px solid #aaaaaa' }}
+          rowsPerPageOptions={[5, 10, 20]}
+          component="div"
+          count={numbers.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </div>
     );
   }
   const dispatch = useDispatch()
@@ -266,17 +298,17 @@ export default function EvaluateList() {
         <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
         <Loading open={loading} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography component="h1" variant="h5" color="inherit" noWrap>
-          DANH SÁCH ĐỢT ĐÁNH GIÁ
-        </Typography>
-        <Tooltip title={
-              <>
-                <Typography variant='subtitle2'>Chọn tên đợt đánh giá để xem chi tiết</Typography>
-              </>
-            }>
-                <HelpIcon fontSize='small' color='action' />
-            </Tooltip>
-          </div>
+          <Typography component="h1" variant="h5" color="inherit" noWrap>
+            DANH SÁCH ĐỢT ĐÁNH GIÁ
+          </Typography>
+          <Tooltip title={
+            <>
+              <Typography variant='subtitle2'>Chọn tên đợt đánh giá để xem chi tiết</Typography>
+            </>
+          }>
+            <HelpIcon fontSize='small' color='action' />
+          </Tooltip>
+        </div>
         <Paper className={classes.paper}>
           <NumberList numbers={listStage} />
           <div style={{ margin: 10, justifyContent: 'space-between', display: 'flex' }}>
