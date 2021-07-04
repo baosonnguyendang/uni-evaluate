@@ -227,7 +227,7 @@ export default function ResultsList(props) {
       case 1:
         body = (
           <div>
-            <div style={{ width: '90%', display: 'inline-flex', justifyContent: 'space-between' }}>
+            <div style={{ width: '100%', display: 'inline-flex', justifyContent: 'space-between' }}>
               <Card className={classes.root}>
                 <CardContent>
                   <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
@@ -241,7 +241,7 @@ export default function ResultsList(props) {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
-                    {point.length > 0 ? Math.max(...point) : 'null'}
+                    {point.length > 0 ? Math.max(...point) : ''}
                   </Typography>
                   <Typography align='center' variant="body2" component="p">
                     Điểm số cao nhất trong Form
@@ -251,7 +251,7 @@ export default function ResultsList(props) {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
-                    {point.length > 0 ? Math.max(...point) : 'null'}
+                    {point.length > 0 ? Math.max(...point) : null}
                   </Typography>
                   <Typography align='center' variant="body2" component="p">
                     Điểm số thấp nhất trong Form
@@ -260,16 +260,16 @@ export default function ResultsList(props) {
               </Card>
               <Card className={classes.root}>
                 <CardContent>
-                  <Typography color="textSecondary" gutterBottom>
-                    Word of the Day
+                  <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
+                    {point.length > 0 ? 0 : -1}
                   </Typography>
-                  <Typography variant="body2" component="p">
-                    well meaning and kindly.
+                  <Typography align='center' variant="body2" component="p">
+                    Số GV/VC đạt mức cao nhất
                   </Typography>
                 </CardContent>
               </Card>
             </div>
-            <div style={{ margin: '10px 10px 10px 0', width: '90%' }}>
+            <div style={{ margin: '10px 10px 10px 0', width: '100%' }}>
               <Paper style={{ width: '34%', padding: '10px', display: 'inline-block' }}>
                 <Charts data={chartData} type={2} title={'Số GV/VC đánh giá'} />
               </Paper>
