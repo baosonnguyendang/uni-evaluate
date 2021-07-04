@@ -310,7 +310,7 @@ export default function ListUser() {
   // submit file excel
   const exportExcel = (data) => {
     axios({
-      url: `/admin/user/file/download?file=user`,
+      url: `/admin/file/download?file=user`,
       method: 'GET',
       responseType: 'blob', // important
     })

@@ -295,7 +295,7 @@ export default function Criterion() {
   // submit file excel
   const exportExcel = (data) => {
     axios({
-      url: `/admin/user/file/download?file=user`,
+      url: `/admin/file/download?file=department`,
       method: 'GET',
       responseType: 'blob', // important
     })
@@ -303,7 +303,7 @@ export default function Criterion() {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `User.xlsx`); //or any other extension
+        link.setAttribute('download', `Department.xlsx`); //or any other extension
         document.body.appendChild(link);
         link.click();
       })
