@@ -310,7 +310,7 @@ export default function ResultsList(props) {
         Đợt {id} - Nhóm {id1} - Mã biểu mẫu: {code} {stage != null && (stage == 1 ? '- Thống kê chung' : '- Kết quả chi tiết')}
       </Typography>
       <MenuEvaluate />
-      {stage && <Button style={{ float: 'right', marginTop: 10 }} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
+      {stage && <Button style={{ float: 'right', marginTop: 10, minWidth: 80 }} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
     </div>
   )
 }

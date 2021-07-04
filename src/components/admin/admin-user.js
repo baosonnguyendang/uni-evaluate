@@ -299,6 +299,7 @@ export default function ListUser() {
       .then(res => {
         console.log(res.data);
         dispatch(showSuccessSnackbar('Import excel người dùng thành công'))
+        window.location.reload();
       })
       .catch(e => {
         console.log(e)

@@ -6,20 +6,20 @@ import Moment from 'moment';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import { CardContent, LinearProgress, Container } from '@material-ui/core';
+import { CardContent, LinearProgress, Container, Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 var today = Moment()
 
 export default function Evaluation() {
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(false)
-  const token = localStorage.getItem('token')
+  const history = useHistory()
   useEffect(() => {
     setLoading(true)
-    axios.get('/form/review', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('/form/review')
       .then(res => {
         console.log(res.data)
         let temp = []
@@ -42,36 +42,130 @@ export default function Evaluation() {
       Thực hiện khảo sát
     </Button>
   )
-
+  const redirectEvaluation = (code) => {
+    history.push(`/user/evaluate/${code}`)
+  }
   return (
     <>
       {loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> :
-        <Container style={{ paddingTop: '45px' }}>
-          <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá </Typography>
-          {list.map(item => (
-            <Card key={item._id} style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
-              <CardContent>
-                <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
-                  {item.name}
-                </Typography>
-                <br />
-                <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
-                {/* .format('DD/MM/YYYY') */}
-                <br />
-                <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
-              </CardContent>
-              <CardActions>
-                {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
-                  <Link to={'/user/evaluate/' + item.code}>
-                    <Button size="small" color='secondary'>
+        <Grid container spacing={3} style={{ padding: '45px' }}>
+
+          <Grid item sm={12} md={8}>
+            <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá </Typography>
+            {list.map(item => (
+              <Card key={item._id} style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+                <CardContent>
+                  <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+                    {item.name}
+                  </Typography>
+                  <br />
+                  <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
+                  {/* .format('DD/MM/YYYY') */}
+                  <br />
+                  <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
+                </CardContent>
+                <CardActions>
+                  {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
+                    <Button variant="contained" color="primary" size='small' onClick={() => redirectEvaluation(item.code)}>
+
                       Thực hiện khảo sát
-                </Button>
-                  </Link> :
-                  NotInTime}
-              </CardActions>
-            </Card>
-          ))}
-        </Container>}
+                    </Button>
+                    :
+                    NotInTime}
+                </CardActions>
+              </Card>
+            ))}
+          </Grid>
+          <Grid item sm={12} md={4}>
+            <Grid container sm={12} md={4} flexDirection='column'>
+              <Typography variant='h6' gutterBottom >Timeline</Typography>
+                  <div style={{minHeight: 300}}></div>
+            </Grid>
+            <Grid>
+              <Typography variant='h6' gutterBottom >Sự kiện sắp tới</Typography>
+              <div style={{minHeight: 300}}>
+              {list.map(item => (
+              <Card key={item._id} style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+                <CardContent>
+                  <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+                    {item.name}
+                  </Typography>
+                  <br />
+                  <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
+                  {/* .format('DD/MM/YYYY') */}
+                  <br />
+                  <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
+                </CardContent>
+                <CardActions>
+                  {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
+                    <Button variant="contained" color="primary" size='small' onClick={() => redirectEvaluation(item.code)}>
+
+                      Thực hiện khảo sát
+                    </Button>
+                    :
+                    NotInTime}
+                </CardActions>
+              </Card>
+            ))}
+              </div>
+
+            </Grid>
+          </Grid>
+        </Grid>
+
+
+        /* <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá </Typography>
+        {list.map(item => (
+          <Card key={item._id} style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+            <CardContent>
+              <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+                {item.name}
+              </Typography>
+              <br />
+              <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
+              <br />
+              <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
+            </CardContent>
+            <CardActions>
+              {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
+                    <Button variant="contained" color="primary" size='small' onClick={() => redirectEvaluation(item.code)}>
+
+                    Thực hiện khảo sát
+                    </Button>
+               :
+                NotInTime}
+            </CardActions>
+          </Card>
+        ))}
+        <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá đã qua</Typography>
+        {list.map(item => (
+          <Card key={item._id} style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+            <CardContent>
+              <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+                {item.name}
+              </Typography>
+              <br />
+              <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
+              <br />
+              <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
+            </CardContent>
+            <CardActions>
+              {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
+                    <Button variant="contained" color="primary" size='small' onClick={() => redirectEvaluation(item.code)}>
+
+                    Thực hiện khảo sát
+                    </Button>
+               :
+                NotInTime}
+            </CardActions>
+          </Card>
+              ))} */
+      }
+
+
+
+
+
     </>
   )
 }
