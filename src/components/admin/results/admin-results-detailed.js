@@ -44,7 +44,7 @@ export default function ResultsDetailed() {
               res.data.evaluateForms.map(level => {
                 let arr = []
                 level.evaluateCriteria.map(criteria => {
-                  arr.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point })
+                  arr.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point, details: criteria.details })
                 })
                 total.push(arr)
               })
@@ -248,7 +248,7 @@ export default function ResultsDetailed() {
                                         style={{ width: 40 }}
                                         type='button'
                                         onClick={() => {
-                                          dispatch(showModal(data => console.log(data), "DETAIL_MODAL", { disableEdit: true, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) }))
+                                          dispatch(showModal(data => console.log(data), "DETAIL_MODAL", { disableEdit: true, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 2) }))
                                         }}
                                         value={data.length > 1 ? (data[1].find(x => x.name == criteria.criteria_id.code) ? data[1].find(x => x.name == criteria.criteria_id.code).value : 0) : ''}
                                         onMouseUp={e => e.target.blur()}
@@ -260,7 +260,7 @@ export default function ResultsDetailed() {
                                         <input
                                           style={{ width: 40 }}
                                           type='button'
-                                          onClick={() => { dispatch(showModal(data => console.log(data), "TIMES_MODAL", { disableEdit: true, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) })) }}
+                                          onClick={() => { dispatch(showModal(data => console.log(data), "TIMES_MODAL", { disableEdit: true, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 2) })) }}
                                           value={data.length > 1 ? (data[1].find(x => x.name == criteria.criteria_id.code) ? data[1].find(x => x.name == criteria.criteria_id.code).value : 0) : ''}
                                           onMouseUp={e => e.target.blur()}
                                         />
@@ -301,7 +301,7 @@ export default function ResultsDetailed() {
                                         style={{ width: 40 }}
                                         type='button'
                                         onClick={() => {
-                                          dispatch(showModal(data => console.log(data), "DETAIL_MODAL", { disableEdit: true, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) }))
+                                          dispatch(showModal(data => console.log(data), "DETAIL_MODAL", { disableEdit: true, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 3) }))
                                         }}
                                         value={data.length > 2 ? (data[2].find(x => x.name == criteria.criteria_id.code) ? data[2].find(x => x.name == criteria.criteria_id.code).value : 0) : ''}
                                         onMouseUp={e => e.target.blur()}
@@ -313,7 +313,7 @@ export default function ResultsDetailed() {
                                         <input
                                           style={{ width: 40 }}
                                           type='button'
-                                          onClick={() => { dispatch(showModal(data => console.log(data), "TIMES_MODAL", { disableEdit: true, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) })) }}
+                                          onClick={() => { dispatch(showModal(data => console.log(data), "TIMES_MODAL", { disableEdit: true, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 3) })) }}
                                           value={data.length > 2 ? (data[2].find(x => x.name == criteria.criteria_id.code) ? data[2].find(x => x.name == criteria.criteria_id.code).value : 0) : ''}
                                           onMouseUp={e => e.target.blur()}
                                         />

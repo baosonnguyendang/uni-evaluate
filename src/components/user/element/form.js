@@ -206,8 +206,8 @@ export default function FormEvaluation(props) {
           x.list.map(y => {
             console.log(all[0])
             console.log(y)
-            diem += all[0].find(z => z.name == y).value
-            diem2 += all[1].find(z => z.name == y).value
+            diem += all[0].some(z => z.name == y) ? all[0].find(z => z.name == y).value : 0
+            diem2 += all[1].some(z => z.name == y) ? all[1].find(z => z.name == y).value : 0
           })
           if (diem > x.max && x.max != null) {
             diem = x.max
@@ -232,9 +232,9 @@ export default function FormEvaluation(props) {
           let diem2 = 0
           let diem3 = 0
           x.list.map(y => {
-            diem += all[0].find(z => z.name == y).value
-            diem2 += all[1].find(z => z.name == y).value
-            diem3 += all[2].find(z => z.name == y).value
+            diem += all[0].find(z => z.name == y) ? all[0].find(z => z.name == y).value : 0
+            diem2 += all[1].find(z => z.name == y) ? all[1].find(z => z.name == y).value : 0
+            diem3 += all[2].find(z => z.name == y) ? all[2].find(z => z.name == y).value : 0
           })
           if (diem > x.max && x.max != null) {
             diem = x.max
