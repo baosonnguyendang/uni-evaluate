@@ -8,6 +8,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Typography, TextField, Button, Modal, Fade, Backdrop } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { showErrorSnackbar, showSuccessSnackbar } from '../../../actions/notifyAction'
+import Loading from '../../common/Loading'
+
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -36,7 +38,7 @@ export default function Import(props) {
   const [unitChosen, setUnitChosen] = useState()
   const [standardChosen, setStandardChosen] = useState()
   const [criteriaChosen, setCriteriaChosen] = useState()
-
+  const [loading, setLoading] = useState(false)
   const setChosen = (value, index) => {
     switch (index) {
       case 1:
@@ -108,6 +110,7 @@ export default function Import(props) {
 
   const exportTemplate = () => {
     const fcode = props.fcode;
+    setLoading(true)
     const body = {
       dcode: unitChosen.code,
       scode: standardChosen.code,
@@ -125,9 +128,12 @@ export default function Import(props) {
         link.href = url;
         link.setAttribute('download', `${body.dcode}-${body.ccode}.xlsx`); //or any other extension
         document.body.appendChild(link);
+        setLoading(false)
         link.click();
       })
       .catch(error => {
+        setLoading(false)
+
         if (error.response) {
           if (error.response.status === 405) {
             // Trả lỗi
@@ -160,6 +166,8 @@ export default function Import(props) {
 
   const submitExcel = (data) => {
     const fcode = props.fcode;
+    setLoading(true)
+
     const body = {
       dcode: unitChosen.code,
       scode: standardChosen.code,
@@ -174,9 +182,11 @@ export default function Import(props) {
     axios.post(`/admin/file/form/${fcode}/evaluation/import`, formData)
       .then(res => {
         console.log(res.data);
+        setLoading(false)
         dispatch(showSuccessSnackbar('Thêm điểm cho tiêu chí thành công'))
       })
       .catch(error => {
+        setLoading(false)
         if (error.response) {
           if (error.response.status === 400) {
             // Trả lỗi
@@ -199,6 +209,7 @@ export default function Import(props) {
 
   return (
     <div>
+      <Loading open={loading} />
       <Typography style={{ marginBottom: 18 }} component="h3" variant="h5" color="inherit">
         Thêm dữ liệu có sẵn
       </Typography>
@@ -242,7 +253,7 @@ export default function Import(props) {
         />
       }
       {criteriaChosen &&
-        <div style={{marginTop: 35}}>
+        <div style={{ marginTop: 35 }}>
           <Button variant="contained" color="primary" onClick={exportTemplate}>
             Xuất
           </Button>
