@@ -1,14 +1,14 @@
 import React from 'react';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
-import { Button, Modal, Typography, TextField } from '@material-ui/core';
+
+import { Modal } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux'
 import { clearModal } from '../../../actions/modalAction'
 import TimesModal from './TimesModal'
 import DetailModal from './DetailModal'
+import AddUnitsModal from './AddUnitsModal'
 
 const ModalCustom = () => {
   const dispatch = useDispatch()
-  // getModalStyle is not a pure function, we roll the style only on the first render
   const modal = useSelector(state => state.modal)
 
 
@@ -23,8 +23,10 @@ const ModalCustom = () => {
         return <TimesModal />
       case 'DETAIL_MODAL':
         return <DetailModal />
+      case 'ADD_UNIT_MODAL':
+        return <AddUnitsModal />
       default:
-        return null
+        return <></>
     }
   }
 

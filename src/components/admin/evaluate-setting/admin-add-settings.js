@@ -16,7 +16,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
-import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Modal from '@material-ui/core/Modal';
@@ -35,10 +34,15 @@ import PostAddIcon from '@material-ui/icons/PostAdd';
 import CategoryIcon from '@material-ui/icons/Category';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import HelpIcon from '@material-ui/icons/Help';
-
+import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import ModifyForm from "../CreateEvaluation/CreateForm/CreateForm";
+import DeleteIcon from '@material-ui/icons/Delete';
+import { showModal, clearModal } from '../../../actions/modalAction'
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -84,6 +88,14 @@ const useStyles = makeStyles(theme => ({
   list: {
     backgroundColor: theme.palette.background.paper,
   },
+  option: {
+    fontSize: 15,
+    '& > span': {
+      marginRight: 10,
+      fontSize: 18,
+    },
+  },
+
 }))
 
 const createData = (name, id) => {
@@ -106,10 +118,10 @@ export default function AddSettings() {
   let { id, id1 } = useParams();
   const [loading, setLoading] = useState(true)
   //check form da duoc tao hay chua
-
+  const dispatch = useDispatch()
   //ds don vi va ma don vi
-  const [units, setUnits] = useState([])
-
+  const [units, setUnits] = useState(null)
+  const [restUnits, setRestUnits] = useState(null)
   //fe to be
   const fetchUnits = () => {
     axios.get('admin/department/parent')
@@ -133,6 +145,8 @@ export default function AddSettings() {
             })
             setUnits([...temp])
             setUnitChosen(temp.filter(unit => unit.check === true))
+            console.log(temp.filter(unit => unit.check === true))
+            setRestUnits(temp.filter(unit => unit.check !== true && unit.id !== "HDDG"))
             setLoading(false)
           })
           .catch(e => console.log(e))
@@ -221,18 +235,60 @@ export default function AddSettings() {
     console.log(unitChosen)
     setOpenUnit(true);
   };
-  const handleCloseUnit = () => {
-    setUnitChosen(units.filter(unit => unit.check === true))
-    console.log(units.filter(unit => unit.check === true).map(x => x.id))
-    axios.post(`/admin/form/${code}/addFormDepartments/v2`, { dcodes: units.filter(unit => unit.check === true).map(x => x.id) })
+  const handleClose = () => {
+    dispatch(clearModal())
+  };
+  //loading khi thêm đơn vị
+  const [loadingCircle, setLoadingCircle] = useState(false)
+  // thêm đƠn đánh giá
+  const addFormDepartments = (data) => {
+    handleClose()
+    setLoadingCircle(true)
+    axios.post(`/admin/form/${code}/addFormDepartments`, data)
       .then(res => {
-        setOpenUnit(false);
+        console.log(res.data)
+        dispatch(showSuccessSnackbar('Thêm đơn vị đánh giá thành công'))
+        units.forEach(element => {
+          if (data.dcodes.includes(element.id)) { element.check = true; }
+        });
+        setUnitChosen(units.filter(unit => unit.check === true))
+        setRestUnits(units.filter(unit => unit.check !== true && unit.id !== "HDDG"))
+        console.log(units.filter(unit => unit.check === true))
+        setLoadingCircle(false)
       })
-      .catch(e => {
-        console.log(e)
+      .catch(err => {
+        console.log(err)
+        dispatch(showErrorSnackbar('Thêm đơn vị đánh giá thất bại'))
+        setLoadingCircle(false)
       })
 
   };
+  // dialog xoá đơn vị
+  const onDelete = id => {
+    setStatusDelete({ open: true, onClick: () => removeFormDepartment(id) })
+  }
+  // xoá đơn vị
+  const removeFormDepartment = (dcode) => {
+    closeDialog()
+    setLoadingCircle(true)
+    axios.post(`/admin/form/${code}/${dcode}/delete`)
+      .then(res => {
+        console.log(res.data)
+        units.forEach(element => {
+          if (element.id === dcode) { element.check = false; }
+        });
+        setUnitChosen(units.filter(unit => unit.check === true))
+        setRestUnits(units.filter(unit => unit.check !== true && unit.id !== "HDDG"))
+        console.log(units.filter(unit => unit.check === true))
+        dispatch(showSuccessSnackbar('Xoá đơn vị đánh giá thành công'))
+        setLoadingCircle(false)
+      })
+      .catch(err => {
+        console.log(err)
+        dispatch(showErrorSnackbar('Xoá đơn vị đánh giá thất bại'))
+        setLoadingCircle(false)
+      })
+  }
 
   const [unitChosen, setUnitChosen] = React.useState([])
 
@@ -240,7 +296,6 @@ export default function AddSettings() {
   const [showResults, setShowResults] = React.useState(false);
 
   const SelectedUnit = () => {
-    let bool = false;
 
     const openUnitt = (x) => {
       unit = x
@@ -257,32 +312,27 @@ export default function AddSettings() {
         .catch(err => console.log(err))
       setShowResults(true)
     }
-
+    if (!units) return <Loading open />
     return (
       <div style={{ minHeight: '250px', }}>
-        <List  style={{ marginTop: 10 }}>
-          {units.filter(x => x.id != 'HDDG').map(unit => {
-            if (unit.check) {
-              bool = true;
-              return (
-                <ListItem button key={unit.id} id={unit.id} onClick={() => openUnitt(unit.id)}>
-                  <ListItemText primary={unit.name} />
-                </ListItem>
-              )
-            }
-          })}
+        <List style={{ marginTop: 10 }}>
+          {unitChosen.map(unit =>
+            <ListItem key={unit.id} id={unit.id} >
+              <ListItemText primary={unit.name} />
+              <IconButton onClick={() => openUnitt(unit.id)} >
+                <VisibilityIcon />
+              </IconButton>
+              <IconButton onClick={() => onDelete(unit.id)} >
+                <DeleteIcon />
+              </IconButton>
+            </ListItem>
+          )}
         </List>
-        {!bool && <Typography>(Không có đơn vị nào nằm trong nhóm)</Typography>}
+        {!unitChosen.length && <Typography>Không có đơn vị tham gia đánh giá</Typography>}
       </div>
     )
   }
 
-  //change tab
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   //chon truong don vi
   const [headTemp, setHeadTemp] = useState({ name: '', id: '' })//luu tam option dc chon trong chon truong don vi
@@ -456,61 +506,23 @@ export default function AddSettings() {
       case 2:
         body = (
           <div>
+            <Loading open={loadingCircle} />
+            <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography component="h3" variant="h5" color="inherit">
-              Các đơn vị tham gia đánh giá 
-            </Typography>
-            <Tooltip title={
-                    <Typography variant='subtitle2'>Chọn đơn vị để xem thành viên tham gia đánh giá</Typography>
-                }>
-                        <HelpIcon fontSize='small' color='action' />
-                </Tooltip>
+              <Typography variant="h5" color="inherit">
+                Các đơn vị tham gia đánh giá
+              </Typography>
+              <Tooltip title={
+                <Typography variant='subtitle2'>Chọn đơn vị để xem thành viên tham gia đánh giá</Typography>
+              }>
+                <HelpIcon fontSize='small' color='action' />
+              </Tooltip>
             </div>
+
             <SelectedUnit />
-            <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpenUnit}>
-              Thêm đơn vị 
+            <Button variant="contained" color="primary" className={classes.btn} onClick={() => { dispatch(showModal(addFormDepartments, "ADD_UNIT_MODAL", restUnits)) }}>
+              Thêm đơn vị
             </Button>
-            <Modal
-              className={classes.modal}
-              open={openUnit}
-              onClose={handleCloseUnit}
-              closeAfterTransition
-              BackdropComponent={Backdrop}
-              BackdropProps={{
-                timeout: 500,
-              }}
-            >
-              <Fade in={openUnit}>
-                <div className={classes.paper1}>
-                  <h4>Thêm đơn vị vào nhóm</h4>
-                  <Autocomplete
-                    multiple
-                    options={units}
-                    disableCloseOnSelect
-                    defaultValue={unitChosen}
-                    getOptionLabel={(option) => option.name}
-                    renderOption={(option, { selected }) => (
-                      <React.Fragment>
-                        <Checkbox
-                          icon={icon}
-                          checkedIcon={checkedIcon}
-                          style={{ marginRight: 8 }}
-                          checked={option.check = selected}
-                          onChange={console.log(units.map(x => x.check))}
-                        />
-                        {option.name}
-                      </React.Fragment>
-                    )}
-                    style={{ width: 500 }}
-                    renderInput={(params) => (
-                      <TextField {...params} variant="outlined" label="Đơn vị" placeholder="Đơn vị" />
-                    )}
-                  />
-                  <Button style={{ marginTop: '10px', marginRight: 10 }} variant="contained" color="primary" onClick={() => handleCloseUnit()}>Xong</Button>
-                  <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={() => setOpenUnit(false)}>Thoát</Button>
-                </div>
-              </Fade>
-            </Modal>
           </div>
         )
         break
@@ -581,7 +593,7 @@ export default function AddSettings() {
                     >
                       <Fade in={openHead}>
                         <div className={classes.paper1}>
-                          <h2>Trưởng đơn vị</h2>
+                          <Typography variant='h5' gutterBottom >Trưởng đơn vị</Typography>
                           <form onSubmit={submitHead}>
                             <Autocomplete
                               id="combo-box-demo"
@@ -636,7 +648,7 @@ export default function AddSettings() {
                     <Paper style={{ padding: 10 }} className={classes.paper}>
                       <MenuEvaluate />
                     </Paper>
-                    {stage && <Button style={{width: 80, float: 'right', marginTop: 10 }} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
+                    {stage && <Button style={{ width: 80, float: 'right', marginTop: 10 }} variant="contained" onClick={() => { setStage(null) }} ><KeyboardReturnIcon /></Button>}
                   </div >
                 )
                 }

@@ -184,7 +184,6 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
                 <IconButton
                     aria-label="add"
                     color="primary"
-                    edge='end'
                     onClick={() => {
                         if (!tempCriteria) return
                         setExistCriteria([...existCriteria, tempCriteria])
