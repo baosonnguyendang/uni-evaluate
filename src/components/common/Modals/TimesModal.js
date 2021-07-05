@@ -68,7 +68,7 @@ const TimesModal = () => {
                 <Typography variant='h5' >Nhập số lần cụ thể</Typography>
 
                 <ListItem>
-                    <ListItemText style={{ width: '300px' }} primary="Mỗi lần vi phạm quy chế" />
+                    <ListItemText style={{ width: '300px' }} primary={data.name} />
                     <TextField className={classes.input} type='number' variant="outlined" label="Điểm" disabled defaultValue={data.base_point} />
                     <TextField className={classes.input} type='number' variant="outlined" required label="Số lần" 
                     onChange={(e) => {setTimes(e.target.value); setPoint(e.target.value * data.base_point)}} 
