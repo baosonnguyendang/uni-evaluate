@@ -51,7 +51,6 @@ const CustomTableCell = ({ row, name }) => {
 
 export default function Results(props) {
   const classes = useStyles()
-  const token = localStorage.getItem('token')
   const { id, id1, id2 } = useParams()
 
   var code
@@ -60,28 +59,28 @@ export default function Results(props) {
 
   //lấy mã form and then ds gv/vc thuộc đơn vị
   useEffect(() => {
-    axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/review/${id}/formtype/${id1}/form/`)
       .then(res => {
         if (res.data.form) {
           // setCode(res.data.form.code)
           code = res.data.form.code
 
-          axios.get(`/admin/form/${code}/${id2}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
+          axios.get(`/admin/form/${code}/${id2}/getFormUser`)
             .then(res => {
               let temp = []
               console.log(res.data.formUser)
               res.data.formUser.map(x => {
                 temp.push(createData(x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, x.user_id.department.length > 0 ? x.user_id.department[0].name : null, 'Chưa đánh giá', null))
               })
-              axios.get(`/admin/form/${code}/${id2}/formuser/get`, { headers: { "Authorization": `Bearer ${token}` } })
+              axios.get(`/admin/form/${code}/${id2}/formuser/get`)
                 .then(res => {
                   console.log(res.data.formUsers)
                   res.data.formUsers.map(user => {
-                    let pts = [' -', ' -', ' -']
+                    let pts = [' --', ' --', ' --']
                     if (user.evaluateForm) {
                       temp.find(x => x.id == user.user_id.staff_id).already = true
                       user.evaluateForm.map(x => {
-                        pts[user.evaluateForm.indexOf(x)] = x.point ? x.point : ' -'
+                        pts[user.evaluateForm.indexOf(x)] = x.point ? x.point : ' --'
                       })
                     }
                     temp.find(x => x.id == user.user_id.staff_id).status = pts.toString()

@@ -597,7 +597,7 @@ export default function AddSettings() {
                           <form onSubmit={submitHead}>
                             <Autocomplete
                               id="combo-box-demo"
-                              options={unitMember}
+                              options={unitMember || []}
                               getOptionDisabled={(option) => option[1] == head.id}
                               getOptionLabel={(option) => `${option[0]} (${option[1]})`}
                               fullWidth
@@ -623,15 +623,17 @@ export default function AddSettings() {
                       }}
                     >
                       <Fade in={openAdd}>
-                        <div className={classes.paper1}>
-                          <h2>Thêm GV/VC</h2>
+                        <div className={classes.paper1} style={{ width: 500}}>
+                          <Typography variant='h5' gutterBottom>Thêm GV/VC</Typography>
                           <form onSubmit={submitAdd}>
-                            <TextField onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required variant="outlined" className={classes.field} />
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                            <TextField fullWidth size='small' onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required variant="outlined"  />
                             <IconButton variant='contained' color='primary' onClick={getInfo}>
                               <SearchIcon />
                             </IconButton>
-                            <h5 style={{ marginTop: '10px' }}>{display}</h5>
-                            <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                            </div>  
+                            <Typography style={{ marginTop: '10px' }}>{display}</Typography>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                               <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Thêm</Button>
                               <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseAdd}>Thoát</Button>
                             </div>

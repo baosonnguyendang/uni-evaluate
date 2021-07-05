@@ -2,13 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import axios from 'axios'
 
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from "@material-ui/core/IconButton";
+
 import MUIDataTable from "mui-datatables";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -27,15 +21,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function UserSettings(props) {
-  const classes = useStyles();
 
   const columns = ["Tên", "Mã NV", "Bộ môn"];
-  const type = props.type
   // const data = [
   //   ["Joe James", "1712970", "Khoa học máy tính"],
   // ];
   //fe to be
-  const token = localStorage.getItem('token')
 
   const [data, setData] = React.useState([])
 
@@ -43,25 +34,6 @@ export default function UserSettings(props) {
     setData(props.data)
     console.log(props.data)
   }, [props.data])
-
-  const [fetched, setFetched] = React.useState(false)
-
-  // useEffect(() => {
-  //   if (fetched == false) {
-  //     setFetched(true)
-  //     axios.get(`/admin/form/${props.fcode}/${props.unit}/getFormUser`, { headers: { "Authorization": `Bearer ${token}` } })
-  //       .then(res => {
-  //         let temp = []
-  //         res.data.formUser.map(x => {
-  //           let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
-  //           temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
-  //         })
-  //         console.log(temp)
-  //         setData(temp)
-  //       })
-  //       .catch(err => console.log(err))
-  //   }
-  // }, [])
 
   const options = {
     filterType: 'checkbox',
@@ -81,7 +53,7 @@ export default function UserSettings(props) {
       const body = {
         delete_users: bin
       }
-      axios.post(`/admin/form/${fcode}/${dcode}/removeFormUser`, body, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/admin/form/${fcode}/${dcode}/removeFormUser`, body)
         .then(res => {
           setData(temp)
         })

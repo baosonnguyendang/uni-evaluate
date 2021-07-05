@@ -4,7 +4,7 @@ import Charts from './admin-charts'
 
 import axios from 'axios'
 
-import { Link, useParams, useRouteMatch } from 'react-router-dom';
+import {  useParams, useRouteMatch } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -12,7 +12,6 @@ import ResultsDashboard from './admin-results-detailed2';
 import ResultsUnit from './admin-results-unitlist';
 
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
@@ -49,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 export default function ResultsList(props) {
   const classes = useStyles()
   const { id, id1 } = useParams()
-  const token = localStorage.getItem('token')
+
   const [units, setUnits] = useState([]) //ds đơn vị trong đợt đánh giá
 
   var { url } = useRouteMatch();
@@ -106,12 +105,12 @@ export default function ResultsList(props) {
 
   //lấy mã form
   useEffect(() => {
-    axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/review/${id}/formtype/${id1}/form/`)
       .then(res => {
         if (res.data.form) {
           setCode(res.data.form.code)
           //lấy các đơn vị cha nằm trong đợt đánh giá
-          axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+          axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`)
             .then(res => {
               console.log(res.data)
               let temp = res.data.formDepartments.map(y => y.department_id)
@@ -126,7 +125,7 @@ export default function ResultsList(props) {
   }, [])
 
   useEffect(() => {
-    axios.get(`/admin/form/${code}/formrating`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/form/${code}/formrating`)
       .then(res => {
         //console.log(res.data)
         let list = []
@@ -135,7 +134,7 @@ export default function ResultsList(props) {
         })
         console.log(list)
         setRate([...list])
-        axios.get(`/admin/form/${code}/getPoints`, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.get(`/admin/form/${code}/getPoints`)
           .then(res => {
             console.log(list)
             setPoint([...res.data.userforms])

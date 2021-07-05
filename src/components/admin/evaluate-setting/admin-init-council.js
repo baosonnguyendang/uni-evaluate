@@ -60,7 +60,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
   formControl: {
-    margin: theme.spacing(1),
     minWidth: 300
   },
 }));
@@ -325,7 +324,7 @@ export default function Council(props) {
           >
             <Fade in={open}>
               <div className={classes.paper1}>
-                <Typography variant='h6' style={{ marginBottom: '24px' }}>Thêm thành viên vào hội đồng:</Typography>
+                <Typography variant='h6' style={{ marginBottom: '15px' }}>Thêm thành viên vào hội đồng:</Typography>
                 <form onSubmit={submit}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <TextField size='small' style={{ width: '100%' }} onChange={e => setId(e.target.value)} id="code" label="Mã GV/VC" variant="outlined" />
@@ -355,7 +354,7 @@ export default function Council(props) {
           >
             <Fade in={openHead}>
               <div className={classes.paper1}>
-                <Typography variant='h6' style={{ marginBottom: '15px' }}>Chọn Đại diện Hội đồng:</Typography>
+                <Typography variant='h5' style={{ marginBottom: '15px' }}>Chọn đại diện hội đồng:</Typography>
                 <FormControl variant="outlined" className={classes.formControl} fullWidth>
                   <InputLabel htmlFor="outlined-age-native-simple">Đại diện</InputLabel>
                   <Select
