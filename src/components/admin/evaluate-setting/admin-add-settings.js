@@ -220,21 +220,12 @@ export default function AddSettings() {
     )
   }
 
-  //cai nay la de sau khi check hoac uncheck se render lai luon
-  const [state, setState] = React.useState(true);
 
   //danh sach nguoi trong khoa
   const [unitMember, setUnitMember] = useState([])
 
   const group = 1
 
-  //open modal them don vi
-  const [openUnit, setOpenUnit] = React.useState(false);
-  const handleOpenUnit = () => {
-    console.log(units)
-    console.log(unitChosen)
-    setOpenUnit(true);
-  };
   const handleClose = () => {
     dispatch(clearModal())
   };
@@ -312,7 +303,7 @@ export default function AddSettings() {
         .catch(err => console.log(err))
       setShowResults(true)
     }
-    if (!units) return <Loading open />
+    if (!units) return <div style={{ minHeight: '250px', }}><Loading open /></div>
     return (
       <div style={{ minHeight: '250px', }}>
         <List style={{ marginTop: 10 }}>

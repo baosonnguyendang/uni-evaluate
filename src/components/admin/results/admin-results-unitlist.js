@@ -61,7 +61,7 @@ export default function ResultsUnit() {
           <List >
             {units.filter(x => x.department_code != 'HDDG').map(unit => {
               return (
-                <ListItem button key={unit._id} component={Link} to={`${url}/${unit.department_code}`}>
+                <ListItem style={{ color: 'black', textDecoration: 'none' }}  button key={unit._id} component={"a"} href={`${url}/${unit.department_code}`}>
                   <ListItemText primary={unit.name} />
                 </ListItem>
               )
