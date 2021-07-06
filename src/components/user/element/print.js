@@ -109,9 +109,6 @@ const PrintComponent = (props) => {
 
   }, [])
 
-  console.log(props.data)
-  console.log(props.form)
-
   return (
     <div>
       {props.info && props.form && (
