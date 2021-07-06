@@ -223,6 +223,7 @@ export default function AddSettings() {
 
   //danh sach nguoi trong khoa
   const [unitMember, setUnitMember] = useState([])
+  const [loadUnitMember, setLoadUnitMember] = useState(true) // cai nay de hien cai loading ben ds ng trong khoa
 
   const group = 1
 
@@ -292,6 +293,7 @@ export default function AddSettings() {
       unit = x
       axios.get(`/admin/form/${code}/${unit}/getFormUser`)
         .then(res => {
+          console.log(res.data)
           let temp = []
           res.data.formUser.map(x => {
             let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
@@ -299,6 +301,7 @@ export default function AddSettings() {
           })
           console.log(temp)
           setUnitMember(temp)
+          setLoadUnitMember(false)
         })
         .catch(err => console.log(err))
       setShowResults(true)
@@ -558,7 +561,7 @@ export default function AddSettings() {
                       Nhóm 0{group} - {units.find(x => x.id == unit).name}
                     </Typography>
                     <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
-                      <UserSettings unit={unit} type={id1} fcode={code} data={unitMember} />
+                      <UserSettings unit={unit} type={id1} fcode={code} data={unitMember} loading={loadUnitMember} />
                       <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text={`Trưởng Đơn vị đang là ${head.name} (${head.id}), có muốn thay đổi?`} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                         <Button variant="contained" style={{ marginRight: 10, width: 200 }} onClick={() => { onAsk() }}>
@@ -567,7 +570,7 @@ export default function AddSettings() {
                         <Button variant="contained" color="primary" style={{ marginRight: 10, width: 200 }} onClick={() => { handleOpenAdd() }}>
                           Thêm GV/VC
                         </Button>
-                        <Button variant="contained" color="secondary" onClick={() => { setShowResults(false) }}>
+                        <Button variant="contained" color="secondary" onClick={() => { setShowResults(false); setUnitMember([]); setLoadUnitMember(true) }}>
                           Trở lại trang điều chỉnh
                         </Button>
                       </div>

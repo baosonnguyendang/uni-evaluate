@@ -6,6 +6,7 @@ import axios from 'axios'
 import MUIDataTable from "mui-datatables";
 
 import { makeStyles } from "@material-ui/core/styles";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -33,6 +34,7 @@ export default function UserSettings(props) {
   useEffect(() => {
     setData(props.data)
     console.log(props.data)
+    console.log(props.loading)
   }, [props.data])
 
   const options = {
@@ -77,6 +79,7 @@ export default function UserSettings(props) {
         columns={columns}
         options={options}
       />
+      {props.loading && <LinearProgress />}
     </div>
   );
 }
