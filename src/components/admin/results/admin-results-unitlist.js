@@ -42,6 +42,7 @@ export default function ResultsUnit() {
         console.log(e)
       })
   }, [])
+  
   if (!units) return <Paper className={classes.paper}>
     <Typography component="h4" variant="h6" color="inherit" noWrap>
       Các đơn vị tham gia đánh giá

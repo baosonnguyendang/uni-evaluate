@@ -68,7 +68,7 @@ export default function CouncilUnitList() {
                 <TableCell align="center">{row.code}</TableCell>
                 <TableCell align="left">{row.headName}</TableCell>
                 <TableCell align="center">{row.headCode}</TableCell>
-                <TableCell><Link to={`${url}/${row.code}`} >Đánh giá đơn vị này</Link></TableCell>
+                <TableCell><Link to={`${url}/${row.code}`} >Đánh giá</Link></TableCell>
               </TableRow>
             ))}
           </TableBody>
