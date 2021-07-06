@@ -6,7 +6,7 @@ import PrintList from './user-print-list'
 
 import { Link, useRouteMatch, useParams } from 'react-router-dom';
 
-import { Table, TableHead, TableBody, TableCell, TableRow, Typography, LinearProgress } from '@material-ui/core';
+import { Table, TableHead, TableBody, TableCell, TableRow, TablePagination, Typography, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -26,6 +26,19 @@ export default function EmployeeList() {
 
   const [data, setData] = useState(null)
   const [info, setInfo] = useState() // tên đvị
+
+  //qua trang
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   useEffect(() => {
     axios.get(`/user/head/${id1}/${id2}/get`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -82,7 +95,7 @@ export default function EmployeeList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
+          {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
             <TableRow key={row.code}>
               <TableCell component="th" scope="row">
                 {row.code}
@@ -90,11 +103,20 @@ export default function EmployeeList() {
               <TableCell align="left">{row.lname + ' ' + row.fname}</TableCell>
               <TableCell align="left">{row.unit}</TableCell>
               <TableCell align="center">{row.point.toString()}</TableCell>
-              <TableCell align="center" style={{ minWidth: '200px' }}> {row.status > 1 && <Link to={`${url}/${row.id}`}>{row.status == 2 ? 'Bấm vào đây để đánh giá GV/VC' : 'Bấm vào đây để xem kết quả đánh giá GV/VC'}</Link>}</TableCell>
+              <TableCell align="center" style={{ minWidth: '200px' }}> {row.status > 1 && <Link to={`${url}/${row.id}`}>{row.status == 2 ? 'Đánh giá GV/VC' : 'Xem kết quả đánh giá GV/VC'}</Link>}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 20]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </div>
   )
 }
