@@ -132,11 +132,10 @@ export default function ResultsList(props) {
         res.data.formRatings.map(r => {
           list.push({ min: r.min_point, max: r.max_point })
         })
-        console.log(list)
         setRate([...list])
         axios.get(`/admin/form/${code}/getPoints`)
           .then(res => {
-            console.log(list)
+            console.log(res.data)
             setPoint([...res.data.userforms])
             let dat = []
             let label = []
@@ -230,7 +229,7 @@ export default function ResultsList(props) {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
-                    {participate[0] + participate[1]}
+                    { isNaN(participate[0]) ? 0 : participate[0] + participate[1]}
                   </Typography>
                   <Typography align='center' variant="body2" component="p">
                     Tổng số GV/VC tham gia đánh giá
