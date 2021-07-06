@@ -204,8 +204,6 @@ export default function FormEvaluation(props) {
           let diem = 0
           let diem2 = 0
           x.list.map(y => {
-            console.log(all[0])
-            console.log(y)
             diem += all[0].some(z => z.name == y) ? all[0].find(z => z.name == y).value : 0
             diem2 += all[1].some(z => z.name == y) ? all[1].find(z => z.name == y).value : 0
           })
@@ -583,11 +581,11 @@ export default function FormEvaluation(props) {
         )
       case 2:
         return (
-          all[1].find(x => x.name == criteria).details ? all[1].find(x => x.name == criteria).details : []
+          (all[1].some(x => x.name == criteria) && all[1].find(x => x.name == criteria).details) ? all[1].find(x => x.name == criteria).details : []
         )
       case 3:
         return (
-          all[2].find(x => x.name == criteria).details ? all[2].find(x => x.name == criteria).details : []
+          (all[2].some(x => x.name == criteria) && all[2].find(x => x.name == criteria).details) ? all[2].find(x => x.name == criteria).details : []
         )
       default:
         return null
@@ -694,7 +692,7 @@ export default function FormEvaluation(props) {
                     <PrintIcon />
                   </IconButton>
                 </Tooltip> */}
-                <PinnedSubheaderList userForm={variable} level={level} point={Number((point).toFixed(2))} point2={Number((point2).toFixed(2))} point3={Number((point3).toFixed(2))}/>
+                {info != null && <PinnedSubheaderList form={data} data={all} info={info} level={level} point={Number((point).toFixed(2))} point2={props.level > 1 || readOnly2 ? Number((point2).toFixed(2)) : null} point3={props.level > 2 || readOnly3 ? Number((point3).toFixed(2)) : null}/>}
 
               </div>
               <Grid container justify='center' style={{ marginTop: '20px' }}>

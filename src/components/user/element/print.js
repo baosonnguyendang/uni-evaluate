@@ -48,70 +48,73 @@ const PrintComponent = (props) => {
 
   useEffect(() => {
     axios.get(`/review/${id}`)
-    .then(res => {
-      setName(res.data.review.name)
-    })
-    const getFormStandard = () => {
-      return axios.get(`/form/${props.userForm}/v2`)
-        .then(res => {
-          console.log(res.data)
-          setInfo({ name: res.data.user.lastname + ' ' + res.data.user.firstname, id: res.data.user.staff_id, department: res.data.department.name, form: res.data.form.name })
-          return res.data
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
-    const getFormEvaluate = () => {
-      return axios.get(`/form/${props.userForm}/evaluation/get`)
-        .then(res => {
-          console.log(res.data)
-          const evaluateForms = res.data.evaluateForms
-          const temp = evaluateForms[0].evaluateCriteria.map(e => [])
-          console.log(temp)
-
-          const point = evaluateForms.map(ef => ef.evaluateCriteria.map((ec, i) => { temp[i].push(ec.point) }))
-          // const point = evaluateForms[0].evaluateCriteria.map(e => [e.point])
-          console.log(temp)
-          // điểm [[1,2,1], [1,2,1] ] 3 lv tương ứng
-          return temp
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
-    Promise.all([getFormStandard(), getFormEvaluate()])
       .then(res => {
-        console.log(res)
-        const formStandards = res[0].formStandards
-        let pointAllLevel = []
-        pointAllLevel = res[1]
-        console.log(pointAllLevel)
-        console.log(formStandards)
-        setSumPoint(pointAllLevel.reduce(([a, b, c], [a1, b1, c1]) => [a + a1, b + b1, c + c1], [0, 0, 0]))
-
-        formStandards.map((e) => {
-          const pointOfStandard = pointAllLevel.slice(0, e.formCriteria.length)
-          console.log(e.formCriteria.length)
-          // xoá điểm đã lấy
-          pointAllLevel = pointAllLevel.slice(e.formCriteria.length)
-          e.point = pointOfStandard
-        })
-
-        console.log(formStandards)
-        setForm(formStandards)
+        setName(res.data.review.name)
         props.setBool(true)
       })
-      .catch(err => {
-        console.log(err)
-      })
+    // const getFormStandard = () => {
+    //   return axios.get(`/form/${props.userForm}/v2`)
+    //     .then(res => {
+    //       console.log(res.data)
+    //       setInfo({ name: res.data.user.lastname + ' ' + res.data.user.firstname, id: res.data.user.staff_id, department: res.data.department.name, form: res.data.form.name })
+    //       return res.data
+    //     })
+    //     .catch(err => {
+    //       console.log(err)
+    //     })
+    // }
+    // const getFormEvaluate = () => {
+    //   return axios.get(`/form/${props.userForm}/evaluation/get`)
+    //     .then(res => {
+    //       console.log(res.data)
+    //       const evaluateForms = res.data.evaluateForms
+    //       const temp = evaluateForms[0].evaluateCriteria.map(e => [])
+    //       console.log(temp)
+
+    //       const point = evaluateForms.map(ef => ef.evaluateCriteria.map((ec, i) => { temp[i].push(ec.point) }))
+    //       // const point = evaluateForms[0].evaluateCriteria.map(e => [e.point])
+    //       console.log(temp)
+    //       // điểm [[1,2,1], [1,2,1] ] 3 lv tương ứng
+    //       return temp
+    //     })
+    //     .catch(err => {
+    //       console.log(err)
+    //     })
+    // }
+    // Promise.all([getFormStandard(), getFormEvaluate()])
+    //   .then(res => {
+    //     console.log(res)
+    //     const formStandards = res[0].formStandards
+    //     let pointAllLevel = []
+    //     pointAllLevel = res[1]
+    //     console.log(pointAllLevel)
+    //     console.log(formStandards)
+    //     setSumPoint(pointAllLevel.reduce(([a, b, c], [a1, b1, c1]) => [a + a1, b + b1, c + c1], [0, 0, 0]))
+
+    //     formStandards.map((e) => {
+    //       const pointOfStandard = pointAllLevel.slice(0, e.formCriteria.length)
+    //       console.log(e.formCriteria.length)
+    //       // xoá điểm đã lấy
+    //       pointAllLevel = pointAllLevel.slice(e.formCriteria.length)
+    //       e.point = pointOfStandard
+    //     })
+
+    //     console.log(formStandards)
+    //     setForm(formStandards)
+    //     props.setBool(true)
+    //   })
+    //   .catch(err => {
+    //     console.log(err)
+    //   })
 
   }, [])
 
+  console.log(props.data)
+  console.log(props.form)
 
   return (
     <div>
-      {info && form && (
+      {props.info && props.form && (
         <div id='print' className={'root'} style={{ display: 'none' }} >
           <div style={{ margin: '0 auto', width: '23cm' }}>
             <div style={{ float: 'left', textAlign: 'center' }}>
@@ -131,11 +134,11 @@ const PrintComponent = (props) => {
             <table style={{ width: '100%' }}>
               <tbody>
                 <tr>
-                  <td style={{ width: '60%', textAlign: 'left' }}>Họ Tên: {info.name}</td>
-                  <td style={{ textAlign: 'left' }}>MSVC: {info.id}</td>
+                  <td style={{ width: '60%', textAlign: 'left' }}>Họ Tên: {props.info.name}</td>
+                  <td style={{ textAlign: 'left' }}>MSVC: {props.info.id}</td>
                 </tr>
                 <tr>
-                  <td style={{ textAlign: 'left' }}>Đơn vị: {info.department}</td>
+                  <td style={{ textAlign: 'left' }}>Đơn vị: {props.info.unit}</td>
                 </tr>
               </tbody>
             </table>
@@ -155,7 +158,7 @@ const PrintComponent = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {form.map(standard => {
+                {props.form.map(standard => {
                   return (
                     <>
                       <tr key={standard._id}>
@@ -173,9 +176,15 @@ const PrintComponent = (props) => {
                               <td style={{ border: '1px solid #666', padding: '5px', verticalAlign: 'middle' }}>{standard.standard_order}.{criteria.criteria_order}</td>
                               <td style={{ border: '1px solid #666', padding: '5px' }}>{criteria.criteria_id.name}</td>
                               <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{criteria.point}</td>
-                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
-                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}></td>
+                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>
+                                {props.point && props.data[0].some(x => x.name == criteria.criteria_id.code) && props.data[0].find(x => x.name == criteria.criteria_id.code).value}
+                              </td>
+                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>
+                                {props.point2 && props.data[1].some(x => x.name == criteria.criteria_id.code) && props.data[1].find(x => x.name == criteria.criteria_id.code).value}
+                              </td>
+                              <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>
+                                {props.point3 && props.data[2].some(x => x.name == criteria.criteria_id.code) && props.data[2].find(x => x.name == criteria.criteria_id.code).value}
+                              </td>
                             </tr>
                           </>
                         )
@@ -185,9 +194,9 @@ const PrintComponent = (props) => {
                 })}
                 <tr>
                   <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={3}><b>Tổng điểm</b></td>
-                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{sumPoint[0]}</b></td>
-                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{props.level == 2 && props.point2}</b></td>
-                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{props.level == 3 && props.point3}</b></td>
+                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{props.point}</b></td>
+                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{props.point2}</b></td>
+                  <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{props.point3}</b></td>
                 </tr>
                 <tr>
                   <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={6}><b>Xếp loại:</b> Chưa có</td>
@@ -203,7 +212,7 @@ const PrintComponent = (props) => {
                 </tr>
                 <tr>
                   <td style={{ width: '33%', textAlign: 'center' }}><b>{props.level == 3 && 'Hội đồng Đánh giá'}</b></td>
-                  <td style={{ width: '33%', textAlign: 'center' }}><b>{props.level == 2 && 'Trưởng Đơn vị'}</b></td>
+                  <td style={{ width: '33%', textAlign: 'center' }}><b>{props.level >= 2 && 'Trưởng Đơn vị'}</b></td>
                   <td style={{ width: '33%', textAlign: 'center' }}><b>Giảng viên/Viên chức</b></td>
                 </tr>
               </tbody>
@@ -291,7 +300,7 @@ export default function PinnedSubheaderList(props) {
         trigger={() => <button>Print this out!</button>}
         content={() => componentRef.current}
       /> */}
-      <PrintComponent setBool={setBool} userForm={props.userForm} level={props.level} point={props.point} point2={props.point2} point3={props.point3}/>
+      <PrintComponent setBool={setBool} form={props.form} data={props.data} info={props.info} level={props.level} point={props.point} point2={props.point2} point3={props.point3} />
     </div>
   );
 }
