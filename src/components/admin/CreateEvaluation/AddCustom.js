@@ -13,7 +13,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useReactToPrint, ReactToPrint } from 'react-to-print';
-import './style.css';
 
 const useStyles = makeStyles((theme) => ({
   tab: {

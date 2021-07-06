@@ -30,7 +30,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../actions/notifyAction'
 import HelpIcon from '@material-ui/icons/Help';
-
+import { TableCell, TableHead, TableRow, Table, TableBody } from '@material-ui/core'
 import TablePagination from '@material-ui/core/TablePagination';
 
 //create modal
@@ -64,13 +64,13 @@ export default function EvaluateList() {
   function ListItem(props) {
     return (
       // <li>{props.id}</li>
-      <tr>
-        <td style={{ lineHeight: '50px', paddingLeft: 10 }}><Link to={'/admin/evaluate-settings/' + props.id} style={{ color: 'black' }}>{props.value}</Link></td>
-        <td style={{ textAlign: 'center', lineHeight: '50px' }}>{props.id}</td>
-        <td style={{ textAlign: 'center', lineHeight: '50px', width: '30%' }}>{props.description}</td>
-        <td align='center'>{props.start.toString()}</td>
-        <td align='center'>{props.end.toString()}</td>
-        <td align='center' style={{ width: '120px' }}>
+      <TableRow>
+        <TableCell style={{ lineHeight: '50px', paddingLeft: 10 }}><Link to={'/admin/evaluate-settings/' + props.id} style={{ color: 'black' }}>{props.value}</Link></TableCell>
+        <TableCell style={{ lineHeight: '50px' }}>{props.id}</TableCell>
+        <TableCell style={{ lineHeight: '50px', width: '30%' }}>{props.description}</TableCell>
+        <TableCell >{props.start.toString()}</TableCell>
+        <TableCell >{props.end.toString()}</TableCell>
+        <TableCell align='right' style={{paddingRight: 0}} >
           <IconButton
             aria-label="update"
             onClick={() => onEdit(props.id)}
@@ -84,8 +84,8 @@ export default function EvaluateList() {
             <DeleteIcon />
           </IconButton>
 
-        </td>
-      </tr>
+        </TableCell>
+      </TableRow>
     )
   }
 
@@ -117,18 +117,18 @@ export default function EvaluateList() {
     );
     return (
       <div>
-        <table style={{ width: '100%', marginBottom: 10 }}>
-          <thead style={{ backgroundColor: '#f4f4f4', lineHeight: '50px' }}>
-            <tr>
-              <th style={{ width: '20%', paddingLeft: 10 }}>Tên đợt đánh giá</th>
-              <th style={{ textAlign: 'center', }}>Mã đợt</th>
-              <th style={{ width: '30%', textAlign: 'center', }}>Mô tả</th>
-              <th style={{ textAlign: 'center' }}>Ngày bắt đầu</th>
-              <th style={{ textAlign: 'center' }}>Ngày kết thúc</th>
-              <th style={{ textAlign: 'center' }}></th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table style={{ width: '100%', marginBottom: 10 }}>
+          <TableHead style={{ backgroundColor: '#f4f4f4', lineHeight: '50px' }}>
+            <TableRow>
+              <TableCell style={{ width: '21%', paddingLeft: 10 }}>Tên đợt đánh giá</TableCell>
+              <TableCell style={{ width: '12%'}} >Mã đợt</TableCell>
+              <TableCell style={{ width: '30%' }}>Mô tả</TableCell>
+              <TableCell style={{ width: '14%' }} >Ngày bắt đầu</TableCell>
+              <TableCell style={{ width: '14%' }}>Ngày kết thúc</TableCell>
+              <TableCell align="right" style={{ width: 120}}></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {numbers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) =>
               <ListItem key={item.code} id={item.code}
                 value={item.name}
@@ -137,10 +137,9 @@ export default function EvaluateList() {
                 description={item.description}
               />
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
         <TablePagination
-          style={{ borderTop: '1px solid #aaaaaa' }}
           rowsPerPageOptions={[5, 10, 20]}
           component="div"
           count={numbers.length}
