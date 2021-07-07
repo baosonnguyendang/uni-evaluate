@@ -20,6 +20,9 @@ import { useParams } from 'react-router-dom'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import Button from "@material-ui/core/Button";
+import { Link, useRouteMatch } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -71,6 +74,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: 5,
     minWidth: 180,
   },
+  btnback: {
+    marginTop: theme.spacing(1),
+    width: 80,
+    color: '#212121',
+    "&:hover": {
+      color: '#212121'
+    }
+  }
 }));
 
 const CustomTableCell = ({ row, name }) => {
@@ -86,15 +97,13 @@ const CustomTableCell = ({ row, name }) => {
 const DeletedCriteria = () => {
   const dispatch = useDispatch()
   const classes = useStyles();
+  let { url } = useRouteMatch();
   const [rows, setRows] = useState(null);
-  const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
   const { id } = useParams()
   // tên tiêu chuẩn
   const [nameStandard, setNameStandard] = useState(null)
-  console.log(id)
   const fetchDeletedCriteriaOfStandard = (id) => {
-    return axios.get(`/admin/standard/${id}/criteria/deleted`, config)
+    return axios.get(`/admin/standard/${id}/criteria/deleted`)
       .then(res => {
         console.log(res.data)
         setRows(res.data.criterions)
@@ -123,7 +132,7 @@ const DeletedCriteria = () => {
   const restoreCriteriaWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/criteria/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/criteria/${id}/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -202,6 +211,7 @@ const DeletedCriteria = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
     </>
   )
 }

@@ -20,7 +20,9 @@ import moment from 'moment'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
-
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import Button from "@material-ui/core/Button";
+import { Link, useRouteMatch } from 'react-router-dom'
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -68,6 +70,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: 5,
     minWidth: 180,
   },
+  btnback: {
+    marginTop: theme.spacing(1),
+    width: 80,
+    color: '#212121',
+    "&:hover": {
+      color: '#212121'
+    }
+  }
 }));
 const CustomTableCell = ({ row, name }) => {
   const classes = useStyles();
@@ -81,12 +91,11 @@ const CustomTableCell = ({ row, name }) => {
 const DeletedEvaluateList = () => {
   const dispatch = useDispatch()
   const classes = useStyles();
+  let { url } = useRouteMatch();
   const [rows, setRows] = useState(null);
-  const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
 
   const fetchDeletedStandard = () => {
-    return axios.get('/admin/review/deleted', config)
+    return axios.get('/admin/review/deleted')
       .then(res => {
         console.log(res.data)
         setRows(res.data.reviews)
@@ -114,7 +123,7 @@ const DeletedEvaluateList = () => {
   const restoreEvaluateWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/review/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/review/${id}/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -196,6 +205,7 @@ const DeletedEvaluateList = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
     </>
   )
 }

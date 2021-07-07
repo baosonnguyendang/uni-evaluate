@@ -9,10 +9,12 @@ import TableRow from "@material-ui/core/TableRow";
 import TablePagination from '@material-ui/core/TablePagination';
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 // Icons
 import Typography from '@material-ui/core/Typography';
-
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import { Link } from 'react-router-dom'
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
@@ -24,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
     marginTop: theme.spacing(3),
-    overflowX: "auto"
+    overflowX: "auto",
   },
   table: {
     minWidth: 650
@@ -67,6 +69,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: 5,
     minWidth: 180,
   },
+  btnback: {
+    marginTop: theme.spacing(1),
+    width: 80,
+    color: '#212121',
+    "&:hover": {
+      color: '#212121'
+    }
+  }
 }));
 const CustomTableCell = ({ row, name }) => {
   const classes = useStyles();
@@ -81,11 +91,9 @@ const DeletedUser = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const [rows, setRows] = React.useState(null);
-  const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
 
   const fetchDeletedUser = () => {
-    return axios.get('/admin/user/deleted', config)
+    return axios.get('/admin/user/deleted')
       .then(res => {
         setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
       })
@@ -112,7 +120,7 @@ const DeletedUser = () => {
   const restoreUserWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/user/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/user/${id}/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.staff_id !== id)
         console.log(newRows)
@@ -200,6 +208,7 @@ const DeletedUser = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Link to="/admin/user" component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
     </>
   )
 }

@@ -16,11 +16,12 @@ import Typography from '@material-ui/core/Typography';
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
-import { useParams } from 'react-router-dom'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
-
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import Button from "@material-ui/core/Button";
+import { Link, useRouteMatch } from 'react-router-dom'
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -44,7 +45,14 @@ const useStyles = makeStyles(theme => ({
   number: {
     width: '15%',
   },
-
+  btnback: {
+    marginTop: theme.spacing(1),
+    width: 80,
+    color: '#212121',
+    "&:hover": {
+      color: '#212121'
+    }
+  }
 }));
 const CustomTableCell = ({ row, name }) => {
   const classes = useStyles();
@@ -59,12 +67,11 @@ const DeletedCriterion = () => {
   const dispatch = useDispatch()
   const classes = useStyles();
   const [rows, setRows] = useState(null);
-  const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
-  const { id } = useParams()
+
+  let { url } = useRouteMatch();
 
   const fetchDeletedStandard = () => {
-    return axios.get('admin/standard/deleted', config)
+    return axios.get('admin/standard/deleted')
       .then(res => {
         console.log(res.data.standards)
         setRows(res.data.standards)
@@ -90,7 +97,7 @@ const DeletedCriterion = () => {
   const restoreCriterionWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/standard/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/standard/${id}/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -168,6 +175,7 @@ const DeletedCriterion = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
     </>
   )
 }

@@ -20,6 +20,9 @@ import { useParams } from 'react-router-dom'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import Button from "@material-ui/core/Button";
+import { Link, useRouteMatch } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -71,6 +74,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: 5,
     minWidth: 180,
   },
+  btnback: {
+    marginTop: theme.spacing(1),
+    width: 80,
+    color: '#212121',
+    "&:hover": {
+      color: '#212121'
+    }
+  }
 }));
 
 const CustomTableCell = ({ row, name }) => {
@@ -87,14 +98,13 @@ const DeletedSelection = () => {
   const dispatch = useDispatch()
   const classes = useStyles();
   const [rows, setRows] = useState(null);
-  const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
   const { id1 } = useParams()
+  const { url } = useRouteMatch()
   // tên tiêu chuẩn
   const [nameCriteria, setNameCriteria] = useState(null)
   console.log(id1)
   const fetchDeletedSelectionaOfCriteria = (id) => {
-    return axios.get(`/admin/criteria/${id}/option/deleted`, config)
+    return axios.get(`/admin/criteria/${id}/option/deleted`)
       .then(res => {
         console.log(res.data)
         setRows(res.data.criteriaOptions)
@@ -124,7 +134,7 @@ const DeletedSelection = () => {
   const restoreSelectionWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/criteria/option/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/criteria/option/${id}/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -203,6 +213,7 @@ const DeletedSelection = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
     </>
   )
 }

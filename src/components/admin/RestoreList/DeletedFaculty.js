@@ -16,10 +16,12 @@ import Typography from '@material-ui/core/Typography';
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
-import { useParams } from 'react-router-dom'
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import Button from "@material-ui/core/Button";
+import { Link, useRouteMatch } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -68,6 +70,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: 5,
     minWidth: 180,
   },
+  btnback: {
+    marginTop: theme.spacing(1),
+    width: 80,
+    color: '#212121',
+    "&:hover": {
+      color: '#212121'
+    }
+  }
 }));
 const CustomTableCell = ({ row, name }) => {
   const classes = useStyles();
@@ -82,12 +92,10 @@ const DeletedFaculty = () => {
   const dispatch = useDispatch()
   const classes = useStyles();
   const [rows, setRows] = useState(null);
-  const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
-  const { id } = useParams()
+  let { url } = useRouteMatch();
 
   const fetchDeletedDept = () => {
-    return axios.get('/admin/department/deleted/parent', config)
+    return axios.get('/admin/department/deleted/parent')
       .then(res => {
         console.log(res.data)
         setRows(res.data.departments)
@@ -114,7 +122,7 @@ const DeletedFaculty = () => {
   const restoreDeptWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/department/${id}/restore`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/department/${id}/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.department_code !== id)
         setRows(newRows)
@@ -190,6 +198,7 @@ const DeletedFaculty = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
+      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
     </>
   )
 }
