@@ -12,33 +12,6 @@ const useStyles = makeStyles(theme => ({
     height: 250,
     margin: 'auto'
   },
-  tabs: {
-    borderTop: `1px solid ${theme.palette.divider}`,
-    "& .MuiTab-wrapper": {
-      flexDirection: "row",
-    },
-    "& .MuiTab-labelIcon .MuiTab-wrapper > *:first-child": {
-      marginBottom: 0
-    }
-  },
-  iconbutton: {
-    "&:hover": {
-      backgroundColor: "transparent"
-    }
-  },
-  listimage: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    '& > *': {
-      margin: theme.spacing(1),
-      width: theme.spacing(16),
-      height: theme.spacing(16),
-    },
-  },
-  paper: {
-    height: 250
-  }
 }));
 
 const Profile = () => {
@@ -74,7 +47,9 @@ const Profile = () => {
     setEdit(false)
     setEditPassword(true)
   }
-
+  const updateUser = (lastname, firstname ,gender, birthday, phone ) => {
+    setInfoUser(state => ({...state, lastname, firstname ,gender, birthday, phone }))
+  }
   return (
     <>
       {loading ? <LinearProgress style={{position:"absolute", width:"100%" }} /> : 
@@ -104,7 +79,7 @@ const Profile = () => {
           <Button style={{ marginTop: 30, marginRight: 20 }} variant="outlined" size="small" onClick={onEdit}>Chỉnh sửa</Button>
           <Button style={{ marginTop: 30 }} variant="outlined" size="small" onClick={onEditPassword}>Đổi mật khẩu</Button>
         </Grid>}
-      {edit && <EditUserForm setEdit={() => setEdit(false)} infoUser={infoUser} />}
+      {edit && <EditUserForm setEdit={() => setEdit(false)} infoUser={infoUser} updateUser={updateUser} />}
       {editPassword && <EditPassword setDisableEditPassword={() => setEditPassword(false)} />}
     </Grid>}
       

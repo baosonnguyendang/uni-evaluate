@@ -20,11 +20,9 @@ const EditUserForm = ({ setDisableEditPassword }) => {
     const { register, handleSubmit, formState: { errors }, watch } = useForm()
     const newpassword = useRef({});
     newpassword.current = watch("newpassword", "");
-    // config token
-    const token = localStorage.getItem('token')
-    const config = { headers: { "Authorization": `Bearer ${token}` } }
+
     const submit = data => {
-        setLoading(true)
+
         if (data.oldpassword === data.newpassword) {
             console.log(data.oldpasword === data.newpassword)
             dispatch(showErrorSnackbar('Mật khẩu mới không được giống mật khẩu cũ'))
@@ -35,10 +33,12 @@ const EditUserForm = ({ setDisableEditPassword }) => {
             old_password: data.oldpassword,
             new_password: data.newpassword
         }
-        axios.post('/user/changePassword', postData, config)
+        setLoading(true)
+        axios.post('/user/changePassword', postData)
             .then(res => {
                 dispatch(showSuccessSnackbar('Đổi mật khẩu thành công'))
                 setLoading(false)
+                setDisableEditPassword()
             })
             .catch(e => {
                 setLoading(false)

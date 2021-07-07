@@ -8,6 +8,9 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
+import Loading from '../../common/Loading'
 
 // validate phone
 function validatePhone(phone) {
@@ -22,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-const EditUserForm = ({ setEdit, infoUser }) => {
+const EditUserForm = ({ setEdit, infoUser, updateUser }) => {
     const { register, handleSubmit, formState: { errors }, control } = useForm({
         defaultValues: {
             firstname: infoUser.firstname,
@@ -30,37 +33,43 @@ const EditUserForm = ({ setEdit, infoUser }) => {
             phone: infoUser.phone
         }
     })
+    const dispatch = useDispatch()
+
     const [date, setDate] = useState(infoUser.birthday);
     const [gender, setGender] = useState(infoUser.gender)
 
     const handleChange = (event) => {
         setGender(event.target.value);
-      };
+    };
     const classes = useStyles()
     const editProfile = (body) => {
-        // config token post
-        const token = localStorage.getItem('token')
-        const config = { headers: { "Authorization": `Bearer ${token}` } }
-        axios.post('/user/editUser', body, config)
+
+        axios.post('/user/editUser', body)
             .then(res => {
                 console.log(res.data)
-                window.location.reload()
-            })
+                updateUser(body.lname, body.fname, body.gender, body.birthday, body.phone)
+                dispatch(showSuccessSnackbar('Cập nhật thông tin thành công'))
+        setLoading(false)
+        setEdit()
+    })
             .catch(e => {
                 console.log(e)
-            })
+                dispatch(showErrorSnackbar('Cập nhật thông tin thất bại'))
+        setLoading(false)
+    })
     }
     //submit edit profile
     const submit = (data) => {
-        setLoadingButton(true)
-        const body = { fname: data.firstname, lname: data.lastname, phone: data.phone,gender, birthday: date && moment(date).toString() }
+        setLoading(true)
+        const body = { fname: data.firstname, lname: data.lastname, phone: data.phone, gender, birthday: date && moment(date).toString() }
         editProfile(body)
     }
     // handle button loading 
 
-    const [loadingButton, setLoadingButton] = useState(false)
+    const [loading, setLoading] = useState(false)
     return (
         <form onSubmit={handleSubmit(submit)}>
+            <Loading open={loading} />
             <Grid item container alignItems="center" xs={12} md={4} style={{ padding: '30px 0 ', margin: 'auto' }} >
                 <Grid item xs={12} >
                     <Controller
@@ -88,7 +97,7 @@ const EditUserForm = ({ setEdit, infoUser }) => {
                     <FormControl fullWidth margin='normal'>
                         <InputLabel>
                             Giới tính
-                    </InputLabel>
+                        </InputLabel>
                         <Select
                             value={gender}
                             onChange={handleChange}
@@ -102,8 +111,8 @@ const EditUserForm = ({ setEdit, infoUser }) => {
 
                 <Grid item xs={12} >
                     <MuiPickersUtilsProvider utils={MomentUtils} >
-                        <KeyboardDatePicker 
-                            fullWidth  
+                        <KeyboardDatePicker
+                            fullWidth
                             margin='normal'
                             label="Ngày sinh"
                             value={date}
@@ -137,10 +146,10 @@ const EditUserForm = ({ setEdit, infoUser }) => {
                 <Grid item container xs={12} justify="flex-end">
                     <Button variant="contained" style={{ marginRight: '20px' }} onClick={() => setEdit()}>
                         Huỷ
-                </Button>
+                    </Button>
                     <Button type='submit' variant="contained" color="primary">
                         Lưu
-                </Button>
+                    </Button>
                 </Grid>
             </Grid>
         </form>
