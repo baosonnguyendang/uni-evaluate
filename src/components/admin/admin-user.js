@@ -437,10 +437,10 @@ export default function ListUser() {
                     <>
                       <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật thông tin' : 'Thêm người dùng'}</Typography>
                       <form onSubmit={modal.id ? submitEditUser : submit}>
-                        <TextField onChange={e => setId(e.target.value)} fullWidth defaultValue={modal.id && id} autoFocus required id="id" label="Mã người dùng" variant="outlined" fullWidth margin='normal' />
+                        <TextField onChange={e => setId(e.target.value)} fullWidth defaultValue={modal.id && id} autoFocus required id="id" label="Mã người dùng" variant="outlined" margin='normal' />
                         <TextField onChange={e => setLname(e.target.value)} defaultValue={modal.id && lname} required id="lname" label="Họ và tên đệm" variant="outlined" fullWidth margin='normal' />
                         <TextField onChange={e => setFname(e.target.value)} required defaultValue={modal.id && fname} id="fname" label="Tên" variant="outlined" fullWidth margin='normal' />
-                        <TextField onChange={e => setEmail(e.target.value)} required defaultValue={modal.id && email} id="email" label="Email" multiline variant="outlined" fullWidth margin='normal' />
+                        <TextField onChange={e => setEmail(e.target.value)} required defaultValue={modal.id && email} id="email" label="Email" variant="outlined" fullWidth margin='normal' type='email' />
 
                         {modal.id ?
                           <FormControl variant="outlined" margin='normal' fullWidth className={classes.formControl}>

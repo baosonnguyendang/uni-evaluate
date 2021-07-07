@@ -54,12 +54,12 @@ export function MainListItems() {
         </ListItemIcon>
         <ListItemText primary="Đơn vị" />
       </ListItem>
-      <ListItem button className={classes.navLink} component={NavLink} to={'/admin/criteria'} activeClassName={classes.active}>
+      {/* <ListItem button className={classes.navLink} component={NavLink} to={'/admin/criteria'} activeClassName={classes.active}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Reports" />
-      </ListItem>
+      </ListItem> */}
 
       <ListItem button className={classes.navLink} component={NavLink} to={'/admin/criterion'} activeClassName={classes.active}>
         <ListItemIcon>
