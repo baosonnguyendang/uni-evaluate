@@ -11,6 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 // Icons
 import Typography from '@material-ui/core/Typography';
+import Tooltip from "@material-ui/core/Tooltip";
 
 import Loading from '../../common/Loading'
 import Skeleton from '../../common/Skeleton'
@@ -164,13 +165,15 @@ const DeletedSubFaculty = () => {
                 <CustomTableCell {...{ row, name: "department_code" }} />
                 <CustomTableCell {...{ row, name: "name" }} />
                 <TableCell align='right' className={classes.selectTableCell}>
-                  <IconButton
-                    aria-label="restore"
-                    onClick={() => onRestore(row.department_code)}
-                    style={{ marginRight: '10px' }}
-                  >
-                    <RestoreFromTrashIcon />
-                  </IconButton>
+                  <Tooltip title='Khôi phục'>
+                    <IconButton
+                      aria-label="restore"
+                      onClick={() => onRestore(row.department_code)}
+                      style={{ marginRight: '10px' }}
+                    >
+                      <RestoreFromTrashIcon />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}

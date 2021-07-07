@@ -373,18 +373,22 @@ export default function ListUser() {
                     <CustomTableCell {...{ row, name: "department", }} />
                     <CustomTableCell {...{ row, name: "roles", }} />
                     <TableCell className={classes.selectTableCell}>
-                      <IconButton
-                        aria-label="update"
-                        onClick={() => onEdit(row.staff_id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => onDelete(row.staff_id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      <Tooltip title='Sửa'>
+                        <IconButton
+                          aria-label="update"
+                          onClick={() => onEdit(row.staff_id)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title='Xóa'>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => onDelete(row.staff_id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 )
