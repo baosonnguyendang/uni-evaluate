@@ -185,16 +185,16 @@ export default function Criterion() {
     setModal({ open: true, id })
   }
   // edit submit dept
-  const submitEditDept = (e, id) => {
+  const submitEditDept = (e, dept_code) => {
     e.preventDefault()
     const body = { new_dcode: id, name }
     setLoading(true)
     console.log(modal.id)
 
     handleClose()
-    axios.post(`/admin/department/${id}/edit`, body)
+    axios.post(`/admin/department/${dept_code}/edit`, body)
       .then(res => {
-        setRows(rows.map(r => r.department_code === id ? { ...r, department_code: id, name } : r))
+        setRows(rows.map(r => r.department_code === dept_code ? { ...r, department_code: id, name } : r))
         dispatch(showSuccessSnackbar('Cập nhật đơn vị thành công'))
         setLoading(false)
       })
