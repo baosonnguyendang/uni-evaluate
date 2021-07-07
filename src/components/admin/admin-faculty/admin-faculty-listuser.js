@@ -8,7 +8,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
+import HelpIcon from '@material-ui/icons/Help';
 // Icons
 import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
@@ -168,6 +170,7 @@ const UserOfFaculty = () => {
         setModal({ ...modal, open: false });
         setOpenAddUser(false);
         setIdHeadUnit(null)
+        setHeadUnit(null)
     };
     const [idDept, setIdDept] = useState(null)
     const [name, setName] = useState(null)
@@ -235,6 +238,8 @@ const UserOfFaculty = () => {
                         break;
                     case 409:
                         dispatch(showErrorSnackbar('Người dùng đã tồn tại'))
+                        break;
+                    default:
                 }
                 setLoading(false)
             })
@@ -272,8 +277,13 @@ const UserOfFaculty = () => {
     const [loading, setLoading] = useState(false)
     // modal xoá
     const [statusDelete, setStatusDelete] = useState({ open: false })
-    const onDelete = id => {
-        setStatusDelete({ open: true, onClick: () => deleteSubDeptWithAPI(id) })
+    const onDelete = (id, type) => {
+        if (type) {
+            setStatusDelete({ open: true, onClick: () => deleteUserDeptWithAPI(id) })
+        }
+        else {
+            setStatusDelete({ open: true, onClick: () => deleteSubDeptWithAPI(id) })
+        }
     }
     const closeDialog = () => {
         setStatusDelete({ open: false })
@@ -296,7 +306,22 @@ const UserOfFaculty = () => {
                 setLoading(false)
             })
     }
-
+    // xoá dept vs api
+    const deleteUserDeptWithAPI = (ucode) => {
+        setLoading(true)
+        closeDialog()
+        axios.post(`/admin/department/${id}/user/${ucode}/delete`, {})
+            .then(res => {
+                setRows(rows.filter(r => r.staff_id !== ucode ))
+                dispatch(showSuccessSnackbar('Xoá người dùng trong đơn vị thành công'))
+                setLoading(false)
+            })
+            .catch(err => {
+                console.log(err.response.status)
+                dispatch(showErrorSnackbar('Xoá dùng trong đơn vị thất bại'))
+                setLoading(false)
+            })
+    }
     let history = useHistory();
     const { url } = useRouteMatch()
     const redirectStorePage = () => {
@@ -411,7 +436,7 @@ const UserOfFaculty = () => {
                                             <TableCell align="right" >
                                                 <IconButton
                                                     aria-label="delete"
-                                                    onClick={() => onDelete(row.staff_id)}
+                                                    onClick={() => onDelete(row.staff_id,'user')}
                                                 >
                                                     <DeleteIcon />
                                                 </IconButton>
@@ -531,9 +556,16 @@ const UserOfFaculty = () => {
                     </Paper>
                     {(children.length !== 0 || deletedChildren.length !== 0) && (
                         <>
-                            <Typography component="h1" variant="h5" color="inherit" noWrap onClick={() => id = 10}>
-                                DANH SÁCH ĐƠN VỊ TRỰC THUỘC
-                            </Typography>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Typography component="h1" variant="h5" color="inherit" noWrap onClick={() => id = 10}>
+                                    DANH SÁCH ĐƠN VỊ TRỰC THUỘC
+                                </Typography>
+                                <Tooltip title={
+                                    <Typography variant='subtitle2'>Chọn tên đơn vị để xem danh sách người dùng trực thuộc</Typography>
+                                }>
+                                    <HelpIcon fontSize='small' color='action' />
+                                </Tooltip>
+                            </div>
                             <Paper className={classes.root}>
                                 <Table className={classes.table} aria-label="caption table">
                                     <TableHead>
@@ -585,7 +617,8 @@ const UserOfFaculty = () => {
 
                         </>)}
                 </>
-            )}
+            )
+            }
         </>
     )
 }

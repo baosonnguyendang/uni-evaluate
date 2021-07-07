@@ -173,6 +173,9 @@ export default function Criterion() {
   const handleClose = () => {
     setModal({ ...modal, open: false });
     setNewUnit('')
+    setId('')
+    setName('')
+    setHeadUnit('')
   };
   const onEdit = id => {
     rows.forEach(u => {
@@ -190,17 +193,19 @@ export default function Criterion() {
     const body = { new_dcode: id, name }
     setLoading(true)
     console.log(modal.id)
+    setModal({ ...modal, open: false });
 
-    handleClose()
     axios.post(`/admin/department/${dept_code}/edit`, body)
       .then(res => {
         setRows(rows.map(r => r.department_code === dept_code ? { ...r, department_code: id, name } : r))
         dispatch(showSuccessSnackbar('Cập nhật đơn vị thành công'))
         setLoading(false)
+        handleClose()
       })
       .catch(err => {
         console.log(err)
         console.log(err.response)
+        setModal({ ...modal, open: true });
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã đơn vị đã tồn tại'))
@@ -232,17 +237,19 @@ export default function Criterion() {
       parent: newUnit
     }
     console.log(body)
-    handleClose();
+    setModal({ ...modal, open: false });
     axios.post('/admin/department/addDepartment', body)
       .then(res => {
         //console.log(res.data);
         dispatch(showSuccessSnackbar('Tạo đơn vị thành công'))
         setRows(rows => [...rows, { department_code: id, name, manager: headUnit, parent: newUnit }])
         setLoading(false)
+        handleClose();
       })
       .catch(err => {
         console.log(err)
         console.log(err.response)
+        setModal({ ...modal, open: true });
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã đơn vị đã tồn tại'))
@@ -286,13 +293,13 @@ export default function Criterion() {
       .then(res => {
         console.log(res.data);
         dispatch(showSuccessSnackbar('Import excel người dùng thành công'))
-    setLoading(false)
-  })
+        setLoading(false)
+      })
       .catch(e => {
         console.log(e)
         dispatch(showErrorSnackbar('Import excel người dùng thất bại'))
-    setLoading(false)
-  })
+        setLoading(false)
+      })
   }
 
   // submit file excel
@@ -426,9 +433,9 @@ export default function Criterion() {
                       <>
                         <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật đơn vị' : "Thêm đơn vị"}</Typography>
                         <form onSubmit={modal.id ? (e) => submitEditDept(e, modal.id) : submitAddDepartment}>
-                          <TextField onChange={e => setId(e.target.value)} id="id" label="Mã đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && id} />
-                          <TextField onChange={e => setName(e.target.value)} id="name" label="Tên đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && name} />
-                          {!modal.id && <TextField onChange={e => setHeadUnit(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" margin='normal' />}
+                          <TextField onChange={e => setId(e.target.value)} id="id" label="Mã đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={id} />
+                          <TextField onChange={e => setName(e.target.value)} id="name" label="Tên đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={name} />
+                          {!modal.id && <TextField onChange={e => setHeadUnit(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" margin='normal' defaultValue={headUnit} />}
                           {!modal.id &&
                             <FormControl variant="outlined" fullWidth margin='normal'>
                               <InputLabel htmlFor="outlined-newUnit-native">Thuộc đơn vị</InputLabel>

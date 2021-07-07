@@ -5,7 +5,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import PersonIcon from '@material-ui/icons/Person';
-import Divider from '@material-ui/core/Divider';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import { Link, NavLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core'
