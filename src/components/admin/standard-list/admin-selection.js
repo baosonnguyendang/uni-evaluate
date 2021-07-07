@@ -10,6 +10,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 // Icons
 import Backdrop from '@material-ui/core/Backdrop';
 import Button from '@material-ui/core/Button';
@@ -265,18 +266,22 @@ export default function Selection() {
                     <CustomTableCell {...{ row, name: "description", }} />
                     <CustomTableCell {...{ row, name: "max_point", }} />
                     <TableCell className={classes.selectTableCell}>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => onEdit(row.code)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => onDelete(row.code)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      <Tooltip title='Sửa'>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => onEdit(row.code)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title='Xóa'>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => onDelete(row.code)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -88,7 +88,7 @@ const CustomTableCell = ({ row, name }) => {
   return (
     <TableCell align="left" className={classes.tableCell}>
       {
-        name === 'name' && row['type'] =='radio' ? (<Link to={`${url}/${row['code']}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
+        name === 'name' && row['type'] == 'radio' ? (<Link to={`${url}/${row['code']}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
       }
     </TableCell>
   );
@@ -114,7 +114,7 @@ export default function Criteria() {
 
   //criteriaTypes
   const [criteriaTypes, setCriteriaTypes] = useState([])
-  const fetchCriteriaTypes = () =>{
+  const fetchCriteriaTypes = () => {
     axios.get(`admin/criteria/types`, config)
       .then(res => {
         setCriteriaTypes(res.data.types)
@@ -263,15 +263,15 @@ export default function Criteria() {
           <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} />
           <Loading open={loading} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography component="h1" variant="h5" color="inherit" noWrap >
-            Tiêu chuẩn {nameStandard} - Danh sách Tiêu chí
-          </Typography >
-          <Tooltip title={
+            <Typography component="h1" variant="h5" color="inherit" noWrap >
+              Tiêu chuẩn {nameStandard} - Danh sách Tiêu chí
+            </Typography >
+            <Tooltip title={
               <>
                 <Typography variant='subtitle2'>Chọn tên tiêu chí để xem danh sách lựa chọn nếu có</Typography>
               </>
             }>
-                <HelpIcon fontSize='small' color="action" />
+              <HelpIcon fontSize='small' color="action" />
             </Tooltip>
           </div>
           <Paper className={classes.root}>
@@ -293,18 +293,22 @@ export default function Criteria() {
                     <CustomTableCell {...{ row, name: "description" }} />
                     <CustomTableCell {...{ row, name: "type" }} />
                     <TableCell className={classes.selectTableCell}>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => onEdit(row.code)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => onDelete(row.code)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      <Tooltip title='Sửa'>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => onEdit(row.code)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title='Xóa'>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => onDelete(row.code)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -330,20 +334,20 @@ export default function Criteria() {
               >
                 <Fade in={modal.open}>
                   <div className={classes.paper1}>
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? "Cập nhật tiêu chí" : 'Thêm tiêu chí'}</Typography>
-                    <Tooltip title={<>
-                    <Typography variant='subtitle2' >Radio: Đánh giá nhiều lựa chọn </Typography>
-                    <Typography variant='subtitle2' >Checkbox: Đánh giá một lựa chọn </Typography>
-                    <Typography variant='subtitle2' >Input: Nhập vào đánh giá </Typography>
-                    <Typography variant='subtitle2' >Number: Đánh giá theo số lần </Typography>
-                    <Typography variant='body2'>Detail: Kê khai và đánh giá theo số % đóng góp </Typography>
-                    </>} placement="right-start">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? "Cập nhật tiêu chí" : 'Thêm tiêu chí'}</Typography>
+                      <Tooltip title={<>
+                        <Typography variant='subtitle2' >Radio: Đánh giá nhiều lựa chọn </Typography>
+                        <Typography variant='subtitle2' >Checkbox: Đánh giá một lựa chọn </Typography>
+                        <Typography variant='subtitle2' >Input: Nhập vào đánh giá </Typography>
+                        <Typography variant='subtitle2' >Number: Đánh giá theo số lần </Typography>
+                        <Typography variant='body2'>Detail: Kê khai và đánh giá theo số % đóng góp </Typography>
+                      </>} placement="right-start">
                         <IconButton
                         >
-                            <HelpIcon fontSize='small' />
+                          <HelpIcon fontSize='small' />
                         </IconButton>
-                    </Tooltip>
+                      </Tooltip>
                     </div>
                     <form onSubmit={modal.id ? ((e) => editCriteria(e, modal.id)) : submitAddCriteria}>
                       <TextField onChange={e => setCode(e.target.value)} id="code" required label="Mã tiêu chí" variant="outlined" fullWidth autoFocus margin='normal' defaultValue={modal.id && code} />
@@ -358,12 +362,12 @@ export default function Criteria() {
                           label='Kiểu đánh giá'
                           onChange={handleChangeType}
                         >
-                        <option aria-label="None" value="" />
-                        { //map criteria types
-                          criteriaTypes.map(opt => (
-                            <option value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>
-                          ))
-                        }
+                          <option aria-label="None" value="" />
+                          { //map criteria types
+                            criteriaTypes.map(opt => (
+                              <option value={opt}>{opt.charAt(0).toUpperCase() + opt.slice(1)}</option>
+                            ))
+                          }
                         </Select>
                       </FormControl>
                       <div style={{ textAlign: 'center', marginTop: '10px' }}>

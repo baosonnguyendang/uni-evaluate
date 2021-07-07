@@ -246,7 +246,7 @@ export default function Criterion() {
                 <Typography variant='subtitle2'>Chọn tên tiêu chuẩn để xem danh sách tiêu chí</Typography>
               </>
             }>
-                <HelpIcon fontSize='small' color='action' />
+              <HelpIcon fontSize='small' color='action' />
             </Tooltip>
           </div>
           <Paper className={classes.root}>
@@ -267,18 +267,22 @@ export default function Criterion() {
                       <CustomTableCell {...{ row, name: "name" }} />
                       <CustomTableCell {...{ row, name: "description" }} />
                       <TableCell className={classes.selectTableCell}>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => onEdit(row.code)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => onDelete(row.code)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                        <Tooltip title='Sửa'>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onEdit(row.code)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title='Xóa'>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onDelete(row.code)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   )

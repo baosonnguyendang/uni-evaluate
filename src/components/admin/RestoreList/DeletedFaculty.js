@@ -9,6 +9,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TablePagination from '@material-ui/core/TablePagination';
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 // Icons
 import Typography from '@material-ui/core/Typography';
 
@@ -164,13 +165,15 @@ const DeletedFaculty = () => {
                 <CustomTableCell {...{ row, name: "department_code" }} />
                 <CustomTableCell {...{ row, name: "name" }} />
                 <TableCell align='right' className={classes.selectTableCell}>
-                  <IconButton
-                    aria-label="restore"
-                    onClick={() => onRestore(row.department_code)}
-                    style={{ marginRight: '10px' }}
-                  >
-                    <RestoreFromTrashIcon />
-                  </IconButton>
+                  <Tooltip title='Khôi phục'>
+                    <IconButton
+                      aria-label="restore"
+                      onClick={() => onRestore(row.department_code)}
+                      style={{ marginRight: '10px' }}
+                    >
+                      <RestoreFromTrashIcon />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}

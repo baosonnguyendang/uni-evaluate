@@ -51,7 +51,8 @@ import {
   Grid,
   Select,
   InputLabel,
-  MenuItem
+  MenuItem,
+  LinearProgress
 } from '@material-ui/core';
 
 import React, { useState, useEffect } from 'react';
@@ -68,6 +69,7 @@ export default function ResultsDashboard(props) {
   const [listOfStandards, setListOfStandards] = useState([])
 
   const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     axios.get(`/admin/form/${props.code}/classifyStandards`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -95,6 +97,7 @@ export default function ResultsDashboard(props) {
           })
           console.log(d)
           setData([...d])
+          setLoading(false)
         }
       })
       .catch(err => {
@@ -360,7 +363,7 @@ export default function ResultsDashboard(props) {
               <FormControl>
                 <InputLabel htmlFor='select-multiple-chip'>
                   Location
-                    </InputLabel>
+                </InputLabel>
                 <Select
                   multiple
                   value={filterList[index]}
@@ -516,7 +519,10 @@ export default function ResultsDashboard(props) {
   };
 
   return (
-    <MUIDataTable title={'KẾT QUẢ CHI TIẾT'} data={data} columns={cot} options={options} />
-  );
+    <div>
+      <MUIDataTable title={'KẾT QUẢ CHI TIẾT'} data={data} columns={cot} options={options} />
+      {loading && <LinearProgress />}
+    </div>
+  )
 
 }

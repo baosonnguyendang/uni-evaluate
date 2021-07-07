@@ -230,13 +230,15 @@ export default function ModifyForm({ fcode }) {
             />
           )}
         />
-        <IconButton
-          aria-label="add"
-          color="primary"
-          onClick={() => onAdd(id, tempStandard?.code, tempStandard?.name)}
-        >
-          <AddCircleIcon />
-        </IconButton>
+        <Tooltip title='Thêm tiêu chuẩn'>
+          <IconButton
+            aria-label="add"
+            color="primary"
+            onClick={() => onAdd(id, tempStandard?.code, tempStandard?.name)}
+          >
+            <AddCircleIcon />
+          </IconButton>
+        </Tooltip>
 
       </div>
       <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -259,12 +261,16 @@ export default function ModifyForm({ fcode }) {
                             onChange={(e) => handleChangePoint(e, index)}
                             defaultValue={t.standard_point}
                           />
-                          <IconButton onClick={() => onEdit(id, t.code, t.name)} style={{ marginLeft: '10px' }}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton onClick={() => deleteCriterion(index)}>
-                            <DeleteIcon />
-                          </IconButton>
+                          <Tooltip title='Sửa'>
+                            <IconButton onClick={() => onEdit(id, t.code, t.name)} style={{ marginLeft: '10px' }}>
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title='Xóa'>
+                            <IconButton onClick={() => deleteCriterion(index)}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
                         </ListItem>
                       </Tooltip>
                   )
@@ -303,8 +309,8 @@ export default function ModifyForm({ fcode }) {
         </div>
       </div>
 
-      {openn && <PreviewModal id={id} standards={existStandards} open={openn} handleClose={handleClosee}/>}
-      
+      {openn && <PreviewModal id={id} standards={existStandards} open={openn} handleClose={handleClosee} />}
+
 
       <Loading open={loading} />
       {openAddModal && <ModalAddStandard idForm={modal.id} codeStandard={modal.code} name={modal.name} open={openAddModal} handleClose={handleClose} stt={modal.stt} setCriterion={addStandard} />}

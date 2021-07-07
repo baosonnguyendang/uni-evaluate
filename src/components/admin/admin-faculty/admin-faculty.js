@@ -362,18 +362,22 @@ export default function Criterion() {
                       <CustomTableCell {...{ row, name: "namemanager" }} />
                       <CustomTableCell {...{ row, name: "idmanager" }} />
                       <TableCell className={classes.selectTableCell}>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => onEdit(row.department_code)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => onDelete(row.department_code)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                        <Tooltip title='Sửa'>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onEdit(row.department_code)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title='Xóa'>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => onDelete(row.department_code)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   )
