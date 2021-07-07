@@ -62,7 +62,8 @@ export default function EmployeeList() {
             fname: user.user_id.firstname,
             unit: user.user_id.department.length > 0 ? user.user_id.department[0].name : '',
             status: user.evaluateForm ? user.evaluateForm.length : 0,
-            point: point
+            point: point,
+            rating: user.userForm ? user.userForm.rating : null
           }
           temp.push(obj)
         })
@@ -91,6 +92,7 @@ export default function EmployeeList() {
             <TableCell><b>Tên GV/VC</b></TableCell>
             <TableCell><b>Bộ môn</b></TableCell>
             <TableCell align="center"><b>Điểm thành phần</b></TableCell>
+            <TableCell align="center"><b>Xếp loại</b></TableCell>
             <TableCell style={{ minWidth: '200px' }}></TableCell>
           </TableRow>
         </TableHead>
@@ -103,6 +105,7 @@ export default function EmployeeList() {
               <TableCell align="left">{row.lname + ' ' + row.fname}</TableCell>
               <TableCell align="left">{row.unit}</TableCell>
               <TableCell align="center">{row.point.toString()}</TableCell>
+              <TableCell align="center">{row.rating ? row.rating : ''}</TableCell>
               <TableCell align="center" style={{ minWidth: '200px' }}> {row.status > 1 && <Link to={`${url}/${row.id}`}>{row.status == 2 ? 'Đánh giá GV/VC' : 'Xem kết quả đánh giá GV/VC'}</Link>}</TableCell>
             </TableRow>
           ))}

@@ -62,6 +62,7 @@ export default function FormEvaluation(props) {
   const [max, setMax] = useState([]) // lưu điểm tối đa mỗi tiêu chuẩn
   const [input, setInput] = useState([])
   const [importList, setImportList] = useState([]) //lưu các tiêu chí đã imoprt file
+  const [rating, setRating] = useState() //phân loại kq cuối cùng
 
   var variable = props.level === 1 ? id1 : id3
 
@@ -108,7 +109,8 @@ export default function FormEvaluation(props) {
         axios.get(`/form/${variable}/evaluation/get`)
           .then(res => {
             //console.log(temp)
-            console.log(res.data.evaluateForms)
+            console.log(res.data)
+            setRating(res.data.rating)
             if (res.data.evaluateForms.length > 0) {
               let tam = []
               res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
@@ -692,7 +694,7 @@ export default function FormEvaluation(props) {
                     <PrintIcon />
                   </IconButton>
                 </Tooltip> */}
-                {info != null && <PinnedSubheaderList form={data} data={all} info={info} level={level} point={Number((point).toFixed(2))} point2={props.level > 1 || readOnly2 ? Number((point2).toFixed(2)) : null} point3={props.level > 2 || readOnly3 ? Number((point3).toFixed(2)) : null}/>}
+                {info != null && <PinnedSubheaderList form={data} data={all} info={info} level={level} rating={rating} point={Number((point).toFixed(2))} point2={props.level > 1 || readOnly2 ? Number((point2).toFixed(2)) : null} point3={props.level > 2 || readOnly3 ? Number((point3).toFixed(2)) : null}/>}
 
               </div>
               <Grid container justify='center' style={{ marginTop: '20px' }}>
@@ -987,6 +989,7 @@ export default function FormEvaluation(props) {
                       {/* <Typography variant="h6">Tổng điểm tự đánh giá: {point}</Typography>
                       <Typography variant="h6">{props.level > 1 && `Tổng điểm trưởng Khoa đánh giá: ${point2}`}</Typography> */}
                       <Typography variant="h6">{disableEdit3 && `Điểm đợt đánh giá: ${point3}`}</Typography>
+                      <Typography variant="h6">Xếp loại: {rating ? rating : 'Chưa có'}</Typography>
                     </div>
                     {
                       ((!disableEdit && level == 1) || (level == 2 && !disableEdit2) || (level == 3 && !disableEdit3)) &&

@@ -196,7 +196,7 @@ const PrintComponent = (props) => {
                   <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}><b>{props.point3}</b></td>
                 </tr>
                 <tr>
-                  <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={6}><b>Xếp loại:</b> Chưa có</td>
+                  <td style={{ border: '1px solid #666', padding: '5px', textAlign: 'center' }} colSpan={6}><b>Xếp loại:</b> {props.rating ? props.rating : 'Chưa có'}</td>
                 </tr>
               </tbody>
             </table>
@@ -297,7 +297,7 @@ export default function PinnedSubheaderList(props) {
         trigger={() => <button>Print this out!</button>}
         content={() => componentRef.current}
       /> */}
-      <PrintComponent setBool={setBool} form={props.form} data={props.data} info={props.info} level={props.level} point={props.point} point2={props.point2} point3={props.point3} />
+      <PrintComponent rating={props.rating} setBool={setBool} form={props.form} data={props.data} info={props.info} level={props.level} point={props.point} point2={props.point2} point3={props.point3} />
     </div>
   );
 }

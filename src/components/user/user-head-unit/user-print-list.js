@@ -90,10 +90,10 @@ export default function PrintList(props) {
                   <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.code}</td>
                   <td style={{ border: '1px solid #666', padding: 5 }}>{x.lname}</td>
                   <td style={{ border: '1px solid #666', padding: 5 }}>{x.fname}</td>
-                  <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.point[0] == ' -' ? 'Chưa có' : x.point[0]}</td>
-                  <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.point[1] == ' -' ? 'Chưa có' : x.point[1]}</td>
-                  <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.point[2] == ' -' ? 'Chưa có' : x.point[2]}</td>
-                  <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.point[2] == ' -' ? 'Chưa xếp loại' : 'xếp loại'}</td>
+                  <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.point[0] == ' -' ? '' : x.point[0]}</td>
+                  <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.point[1] == ' -' ? '' : x.point[1]}</td>
+                  <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.point[2] == ' -' ? '' : x.point[2]}</td>
+                  <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.rating ? x.rating : ''}</td>
                 </tr>
               )
             })}
