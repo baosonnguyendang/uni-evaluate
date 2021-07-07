@@ -185,16 +185,16 @@ const UserOfFaculty = () => {
     }
     const dispatch = useDispatch()
     // edit submit dept
-    const submitEditDept = (e, id) => {
+    const submitEditDept = (e, id_dept) => {
         e.preventDefault()
-        const body = { new_dcode: id, name }
+        const body = { new_dcode: idDept, name }
         setLoading(true)
         console.log(modal.id)
 
         handleClose()
-        axios.post(`/admin/department/${id}/edit`, body)
+        axios.post(`/admin/department/${id_dept}/edit`, body)
             .then(res => {
-                setChildren(children.map(r => r.department_code === id ? { ...r, department_code: id, name } : r))
+                setChildren(children.map(r => r.department_code === id_dept ? { ...r, department_code: idDept, name } : r))
                 dispatch(showSuccessSnackbar('Cập nhật đơn vị thành công'))
                 setLoading(false)
             })
@@ -453,7 +453,6 @@ const UserOfFaculty = () => {
                             count={rows.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
-                            labelRowsPerPage='Hiển thị: '
                             onChangePage={handleChangePage}
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                         />
@@ -513,7 +512,7 @@ const UserOfFaculty = () => {
                                                 </> :
                                                 <>
                                                     <TextField onChange={e => setIdHeadUnit(e.target.value)} required id="id" label="ID" variant="outlined" fullWidth margin='normal' defaultValue={idExistHeadUnit} />
-                                                    <TextField onChange={e => setName(e.target.value)} required id="name" label="Tên trưởng đơn vị" variant="outlined" disabled fullWidth margin='normal' defaultValue={nameHeadUnit} />
+                                                    <TextField onChange={e => setName(e.target.value)} required id="name" label="Trưởng đơn vị hiện tại" variant="outlined" disabled fullWidth margin='normal' defaultValue={nameHeadUnit} />
                                                     <div style={{ textAlign: 'center', marginTop: '10px' }}>
                                                         <Button style={{ marginRight: '10px' }} variant="contained" disabled={idExistHeadUnit === idHeadUnit} color="primary" onClick={editHeadUnit}>Cập nhật</Button>
                                                         <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleClose}>Thoát</Button>

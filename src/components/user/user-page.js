@@ -21,7 +21,7 @@ const UserPage = () => {
   let isLogged = localStorage.getItem('token') && localStorage.getItem('role')
   return (
     <>
-      {isLogged ? (localStorage.getItem('role') === 'admin' && <Redirect to='/admin/user' />) : <Redirect to='/' />}
+      {isLogged ? (localStorage.getItem('role') !== 'user' && <Redirect to='/forbidden' />) : <Redirect to='/' />}
       <AppBar />
         <Switch>
           <Route path='/user/profile' >

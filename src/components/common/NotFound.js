@@ -1,21 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Typography } from '@material-ui/core'
 
 const NotFound = () => (
-  <div style={{position: 'absolute',
+  <div style={{
+    position: 'absolute',
     top: '50%',
     right: '50%',
-    transform: 'translate(50%, -50%)',
+    transform: 'translate(50%, -70%)',
     textAlign: 'center'
-    }}>
-    <img
-      src="https://www.pngitem.com/pimgs/m/561-5616833_image-not-found-png-not-found-404-png.png"
-      alt="not-found"
-    />
-    <br/>
-    <Link to="/" className="link-home">
+  }}>
+    <br />
+    <Typography variant="h1" style={{ fontSize: '20rem' }} >
+      404
+    </Typography>
+    <Typography variant="h3" >
+      Không tìm thấy trang
+    </Typography>
+    <br />
+
+    <Typography variant='h5' component={Link} to="/">
       Trở lại trang chủ
-    </Link>
+    </Typography>
   </div>
 )
 

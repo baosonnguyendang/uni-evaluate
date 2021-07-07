@@ -10,6 +10,7 @@ import { checktoken } from './actions/authActions';
 import { useDispatch, useSelector } from 'react-redux'
 import Toast from './components/common/Snackbar'
 import NotFound from './components/common/NotFound'
+import ForbiddenPage from './components/common/ForbiddenPage'
 import Modal from './components/common/Modals/Modal'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/" exact component={SignInSide} />
         <Route path="/admin" component={Dashboard} />
         <Route path="/user" component={UserPage} />
+        <Route path="/forbidden" component={ForbiddenPage} />
         <Route path="*">
           <NotFound />
         </Route>

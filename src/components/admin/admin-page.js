@@ -71,7 +71,7 @@ const AdminPage = () => {
   return (
     <div className={classes.root}>
       {!token && <Redirect to='/' />}
-      {role === 'user' && <Redirect to='/user' />}
+      {role !== 'admin' && <Redirect to='/forbidden' />}
       <Navbar />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

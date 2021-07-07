@@ -213,10 +213,10 @@ export default function Classify(props) {
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align='center'>Phân loại</TableCell>
-                <TableCell align="right">Từ</TableCell>
-                <TableCell align="right">Đến</TableCell>
-                <TableCell align="right"></TableCell>
+                <TableCell style={{width: '30%'}} align='left'>Phân loại</TableCell>
+                <TableCell style={{width: '25%'}} align="left">Từ</TableCell>
+                <TableCell style={{width: '25%'}} align="left">Đến</TableCell>
+                <TableCell align="left"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -225,11 +225,11 @@ export default function Classify(props) {
               )}
               {rows.map((row, index) => (
                 <TableRow key={row.id}>
-                  <TableCell align='center' component="th" scope="row">
+                  <TableCell align='left' component="th" scope="row">
                     {row.name}
                   </TableCell>
-                  <TableCell align="right">{row.from}</TableCell>
-                  <TableCell align="right">{row.to}</TableCell>
+                  <TableCell align="left">{row.from}</TableCell>
+                  <TableCell align="left">{row.to}</TableCell>
                   <TableCell align="right">
                     <IconButton aria-label="edit">
                       <EditIcon onClick={() => edit(index)} />
@@ -261,8 +261,8 @@ export default function Classify(props) {
               <TextField required onChange={e => setName(e.target.value)} label="Phân loại" variant="outlined" fullWidth />
               <br />
               <div style={{ display: 'flex', justifyContent: 'space-between', margin: '10px 0' }}>
-                <TextField className={classes.text} required onChange={e => setFrom(e.target.value)} label="Từ" type='number' variant="outlined" />
-                <TextField className={classes.text} onChange={e => setTo(e.target.value)} label="Đến" type='number' variant="outlined" />
+                <TextField className={classes.text} required onChange={e => setFrom(parseInt(e.target.value))} label="Từ" type='number' variant="outlined" />
+                <TextField className={classes.text} onChange={e => setTo(parseInt(e.target.value))} label="Đến" type='number' variant="outlined" />
               </div>
                 <Typography variant='body2' color='secondary'>{error}</Typography>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>

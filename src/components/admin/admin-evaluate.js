@@ -193,6 +193,9 @@ export default function EvaluateList() {
 
   const submit = e => {
     e.preventDefault()
+    //nếu thời gian bắt đầu lớn hơn thì k submit dc
+    if(moment(endDate).isBefore(startDate)) return
+    
     setLoading(true)
     handleClose()
     axios.post('/admin/review/add', { code: id, name: evaluationName, start_date: startDate.toString(), end_date: endDate.toString(), description }, { headers: { "Authorization": `Bearer ${token}` } })
@@ -262,6 +265,9 @@ export default function EvaluateList() {
   //api edit đợt đánh giá
   const submitEditEvaluate = (e) => {
     e.preventDefault()
+    //nếu thời gian bắt đầu lớn hơn thì k submit dc
+    if(moment(endDate).isBefore(startDate)) return
+    
     const body = { new_rcode: id, name: evaluationName, start_date: startDate, end_date: endDate, description }
     setLoading(true)
     console.log(modal.id, body)
@@ -371,7 +377,8 @@ export default function EvaluateList() {
                       invalidDateMessage='Thời gian không hợp lệ'
                       fullWidth
                       margin="normal"
-                      minDate
+                      maxDate={endDate}
+                      maxDateMessage='Thời gian bắt đầu không hợp lệ'
                     />
                     <KeyboardDateTimePicker
                       ampm={false}
