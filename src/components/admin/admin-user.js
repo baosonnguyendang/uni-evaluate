@@ -276,7 +276,7 @@ export default function ListUser() {
   const searchUser = (e) => {
     const value = e.target.value.toLowerCase()
     const temp = rows.filter(r => (r.firstname.toLowerCase().includes(value) ||
-      r.lastname.toLowerCase().includes(value)
+      r.lastname.toLowerCase().includes(value) || r.staff_id.toLowerCase().includes(value)
     ))
     console.log(temp)
     setFilterUser(temp)
@@ -300,15 +300,18 @@ export default function ListUser() {
         console.log(res.data);
         dispatch(showSuccessSnackbar('Import excel người dùng thành công'))
         window.location.reload();
+        setLoading(false)
       })
       .catch(e => {
         console.log(e)
         dispatch(showErrorSnackbar('Import excel người dùng thất bại'))
+        setLoading(false)
       })
   }
 
   // submit file excel
   const exportExcel = (data) => {
+    setLoading(true)
     axios({
       url: `/admin/file/download?file=user`,
       method: 'GET',
@@ -321,6 +324,11 @@ export default function ListUser() {
         link.setAttribute('download', `User.xlsx`); //or any other extension
         document.body.appendChild(link);
         link.click();
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setLoading(false)
       })
   }
 

@@ -276,6 +276,7 @@ export default function Criterion() {
   }
   // submit file excel
   const submitExcel = (data) => {
+    setLoading(true)
     const formData = new FormData()
     formData.append("file", data)
     console.log(formData)
@@ -285,15 +286,18 @@ export default function Criterion() {
       .then(res => {
         console.log(res.data);
         dispatch(showSuccessSnackbar('Import excel người dùng thành công'))
-      })
+    setLoading(false)
+  })
       .catch(e => {
         console.log(e)
         dispatch(showErrorSnackbar('Import excel người dùng thất bại'))
-      })
+    setLoading(false)
+  })
   }
 
   // submit file excel
   const exportExcel = (data) => {
+    setLoading(true)
     axios({
       url: `/admin/file/download?file=department`,
       method: 'GET',
@@ -306,6 +310,11 @@ export default function Criterion() {
         link.setAttribute('download', `Department.xlsx`); //or any other extension
         document.body.appendChild(link);
         link.click();
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setLoading(false)
       })
   }
   return (
@@ -323,14 +332,14 @@ export default function Criterion() {
                 <Typography variant='subtitle2'>Chọn tên đơn vị để xem danh sách người dùng và đơn vị trực thuộc</Typography>
               </>
             }>
-                <HelpIcon fontSize='small' color='action'/>
+              <HelpIcon fontSize='small' color='action' />
             </Tooltip>
           </div>
           <Paper className={classes.root}>
             <Table className={classes.table} aria-label="caption table">
               <TableHead>
                 <TableRow style={{ backgroundColor: '#f4f4f4' }}>
-                  <TableCell align="left" style={{ width: '10%'}}>ID</TableCell>
+                  <TableCell align="left" style={{ width: '10%' }}>ID</TableCell>
                   <TableCell className={classes.name} align="left">Tên đơn vị</TableCell>
                   <TableCell className={classes.name} align="left">Trưởng đơn vị</TableCell>
                   <TableCell className={classes.name} align="left">ID Trưởng đơn vị</TableCell>
@@ -374,28 +383,28 @@ export default function Criterion() {
               onChangePage={handleChangePage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-            <div style={{ margin: '10px', display: 'flex', alignItems: 'center'}}>
+            <div style={{ margin: '10px', display: 'flex', alignItems: 'center' }}>
               <div style={{ flexGrow: 1 }}>
                 <Button variant="contained" className={classes.btn} onClick={redirectStorePage}>
                   Khôi phục
                 </Button>
               </div>
               <Tooltip title={<Typography variant='subtitle2'>Xuất excel mẫu</Typography>}>
-              <IconButton
-                onClick={exportExcel}
-              >
-                <AssignmentReturnedIcon fontSize='large' />
-              </IconButton>
-            </Tooltip>
-            &nbsp;
-            <Tooltip title={<Typography variant='subtitle2'>Nhập dữ liệu excel</Typography>}>
-              <IconButton
-                onClick={handleOpenImport}
-              >
-                <UnarchiveIcon fontSize='large' />
-              </IconButton>
-            </Tooltip>
-            &nbsp;
+                <IconButton
+                  onClick={exportExcel}
+                >
+                  <AssignmentReturnedIcon fontSize='large' />
+                </IconButton>
+              </Tooltip>
+              &nbsp;
+              <Tooltip title={<Typography variant='subtitle2'>Nhập dữ liệu excel</Typography>}>
+                <IconButton
+                  onClick={handleOpenImport}
+                >
+                  <UnarchiveIcon fontSize='large' />
+                </IconButton>
+              </Tooltip>
+              &nbsp;
               <Button variant="contained" color="primary" className={classes.btn} onClick={handleOpen}>
                 Thêm đơn vị
               </Button>
@@ -413,37 +422,37 @@ export default function Criterion() {
               >
                 <Fade in={modal.open}>
                   <div className={classes.paper1}>
-                  {!openImport ?
-                    <>
-                    <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật đơn vị' : "Thêm đơn vị"}</Typography>
-                    <form onSubmit={modal.id ? (e) => submitEditDept(e, modal.id) : submitAddDepartment}>
-                      <TextField onChange={e => setId(e.target.value)} id="id" label="Mã đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && id} />
-                      <TextField onChange={e => setName(e.target.value)} id="name" label="Tên đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && name} />
-                      {!modal.id && <TextField onChange={e => setHeadUnit(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" margin='normal' />}
-                      {!modal.id &&
-                        <FormControl variant="outlined" fullWidth margin='normal'>
-                          <InputLabel htmlFor="outlined-newUnit-native">Thuộc đơn vị</InputLabel>
-                          <Select
-                            native
-                            value={newUnit}
-                            label='Thuộc đơn vị'
-                            onChange={handleChangeUnit}
-                          >
-                            <option aria-label="None" value="" />
-                            {units.map(unit => {
-                              return (
-                                <option key={unit._id} value={unit.department_code}>{unit.name}</option>
-                              )
-                            })}
-                          </Select>
-                        </FormControl>}
-                      <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                        <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">{modal.id ? "Cập nhật" : 'Tạo'}</Button>
-                        <Button style={{ marginLeft: '10px' }} onClick={handleClose} variant="contained" color="primary">Thoát</Button>
-                      </div>
-                    </form>
-                    </> :
-                    <UpLoadFile title={'Thêm danh sách đơn vị'} handleClose={handleClose} submit={submitExcel} />}
+                    {!openImport ?
+                      <>
+                        <Typography variant='h5' gutterBottom id="transition-modal-title">{modal.id ? 'Cập nhật đơn vị' : "Thêm đơn vị"}</Typography>
+                        <form onSubmit={modal.id ? (e) => submitEditDept(e, modal.id) : submitAddDepartment}>
+                          <TextField onChange={e => setId(e.target.value)} id="id" label="Mã đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && id} />
+                          <TextField onChange={e => setName(e.target.value)} id="name" label="Tên đơn vị" variant="outlined" fullWidth required margin='normal' defaultValue={modal.id && name} />
+                          {!modal.id && <TextField onChange={e => setHeadUnit(e.target.value)} id="headId" label="ID Trưởng đơn vị" fullWidth variant="outlined" margin='normal' />}
+                          {!modal.id &&
+                            <FormControl variant="outlined" fullWidth margin='normal'>
+                              <InputLabel htmlFor="outlined-newUnit-native">Thuộc đơn vị</InputLabel>
+                              <Select
+                                native
+                                value={newUnit}
+                                label='Thuộc đơn vị'
+                                onChange={handleChangeUnit}
+                              >
+                                <option aria-label="None" value="" />
+                                {units.map(unit => {
+                                  return (
+                                    <option key={unit._id} value={unit.department_code}>{unit.name}</option>
+                                  )
+                                })}
+                              </Select>
+                            </FormControl>}
+                          <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                            <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">{modal.id ? "Cập nhật" : 'Tạo'}</Button>
+                            <Button style={{ marginLeft: '10px' }} onClick={handleClose} variant="contained" color="primary">Thoát</Button>
+                          </div>
+                        </form>
+                      </> :
+                      <UpLoadFile title={'Thêm danh sách đơn vị'} handleClose={handleClose} submit={submitExcel} />}
                   </div>
                 </Fade>
               </Modal>
