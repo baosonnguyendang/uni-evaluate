@@ -276,7 +276,7 @@ export default function ListUser() {
   const searchUser = (e) => {
     const value = e.target.value.toLowerCase()
     const temp = rows.filter(r => (r.firstname.toLowerCase().includes(value) ||
-      r.lastname.toLowerCase().includes(value) || r.staff_id.toLowerCase().includes(value)
+      r.lastname.toLowerCase().includes(value) || r.staff_id.toLowerCase().includes(value) || r.email.toLowerCase().includes(value)
     ))
     console.log(temp)
     setFilterUser(temp)
