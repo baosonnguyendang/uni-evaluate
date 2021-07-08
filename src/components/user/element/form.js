@@ -74,9 +74,9 @@ export default function FormEvaluation(props) {
         console.log(err)
       })
     //lấy Form
-    axios.get(`/form/${variable}/v2`)
+    axios.get(`/form/${variable}/v2?level=${props.level}`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setInfo({
           name: res.data.user.lastname + ' ' + res.data.user.firstname,
           id: res.data.user.staff_id,
@@ -106,7 +106,7 @@ export default function FormEvaluation(props) {
         axios.get(`/form/${variable}/evaluation/get`)
           .then(res => {
             //console.log(temp)
-            console.log(res.data)
+            // console.log(res.data)
             setRating(res.data.rating)
             if (res.data.evaluateForms.length > 0) {
               let tam = []
@@ -146,17 +146,17 @@ export default function FormEvaluation(props) {
                 })
                 list.push(inside)
               })
-              console.log(list)
+              // console.log(list)
               setAll([...list])
               setIsLoading(false)
             }
             else {
               setIsLoading(false)
             }
-            console.log(temp)
+            // console.log(temp)
             setSent([...temp])
             setLuuTam([...temp])
-            console.log('a')
+            // console.log('a')
           })
           .catch(err => {
             console.log(err)
@@ -198,7 +198,7 @@ export default function FormEvaluation(props) {
       }
       if (props.level == 2 || (disableEdit2 && props.level < 3)) {
         let tam = 0
-        console.log(max)
+        // console.log(max)
         max.map(x => {
           let diem = 0
           let diem2 = 0
@@ -434,7 +434,7 @@ export default function FormEvaluation(props) {
     switch (level) {
       case 1:
         let filter = sent.filter(y => y.value == null)
-        console.log(filter)
+        // console.log(filter)
         if (filter.length > 0) {
           filter.map(x => {
             list.push(x.name)
@@ -478,7 +478,7 @@ export default function FormEvaluation(props) {
       let sai = 'Các tiêu chí sau điền sai:'
       sai += loi
       let b = dataToSend.filter(x => x.value < 0)
-      console.log(b)
+      // console.log(b)
       data.map(x => {
         x.formCriteria.map(y => {
           if (b.some(z => z.name == y.criteria_id.code)) {
@@ -490,7 +490,7 @@ export default function FormEvaluation(props) {
     }
     if (list.length === 0 && !(loi.length > 0)) {
       let dataa = { dataToSend, level }
-      console.log(dataa)
+      // console.log(dataa)
       setLoading(true)
       axios.post(`/form/${variable}/submitForm`, dataa)
         .then(res => {
@@ -538,7 +538,7 @@ export default function FormEvaluation(props) {
         break;
     }
     let dataa = { dataToSend, level }
-    console.log(dataa)
+    // console.log(dataa)
 
     let loi = ''
     input.map(x => {
@@ -555,10 +555,10 @@ export default function FormEvaluation(props) {
     else {
       setLoading(true)
       setDisabled(true)
-      console.log(dataa)
+      // console.log(dataa)
       axios.post(`/form/${variable}/saveForm`, dataa)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           dispatch(showSuccessSnackbar('Lưu tạm thành công'))
           setLoading(false)
         })
@@ -571,10 +571,10 @@ export default function FormEvaluation(props) {
   }
 
   const sendDetails = (criteria, level) => {
-    console.log(level)
+    // console.log(level)
     switch (level) {
       case 1:
-        console.log(sent.find(x => x.name == criteria))
+        // console.log(sent.find(x => x.name == criteria))
         return (
           sent.find(x => x.name == criteria).details ? sent.find(x => x.name == criteria).details : []
         )
@@ -592,7 +592,7 @@ export default function FormEvaluation(props) {
   }
 
   const setDetails = (data, type) => { //hàm này để xử lí cái time_modal và detail_modal
-    console.log(data)
+    // console.log(data)
     setDisabled(false)
     let t = []
     let temp = []
@@ -614,7 +614,7 @@ export default function FormEvaluation(props) {
           luu.push(x)
         })
         luu[1] = [...temp]
-        console.log(temp)
+        // console.log(temp)
         setSent2(temp)
         setAll(luu)
         break;
@@ -629,7 +629,7 @@ export default function FormEvaluation(props) {
           luuu.push(x)
         })
         luuu[2] = [...temp]
-        console.log(temp)
+        // console.log(temp)
         setSent3(temp)
         setAll(luuu)
         break;
@@ -769,7 +769,7 @@ export default function FormEvaluation(props) {
                                               style={{ width: 40 }}
                                               type='button'
                                               onClick={() => {
-                                                console.log(disableEdit, readOnly);
+                                                // console.log(disableEdit, readOnly);
                                                 dispatch(showModal(data => setDetails(data, 1), "DETAIL_MODAL", { disableEdit: disableEdit || readOnly, name: criteria.criteria_id.name, code: criteria.criteria_id.code, max_point: criteria.point ? criteria.point : null, base_point: criteria.base_point, details: sendDetails(criteria.criteria_id.code, 1) }))
                                               }}
                                               value={sent.find(x => x.name == criteria.criteria_id.code) ? sent.find(x => x.name == criteria.criteria_id.code).value : 0}
