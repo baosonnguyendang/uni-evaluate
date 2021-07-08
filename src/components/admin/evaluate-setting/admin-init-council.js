@@ -76,6 +76,7 @@ export default function Council(props) {
   const handleClose = () => {
     setOpen(false);
     setInfo()
+    setDisplay('')
   };
 
   //open modal head
@@ -331,8 +332,8 @@ export default function Council(props) {
                     <IconButton variant='contained' color='primary' onClick={getInfo}>
                       <SearchIcon />
                     </IconButton>
-                    <h5 style={{ marginTop: '10px' }}>{display}</h5>
                   </div>
+                    <Typography style={{ marginTop: '10px' }}>{display}</Typography>
                   <div style={{ justifyContent: 'flex-end', marginTop: '10px', display: 'flex' }}>
                     <Button className={classes.btnmin} onClick={handleClose} variant="contained" >Thoát</Button>
                     &nbsp;  &nbsp;

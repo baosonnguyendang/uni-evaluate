@@ -342,16 +342,21 @@ export default function AddSettings() {
   const submitHead = (e) => {
     console.log(unit)
     e.preventDefault()
+    setOpenHead(false)
+    setLoadingCircle(true)
     console.log(headTemp)
     axios.post(`/admin/form/${code}/${unit}/addHead`, { ucode: headTemp.id })
       .then(res => {
         console.log(res)
         setHead(headTemp)
-        setOpenHead(false)
+        setLoadingCircle(false)
+        dispatch(showSuccessSnackbar('Cập nhật trưởng đơn vị thành công'))
       })
       .catch(err => {
-        alert(err)
-        setOpenHead(false)
+        console.log(err)
+        setLoadingCircle(false)
+        dispatch(showErrorSnackbar('Cập nhật trưởng đơn vị thất bại'))
+
       })
   }
 
@@ -381,24 +386,30 @@ export default function AddSettings() {
   };
   const handleCloseAdd = () => {
     setOpenAdd(false);
+    setDisplay('')
   };
   const submitAdd = (e) => {
     e.preventDefault()
+    setLoadingCircle(true)
+    handleCloseAdd()
     axios.post(`/admin/form/${code}/${unit}/addFormUser`, { ucode: idd })
       .then(res => {
         axios.get(`admin/user/${idd}/get`)
           .then(res => {
             console.log(res.data)
             setUnitMember(unitMember => [...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, '']])
-            handleCloseAdd()
+            setLoadingCircle(false)
+            dispatch(showSuccessSnackbar('Thêm thành viên thành công'))
           })
           .catch(err => {
             console.log(err)
-            handleCloseAdd()
+            dispatch(showErrorSnackbar('Thêm thành viên thất bại'))
+            setLoadingCircle(false)
           })
           .catch(err => {
             console.log(err)
-            handleCloseAdd()
+            dispatch(showErrorSnackbar('Thêm thành viên thất bại'))
+            setLoadingCircle(false)
           })
       })
   }
@@ -557,10 +568,11 @@ export default function AddSettings() {
               <div>
                 {showResults ? (
                   <div>
+                    <Loading open={loadingCircle} />
                     <Typography component="h1" variant="h5" color="inherit" noWrap>
                       Nhóm 0{group} - {units.find(x => x.id == unit).name}
                     </Typography>
-                    <Paper style={{ paddingBottom: 57 }} className={classes.paper}>
+                    <div style={{ paddingBottom: 57 }} className={classes.paper}>
                       <UserSettings unit={unit} type={id1} fcode={code} data={unitMember} loading={loadUnitMember} />
                       <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text={`Trưởng Đơn vị đang là ${head.name} (${head.id}), có muốn thay đổi?`} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
@@ -571,10 +583,10 @@ export default function AddSettings() {
                           Thêm GV/VC
                         </Button>
                         <Button variant="contained" color="secondary" onClick={() => { setShowResults(false); setUnitMember([]); setLoadUnitMember(true) }}>
-                          Trở lại trang điều chỉnh
+                          Trở lại
                         </Button>
                       </div>
-                    </Paper>
+                    </div>
                     <Modal
                       className={classes.modal}
                       open={openHead}
@@ -598,9 +610,10 @@ export default function AddSettings() {
                               onChange={(event, value) => value && setHeadTemp({ name: value[0], id: value[1] })}
                               renderInput={(params) => <TextField {...params} label="Trưởng đơn vị" variant="outlined" />}
                             />
-                            <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                              <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu và thoát</Button>
-                              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseHead}>Thoát</Button>
+                            <div style={{ float: 'right', marginTop: '10px' }}>
+                              <Button style={{ marginLeft: '10px' }} variant="contained" onClick={handleCloseHead}>Thoát</Button>
+                              &nbsp;  &nbsp;
+                              <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu</Button>
                             </div>
                           </form>
                         </div>
@@ -617,19 +630,20 @@ export default function AddSettings() {
                       }}
                     >
                       <Fade in={openAdd}>
-                        <div className={classes.paper1} style={{ width: 500}}>
+                        <div className={classes.paper1} style={{ width: 500 }}>
                           <Typography variant='h5' gutterBottom>Thêm GV/VC</Typography>
                           <form onSubmit={submitAdd}>
-                            <div style={{display: 'flex', alignItems: 'center'}}>
-                            <TextField fullWidth size='small' onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required variant="outlined"  />
-                            <IconButton variant='contained' color='primary' onClick={getInfo}>
-                              <SearchIcon />
-                            </IconButton>
-                            </div>  
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <TextField fullWidth size='small' onChange={e => setId(e.target.value)} id="id" label="Mã GV/VC" required variant="outlined" />
+                              <IconButton variant='contained' color='primary' onClick={getInfo}>
+                                <SearchIcon />
+                              </IconButton>
+                            </div>
                             <Typography style={{ marginTop: '10px' }}>{display}</Typography>
                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+                              <Button style={{ marginLeft: '10px' }} variant="contained" onClick={handleCloseAdd}>Thoát</Button>
+                              &nbsp;&nbsp;
                               <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Thêm</Button>
-                              <Button style={{ marginLeft: '10px' }} variant="contained" color="primary" onClick={handleCloseAdd}>Thoát</Button>
                             </div>
                           </form>
                         </div>

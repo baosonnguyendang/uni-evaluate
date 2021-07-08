@@ -1,25 +1,12 @@
 import React, { useState, useEffect } from "react";
 
 import axios from 'axios'
+import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
 
-
+import { useDispatch } from "react-redux";
 import MUIDataTable from "mui-datatables";
 
-import { makeStyles } from "@material-ui/core/styles";
-import LinearProgress from '@material-ui/core/LinearProgress';
-
-const useStyles = makeStyles(theme => ({
-  table: {
-    minWidth: 650
-  },
-  name: {
-    width: '30%',
-    height: 40,
-  },
-  number: {
-    width: '10%'
-  },
-}));
+import Loading from '../../common/Loading'
 
 export default function UserSettings(props) {
 
@@ -28,9 +15,9 @@ export default function UserSettings(props) {
   //   ["Joe James", "1712970", "Khoa học máy tính"],
   // ];
   //fe to be
-
+  const dispatch = useDispatch()
   const [data, setData] = React.useState([])
-
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     setData(props.data)
     console.log(props.data)
@@ -42,6 +29,7 @@ export default function UserSettings(props) {
     selectableRows: 'multiple',
     selectableRowsOnClick: true,
     onRowsDelete: (rowsDeleted) => {
+      setLoading(true)
       const idsToDelete = rowsDeleted.data.map(item => item.dataIndex)
       let temp = data.slice()
       let bin = []
@@ -58,8 +46,14 @@ export default function UserSettings(props) {
       axios.post(`/admin/form/${fcode}/${dcode}/removeFormUser`, body)
         .then(res => {
           setData(temp)
+          setLoading(false)
+          dispatch(showSuccessSnackbar('Xoá thành viên thành công'))
+
+        }).catch(err => {
+          console.log(err)
+          setLoading(false)
+          dispatch(showErrorSnackbar('Xoá thành viên thất bại'))
         })
-        .catch(err => console.log(err))
     }
   };
 
@@ -79,7 +73,8 @@ export default function UserSettings(props) {
         columns={columns}
         options={options}
       />
-      {props.loading && <LinearProgress />}
+      {props.loading && <Loading open />}
+      {loading && <Loading open />}
     </div>
   );
 }

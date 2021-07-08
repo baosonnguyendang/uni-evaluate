@@ -28,9 +28,9 @@ export default function ResultsUnit() {
   const [units, setUnits] = useState(null) //ds đơn vị trong đợt đánh giá
 
   useEffect(() => {
-    axios.get(`/admin/review/${id}/formtype/${id1}/form/`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/review/${id}/formtype/${id1}/form/`)
       .then(res => {
-        axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`)
           .then(res => {
             console.log(res.data)
             let temp = res.data.formDepartments.map(y => y.department_id)
