@@ -4,7 +4,8 @@ import axios from 'axios';
 
 import { Link, useParams, useRouteMatch } from 'react-router-dom'
 
-import { Container, Paper, Typography, Table, TableHead, TableBody, TableRow, TableCell, TableContainer } from '@material-ui/core'
+import { Container, Paper, Typography, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, 
+  LinearProgress} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -19,7 +20,7 @@ export default function CouncilUnitList() {
   const { id1 } = useParams()
   const { url } = useRouteMatch()
 
-  const [units, setUnits] = useState([])
+  const [units, setUnits] = useState(null)
 
   useEffect(() => {
     axios.get(`/form/${id1}/formdepartments/get`, { headers: { "Authorization": `Bearer ${token}` } })
@@ -42,7 +43,7 @@ export default function CouncilUnitList() {
         console.log(err)
       })
   }, [])
-
+  if (!units) return <LinearProgress style={{position:"absolute", width:"100%" }} /> 
   return (
     <Container>
       <Typography variant="h5" style={{ margin: '24px 0' }}>

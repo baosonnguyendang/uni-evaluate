@@ -5,22 +5,15 @@ import axios from 'axios'
 import { Tooltip, IconButton, Box } from '@material-ui/core'
 import PrintIcon from '@material-ui/icons/Print';
 
-import { makeStyles } from '@material-ui/core/styles';
 
 import { useParams } from 'react-router-dom'
 
-const useStyles = makeStyles({
-  point: {
-    width: '10%'
-  },
-});
+
 
 export default function PrintList(props) {
-  const classes = useStyles();
   const { id } = useParams()
 
   const [name, setName] = useState('')
-  const [data, setData] = useState([])
 
   useEffect(() => {
     console.log(props.data)
@@ -74,9 +67,9 @@ export default function PrintList(props) {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              <th style={{ width: '17%', padding: 5, border: '1px solid #666' }}>Mã GV/VC</th>
-              <th style={{ width: '23%', padding: 5, border: '1px solid #666' }}>Họ và tên lót GV/VC</th>
-              <th style={{ width: '12%', padding: 5, border: '1px solid #666' }}>Tên GV/VC</th>
+              <th style={{ width: '17%', padding: 5, border: '1px solid #666', textAlign: 'left' }}>Mã GV/VC</th>
+              <th style={{ width: '23%', padding: 5, border: '1px solid #666', textAlign: 'left' }}>Họ và tên lót GV/VC</th>
+              <th style={{ width: '12%', padding: 5, border: '1px solid #666', textAlign: 'left' }}>Tên GV/VC</th>
               <th style={{ width: '12%', padding: 5, border: '1px solid #666' }}>Điểm cá nhân đánh giá</th>
               <th style={{ width: '12%', padding: 5, border: '1px solid #666' }}>Điểm Trưởng Đơn vị đánh giá</th>
               <th style={{ width: '12%', padding: 5, border: '1px solid #666' }}>Điểm HĐĐG đánh giá</th>
@@ -84,10 +77,10 @@ export default function PrintList(props) {
             </tr>
           </thead>
           <tbody>
-            {props.data.map(x => {
+            {props.data.map((x, i) => {
               return (
-                <tr key={x.id}>
-                  <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.code}</td>
+                <tr key={i}>
+                  <td style={{ border: '1px solid #666', padding: 5 }}>{x.code}</td>
                   <td style={{ border: '1px solid #666', padding: 5 }}>{x.lname}</td>
                   <td style={{ border: '1px solid #666', padding: 5 }}>{x.fname}</td>
                   <td style={{ border: '1px solid #666', padding: 5, textAlign: 'center' }}>{x.point[0] == ' -' ? '' : x.point[0]}</td>

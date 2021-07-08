@@ -3,18 +3,16 @@ import {
   TableContainer, Table,
   TableHead, TableRow, TableCell,
   TableBody, makeStyles, Paper, Grid,
-  Button, IconButton, Tooltip,
+  Button, 
   LinearProgress,
-  Typography, Container, Box,
+  Typography, Container, 
 } from "@material-ui/core";
-import PrintIcon from '@material-ui/icons/Print';
 
 import axios from 'axios';
 
 import PinnedSubheaderList from './print.js'
 import './styles.css';
 
-import { useReactToPrint } from 'react-to-print';
 import { useParams } from 'react-router-dom'
 import DialogConfirm from '../../common/DialogConfirm'
 import Loading from '../../common/Loading'
@@ -34,7 +32,6 @@ export default function FormEvaluation(props) {
   const componentRef = React.useRef();
   const dispatch = useDispatch()
   const classes = useStyles();
-  const token = localStorage.getItem('token')
   const [isLoading, setIsLoading] = useState(true)
   // const [data, setData] = useState({})
   const { id, id1, id3 } = useParams()
@@ -67,7 +64,7 @@ export default function FormEvaluation(props) {
   var variable = props.level === 1 ? id1 : id3
 
   useEffect(() => {
-    axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/user/review/${id}/head`)
       .then(res => {
         if (!res.data.formDepartment.some(x => x.form_id.code == id1 && x.department_id.department_code == 'HDDG')) {
           setDisableEdit3(true)
@@ -666,10 +663,7 @@ export default function FormEvaluation(props) {
   }
 
   const [loading, setLoading] = useState(false)
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: info?.id,
-  });
+
   return (
     < >
       {status ? (

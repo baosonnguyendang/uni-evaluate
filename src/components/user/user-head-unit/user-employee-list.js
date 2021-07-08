@@ -22,7 +22,6 @@ export default function EmployeeList() {
 
   const { id1, id2 } = useParams()
   const { url } = useRouteMatch()
-  const token = localStorage.getItem('token')
 
   const [data, setData] = useState(null)
   const [info, setInfo] = useState() // tên đvị
@@ -41,13 +40,13 @@ export default function EmployeeList() {
   };
 
   useEffect(() => {
-    axios.get(`/user/head/${id1}/${id2}/get`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/user/head/${id1}/${id2}/get`)
       .then(res => {
         console.log(res.data)
         setInfo(res.data.formDepartment)
         let temp = []
         res.data.formUsers.map(user => {
-          let point = [' -', ' -', ' -']
+          let point = [' --', ' --', ' --']
           if (user.evaluateForm) {
             user.evaluateForm.map((x, index) => {
               if (x.point || x.point === 0) {
@@ -106,7 +105,7 @@ export default function EmployeeList() {
               <TableCell align="left">{row.unit}</TableCell>
               <TableCell align="center">{row.point.toString()}</TableCell>
               <TableCell align="center">{row.rating ? row.rating : ''}</TableCell>
-              <TableCell align="center" style={{ minWidth: '200px' }}> {row.status > 1 && <Link to={`${url}/${row.id}`}>{row.status == 2 ? 'Đánh giá GV/VC' : 'Xem kết quả đánh giá GV/VC'}</Link>}</TableCell>
+              <TableCell align="center" style={{ minWidth: '200px' }}> {row.status > 1 && <Link to={`${url}/${row.id}`}>{row.status == 2 ? 'Đánh giá GV/VC' : 'Kết quả đánh giá GV/VC'}</Link>}</TableCell>
             </TableRow>
           ))}
         </TableBody>
