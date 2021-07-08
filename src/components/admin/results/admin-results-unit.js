@@ -15,13 +15,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
-
+import Loading from '../../common/Loading'
 const useStyles = makeStyles(theme => ({
   number: {
     textAlign: 'center'
   },
   paper: {
-    minHeight: 400,
     marginTop: 24,
     position: 'relative',
   },
@@ -55,7 +54,7 @@ export default function Results(props) {
 
   var code
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(null);
 
   //lấy mã form and then ds gv/vc thuộc đơn vị
   useEffect(() => {
@@ -112,7 +111,7 @@ export default function Results(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
+  if (!rows) return <Loading open /> 
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>

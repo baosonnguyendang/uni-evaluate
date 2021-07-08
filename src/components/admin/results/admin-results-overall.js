@@ -46,7 +46,6 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function ResultsList(props) {
-  const classes = useStyles()
   const { id, id1 } = useParams()
 
   const [units, setUnits] = useState([]) //ds đơn vị trong đợt đánh giá
@@ -56,8 +55,7 @@ export default function ResultsList(props) {
   //mã form
   const [code, setCode] = useState()
 
-  //change tab
-  const [value, setValue] = React.useState(0);
+
 
   //lấy ít data vẽ lên biểu đồ
   const [chartData, setChartData] = useState({})

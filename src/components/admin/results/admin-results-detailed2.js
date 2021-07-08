@@ -1,45 +1,3 @@
-// import React, { useState, useEffect } from "react";
-
-// import axios from 'axios'
-
-// import MUIDataTable from "mui-datatables";
-
-// import { makeStyles } from "@material-ui/core/styles";
-
-// const useStyles = makeStyles(theme => ({
-//   table: {
-//     minWidth: 650
-//   }
-// }));
-
-// export default function ResultsDashboard(props) {
-//   const classes = useStyles();
-
-//   const columns = ["Name", "Company", "City", "State"];
-
-//   const data = [
-//     ["Joe James", "Test Corp", "Yonkers", "NY"],
-//     ["John Walsh", "Test Corp", "Hartford", "CT"],
-//     ["Bob Herm", "Test Corp", "Tampa", "FL"],
-//     ["James Houston", "Test Corp", "Dallas", "TX"],
-//   ];
-
-//   const options = {
-//     filterType: 'checkbox',
-//   };
-
-//   return (
-//     <div>
-//       <MUIDataTable
-//         title={"Employee List"}
-//         data={data}
-//         columns={columns}
-//         options={options}
-//       />
-//     </div>
-//   )
-// }
-
 import {
   FormGroup,
   FormLabel,
@@ -47,14 +5,11 @@ import {
   ListItemText,
   TextField,
   Checkbox,
-  FormControlLabel,
-  Grid,
   Select,
   InputLabel,
   MenuItem,
-  LinearProgress
 } from '@material-ui/core';
-
+import Loading from '../../common/Loading'
 import React, { useState, useEffect } from 'react';
 
 import axios from 'axios'
@@ -72,6 +27,7 @@ export default function ResultsDashboard(props) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    setLoading(true)
     axios.get(`/admin/form/${props.code}/classifyStandards`, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log(res.data)
@@ -102,6 +58,8 @@ export default function ResultsDashboard(props) {
       })
       .catch(err => {
         console.log(err)
+        setLoading(false)
+
       })
   }, [])
 
@@ -517,11 +475,12 @@ export default function ResultsDashboard(props) {
       };
     }
   };
-
+  if (loading) return <div style={{ minHeight: 440 }}  >
+    <Loading open />
+  </div>
   return (
     <div>
       <MUIDataTable title={'KẾT QUẢ CHI TIẾT'} data={data} columns={cot} options={options} />
-      {loading && <LinearProgress />}
     </div>
   )
 
