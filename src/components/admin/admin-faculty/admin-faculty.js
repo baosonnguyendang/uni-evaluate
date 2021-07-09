@@ -240,9 +240,18 @@ export default function Criterion() {
     setModal({ ...modal, open: false });
     axios.post('/admin/department/addDepartment', body)
       .then(res => {
-        //console.log(res.data);
+        console.log(res.data);
+        const temp = res.data.manager
+        if (!newUnit) {
+          if (temp === null) {
+            setRows(rows => [...rows, { department_code: id, name, }])
+          }
+          else {
+            setRows(rows => [...rows, { department_code: id, name, idmanager: temp?.staff_id, namemanager: `${temp?.lastname} ${temp?.firstname}` }])
+          }
+        }
+        
         dispatch(showSuccessSnackbar('Tạo đơn vị thành công'))
-        setRows(rows => [...rows, { department_code: id, name, manager: headUnit, parent: newUnit }])
         setLoading(false)
         handleClose();
       })
