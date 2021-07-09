@@ -14,17 +14,17 @@ const NotFound = () => {
             textAlign: 'center'
         }}>
             <br />
-            <Typography variant="h1" style={{ fontSize: '20rem' }} >
+            <Typography variant="h2" style={{ fontSize: '12rem' }} >
                 403
             </Typography>
             <Typography variant="h3">
                 Không có quyền truy cập
             </Typography>
             <br />
-            <Typography variant='h5' component={Link} to='#' onClick={() => history.goBack()}>
-                Quay lại
+            <Typography variant='h5' component={Link} to="/">
+                Trở lại trang chủ
             </Typography>
-     
+
         </div>
     )
 }

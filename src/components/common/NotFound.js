@@ -11,7 +11,7 @@ const NotFound = () => (
     textAlign: 'center'
   }}>
     <br />
-    <Typography variant="h1" style={{ fontSize: '20rem' }} >
+    <Typography variant="h2" style={{ fontSize: '12rem' }} >
       404
     </Typography>
     <Typography variant="h3" >
