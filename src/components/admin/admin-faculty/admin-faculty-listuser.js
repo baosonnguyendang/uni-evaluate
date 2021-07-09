@@ -105,7 +105,10 @@ const UserOfFaculty = () => {
       .then(res => {
         console.log(res.data);
         setLNameDept(res.data.parent.name)
-        setChildren(res.data.children)
+
+        const temp = res.data.children.map(c => c.manager ? ({...c, namemanager: `${c.manager.lastname} ${c.manager.firstname}`, idmanager: c.manager.staff_id}) : c)
+        console.log(temp)
+        setChildren(temp)
       })
       .catch(err => {
         console.log(err)

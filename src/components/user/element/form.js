@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 
 import axios from 'axios';
-
+import { useHistory } from 'react-router-dom'
 import PinnedSubheaderList from './print.js'
 import './styles.css';
 
@@ -37,7 +37,7 @@ export default function FormEvaluation(props) {
   const { id, id1, id3 } = useParams()
   //var level = props.level
   const [level, setLevel] = useState(props.level)
-
+  const history = useHistory()
   const [info, setInfo] = useState(null)
   const [point, setPoint] = useState(0) //điểm tự đánh giá
   const [point2, setPoint2] = useState(0)
@@ -106,6 +106,9 @@ export default function FormEvaluation(props) {
         })
         .catch(err => {
           console.log(err)
+          console.log( typeof err.response.status)
+          if (err.response.status === 403)
+           history.push('/forbidden')
         })
     }
     const getFormResult = () => {
