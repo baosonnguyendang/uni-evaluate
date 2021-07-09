@@ -106,7 +106,7 @@ const UserOfFaculty = () => {
         console.log(res.data);
         setLNameDept(res.data.parent.name)
 
-        const temp = res.data.children.map(c => c.manager ? ({...c, namemanager: `${c.manager.lastname} ${c.manager.firstname}`, idmanager: c.manager.staff_id}) : c)
+        const temp = res.data.children.map(c => c.manager ? ({ ...c, namemanager: `${c.manager.lastname} ${c.manager.firstname}`, idmanager: c.manager.staff_id }) : c)
         console.log(temp)
         setChildren(temp)
       })
@@ -348,9 +348,15 @@ const UserOfFaculty = () => {
     handleClose();
     axios.post('/admin/department/addDepartment', body)
       .then(res => {
-        //console.log(res.data);
+        console.log(res.data);
+        const temp = res.data.manager
+        if (temp === null) {
+          setChildren(rows => [...rows, { department_code: idDept, name, }])
+        }
+        else {
+          setChildren(rows => [...rows, { department_code: idDept, name, idmanager: temp?.staff_id, namemanager: `${temp?.lastname} ${temp?.firstname}` }])
+        }
         dispatch(showSuccessSnackbar('Tạo đơn vị thành công'))
-        setChildren(rows => [...rows, { department_code: idDept, name, idmanager: headUnit, parent: id }])
         setLoading(false)
       })
       .catch(err => {

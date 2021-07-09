@@ -6,10 +6,10 @@ import Moment from 'moment';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import { CardContent, LinearProgress, Container, Grid } from '@material-ui/core';
+import { CardContent, LinearProgress, Grid } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 var today = Moment()
 

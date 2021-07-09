@@ -264,7 +264,7 @@ export default function Criteria() {
           <Loading open={loading} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography component="h1" variant="h5" color="inherit" noWrap >
-              Tiêu chuẩn {nameStandard} - Danh sách Tiêu chí
+              Tiêu chuẩn {nameStandard} - Danh sách tiêu chí
             </Typography >
             <Tooltip title={
               <>
