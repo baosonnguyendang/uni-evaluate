@@ -8,7 +8,6 @@ import { Link, useRouteMatch, useParams } from 'react-router-dom'
 
 export default function FormList() {
   const { id } = useParams()
-  const token = localStorage.getItem('token')
   const { url } = useRouteMatch()
 
   const [list, setList] = useState([])
@@ -18,7 +17,7 @@ export default function FormList() {
   const [headH, setHeadH] = useState(false)
 
   const fetchHeadForm = () => {
-    return axios.get(`/user/review/${id}/head`, { headers: { "Authorization": `Bearer ${token}` } })
+    return axios.get(`/user/review/${id}/head`)
       .then(res => {
         console.log(res.data)
         // if (res.data.formDepartment.some(x => x.department_id.department_code == 'HDDG')) {
@@ -43,7 +42,7 @@ export default function FormList() {
   }
 
   const fetchForm = () => {
-    return axios.get(`/form/review/${id}/form`, { headers: { "Authorization": `Bearer ${token}` } })
+    return axios.get(`/form/review/${id}/form`)
       .then(res => {
         let temp = []
         let t3mp = []

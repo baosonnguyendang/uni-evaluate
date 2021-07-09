@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-import { List, Button, TextField, Typography, IconButton, Tooltip, Box } from '@material-ui/core';
+import {  makeStyles } from '@material-ui/core/styles';
+import { IconButton, Tooltip, Box } from '@material-ui/core';
 import PrintIcon from '@material-ui/icons/Print';
 
 import axios from 'axios'
-import { useDispatch } from 'react-redux'
 
 import './styles.css';
 import CircularProgress from '@material-ui/core/CircularProgress';

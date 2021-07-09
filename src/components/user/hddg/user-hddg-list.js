@@ -16,14 +16,13 @@ const useStyles = makeStyles({
 
 export default function CouncilUnitList() {
   const classes = useStyles();
-  const token = localStorage.getItem('token')
   const { id1 } = useParams()
   const { url } = useRouteMatch()
 
   const [units, setUnits] = useState(null)
 
   useEffect(() => {
-    axios.get(`/form/${id1}/formdepartments/get`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/form/${id1}/formdepartments/get`)
       .then(res => {
         console.log(res.data)
         let temp = []

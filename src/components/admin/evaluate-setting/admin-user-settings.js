@@ -10,7 +10,7 @@ import Loading from '../../common/Loading'
 
 export default function UserSettings(props) {
 
-  const columns = ["Tên", "Mã NV", "Bộ môn"];
+  const columns = ["Tên", "Mã NV", "Đơn vị"];
   // const data = [
   //   ["Joe James", "1712970", "Khoa học máy tính"],
   // ];
@@ -45,7 +45,7 @@ export default function UserSettings(props) {
       }
       axios.post(`/admin/form/${fcode}/${dcode}/removeFormUser`, body)
         .then(res => {
-          setData(temp)
+          props.setUnitMember(temp)
           setLoading(false)
           dispatch(showSuccessSnackbar('Xoá thành viên thành công'))
 

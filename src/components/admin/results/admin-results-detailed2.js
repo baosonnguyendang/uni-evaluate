@@ -1,13 +1,7 @@
 import {
   FormGroup,
   FormLabel,
-  FormControl,
-  ListItemText,
   TextField,
-  Checkbox,
-  Select,
-  InputLabel,
-  MenuItem,
 } from '@material-ui/core';
 import Loading from '../../common/Loading'
 import React, { useState, useEffect } from 'react';
@@ -17,7 +11,6 @@ import axios from 'axios'
 import MUIDataTable from "mui-datatables";
 
 export default function ResultsDashboard(props) {
-  const token = localStorage.getItem('token')
 
   const [numOfStandards, setNumOfStandards] = useState(0)
 
@@ -28,7 +21,7 @@ export default function ResultsDashboard(props) {
 
   useEffect(() => {
     setLoading(true)
-    axios.get(`/admin/form/${props.code}/classifyStandards`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/admin/form/${props.code}/classifyStandards`)
       .then(res => {
         console.log(res.data)
         if (res.data.standard_points.length > 0) {

@@ -296,7 +296,7 @@ export default function AddSettings() {
           console.log(res.data)
           let temp = []
           res.data.formUser.map(x => {
-            let name = x.user_id.department.length > 0 ? x.user_id.department[0].name : ''
+            let name = x.user_id.department.length > 0 ? (x.user_id.department.map(d => d.name)).join(", ") : ''
             temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
           })
           console.log(temp)
@@ -397,7 +397,8 @@ export default function AddSettings() {
         axios.get(`admin/user/${idd}/get`)
           .then(res => {
             console.log(res.data)
-            setUnitMember(unitMember => [...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, '']])
+            console.log([...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, '']])
+            setUnitMember(unitMember => [...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, (res.data.user.department.map(d => d.name)).join(", ")]])
             setLoadingCircle(false)
             dispatch(showSuccessSnackbar('Thêm thành viên thành công'))
           })
@@ -406,11 +407,17 @@ export default function AddSettings() {
             dispatch(showErrorSnackbar('Thêm thành viên thất bại'))
             setLoadingCircle(false)
           })
-          .catch(err => {
-            console.log(err)
+      })
+      .catch(err => {
+        console.log(err)
+        switch (err.response.status) {
+          case 409:
+            dispatch(showErrorSnackbar('Thành viên đã tồn tại trong đơn vị'))
+            break;
+          default:
             dispatch(showErrorSnackbar('Thêm thành viên thất bại'))
-            setLoadingCircle(false)
-          })
+        }
+        setLoadingCircle(false)
       })
   }
 
@@ -573,7 +580,7 @@ export default function AddSettings() {
                       Nhóm 0{group} - {units.find(x => x.id == unit).name}
                     </Typography>
                     <div style={{ paddingBottom: 57 }} className={classes.paper}>
-                      <UserSettings unit={unit} type={id1} fcode={code} data={unitMember} loading={loadUnitMember} />
+                      <UserSettings unit={unit} type={id1} fcode={code} data={unitMember} loading={loadUnitMember} setUnitMember={setUnitMember} />
                       <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text={`Trưởng Đơn vị đang là ${head.name} (${head.id}), có muốn thay đổi?`} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                         <Button variant="contained" style={{ marginRight: 10, width: 200 }} onClick={() => { onAsk() }}>

@@ -3,7 +3,7 @@ import {
   TableContainer, Table,
   TableHead, TableRow, TableCell,
   TableBody, makeStyles, Paper, Grid,
-  Radio, Button, Checkbox,
+  Button,
   LinearProgress,
   Typography
 } from "@material-ui/core";
@@ -11,7 +11,6 @@ import {
 import axios from 'axios'
 
 import { useParams } from 'react-router-dom'
-import { ArrowRightAltOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   table: {
@@ -23,7 +22,6 @@ export default function FormEvaluation(props) {
   const classes = useStyles();
   const [loading, setLoading] = useState(false)
   // const [data, setData] = useState({})
-  const token = localStorage.getItem('token')
   const { id1, id3 } = useParams()
   var level = props.level
 
@@ -41,7 +39,7 @@ export default function FormEvaluation(props) {
     setLoading(true)
 
     //lấy Form
-    axios.get(`/form/${variable}/v2`, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get(`/form/${variable}/v2`)
       .then(res => {
         setData(res.data.formStandards)
         let temp = []
@@ -52,7 +50,7 @@ export default function FormEvaluation(props) {
           })
         })
         //lấy dữ liệu đã làm nếu Form đã điền trước đó
-        axios.get(`/form/${variable}/evaluation/get`, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.get(`/form/${variable}/evaluation/get`)
           .then(res => {
             //console.log(temp)
             setLoading(false)
@@ -175,7 +173,7 @@ export default function FormEvaluation(props) {
     if (list.length === 0) {
       let data = { toSend, level }
       console.log(data)
-      axios.post(`/form/${variable}/evaluation/test`, data, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/form/${variable}/evaluation/test`, data)
         .then(res => {
           setStatus(false)
           setDisableEdit(true)
@@ -207,7 +205,7 @@ export default function FormEvaluation(props) {
     setLuuTam(sent)
     let data = { dataToSend, level }
     console.log(data)
-    axios.post(`/form/${variable}/evaluation/test`, data, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/form/${variable}/evaluation/test`, data)
       .then(res => {
         console.log(res)
       })
