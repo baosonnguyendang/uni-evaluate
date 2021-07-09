@@ -3,9 +3,9 @@ import {
   TableContainer, Table,
   TableHead, TableRow, TableCell,
   TableBody, makeStyles, Paper, Grid,
-  Button, 
+  Button,
   LinearProgress,
-  Typography, Container, 
+  Typography, Container,
 } from "@material-ui/core";
 
 import axios from 'axios';
@@ -74,99 +74,202 @@ export default function FormEvaluation(props) {
         console.log(err)
       })
     //lấy Form
-    axios.get(`/form/${variable}/v2?level=${props.level}`)
-      .then(res => {
-        // console.log(res.data)
-        setInfo({
-          name: res.data.user.lastname + ' ' + res.data.user.firstname,
-          id: res.data.user.staff_id,
-          unit: res.data.department.name,
-          form: res.data.form.name
+    const getForm = () => {
+      return axios.get(`/form/${variable}/v2?level=${props.level}`)
+        .then(res => {
+          setInfo({
+            name: res.data.user.lastname + ' ' + res.data.user.firstname,
+            id: res.data.user.staff_id,
+            unit: res.data.department.name,
+            form: res.data.form.name
+          })
+          setData(res.data.formStandards)
+          let temp = []
+          let t3mp = []
+          let t = []
+          res.data.formStandards.map(standard => {
+            let list = []
+            standard.formCriteria.map(criteria => {
+              if (criteria.criteria_id.type == 'input') {
+                t.push({ code: criteria.criteria_id.code, point: criteria.point ? criteria.point : null, order: standard.standard_order + '.' + criteria.criteria_order })
+              }
+              list.push(criteria.criteria_id.code)
+              let obj = { name: criteria.criteria_id.code, standard_order: standard.standard_order, value: criteria.criteria_id.type != 'radio' ? 0 : null }
+              temp.push(obj)
+            })
+            t3mp.push({ order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null, list: list })
+          })
+          setMax(t3mp)
+          console.log(t)
+          setInput(t)
+          return temp
         })
-        setData(res.data.formStandards)
-        let temp = []
-        let t3mp = []
-        let t = []
-        res.data.formStandards.map(standard => {
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    const getFormResult = () => {
+      return axios.get(`/form/${variable}/evaluation/get`)
+        .then(res => {
+          return res
+        })
+        .catch(err => {
+          console.log(err)
+          setIsLoading(false)
+        })
+    }
+    Promise.all([getForm(), getFormResult()])
+      .then(re => {
+        let temp = re[0]
+        const res = re[1]
+        setRating(res.data.rating)
+        if (res.data.evaluateForms.length > 0) {
+          let tam = []
+          res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
+            if (criteria.read_only == true) {
+              tam.push(criteria.form_criteria.criteria_id.code)
+            }
+            temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
+            if (criteria.details) {
+              temp.find(x => x.name == criteria.form_criteria.criteria_id.code).details = criteria.details
+            }
+          })
+          setImportList([...tam])
+          let d = res.data.evaluateForms
+          if (d[0].status === 1) {
+            setDisableEdit(true)
+            setReadOnly(true)
+          }
+          if (d[1] && d[1].status === 1) {
+            setDisableEdit2(true)
+            setReadOnly2(true)
+          }
+          if (d[2] && d[2].status === 1) {
+            setDisableEdit3(true)
+            setReadOnly3(true)
+          }
           let list = []
-          standard.formCriteria.map(criteria => {
-            if (criteria.criteria_id.type == 'input') {
-              t.push({ code: criteria.criteria_id.code, point: criteria.point ? criteria.point : null, order: standard.standard_order + '.' + criteria.criteria_order })
-            }
-            list.push(criteria.criteria_id.code)
-            let obj = { name: criteria.criteria_id.code, standard_order: standard.standard_order, value: criteria.criteria_id.type != 'radio' ? 0 : null }
-            temp.push(obj)
-          })
-          t3mp.push({ order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null, list: list })
-        })
-        setMax(t3mp)
-        console.log(t)
-        setInput(t)
-        //lấy dữ liệu đã làm nếu Form đã điền trước đó
-        axios.get(`/form/${variable}/evaluation/get`)
-          .then(res => {
-            //console.log(temp)
-            // console.log(res.data)
-            setRating(res.data.rating)
-            if (res.data.evaluateForms.length > 0) {
-              let tam = []
-              res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
-                if (criteria.read_only == true) {
-                  tam.push(criteria.form_criteria.criteria_id.code)
-                }
-                temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
-                if (criteria.details) {
-                  temp.find(x => x.name == criteria.form_criteria.criteria_id.code).details = criteria.details
-                }
-              })
-              setImportList([...tam])
-              let d = res.data.evaluateForms
-              if (d[0].status === 1) {
-                setDisableEdit(true)
-                setReadOnly(true)
+          d.map(level => {
+            let inside = []
+            level.evaluateCriteria.map(criteria => {
+              //inside.push(temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point)
+              if (criteria.details) {
+                inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point, details: criteria.details })
+              } else {
+                inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point })
               }
-              if (d[1] && d[1].status === 1) {
-                setDisableEdit2(true)
-                setReadOnly2(true)
-              }
-              if (d[2] && d[2].status === 1) {
-                setDisableEdit3(true)
-                setReadOnly3(true)
-              }
-              let list = []
-              d.map(level => {
-                let inside = []
-                level.evaluateCriteria.map(criteria => {
-                  //inside.push(temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point)
-                  if (criteria.details) {
-                    inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point, details: criteria.details })
-                  } else {
-                    inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point })
-                  }
-                })
-                list.push(inside)
-              })
-              // console.log(list)
-              setAll([...list])
-              setIsLoading(false)
-            }
-            else {
-              setIsLoading(false)
-            }
-            // console.log(temp)
-            setSent([...temp])
-            setLuuTam([...temp])
-            // console.log('a')
+            })
+            list.push(inside)
           })
-          .catch(err => {
-            console.log(err)
-            setIsLoading(false)
-          })
+          // console.log(list)
+          setAll([...list])
+          setIsLoading(false)
+        }
+        else {
+          setIsLoading(false)
+        }
+        // console.log(temp)
+        setSent([...temp])
+        setLuuTam([...temp])
+        // console.log('a')
       })
       .catch(err => {
         console.log(err)
         setIsLoading(false)
       })
+    // axios.get(`/form/${variable}/v2?level=${props.level}`)
+    //   .then(res => {
+    //     // console.log(res.data)
+    //     setInfo({
+    //       name: res.data.user.lastname + ' ' + res.data.user.firstname,
+    //       id: res.data.user.staff_id,
+    //       unit: res.data.department.name,
+    //       form: res.data.form.name
+    //     })
+    //     setData(res.data.formStandards)
+    //     let temp = []
+    //     let t3mp = []
+    //     let t = []
+    //     res.data.formStandards.map(standard => {
+    //       let list = []
+    //       standard.formCriteria.map(criteria => {
+    //         if (criteria.criteria_id.type == 'input') {
+    //           t.push({ code: criteria.criteria_id.code, point: criteria.point ? criteria.point : null, order: standard.standard_order + '.' + criteria.criteria_order })
+    //         }
+    //         list.push(criteria.criteria_id.code)
+    //         let obj = { name: criteria.criteria_id.code, standard_order: standard.standard_order, value: criteria.criteria_id.type != 'radio' ? 0 : null }
+    //         temp.push(obj)
+    //       })
+    //       t3mp.push({ order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null, list: list })
+    //     })
+    //     setMax(t3mp)
+    //     console.log(t)
+    //     setInput(t)
+    //     //lấy dữ liệu đã làm nếu Form đã điền trước đó
+    //     axios.get(`/form/${variable}/evaluation/get`)
+    //       .then(res => {
+    //         //console.log(temp)
+    //         // console.log(res.data)
+    //         setRating(res.data.rating)
+    //         if (res.data.evaluateForms.length > 0) {
+    //           let tam = []
+    //           res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
+    //             if (criteria.read_only == true) {
+    //               tam.push(criteria.form_criteria.criteria_id.code)
+    //             }
+    //             temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
+    //             if (criteria.details) {
+    //               temp.find(x => x.name == criteria.form_criteria.criteria_id.code).details = criteria.details
+    //             }
+    //           })
+    //           setImportList([...tam])
+    //           let d = res.data.evaluateForms
+    //           if (d[0].status === 1) {
+    //             setDisableEdit(true)
+    //             setReadOnly(true)
+    //           }
+    //           if (d[1] && d[1].status === 1) {
+    //             setDisableEdit2(true)
+    //             setReadOnly2(true)
+    //           }
+    //           if (d[2] && d[2].status === 1) {
+    //             setDisableEdit3(true)
+    //             setReadOnly3(true)
+    //           }
+    //           let list = []
+    //           d.map(level => {
+    //             let inside = []
+    //             level.evaluateCriteria.map(criteria => {
+    //               //inside.push(temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point)
+    //               if (criteria.details) {
+    //                 inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point, details: criteria.details })
+    //               } else {
+    //                 inside.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point })
+    //               }
+    //             })
+    //             list.push(inside)
+    //           })
+    //           // console.log(list)
+    //           setAll([...list])
+    //           setIsLoading(false)
+    //         }
+    //         else {
+    //           setIsLoading(false)
+    //         }
+    //         // console.log(temp)
+    //         setSent([...temp])
+    //         setLuuTam([...temp])
+    //         // console.log('a')
+    //       })
+    //       .catch(err => {
+    //         console.log(err)
+    //         setIsLoading(false)
+    //       })
+    //   })
+    //   .catch(err => {
+    //     console.log(err)
+    //     setIsLoading(false)
+    //   })
   }, [])
 
   useEffect(() => {
@@ -688,7 +791,7 @@ export default function FormEvaluation(props) {
                     <PrintIcon />
                   </IconButton>
                 </Tooltip> */}
-                {info != null && <PinnedSubheaderList form={data} data={all} info={info} level={level} rating={rating} point={Number((point).toFixed(2))} point2={props.level > 1 || readOnly2 ? Number((point2).toFixed(2)) : null} point3={props.level > 2 || readOnly3 ? Number((point3).toFixed(2)) : null}/>}
+                {info != null && <PinnedSubheaderList form={data} data={all} info={info} level={level} rating={rating} point={Number((point).toFixed(2))} point2={props.level > 1 || readOnly2 ? Number((point2).toFixed(2)) : null} point3={props.level > 2 || readOnly3 ? Number((point3).toFixed(2)) : null} />}
 
               </div>
               <Grid container justify='center' style={{ marginTop: '20px' }}>
