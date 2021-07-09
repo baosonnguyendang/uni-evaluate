@@ -99,6 +99,7 @@ const AdminPage = () => {
                 <Route exact path='/admin/criterion/:id/deleted' children={<DeletedCriteria />} />
                 <Route exact path='/admin/criterion/:id/:id1' children={<Selection />} />
                 <Route exact path='/admin/criterion/:id/:id1/deleted' children={<DeletedSelection />} />
+                <Route exact path='/admin' children={<div></div>} />
                 <Route path="*">
                   <NotFound />
                 </Route>
