@@ -187,7 +187,7 @@ export default function AddSettings() {
   const Init = () => {
     const handleSubmitInit = (e) => {
       e.preventDefault()
-      setInit(false)
+      setInit(2)
       axios.post(`/admin/review/${id}/formtype/${id1}/form/addForm`, { name: name, code: code })
         .then(res => {
           console.log(res)
