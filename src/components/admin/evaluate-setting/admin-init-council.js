@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Council(props) {
   const classes = useStyles();
   const dispatch = useDispatch()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   //open modal
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
@@ -142,14 +142,13 @@ export default function Council(props) {
 
       })
       .catch(err => {
-            setLoading(false)
-            dispatch(showErrorSnackbar('Thêm thành viên thất bại'))
-            console.log(err)
+        setLoading(false)
+        dispatch(showErrorSnackbar('Thêm thành viên thất bại'))
+        console.log(err)
       })
   }
 
   useEffect(() => {
-    setLoading(true)
     axios.get(`/admin/department`)
       .then(res => {
         let temp = [res.data.departments.find(x => x.department_code == 'HDDG')]
@@ -188,6 +187,7 @@ export default function Council(props) {
       })
       .catch(err => {
         console.log(err)
+        setChose(false)
         setLoading(false)
       })
   }, [])
@@ -242,7 +242,6 @@ export default function Council(props) {
 
   //luc moi khoi tao, bam vao se hoan tat viec chon dvi hddg, lay toan bo user trong dvi do bo vao hddg
   const setHDDG = () => {
-    setLoading(true)
     axios.post(`/admin/form/${props.fcode}/${council}/addcouncil`, {})
       .then(res => {
         console.log(res.data)
@@ -280,6 +279,7 @@ export default function Council(props) {
   const closeDialog = () => {
     setStatusDelete({ open: false })
   }
+  console.log(loading)
   if (chose === null) return <Loading open />
   return (
     <div>
@@ -333,7 +333,7 @@ export default function Council(props) {
                       <SearchIcon />
                     </IconButton>
                   </div>
-                    <Typography style={{ marginTop: '10px' }}>{display}</Typography>
+                  <Typography style={{ marginTop: '10px' }}>{display}</Typography>
                   <div style={{ justifyContent: 'flex-end', marginTop: '10px', display: 'flex' }}>
                     <Button className={classes.btnmin} onClick={handleClose} variant="contained" >Thoát</Button>
                     &nbsp;  &nbsp;
