@@ -26,6 +26,8 @@ import Skeleton from '../../common/Skeleton'
 import DialogConfirm from '../../common/DialogConfirm'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -76,6 +78,14 @@ const useStyles = makeStyles(theme => ({
     marginRight: 5,
     minWidth: 180,
   },
+  btnback: {
+    marginTop: theme.spacing(1),
+    width: 80,
+    color: '#212121',
+    "&:hover": {
+      color: '#212121'
+    }
+  }
 }));
 
 const CustomTableCell = ({ row, name, }) => {
@@ -91,7 +101,6 @@ const CustomTableCell = ({ row, name, }) => {
 export default function Selection() {
   const dispatch = useDispatch()
   const [rows, setRows] = React.useState(null);
-  const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
   const { id1 } = useParams();
   //token
@@ -325,6 +334,7 @@ export default function Selection() {
               </Modal>
             </div>
           </Paper>
+          <Link to={url.replace('/'+ id1, '')} component={Button} className={classes.btnback} variant="contained" style={{ float: 'right' }} ><KeyboardReturnIcon /></Link>
         </div>
       }
     </>

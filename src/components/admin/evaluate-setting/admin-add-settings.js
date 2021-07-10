@@ -65,7 +65,8 @@ const useStyles = makeStyles(theme => ({
     minHeight: 20,
   },
   field: {
-    marginBottom: 10
+    marginBottom: 10,
+    width: 300
   },
   btn: {
     minWidth: 150,
@@ -209,10 +210,11 @@ export default function AddSettings() {
             Tạo mẫu đánh giá
           </Typography>
           <form onSubmit={handleSubmitInit} style={{ marginTop: 15 }}>
-            <TextField id="code" required onChange={e => setC(e.target.value)} label="Mã Form" variant="outlined" className={classes.field} />
+            <TextField id="code" required onChange={e => setC(e.target.value)} label="Mã biểu mẫu" variant="outlined" className={classes.field} />
             <br />
-            <TextField id="name" required onChange={e => setName(e.target.value)} label="Tên Form" variant="outlined" className={classes.field} />
+            <TextField id="name" required onChange={e => setName(e.target.value)} label="Tên biểu mẫu" variant="outlined" className={classes.field} />
             <br />
+            <div style={{height: 120}}></div>
             <Button style={{ marginRight: '10px' }} type="submit" value='submit' variant="contained" color="primary" >Vào cấu hình</Button>
           </form>
         </Paper>
