@@ -152,13 +152,13 @@ const PrintComponent = (props) => {
                               <td style={{ border: '1px solid #666', padding: '5px' }}>{criteria.criteria_id.name}</td>
                               <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>{criteria.point}</td>
                               <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>
-                                {props.point && props.data[0].some(x => x.name == criteria.criteria_id.code) && props.data[0].find(x => x.name == criteria.criteria_id.code).value}
+                                {props.point && props.data[0] && props.data[0].some(x => x.name == criteria.criteria_id.code) && props.data[0].find(x => x.name == criteria.criteria_id.code).value}
                               </td>
                               <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>
-                                {props.point2 && props.data[1].some(x => x.name == criteria.criteria_id.code) && props.data[1].find(x => x.name == criteria.criteria_id.code).value}
+                                {props.point2 && props.data[1] && props.data[1].some(x => x.name == criteria.criteria_id.code) && props.data[1].find(x => x.name == criteria.criteria_id.code).value}
                               </td>
                               <td style={{ textAlign: 'center', border: '1px solid #666', padding: '5px' }}>
-                                {props.point3 && props.data[2].some(x => x.name == criteria.criteria_id.code) && props.data[2].find(x => x.name == criteria.criteria_id.code).value}
+                                {props.point3 && props.data[2] && props.data[2].some(x => x.name == criteria.criteria_id.code) && props.data[2].find(x => x.name == criteria.criteria_id.code).value}
                               </td>
                             </tr>
                           </>

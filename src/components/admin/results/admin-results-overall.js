@@ -125,7 +125,7 @@ export default function ResultsList(props) {
   useEffect(() => {
     axios.get(`/admin/form/${code}/formrating`)
       .then(res => {
-        //console.log(res.data)
+        console.log(res.data)
         let list = []
         res.data.formRatings.map(r => {
           list.push({ min: r.min_point, max: r.max_point })
