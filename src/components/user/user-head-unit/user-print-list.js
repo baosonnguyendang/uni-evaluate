@@ -29,7 +29,7 @@ export default function PrintList(props) {
     printPage.document.body.innerHTML = printcontent;
     printPage.focus();
     printPage.print();
-    //printPage.close();
+    printPage.close();
   }
 
   const PrintComponent = () => {

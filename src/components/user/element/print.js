@@ -207,7 +207,7 @@ export default function PinnedSubheaderList(props) {
     printPage.document.body.innerHTML = printcontent;
     printPage.focus();
     printPage.print();
-    //printPage.close();
+    printPage.close();
   }
 
   const [bool, setBool] = useState(false)
