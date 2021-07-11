@@ -167,7 +167,7 @@ export default function Import(props) {
   const submitExcel = (data) => {
     const fcode = props.fcode;
     setLoading(true)
-
+    handleClose()
     const body = {
       dcode: unitChosen.code,
       scode: standardChosen.code,
@@ -178,7 +178,6 @@ export default function Import(props) {
     formData.append("dcode", body.dcode)
     formData.append("scode", body.scode)
     formData.append("ccode", body.ccode)
-
     axios.post(`/admin/file/form/${fcode}/evaluation/import`, formData)
       .then(res => {
         console.log(res.data);
