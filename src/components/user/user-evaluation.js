@@ -38,7 +38,7 @@ export default function Evaluation() {
   }, [])
 
   const NotInTime = (
-    <Button size="small" color='secondary' onClick={() => alert('Ngoài thời gian thực hiện khảo sát')}>
+    <Button variant="contained" color="primary" size='small' onClick={() => alert('Ngoài thời gian thực hiện khảo sát')}>
       Thực hiện khảo sát
     </Button>
   )
@@ -52,61 +52,67 @@ export default function Evaluation() {
 
           <Grid item sm={12} md={8}>
             <Typography variant='h6' gutterBottom >Danh sách đợt đánh giá </Typography>
-            {list.map(item => (
-              <Card key={item._id} style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
-                <CardContent>
-                  <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
-                    {item.name}
-                  </Typography>
-                  <br />
-                  <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
-                  {/* .format('DD/MM/YYYY') */}
-                  <br />
-                  <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
-                </CardContent>
-                <CardActions>
-                  {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
-                    <Button variant="contained" color="primary" size='small' onClick={() => redirectEvaluation(item.code)}>
-
-                      Thực hiện khảo sát
-                    </Button>
-                    :
-                    NotInTime}
-                </CardActions>
-              </Card>
-            ))}
+            {list.map(item => {
+              if (today.isAfter(item.startDate)) {
+                return (
+                  <Card key={item._id} style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+                    <CardContent>
+                      <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+                        {item.name}
+                      </Typography>
+                      <br />
+                      <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
+                      {/* .format('DD/MM/YYYY') */}
+                      <br />
+                      <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
+                    </CardContent>
+                    <CardActions>
+                      {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
+                        <Button variant="contained" color="primary" size='small' onClick={() => redirectEvaluation(item.code)}>
+                          Thực hiện khảo sát
+                        </Button>
+                        :
+                        NotInTime}
+                    </CardActions>
+                  </Card>
+                )
+              }
+            })}
           </Grid>
           <Grid item sm={12} md={4}>
             <Grid container sm={12} md={4} flexDirection='column'>
               <Typography variant='h6' gutterBottom >Timeline</Typography>
-                  <div style={{minHeight: 300}}></div>
+              <div style={{ minHeight: 300 }}></div>
             </Grid>
             <Grid>
               <Typography variant='h6' gutterBottom >Sự kiện sắp tới</Typography>
-              <div style={{minHeight: 300}}>
-              {list.map(item => (
-              <Card key={item._id} style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
-                <CardContent>
-                  <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
-                    {item.name}
-                  </Typography>
-                  <br />
-                  <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
-                  {/* .format('DD/MM/YYYY') */}
-                  <br />
-                  <span>Kết thúc: {Moment(item.endDate).format('hh:mm DD/MM/yyyy')}</span>
-                </CardContent>
-                <CardActions>
-                  {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
-                    <Button variant="contained" color="primary" size='small' onClick={() => redirectEvaluation(item.code)}>
-
-                      Thực hiện khảo sát
-                    </Button>
-                    :
-                    NotInTime}
-                </CardActions>
-              </Card>
-            ))}
+              <div style={{ minHeight: 300 }}>
+                {!list.some(item => today.isBefore(item.startDate)) && 'Không có sự kiện nào'}
+                {list.map(item => {
+                  if (today.isBefore(item.startDate)) {
+                    return (
+                      <Card key={item._id} style={{ minWidth: '275', marginBottom: '10px' }} variant="outlined">
+                        <CardContent>
+                          <Typography style={{ fontSize: '18' }} color="primary" gutterBottom>
+                            {item.name}
+                          </Typography>
+                          <br />
+                          <span>Bắt đầu: {Moment(item.startDate).format('hh:mm DD/MM/yyyy')}</span>
+                          {/* .format('DD/MM/YYYY') */}
+                        </CardContent>
+                        {/* <CardActions>
+                        {today.isAfter(item.startDate) && today.isBefore(item.endDate) ?
+                          <Button variant="contained" color="primary" size='small' onClick={() => redirectEvaluation(item.code)}>
+      
+                            Thực hiện khảo sát
+                          </Button>
+                          :
+                          NotInTime}
+                      </CardActions> */}
+                      </Card>)
+                  }
+                }
+                )}
               </div>
 
             </Grid>
