@@ -257,7 +257,7 @@ export default function ResultsList(props) {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
-                    {point.length > 0 ? 0 : '_'}
+                    {chartData2.datasets[0].data[chartData2.datasets[0].data.length - 1]}
                   </Typography>
                   <Typography align='center' variant="body2" component="p">
                     Số GV/VC đạt mức cao nhất

@@ -8,7 +8,6 @@ export default function Chart(props) {
       {(() => {
         switch (props.type) {
           case 0:
-            console.log(props.options)
             return (
               <Bar
                 data={props.chartData}
