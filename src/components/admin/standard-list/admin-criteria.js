@@ -108,12 +108,10 @@ export default function Criteria() {
   const [rows, setRows] = React.useState(null);
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(true)
-  const token = localStorage.getItem('token')
-  const config = { headers: { "Authorization": `Bearer ${token}` } }
   const { id } = useParams()
   const [nameStandard, setNameStandard] = useState('')
   const fetchCriteriaOfStandard = () => {
-    axios.get(`admin/standard/${id}/criteria`, config)
+    axios.get(`admin/standard/${id}/criteria`)
       .then(res => {
         setRows(res.data.criterions)
         setNameStandard(res.data.standard.name)
@@ -124,7 +122,7 @@ export default function Criteria() {
   //criteriaTypes
   const [criteriaTypes, setCriteriaTypes] = useState([])
   const fetchCriteriaTypes = () => {
-    axios.get(`admin/criteria/types`, config)
+    axios.get(`admin/criteria/types`)
       .then(res => {
         setCriteriaTypes(res.data.types)
       })
@@ -154,7 +152,7 @@ export default function Criteria() {
   const deleteCriteriaWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/criteria/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/criteria/${id}/delete`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -195,7 +193,7 @@ export default function Criteria() {
     const body = { new_ccode: code, name, description, type }
     setLoading(true)
     handleClose()
-    axios.post(`/admin/criteria/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/criteria/${id}/edit`, body)
       .then(res => {
         setRows(rows.map(r => r.code === id ? { ...r, code, name, description, type } : r))
         dispatch(showSuccessSnackbar('Cập nhật tiêu chí thành công'))
@@ -228,7 +226,7 @@ export default function Criteria() {
       description,
       type
     }
-    axios.post(`/admin/standard/${id}/criteria/add`, body, config)
+    axios.post(`/admin/standard/${id}/criteria/add`, body)
       .then(res => {
         // chỗ này success thì fe tạo bảng
         console.log(res.data);
@@ -352,10 +350,7 @@ export default function Criteria() {
                         <Typography variant='subtitle2' >Number: Đánh giá theo số lần </Typography>
                         <Typography variant='body2'>Detail: Kê khai và đánh giá theo số % đóng góp </Typography>
                       </>} placement="right-start">
-                        <IconButton
-                        >
-                          <HelpIcon fontSize='small' />
-                        </IconButton>
+                          <HelpIcon fontSize='small' color='action' />
                       </Tooltip>
                     </div>
                     <form onSubmit={modal.id ? ((e) => editCriteria(e, modal.id)) : submitAddCriteria}>
