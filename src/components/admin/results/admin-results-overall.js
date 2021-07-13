@@ -4,7 +4,7 @@ import Charts from './admin-charts'
 
 import axios from 'axios'
 
-import {  useParams, useRouteMatch } from 'react-router-dom';
+import { useParams, useRouteMatch } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -123,52 +123,54 @@ export default function ResultsList(props) {
   }, [])
 
   useEffect(() => {
-    axios.get(`/admin/form/${code}/formrating`)
-      .then(res => {
-        console.log(res.data)
-        let list = []
-        res.data.formRatings.map(r => {
-          list.push({ min: r.min_point, max: r.max_point })
+    if (code) {
+      axios.get(`/admin/form/${code}/formrating`)
+        .then(res => {
+          console.log(res.data)
+          let list = []
+          res.data.formRatings.map(r => {
+            list.push({ min: r.min_point, max: r.max_point })
+          })
+          setRate([...list])
+          axios.get(`/admin/form/${code}/getPoints`)
+            .then(res => {
+              console.log(res.data)
+              setPoint([...res.data.userforms])
+              let dat = []
+              let label = []
+              list.map((x, index) => {
+                index == 0 ? label.push(`< ${x.max}`) : label.push(`${x.min} - ${x.max}`)
+                index == list.length - 1 ? (dat[index] = res.data.userforms.filter(y => y >= x.min && y <= x.max).length) : (dat[index] = res.data.userforms.filter(y => y >= x.min && y < x.max).length)
+              })
+              setChartData2({
+                labels: label,
+                datasets: [
+                  {
+                    label: 'Số GV/VC',
+                    data: dat,
+                    //backgroundColor:'green',
+                    backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(255, 159, 64, 0.2)',
+                      'rgba(255, 205, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(153, 102, 255, 0.2)'
+                    ]
+                  }
+                ]
+              })
+              setRange([...dat])
+              setParicipate(participate => [res.data.userforms.length, res.data.total - res.data.userforms.length])
+            })
+            .catch(err => {
+              console.log(err)
+            })
         })
-        setRate([...list])
-        axios.get(`/admin/form/${code}/getPoints`)
-          .then(res => {
-            console.log(res.data)
-            setPoint([...res.data.userforms])
-            let dat = []
-            let label = []
-            list.map((x, index) => {
-              index == 0 ? label.push(`< ${x.max}`) : label.push(`${x.min} - ${x.max}`)
-              index == list.length - 1 ? (dat[index] = res.data.userforms.filter(y => y >= x.min && y <= x.max).length) : (dat[index] = res.data.userforms.filter(y => y >= x.min && y < x.max).length)
-            })
-            setChartData2({
-              labels: label,
-              datasets: [
-                {
-                  label: 'Số GV/VC',
-                  data: dat,
-                  //backgroundColor:'green',
-                  backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 205, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(153, 102, 255, 0.2)'
-                  ]
-                }
-              ]
-            })
-            setRange([...dat])
-            setParicipate(participate => [res.data.userforms.length, res.data.total - res.data.userforms.length])
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   }, [code])
 
   useEffect(() => {
@@ -227,7 +229,7 @@ export default function ResultsList(props) {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
-                    { isNaN(participate[0]) ? 0 : participate[0] + participate[1]}
+                    {isNaN(participate[0]) ? 0 : participate[0] + participate[1]}
                   </Typography>
                   <Typography align='center' variant="body2" component="p">
                     Tổng số GV/VC tham gia đánh giá
