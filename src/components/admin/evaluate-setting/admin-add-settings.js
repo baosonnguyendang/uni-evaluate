@@ -184,9 +184,14 @@ export default function AddSettings() {
       })
   }, [])
 
+  const [ten, setTen] = useState('')
+  const [ma, setMa] = useState('')
+
   const Init = () => {
     const handleSubmitInit = (e) => {
       e.preventDefault()
+      setTen(name)
+      setMa(code)
       setInit(2)
       axios.post(`/admin/review/${id}/formtype/${id1}/form/addForm`, { name: name, code: code })
         .then(res => {
@@ -662,7 +667,7 @@ export default function AddSettings() {
                 ) : (
                   <div>
                     <Typography component="h1" variant="h5" color="inherit" noWrap>
-                      {name} (Mã biểu mẫu: {code})
+                      {ten ? ten : name} (Mã biểu mẫu: {ma ? ma : code})
                     </Typography>
                     <Paper style={{ padding: 10 }} className={classes.paper}>
                       <MenuEvaluate />

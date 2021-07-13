@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function EmployeeList() {
+export default function EmployeeList(props) {
   const classes = useStyles();
 
   const { id1, id2 } = useParams()
@@ -40,6 +40,7 @@ export default function EmployeeList() {
   };
 
   useEffect(() => {
+    console.log(props.level)
     axios.get(`/user/head/${id1}/${id2}/get`)
       .then(res => {
         console.log(res.data)
@@ -105,7 +106,7 @@ export default function EmployeeList() {
               <TableCell align="left">{row.unit}</TableCell>
               <TableCell align="center">{row.point.toString()}</TableCell>
               <TableCell align="center">{row.rating ? row.rating : ''}</TableCell>
-              <TableCell align="center" style={{ minWidth: '200px' }}> {row.status > 1 && <Link to={`${url}/${row.id}`}>{row.status == 2 ? 'Đánh giá GV/VC' : 'Kết quả đánh giá GV/VC'}</Link>}</TableCell>
+              <TableCell align="center" style={{ minWidth: '200px' }}> {((row.status > 2) || (row.status == 2 && props.level != 3)) && <Link to={`${url}/${row.id}`}>{((row.status == 2 && props.level != 3) || (props.level == 3 && row.point.some(x => x == ' --'))) ? 'Đánh giá GV/VC' : 'Kết quả đánh giá GV/VC'}</Link>}</TableCell>
             </TableRow>
           ))}
         </TableBody>

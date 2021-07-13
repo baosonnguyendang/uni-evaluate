@@ -125,7 +125,7 @@ export default function ResultsList(props) {
   useEffect(() => {
     axios.get(`/admin/form/${code}/formrating`)
       .then(res => {
-        //console.log(res.data)
+        console.log(res.data)
         let list = []
         res.data.formRatings.map(r => {
           list.push({ min: r.min_point, max: r.max_point })
@@ -257,7 +257,7 @@ export default function ResultsList(props) {
               <Card className={classes.root}>
                 <CardContent>
                   <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
-                    {point.length > 0 ? 0 : '_'}
+                    {chartData2.datasets ? chartData2.datasets[0].data[chartData2.datasets[0].data.length - 1] : '_'}
                   </Typography>
                   <Typography align='center' variant="body2" component="p">
                     Số GV/VC đạt mức cao nhất

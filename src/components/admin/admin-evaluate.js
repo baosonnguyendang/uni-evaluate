@@ -67,10 +67,10 @@ export default function EvaluateList() {
       <TableRow>
         <TableCell style={{ lineHeight: '50px', paddingLeft: 10 }}><Link to={'/admin/evaluate-settings/' + props.id} style={{ color: 'black' }}>{props.value}</Link></TableCell>
         <TableCell style={{ lineHeight: '50px' }}>{props.id}</TableCell>
-        <TableCell style={{ lineHeight: '50px', width: '30%' }}>{props.description}</TableCell>
+        <TableCell style={{ lineHeight: '50px' }}>{props.description}</TableCell>
         <TableCell >{props.start.toString()}</TableCell>
         <TableCell >{props.end.toString()}</TableCell>
-        <TableCell align='right' style={{paddingRight: 0}} >
+        <TableCell align='right' style={{ paddingRight: 0 }} >
           <IconButton
             aria-label="update"
             onClick={() => onEdit(props.id)}
@@ -121,11 +121,11 @@ export default function EvaluateList() {
           <TableHead style={{ backgroundColor: '#f4f4f4', lineHeight: '50px' }}>
             <TableRow>
               <TableCell style={{ width: '21%', paddingLeft: 10 }}>Tên đợt đánh giá</TableCell>
-              <TableCell style={{ width: '12%'}} >Mã đợt</TableCell>
-              <TableCell style={{ width: '30%' }}>Mô tả</TableCell>
+              <TableCell style={{ width: '12%' }} >Mã đợt</TableCell>
+              <TableCell style={{ width: '28%' }}>Mô tả</TableCell>
               <TableCell style={{ width: '14%' }} >Ngày bắt đầu</TableCell>
               <TableCell style={{ width: '14%' }}>Ngày kết thúc</TableCell>
-              <TableCell align="right" style={{ width: 120}}></TableCell>
+              <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -194,8 +194,8 @@ export default function EvaluateList() {
   const submit = e => {
     e.preventDefault()
     //nếu thời gian bắt đầu lớn hơn thì k submit dc
-    if(moment(endDate).isBefore(startDate)) return
-    
+    if (moment(endDate).isBefore(startDate)) return
+
     setLoading(true)
     handleClose()
     axios.post('/admin/review/add', { code: id, name: evaluationName, start_date: startDate.toString(), end_date: endDate.toString(), description }, { headers: { "Authorization": `Bearer ${token}` } })
@@ -266,8 +266,8 @@ export default function EvaluateList() {
   const submitEditEvaluate = (e) => {
     e.preventDefault()
     //nếu thời gian bắt đầu lớn hơn thì k submit dc
-    if(moment(endDate).isBefore(startDate)) return
-    
+    if (moment(endDate).isBefore(startDate)) return
+
     const body = { new_rcode: id, name: evaluationName, start_date: startDate, end_date: endDate, description }
     setLoading(true)
     console.log(modal.id, body)
