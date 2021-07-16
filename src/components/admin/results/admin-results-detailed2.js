@@ -21,10 +21,9 @@ export default function ResultsDashboard(props) {
 
   useEffect(() => {
     setLoading(true)
-    axios.get(`/admin/form/${props.code}/classifyStandards`)
+    axios.get(`/admin/form/${ props.code }/classifyStandards`)
       .then(res => {
         console.log(res.data)
-        setLoading(false)
         if (res.data.standard_points.length > 0) {
           let l = res.data.standard_points[0].standards.length
           setNumOfStandards(l)
@@ -47,6 +46,7 @@ export default function ResultsDashboard(props) {
           })
           setData([...d])
         }
+        setLoading(false)
       })
       .catch(err => {
         console.log(err)
@@ -91,13 +91,13 @@ export default function ResultsDashboard(props) {
           customFilterListOptions: {
             render: v => {
               if (v[0] && v[1] && ageFilterChecked) {
-                return [`Từ: ${v[0]}`, `Đến: ${v[1]}`];
+                return [`Từ: ${ v[0] }`, `Đến: ${ v[1] }`];
               } else if (v[0] && v[1] && !ageFilterChecked) {
-                return `Từ: ${v[0]}, Đến: ${v[1]}`;
+                return `Từ: ${ v[0] }, Đến: ${ v[1] }`;
               } else if (v[0]) {
-                return `Từ: ${v[0]}`;
+                return `Từ: ${ v[0] }`;
               } else if (v[1]) {
-                return `Đến: ${v[1]}`;
+                return `Đến: ${ v[1] }`;
               }
               return [];
             },
@@ -185,13 +185,13 @@ export default function ResultsDashboard(props) {
         customFilterListOptions: {
           render: v => {
             if (v[0] && v[1] && ageFilterChecked) {
-              return [`Từ: ${v[0]}`, `Đến: ${v[1]}`];
+              return [`Từ: ${ v[0] }`, `Đến: ${ v[1] }`];
             } else if (v[0] && v[1] && !ageFilterChecked) {
-              return `Từ: ${v[0]}, Đến: ${v[1]}`;
+              return `Từ: ${ v[0] }, Đến: ${ v[1] }`;
             } else if (v[0]) {
-              return `Từ: ${v[0]}`;
+              return `Từ: ${ v[0] }`;
             } else if (v[1]) {
-              return `Đến: ${v[1]}`;
+              return `Đến: ${ v[1] }`;
             }
             return [];
           },
