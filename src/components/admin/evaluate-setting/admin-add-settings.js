@@ -212,7 +212,7 @@ export default function AddSettings() {
         </Typography>
         <Paper style={{ padding: 10 }} className={classes.paper}>
           <Typography component="h3" variant="h5" color="inherit">
-            Tạo mẫu đánh giá
+            Tạo biểu mẫu đánh giá
           </Typography>
           <form onSubmit={handleSubmitInit} style={{ marginTop: 15 }}>
             <TextField id="code" required onChange={e => setC(e.target.value)} label="Mã biểu mẫu" variant="outlined" className={classes.field} />
