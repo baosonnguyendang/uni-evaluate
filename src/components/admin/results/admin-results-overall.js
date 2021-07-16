@@ -107,14 +107,6 @@ export default function ResultsList(props) {
       .then(res => {
         if (res.data.form) {
           setCode(res.data.form.code)
-          //lấy các đơn vị cha nằm trong đợt đánh giá
-          axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`)
-            .then(res => {
-              console.log(res.data)
-              let temp = res.data.formDepartments.map(y => y.department_id)
-              setUnits(temp)
-            })
-            .catch(e => console.log(e))
         }
       })
       .catch(e => {

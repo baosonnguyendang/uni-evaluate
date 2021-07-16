@@ -24,6 +24,7 @@ export default function ResultsDashboard(props) {
     axios.get(`/admin/form/${props.code}/classifyStandards`)
       .then(res => {
         console.log(res.data)
+        setLoading(false)
         if (res.data.standard_points.length > 0) {
           let l = res.data.standard_points[0].standards.length
           setNumOfStandards(l)
@@ -45,13 +46,11 @@ export default function ResultsDashboard(props) {
             d.push(arr)
           })
           setData([...d])
-          setLoading(false)
         }
       })
       .catch(err => {
         console.log(err)
         setLoading(false)
-
       })
   }, [])
 
