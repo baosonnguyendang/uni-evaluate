@@ -32,7 +32,6 @@ import DeletedSubFaculty from './RestoreList/DeletedSubFaculty'
 import DeletedUser from './RestoreList/DeletedUser'
 import DeletedEvaluateList from './RestoreList/DeletedEvaluateList'
 
-import Test from './CreateEvaluation/AddCustom'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -80,7 +79,6 @@ const AdminPage = () => {
               <Switch>
                 <Route exact path='/admin/user' component={UserTable} />
                 <Route exact path='/admin/user/deleted' component={DeletedUser} />
-                <Route exact path='/admin/criteria' children={<Test />} />
                 <Route exact path='/admin/faculty' children={<Faculty />} />
                 <Route exact path='/admin/faculty/deleted' children={<DeletedFaculty />} />
                 <Route exact path='/admin/faculty/:id' children={<UserOfFaculty />} />

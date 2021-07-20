@@ -83,7 +83,7 @@ export default function ModifyForm({ fcode }) {
   const id = fcode || "TestForm"
   const fetchAllStandardOfForm = () => {
 
-    return axios.get(`/admin/form/${id}/getFormStandard`)
+    return axios.get(`/admin/form/${ id }/getFormStandard`)
       .then(res => {
         console.log(res.data)
         console.log(res.data.formStandards.map(t => ({ ...t, ...t.standard_id })))
@@ -161,10 +161,11 @@ export default function ModifyForm({ fcode }) {
   const filterStandard = (data) => {
     return data.map((d, index) => ({ standard_id: d.code, standard_order: index + 1, standard_point: d.standard_point }))
   }
-  const saveForm = () => {
+  const saveForm = (e) => {
+    e.preventDefault()
     setLoading(true)
     const data = { standards: filterStandard(existStandards) }
-    axios.post(`/admin/form/${id}/editFormStandard`, data)
+    axios.post(`/admin/form/${ id }/editFormStandard`, data)
       .then(res => {
         setLoading(false)
         dispatch(showSuccessSnackbar('Lưu thành công'))
@@ -241,73 +242,79 @@ export default function ModifyForm({ fcode }) {
         </Tooltip>
 
       </div>
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId='criterion'>
-          {(provided) => (
-            <List {...provided.droppableProps} ref={provided.innerRef} style={{ minHeight: '300px' }}>
-              {existStandards.map((t, index) =>
-                <Draggable key={t._id} draggableId={t.code} index={index}>
-                  {(provided, snapshot) => (
-                    (snapshot.isDragging) ?
-                      ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                        <ListItemText primary={`${index + 1}. ${t.name}`} />
-                      </ListItem>, portal)
-                      : <Tooltip title={
-                        t.description && <Typography variant='subtitle2'>{t.description}</Typography>
-                      }>
-                        <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                          <ListItemText primary={`${index + 1}. ${t.name}`} style={{ flexBasis: 0 }} />
-                          <TextField style={{ width: "100px" }} type="number" variant="outlined" size="small" label="Điểm"
-                            onChange={(e) => handleChangePoint(e, index)}
-                            defaultValue={t.standard_point}
-                          />
-                          <Tooltip title='Sửa'>
-                            <IconButton onClick={() => onEdit(id, t.code, t.name)} style={{ marginLeft: '10px' }}>
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title='Xóa'>
-                            <IconButton onClick={() => deleteCriterion(index)}>
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </ListItem>
-                      </Tooltip>
-                  )
-                  }
-                </Draggable>
-              )}
-              {provided.placeholder}
-            </List>
-          )}
-        </Droppable >
-      </DragDropContext>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div style={{ flexGrow: 1 }}>
-          <Tooltip title="Khôi phục">
-            <IconButton
-              aria-label="add"
-              color="primary"
-              onClick={restore}
-            >
-              <RestoreIcon />
-            </IconButton>
-          </Tooltip>
-        </div>
+      <form onSubmit={saveForm}>
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId='criterion'>
+            {(provided) => (
+              <List {...provided.droppableProps} ref={provided.innerRef} style={{ minHeight: '300px' }}>
+                {existStandards.map((t, index) =>
+                  <Draggable key={t._id} draggableId={t.code} index={index}>
+                    {(provided, snapshot) => (
+                      (snapshot.isDragging) ?
+                        ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                          <ListItemText primary={`${ index + 1 }. ${ t.name }`} />
+                        </ListItem>, portal)
+                        : <Tooltip title={
+                          t.description && <Typography variant='subtitle2'>{t.description}</Typography>
+                        }>
+                          <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                            <ListItemText primary={`${ index + 1 }. ${ t.name }`} style={{ flexBasis: 0 }} />
+                            <TextField style={{ width: "100px" }} type="number" variant="outlined" size="small" label="Điểm"
+                              InputProps={{
+                                inputProps: { min: 0 }
+                              }}
+                              min="0"
+                              onChange={(e) => handleChangePoint(e, index)}
+                              defaultValue={t.standard_point}
+                            />
+                            <Tooltip title='Sửa'>
+                              <IconButton onClick={() => onEdit(id, t.code, t.name)} style={{ marginLeft: '10px' }}>
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title='Xóa'>
+                              <IconButton onClick={() => deleteCriterion(index)}>
+                                <DeleteIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </ListItem>
+                        </Tooltip>
+                    )
+                    }
+                  </Draggable>
+                )}
+                {provided.placeholder}
+              </List>
+            )}
+          </Droppable >
+        </DragDropContext>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ flexGrow: 1 }}>
+            <Tooltip title="Khôi phục">
+              <IconButton
+                aria-label="add"
+                color="primary"
+                onClick={restore}
+              >
+                <RestoreIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
 
-        <div style={{ display: 'contents' }}>
-          <Tooltip title='Xem trước biểu mẫu' component={Box}>
-            <IconButton onClick={handleOpenn}>
-              <VisibilityIcon />
-            </IconButton>
-          </Tooltip>
-          <Button variant="contained" color='primary'
-            className={classes.btn}
-            disabled={JSON.stringify(temp.existStandards) === JSON.stringify(existStandards)}
-            onClick={saveForm}
-          >Lưu</Button>
+          <div style={{ display: 'contents' }}>
+            <Tooltip title='Xem trước biểu mẫu' component={Box}>
+              <IconButton onClick={handleOpenn}>
+                <VisibilityIcon />
+              </IconButton>
+            </Tooltip>
+            <Button variant="contained" color='primary'
+              type='submit'
+              className={classes.btn}
+              disabled={JSON.stringify(temp.existStandards) === JSON.stringify(existStandards)}
+            >Lưu</Button>
+          </div>
         </div>
-      </div>
+      </form>
 
       {openn && <PreviewModal id={id} standards={existStandards} open={openn} handleClose={handleClosee} />}
 

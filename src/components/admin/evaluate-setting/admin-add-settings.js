@@ -124,6 +124,21 @@ export default function AddSettings() {
   const [units, setUnits] = useState(null)
   const [restUnits, setRestUnits] = useState(null)
   //fe to be
+  const fetchUnitParent = () => {
+    return axios.get('admin/department/parent')
+      .then(res => {
+        console.log(res.data.parents)
+        let temp = []
+        res.data.parents.map(x => {
+          temp.push(createData(x.name, x.department_code))
+        })
+        return temp
+      }
+      )
+  }
+  const fetchUnitLevel2 = (code) => {
+    return axios.get(`/admin/form/${ code }/getFormDepartments?level=2`)
+  }
   const fetchUnits = () => {
     axios.get('admin/department/parent')
       .then(res => {
@@ -133,7 +148,7 @@ export default function AddSettings() {
           temp.push(createData(x.name, x.department_code))
           //setUnits(units => [...units, createData(x.name, x.department_code)])
         })
-        axios.get(`/admin/form/${code}/getFormDepartments?level=2`)
+        axios.get(`/admin/form/${ code }/getFormDepartments?level=2`)
           .then(res => {
             // console.log(res.data)
             let _id = res.data.formDepartments.map(x => x.department_id.department_code)
@@ -160,21 +175,38 @@ export default function AddSettings() {
   //khoi tao Form, check form da duoc tao hay chua
   const [init, setInit] = React.useState(0)
   useEffect(() => {
-    axios.get(`/admin/review/${id}/formtype/${id1}/form/`)
+    axios.get(`/admin/review/${ id }/formtype/${ id1 }/form/`)
       .then(res => {
         // (res.data) && (setInit(false))
         if (res.data.form) {
           code = res.data.form.code
           name = res.data.form.name
-          fetchUnits();
-          // if (units.length == 0) {
-          //   fetchUnits();
-          // }
           setInit(2)
-          setLoading(false)
+          console.log(1)
+          return Promise.all([fetchUnitParent(), fetchUnitLevel2(code)])
         }
         else {
           setInit(1)
+          setLoading(false)
+        }
+      })
+      .then(re => {
+        if (re) {
+          console.log(re)
+          const temp = re[0]
+          const res = re[1]
+          let _id = res.data.formDepartments.map(x => x.department_id.department_code)
+          _id.map(x => {
+            temp.map(y => {
+              if (y.id === x) {
+                y.check = true
+              }
+            })
+          })
+          setUnits([...temp])
+          setUnitChosen(temp.filter(unit => unit.check === true))
+          console.log(temp.filter(unit => unit.check === true))
+          setRestUnits(temp.filter(unit => unit.check !== true && unit.id !== "HDDG"))
           setLoading(false)
         }
       })
@@ -193,7 +225,7 @@ export default function AddSettings() {
       setTen(name)
       setMa(code)
       setInit(2)
-      axios.post(`/admin/review/${id}/formtype/${id1}/form/addForm`, { name: name, code: code })
+      axios.post(`/admin/review/${ id }/formtype/${ id1 }/form/addForm`, { name: name, code: code })
         .then(res => {
           console.log(res)
         })
@@ -219,7 +251,7 @@ export default function AddSettings() {
             <br />
             <TextField id="name" required onChange={e => setName(e.target.value)} label="Tên biểu mẫu" variant="outlined" className={classes.field} />
             <br />
-            <div style={{height: 120}}></div>
+            <div style={{ height: 120 }}></div>
             <Button style={{ marginRight: '10px' }} type="submit" value='submit' variant="contained" color="primary" >Vào cấu hình</Button>
           </form>
         </Paper>
@@ -243,7 +275,7 @@ export default function AddSettings() {
   const addFormDepartments = (data) => {
     handleClose()
     setLoadingCircle(true)
-    axios.post(`/admin/form/${code}/addFormDepartments`, data)
+    axios.post(`/admin/form/${ code }/addFormDepartments`, data)
       .then(res => {
         console.log(res.data)
         dispatch(showSuccessSnackbar('Thêm đơn vị đánh giá thành công'))
@@ -270,7 +302,7 @@ export default function AddSettings() {
   const removeFormDepartment = (dcode) => {
     closeDialog()
     setLoadingCircle(true)
-    axios.post(`/admin/form/${code}/${dcode}/delete`)
+    axios.post(`/admin/form/${ code }/${ dcode }/delete`)
       .then(res => {
         console.log(res.data)
         units.forEach(element => {
@@ -298,7 +330,7 @@ export default function AddSettings() {
 
     const openUnitt = (x) => {
       unit = x
-      axios.get(`/admin/form/${code}/${unit}/getFormUser`)
+      axios.get(`/admin/form/${ code }/${ unit }/getFormUser`)
         .then(res => {
           console.log(res.data)
           let temp = []
@@ -352,7 +384,7 @@ export default function AddSettings() {
     setOpenHead(false)
     setLoadingCircle(true)
     console.log(headTemp)
-    axios.post(`/admin/form/${code}/${unit}/addHead`, { ucode: headTemp.id })
+    axios.post(`/admin/form/${ code }/${ unit }/addHead`, { ucode: headTemp.id })
       .then(res => {
         console.log(res)
         setHead(headTemp)
@@ -374,7 +406,7 @@ export default function AddSettings() {
   const [display, setDisplay] = useState('')
 
   const getInfo = () => {
-    axios.get(`admin/user/${idd}/get`)
+    axios.get(`admin/user/${ idd }/get`)
       .then(res => {
         console.log(res)
         setInfo(res.data.user.lastname + ' ' + res.data.user.firstname)
@@ -399,9 +431,9 @@ export default function AddSettings() {
     e.preventDefault()
     setLoadingCircle(true)
     handleCloseAdd()
-    axios.post(`/admin/form/${code}/${unit}/addFormUser`, { ucode: idd })
+    axios.post(`/admin/form/${ code }/${ unit }/addFormUser`, { ucode: idd })
       .then(res => {
-        axios.get(`admin/user/${idd}/get`)
+        axios.get(`admin/user/${ idd }/get`)
           .then(res => {
             console.log(res.data)
             console.log([...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, '']])
@@ -445,7 +477,7 @@ export default function AddSettings() {
     setStatusDelete({ open: false })
   }
   const onAsk = () => {
-    axios.get(`/admin/form/${code}/${unit}/getFormDepartment`)
+    axios.get(`/admin/form/${ code }/${ unit }/getFormDepartment`)
       .then(res => {
         console.log(res.data)
         let obj = {
@@ -588,7 +620,7 @@ export default function AddSettings() {
                     </Typography>
                     <div style={{ paddingBottom: 57 }} className={classes.paper}>
                       <UserSettings unit={unit} type={id1} fcode={code} data={unitMember} loading={loadUnitMember} setUnitMember={setUnitMember} />
-                      <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text={`Trưởng Đơn vị đang là ${head.name} (${head.id}), có muốn thay đổi?`} />
+                      <DialogConfirm openDialog={statusDelete.open} onClick={statusDelete.onClick} onClose={closeDialog} text={`Trưởng Đơn vị đang là ${ head.name } (${ head.id }), có muốn thay đổi?`} />
                       <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                         <Button variant="contained" style={{ marginRight: 10, width: 200 }} onClick={() => { onAsk() }}>
                           Trưởng đơn vị
@@ -619,7 +651,7 @@ export default function AddSettings() {
                               id="combo-box-demo"
                               options={unitMember || []}
                               getOptionDisabled={(option) => option[1] == head.id}
-                              getOptionLabel={(option) => `${option[0]} (${option[1]})`}
+                              getOptionLabel={(option) => `${ option[0] } (${ option[1] })`}
                               fullWidth
                               onChange={(event, value) => value && setHeadTemp({ name: value[0], id: value[1] })}
                               renderInput={(params) => <TextField {...params} label="Trưởng đơn vị" variant="outlined" />}

@@ -22,9 +22,9 @@ function getModalStyle() {
   const left = 50;
 
   return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
+    top: `${ top }%`,
+    left: `${ left }%`,
+    transform: `translate(-${ top }%, -${ left }%)`,
   };
 }
 
@@ -61,7 +61,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
   const [existCriteria, setExistCriteria] = useState([])
   const [temp, setTemp] = useState({ existCriteria: [], availableCriteria: [] })
   const getFormCriteria = (idForm, codeStandard) => {
-    return axios.get(`/admin/form/${idForm}/standard/${codeStandard}/getFormCriteria`)
+    return axios.get(`/admin/form/${ idForm }/standard/${ codeStandard }/getFormCriteria`)
       .then(res => {
         console.log(res.data)
         setExistCriteria(res.data.formCriteria.map(c => ({ ...c, ...c.criteria_id })))
@@ -73,7 +73,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
       })
   }
   const getCriteriaOfStandard = (codeStandard) => {
-    return axios.get(`/admin/standard/${codeStandard}/criteria/get`)
+    return axios.get(`/admin/standard/${ codeStandard }/criteria/get`)
       .then(res => {
         console.log(res.data)
         return res.data.criterions
@@ -143,7 +143,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
     const data = filterCriteria(existCriteria)
     console.log(data)
     setLoading(true)
-    axios.post(`/admin/form/${idForm}/standard/${codeStandard}/editFormCriteria`, data)
+    axios.post(`/admin/form/${ idForm }/standard/${ codeStandard }/editFormCriteria`, data)
       .then(res => {
         console.log(res.data)
         setTemp({ existCriteria, availableCriteria })
@@ -175,7 +175,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
       }
     }
 
-    axios.post(`/admin/form/${idForm}/standard/${codeStandard}/addSingleFormCriteria`, data)
+    axios.post(`/admin/form/${ idForm }/standard/${ codeStandard }/addSingleFormCriteria`, data)
       .then(res => {
         console.log(res.data)
         const newExistCriteria = [...existCriteria, { ...tempCriteria, point: pointNewCriteria, base_point: basePoint }]
@@ -198,7 +198,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
   const body = (
     <div style={modalStyle} className={classes.paper} >
       <Loading open={loading} />
-      <Typography variant='h5' gutterBottom id="simple-modal-title">{`Cập nhật tiêu chuẩn - ${name}`}</Typography>
+      <Typography variant='h5' gutterBottom id="simple-modal-title">{`Cập nhật tiêu chuẩn - ${ name }`}</Typography>
       <Typography variant='h6' >{`Thêm tiêu chí`}</Typography>
 
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
@@ -264,13 +264,13 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
                   {(provided, snapshot) => (
                     (snapshot.isDragging) ?
                       ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                        <ListItemText primary={`${index + 1}. ${t.name}`} />
+                        <ListItemText primary={`${ index + 1 }. ${ t.name }`} />
                       </ListItem>, portal)
                       : <Tooltip title={
                         t.description && <Typography variant='subtitle2'>{t.description}</Typography>
                       }>
                         <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                          <ListItemText style={{ width: '400px' }} primary={`${index + 1}. ${t.name}`} />
+                          <ListItemText style={{ width: '400px' }} primary={`${ index + 1 }. ${ t.name }`} />
                           {(t.type === 'number' || t.type === 'detail') ? (
                             <>
                               <TextField style={{ width: "110px", }} type="number" variant="outlined" autoFocus size="small" label="Điểm/lần"

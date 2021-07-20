@@ -43,7 +43,7 @@ export default function Evaluation() {
     </Button>
   )
   const redirectEvaluation = (code) => {
-    history.push(`/user/evaluate/${code}`)
+    history.push(`/user/evaluate/${ code }`)
   }
   return (
     <>
@@ -80,10 +80,10 @@ export default function Evaluation() {
             })}
           </Grid>
           <Grid item sm={12} md={4}>
-            <Grid container sm={12} md={4} flexDirection='column'>
+            {/* <Grid container sm={12} md={4} flexDirection='column'>
               <Typography variant='h6' gutterBottom >Timeline</Typography>
               <div style={{ minHeight: 300 }}></div>
-            </Grid>
+            </Grid> */}
             <Grid>
               <Typography variant='h6' gutterBottom >Sự kiện sắp tới</Typography>
               <div style={{ minHeight: 300 }}>
