@@ -123,7 +123,7 @@ const DeletedEvaluateList = () => {
   const restoreEvaluateWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/review/${id}/restore`, {})
+    axios.post(`/admin/review/${ id }/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -192,7 +192,7 @@ const DeletedEvaluateList = () => {
                 </TableCell>
               </TableRow>
             ))}
-            {rows.length === 0 && <TableRow><TableCell colSpan={5}>Không có đợt đánh giá</TableCell></TableRow>}
+            {rows.length === 0 && <TableRow><TableCell colSpan={6}>Không có đợt đánh giá</TableCell></TableRow>}
           </TableBody>
         </Table>
         <TablePagination
@@ -205,7 +205,7 @@ const DeletedEvaluateList = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
+      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{ float: 'right' }} ><KeyboardReturnIcon /></Link>
     </>
   )
 }

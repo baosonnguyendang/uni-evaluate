@@ -104,7 +104,7 @@ const DeletedSelection = () => {
   const [nameCriteria, setNameCriteria] = useState(null)
   console.log(id1)
   const fetchDeletedSelectionaOfCriteria = (id) => {
-    return axios.get(`/admin/criteria/${id}/option/deleted`)
+    return axios.get(`/admin/criteria/${ id }/option/deleted`)
       .then(res => {
         console.log(res.data)
         setRows(res.data.criteriaOptions)
@@ -134,7 +134,7 @@ const DeletedSelection = () => {
   const restoreSelectionWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/criteria/option/${id}/restore`, {})
+    axios.post(`/admin/criteria/option/${ id }/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -177,7 +177,7 @@ const DeletedSelection = () => {
               <TableCell className={classes.number} >Mã lựa chọn</TableCell>
               <TableCell className={classes.name} >Tên lựa chọn</TableCell>
               <TableCell className={classes.description}>Mô tả</TableCell>
-              <TableCell >Kiểu đánh giá</TableCell>
+              <TableCell >Điểm<meta http-equiv="X-UA-Compatible" content="IE=7" /></TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
@@ -187,7 +187,7 @@ const DeletedSelection = () => {
                 <CustomTableCell {...{ row, name: "code" }} />
                 <CustomTableCell {...{ row, name: "name" }} />
                 <CustomTableCell {...{ row, name: "description" }} />
-                <CustomTableCell {...{ row, name: "type" }} />
+                <CustomTableCell {...{ row, name: "max_point" }} />
                 <TableCell align='right' className={classes.selectTableCell}>
                   <Tooltip title='Khôi phục'>
                     <IconButton
@@ -213,7 +213,7 @@ const DeletedSelection = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
+      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{ float: 'right' }} ><KeyboardReturnIcon /></Link>
     </>
   )
 }
