@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {  makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, Tooltip, Box } from '@material-ui/core';
 import PrintIcon from '@material-ui/icons/Print';
 
@@ -19,13 +19,11 @@ const useStyles = makeStyles((theme) => ({
 
 
 const PrintComponent = (props) => {
-  const classes = useStyles()
-
   const [name, setName] = useState()
   const { id } = useParams()
 
   useEffect(() => {
-    axios.get(`/review/${id}`)
+    axios.get(`/review/${ id }`)
       .then(res => {
         setName(res.data.review.name)
         props.setBool(true)
@@ -183,7 +181,7 @@ const PrintComponent = (props) => {
                 <tr>
                   <td style={{ width: '33%' }}></td>
                   <td style={{ width: '33%' }}></td>
-                  <td style={{ width: '33%', textAlign: 'center' }}>{`Ngày ${new Date().getDate()} tháng ${new Date().getMonth() + 1} năm ${new Date().getFullYear()}`}</td>
+                  <td style={{ width: '33%', textAlign: 'center' }}>{`Ngày ${ new Date().getDate() } tháng ${ new Date().getMonth() + 1 } năm ${ new Date().getFullYear() }`}</td>
                 </tr>
                 <tr>
                   <td style={{ width: '33%', textAlign: 'center' }}><b>{props.level == 3 && 'Hội đồng Đánh giá'}</b></td>
@@ -222,7 +220,7 @@ export default function PinnedSubheaderList(props) {
           </IconButton>
         </Tooltip>
       ) : <CircularProgress />}
-      
+
       <PrintComponent rating={props.rating} setBool={setBool} form={props.form} data={props.data} info={props.info} level={props.level} point={props.point} point2={props.point2} point3={props.point3} />
     </div>
   );

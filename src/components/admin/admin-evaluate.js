@@ -63,7 +63,6 @@ const useStyles = makeStyles((theme) => ({
 export default function EvaluateList() {
   function ListItem(props) {
     return (
-      // <li>{props.id}</li>
       <TableRow>
         <TableCell style={{ lineHeight: '50px', paddingLeft: 10 }}><Link to={'/admin/evaluate-settings/' + props.id} style={{ color: 'black' }}>{props.value}</Link></TableCell>
         <TableCell style={{ lineHeight: '50px' }}>{props.id}</TableCell>
@@ -71,19 +70,22 @@ export default function EvaluateList() {
         <TableCell >{props.start.toString()}</TableCell>
         <TableCell >{props.end.toString()}</TableCell>
         <TableCell align='right' style={{ paddingRight: 0 }} >
-          <IconButton
-            aria-label="update"
-            onClick={() => onEdit(props.id)}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            aria-label="delete"
-            onClick={() => onDelete(props.id)}
-          >
-            <DeleteIcon />
-          </IconButton>
-
+          <Tooltip title='Sửa'>
+            <IconButton
+              aria-label="update"
+              onClick={() => onEdit(props.id)}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Xóa'>
+            <IconButton
+              aria-label="delete"
+              onClick={() => onDelete(props.id)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </TableCell>
       </TableRow>
     )
@@ -173,9 +175,9 @@ export default function EvaluateList() {
   //fe to be
   const token = localStorage.getItem('token')
   const fetchReview = () => {
-    axios.get('/admin/review/', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('/admin/review/', { headers: { "Authorization": `Bearer ${ token }` } })
       .then(res => {
-        console.log(res.data.reviews);
+        // console.log(res.data.reviews);
         setListStage(res.data.reviews)
         setLoading(false)
         // setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
@@ -198,16 +200,15 @@ export default function EvaluateList() {
 
     setLoading(true)
     handleClose()
-    axios.post('/admin/review/add', { code: id, name: evaluationName, start_date: startDate.toString(), end_date: endDate.toString(), description }, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post('/admin/review/add', { code: id, name: evaluationName, start_date: startDate.toString(), end_date: endDate.toString(), description }, { headers: { "Authorization": `Bearer ${ token }` } })
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setListStage(liststage => [...liststage, { code: id, name: evaluationName, start_date: moment(startDate).toString(), end_date: moment(endDate).toString(), description }])
         dispatch(showSuccessSnackbar('Tạo đợt đánh giá thành công'))
         setLoading(false)
       })
       .catch(err => {
         console.log(err)
-        console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã đợt đánh giá đã tồn tại'))
@@ -235,10 +236,10 @@ export default function EvaluateList() {
   const deleteEvaluateWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/review/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/review/${ id }/delete`, {}, { headers: { "Authorization": `Bearer ${ token }` } })
       .then(res => {
         const newLists = listStage.filter(row => row.code !== id)
-        console.log(newLists)
+        // console.log(newLists)
         setListStage(newLists)
         dispatch(showSuccessSnackbar('Xoá đợt đánh giá thành công'))
         setLoading(false)
@@ -270,9 +271,9 @@ export default function EvaluateList() {
 
     const body = { new_rcode: id, name: evaluationName, start_date: startDate, end_date: endDate, description }
     setLoading(true)
-    console.log(modal.id, body)
+    // console.log(modal.id, body)
     handleClose()
-    axios.post(`/admin/review/${modal.id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/review/${ modal.id }/edit`, body, { headers: { "Authorization": `Bearer ${ token }` } })
       .then(res => {
         setListStage(listStage.map(r => r.code === modal.id ? { ...r, code: id, name: evaluationName, start_date: startDate, end_date: endDate, description } : r))
         dispatch(showSuccessSnackbar('Cập nhật thông tin đợt đánh giá thành công'))
@@ -280,7 +281,6 @@ export default function EvaluateList() {
       })
       .catch(err => {
         console.log(err)
-        console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã đợt đánh giá đã tồn tại'))
@@ -295,7 +295,7 @@ export default function EvaluateList() {
   let history = useHistory();
   const { url } = useRouteMatch()
   const redirectStorePage = () => {
-    history.push(`${url}/deleted`)
+    history.push(`${ url }/deleted`)
   }
   return (
     <>

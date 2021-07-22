@@ -5,10 +5,7 @@ import axios from 'axios'
 import { Tooltip, IconButton, Box } from '@material-ui/core'
 import PrintIcon from '@material-ui/icons/Print';
 
-
 import { useParams } from 'react-router-dom'
-
-
 
 export default function PrintList(props) {
   const { id } = useParams()
@@ -16,8 +13,8 @@ export default function PrintList(props) {
   const [name, setName] = useState('')
 
   useEffect(() => {
-    console.log(props.data)
-    axios.get(`/review/${id}`)
+    // console.log(props.data)
+    axios.get(`/review/${ id }`)
       .then(res => {
         setName(res.data.review.name)
       })
@@ -55,7 +52,7 @@ export default function PrintList(props) {
           <tbody>
             <tr>
               <td style={{ width: '60%', textAlign: 'left' }}>Đơn vị: {props.unit.department_id.name}</td>
-              <td style={{ width: '60%', textAlign: 'left' }}>Trưởng Đơn vị: {`${props.unit.head.lastname} ${props.unit.head.firstname}`}</td>
+              <td style={{ width: '60%', textAlign: 'left' }}>Trưởng Đơn vị: {`${ props.unit.head.lastname } ${ props.unit.head.firstname }`}</td>
             </tr>
             <tr>
               <td style={{ textAlign: 'left' }}>Mã Đơn vị: {props.unit.department_id.department_code}</td>
@@ -96,7 +93,7 @@ export default function PrintList(props) {
           <tbody>
             <tr>
               <td style={{ width: '70%' }}></td>
-              <td style={{ width: '30%', textAlign: 'center' }}>{`Ngày ${new Date().getDate()} tháng ${new Date().getMonth() + 1} năm ${new Date().getFullYear()}`}</td>
+              <td style={{ width: '30%', textAlign: 'center' }}>{`Ngày ${ new Date().getDate() } tháng ${ new Date().getMonth() + 1 } năm ${ new Date().getFullYear() }`}</td>
             </tr>
             <tr>
               <td style={{ width: '70%', textAlign: 'center' }}></td>

@@ -46,17 +46,17 @@ const EditUserForm = ({ setEdit, infoUser, updateUser }) => {
 
         axios.post('/user/editUser', body)
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 updateUser(body.lname, body.fname, body.gender, body.birthday, body.phone)
                 dispatch(showSuccessSnackbar('Cập nhật thông tin thành công'))
-        setLoading(false)
-        setEdit()
-    })
+                setLoading(false)
+                setEdit()
+            })
             .catch(e => {
                 console.log(e)
                 dispatch(showErrorSnackbar('Cập nhật thông tin thất bại'))
-        setLoading(false)
-    })
+                setLoading(false)
+            })
     }
     //submit edit profile
     const submit = (data) => {

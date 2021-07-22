@@ -23,7 +23,7 @@ export default function ResultsDashboard(props) {
     setLoading(true)
     axios.get(`/admin/form/${ props.code }/classifyStandards`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         if (res.data.standard_points.length > 0) {
           let l = res.data.standard_points[0].standards.length
           setNumOfStandards(l)
@@ -102,7 +102,7 @@ export default function ResultsDashboard(props) {
               return [];
             },
             update: (filterList, filterPos, index) => {
-              console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+              // console.log('customFilterListOnDelete: ', filterList, filterPos, index);
 
               if (filterPos === 0) {
                 filterList[index].splice(filterPos, 1, '');
@@ -196,7 +196,7 @@ export default function ResultsDashboard(props) {
             return [];
           },
           update: (filterList, filterPos, index) => {
-            console.log('customFilterListOnDelete: ', filterList, filterPos, index);
+            // console.log('customFilterListOnDelete: ', filterList, filterPos, index);
 
             if (filterPos === 0) {
               filterList[index].splice(filterPos, 1, '');

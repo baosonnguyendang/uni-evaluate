@@ -127,7 +127,7 @@ export default function AddSettings() {
   const fetchUnitParent = () => {
     return axios.get('admin/department/parent')
       .then(res => {
-        console.log(res.data.parents)
+        // console.log(res.data.parents)
         let temp = []
         res.data.parents.map(x => {
           temp.push(createData(x.name, x.department_code))
@@ -161,7 +161,7 @@ export default function AddSettings() {
             })
             setUnits([...temp])
             setUnitChosen(temp.filter(unit => unit.check === true))
-            console.log(temp.filter(unit => unit.check === true))
+            // console.log(temp.filter(unit => unit.check === true))
             setRestUnits(temp.filter(unit => unit.check !== true && unit.id !== "HDDG"))
             setLoading(false)
           })
@@ -182,7 +182,7 @@ export default function AddSettings() {
           code = res.data.form.code
           name = res.data.form.name
           setInit(2)
-          console.log(1)
+          // console.log(1)
           return Promise.all([fetchUnitParent(), fetchUnitLevel2(code)])
         }
         else {
@@ -192,7 +192,7 @@ export default function AddSettings() {
       })
       .then(re => {
         if (re) {
-          console.log(re)
+          // console.log(re)
           const temp = re[0]
           const res = re[1]
           let _id = res.data.formDepartments.map(x => x.department_id.department_code)
@@ -205,7 +205,7 @@ export default function AddSettings() {
           })
           setUnits([...temp])
           setUnitChosen(temp.filter(unit => unit.check === true))
-          console.log(temp.filter(unit => unit.check === true))
+          // console.log(temp.filter(unit => unit.check === true))
           setRestUnits(temp.filter(unit => unit.check !== true && unit.id !== "HDDG"))
           setLoading(false)
         }
@@ -277,14 +277,14 @@ export default function AddSettings() {
     setLoadingCircle(true)
     axios.post(`/admin/form/${ code }/addFormDepartments`, data)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         dispatch(showSuccessSnackbar('Thêm đơn vị đánh giá thành công'))
         units.forEach(element => {
           if (data.dcodes.includes(element.id)) { element.check = true; }
         });
         setUnitChosen(units.filter(unit => unit.check === true))
         setRestUnits(units.filter(unit => unit.check !== true && unit.id !== "HDDG"))
-        console.log(units.filter(unit => unit.check === true))
+        // console.log(units.filter(unit => unit.check === true))
         setLoadingCircle(false)
       })
       .catch(err => {
@@ -304,13 +304,13 @@ export default function AddSettings() {
     setLoadingCircle(true)
     axios.post(`/admin/form/${ code }/${ dcode }/delete`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         units.forEach(element => {
           if (element.id === dcode) { element.check = false; }
         });
         setUnitChosen(units.filter(unit => unit.check === true))
         setRestUnits(units.filter(unit => unit.check !== true && unit.id !== "HDDG"))
-        console.log(units.filter(unit => unit.check === true))
+        // console.log(units.filter(unit => unit.check === true))
         dispatch(showSuccessSnackbar('Xoá đơn vị đánh giá thành công'))
         setLoadingCircle(false)
       })
@@ -332,13 +332,13 @@ export default function AddSettings() {
       unit = x
       axios.get(`/admin/form/${ code }/${ unit }/getFormUser`)
         .then(res => {
-          console.log(res.data)
+          // console.log(res.data)
           let temp = []
           res.data.formUser.map(x => {
             let name = x.user_id.department.length > 0 ? (x.user_id.department.map(d => d.name)).join(", ") : ''
             temp.push([x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, name])
           })
-          console.log(temp)
+          // console.log(temp)
           setUnitMember(temp)
           setLoadUnitMember(false)
         })
@@ -371,7 +371,7 @@ export default function AddSettings() {
   const [headTemp, setHeadTemp] = useState({ name: '', id: '' })//luu tam option dc chon trong chon truong don vi
   const [openHead, setOpenHead] = React.useState(false);
   const handleOpenHead = () => {
-    console.log(unitMember)
+    // console.log(unitMember)
     setOpenHead(true);
     closeDialog();
   };
@@ -379,14 +379,14 @@ export default function AddSettings() {
     setOpenHead(false);
   };
   const submitHead = (e) => {
-    console.log(unit)
+    // console.log(unit)
     e.preventDefault()
     setOpenHead(false)
     setLoadingCircle(true)
-    console.log(headTemp)
+    // console.log(headTemp)
     axios.post(`/admin/form/${ code }/${ unit }/addHead`, { ucode: headTemp.id })
       .then(res => {
-        console.log(res)
+        // console.log(res)
         setHead(headTemp)
         setLoadingCircle(false)
         dispatch(showSuccessSnackbar('Cập nhật trưởng đơn vị thành công'))
@@ -408,7 +408,7 @@ export default function AddSettings() {
   const getInfo = () => {
     axios.get(`admin/user/${ idd }/get`)
       .then(res => {
-        console.log(res)
+        // console.log(res)
         setInfo(res.data.user.lastname + ' ' + res.data.user.firstname)
         setDisplay('Tên: ' + res.data.user.lastname + ' ' + res.data.user.firstname)
       })
@@ -435,8 +435,8 @@ export default function AddSettings() {
       .then(res => {
         axios.get(`admin/user/${ idd }/get`)
           .then(res => {
-            console.log(res.data)
-            console.log([...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, '']])
+            // console.log(res.data)
+            // console.log([...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, '']])
             setUnitMember(unitMember => [...unitMember, [res.data.user.lastname + ' ' + res.data.user.firstname, idd, (res.data.user.department.map(d => d.name)).join(", ")]])
             setLoadingCircle(false)
             dispatch(showSuccessSnackbar('Thêm thành viên thành công'))
@@ -479,7 +479,7 @@ export default function AddSettings() {
   const onAsk = () => {
     axios.get(`/admin/form/${ code }/${ unit }/getFormDepartment`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         let obj = {
           name: res.data.formDepartment.head.lastname + ' ' + res.data.formDepartment.head.firstname,
           id: res.data.formDepartment.head.staff_id

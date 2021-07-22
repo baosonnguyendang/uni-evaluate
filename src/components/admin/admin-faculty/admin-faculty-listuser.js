@@ -86,7 +86,7 @@ const CustomTableCell = ({ row, name }) => {
   const classes = useStyles();
   return (
     <TableCell align="left" className={classes.tableCell}>
-      {name === 'namedepartment' ? (<Link to={`/admin/faculty/${row['department_code']}`} style={{ color: 'black' }}>{row['name']}</Link>) : (row[name])}
+      {name === 'namedepartment' ? (<Link to={`/admin/faculty/${ row['department_code'] }`} style={{ color: 'black' }}>{row['name']}</Link>) : (row[name])}
     </TableCell>
   );
 };
@@ -101,47 +101,47 @@ const UserOfFaculty = () => {
   const [nameDept, setLNameDept] = useState('')
   const [children, setChildren] = useState([])
   const fetchChildren = () => {
-    return axios.get(`/admin/department/${id}/children`)
+    return axios.get(`/admin/department/${ id }/children`)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         setLNameDept(res.data.parent.name)
 
-        const temp = res.data.children.map(c => c.manager ? ({ ...c, namemanager: `${c.manager.lastname} ${c.manager.firstname}`, idmanager: c.manager.staff_id }) : c)
-        console.log(temp)
+        const temp = res.data.children.map(c => c.manager ? ({ ...c, namemanager: `${ c.manager.lastname } ${ c.manager.firstname }`, idmanager: c.manager.staff_id }) : c)
+        // console.log(temp)
         setChildren(temp)
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
       })
   }
   const fetchUserOfFaculty = () => {
-    return axios.get(`/admin/department/${id}/user`)
+    return axios.get(`/admin/department/${ id }/user`)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         setRows(res.data.user.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
         if (res.data.department.manager) {
           setIdExistHeadUnit(res.data.department?.manager?.staff_id)
           setIdHeadUnit(res.data.department?.manager?.staff_id)
           setNameHeadUnit(res.data.department?.manager?.lastname + ' ' + res.data.department?.manager?.firstname)
-          console.log(nameHeadUnit)
+          // console.log(nameHeadUnit)
         }
 
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
       })
 
   }
   // fetch deleted children
   const [deletedChildren, setDeletedChildren] = useState([])
   const fetchDeletedSubDept = (id) => {
-    return axios.get(`/admin/department/deleted/${id}/children`)
+    return axios.get(`/admin/department/deleted/${ id }/children`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setDeletedChildren(res.data.departments)
       })
       .catch(e => {
-        console.log(e.response)
+        // console.log(e.response)
       })
   }
   useEffect(() => {
@@ -190,18 +190,18 @@ const UserOfFaculty = () => {
     e.preventDefault()
     const body = { new_dcode: idDept, name }
     setLoading(true)
-    console.log(modal.id)
+    // console.log(modal.id)
 
     handleClose()
-    axios.post(`/admin/department/${id_dept}/edit`, body)
+    axios.post(`/admin/department/${ id_dept }/edit`, body)
       .then(res => {
         setChildren(children.map(r => r.department_code === id_dept ? { ...r, department_code: idDept, name } : r))
         dispatch(showSuccessSnackbar('Cập nhật đơn vị thành công'))
         setLoading(false)
       })
       .catch(err => {
-        console.log(err)
-        console.log(err.response)
+        // console.log(err)
+        // console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã đơn vị đã tồn tại'))
@@ -225,7 +225,7 @@ const UserOfFaculty = () => {
     e.preventDefault()
     setLoading(true)
     handleClose()
-    axios.post(`/admin/department/${id}/user/add`, { user_id: iduser })
+    axios.post(`/admin/department/${ id }/user/add`, { user_id: iduser })
       .then(res => {
         fetchUserOfFaculty()
           .then(() => {
@@ -256,9 +256,9 @@ const UserOfFaculty = () => {
     e.preventDefault()
     setLoading(true)
     handleClose()
-    axios.post(`/admin/department/${id}/user/create`, { id: iduser, lname, fname, email })
+    axios.post(`/admin/department/${ id }/user/create`, { id: iduser, lname, fname, email })
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         fetchUserOfFaculty().then(res => {
           dispatch(showSuccessSnackbar('Tạo người dùng thành công'))
           setLoading(false)
@@ -294,7 +294,7 @@ const UserOfFaculty = () => {
   const deleteSubDeptWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/department/${id}/delete`, {})
+    axios.post(`/admin/department/${ id }/delete`, {})
       .then(res => {
         const newchildrens = children.filter(row => row.department_code !== id)
         setChildren(newchildrens)
@@ -303,7 +303,7 @@ const UserOfFaculty = () => {
         setLoading(false)
       })
       .catch(err => {
-        console.log(err.response.status)
+        // console.log(err.response.status)
         dispatch(showErrorSnackbar('Xoá đơn vị thất bại'))
         setLoading(false)
       })
@@ -312,14 +312,14 @@ const UserOfFaculty = () => {
   const deleteUserDeptWithAPI = (ucode) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/department/${id}/user/${ucode}/delete`, {})
+    axios.post(`/admin/department/${ id }/user/${ ucode }/delete`, {})
       .then(res => {
         setRows(rows.filter(r => r.staff_id !== ucode))
         dispatch(showSuccessSnackbar('Xoá người dùng trong đơn vị thành công'))
         setLoading(false)
       })
       .catch(err => {
-        console.log(err.response.status)
+        // console.log(err.response.status)
         dispatch(showErrorSnackbar('Xoá dùng trong đơn vị thất bại'))
         setLoading(false)
       })
@@ -327,7 +327,7 @@ const UserOfFaculty = () => {
   let history = useHistory();
   const { url } = useRouteMatch()
   const redirectStorePage = () => {
-    history.push(`${url}/deleted`)
+    history.push(`${ url }/deleted`)
   }
   const handleOpenAddDept = () => {
     setModal({ ...modal, open: true, addSubDept: true, setHeadUnit: false })
@@ -344,24 +344,24 @@ const UserOfFaculty = () => {
       manager: headUnit,
       parent: id
     }
-    console.log(body)
+    // console.log(body)
     handleClose();
     axios.post('/admin/department/addDepartment', body)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         const temp = res.data.manager
         if (temp === null) {
           setChildren(rows => [...rows, { department_code: idDept, name, }])
         }
         else {
-          setChildren(rows => [...rows, { department_code: idDept, name, idmanager: temp?.staff_id, namemanager: `${temp?.lastname} ${temp?.firstname}` }])
+          setChildren(rows => [...rows, { department_code: idDept, name, idmanager: temp?.staff_id, namemanager: `${ temp?.lastname } ${ temp?.firstname }` }])
         }
         dispatch(showSuccessSnackbar('Tạo đơn vị thành công'))
         setLoading(false)
       })
       .catch(err => {
-        console.log(err)
-        console.log(err.response)
+        // console.log(err)
+        // console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã đơn vị đã tồn tại'))
@@ -387,10 +387,10 @@ const UserOfFaculty = () => {
   const editHeadUnit = () => {
     const body = { manager: idHeadUnit }
     setLoading(true)
-    console.log(modal.id)
+    // console.log(modal.id)
 
     handleClose()
-    axios.post(`/admin/department/${id}/editHead`, body)
+    axios.post(`/admin/department/${ id }/editHead`, body)
       .then(res => {
         fetchUserOfFaculty()
           .then(() => {
@@ -399,8 +399,8 @@ const UserOfFaculty = () => {
           })
       })
       .catch(err => {
-        console.log(err)
-        console.log(err.response)
+        // console.log(err)
+        // console.log(err.response)
         switch (err.response?.status) {
           case 404:
             dispatch(showErrorSnackbar('Mã trưởng đơn vị không đúng'))

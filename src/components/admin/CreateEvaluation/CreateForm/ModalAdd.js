@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import Loading from '../../../common/Loading'
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { Typography, IconButton, TextField, Button, ListItem, ListItemIcon, List, ListItemText } from '@material-ui/core';
+import { Typography, IconButton, TextField, Button, ListItem, List, ListItemText } from '@material-ui/core';
 import axios from 'axios';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import Modal from '@material-ui/core/Modal';
@@ -23,9 +23,9 @@ function getModalStyle() {
     const left = 50;
 
     return {
-        top: `${top}%`,
-        left: `${left}%`,
-        transform: `translate(-${top}%, -${left}%)`,
+        top: `${ top }%`,
+        left: `${ left }%`,
+        transform: `translate(-${ top }%, -${ left }%)`,
     };
 }
 
@@ -63,13 +63,13 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
     useEffect(() => {
         const getCriteriaOfStandard = (codeStandard) => {
 
-            return axios.get(`/admin/standard/${codeStandard}/criteria/get`)
+            return axios.get(`/admin/standard/${ codeStandard }/criteria/get`)
                 .then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     setAvailableCriteria(res.data.criterions)
                 })
                 .catch(err => {
-                    console.log(err)
+                    // console.log(err)
                 })
         }
         getCriteriaOfStandard(codeStandard)
@@ -90,21 +90,21 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
         setExistCriteria(existCriteria.filter((c, index) => index !== i))
     }
     const handleChangePoint = (e, i) => {
-        console.log(e.target.value)
+        // console.log(e.target.value)
         setExistCriteria(existCriteria.map((c, index) =>
             index === i ? { ...c, point: parseInt(e.target.value) } : c
         ))
     }
     const handleChangePointPerTime = (e, i) => {
-        console.log(e.target.value)
+        // console.log(e.target.value)
         setExistCriteria(existCriteria.map((c, index) =>
-            index === i ? { ...c, base_point : parseInt(e.target.value) } : c
+            index === i ? { ...c, base_point: parseInt(e.target.value) } : c
         ))
     }
     const [pointStandard, setPointStandard] = useState('')
 
     const filterData = (data) => {
-        const criterions = data.map((d, index) => ({ criteria_id: d.code, criteria_order: index + 1, criteria_point: d.point, base_point : d.base_point }))
+        const criterions = data.map((d, index) => ({ criteria_id: d.code, criteria_order: index + 1, criteria_point: d.point, base_point: d.base_point }))
         let temp = {
             standard: {
                 standard_id: codeStandard,
@@ -119,17 +119,17 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
         e.preventDefault()
         setLoading(true)
         const data = filterData(existCriteria)
-        console.log(data)
-        axios.post(`/admin/form/${idForm}/addFormStandard/v2`, data)
+        // console.log(data)
+        axios.post(`/admin/form/${ idForm }/addFormStandard/v2`, data)
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 setLoading(false)
                 setCriterion(pointStandard)
                 handleClose()
                 dispatch(showSuccessSnackbar("Thêm tiêu chuẩn thành công"))
             })
             .catch(error => {
-                console.log(error)
+                // console.log(error)
                 setLoading(false)
                 dispatch(showErrorSnackbar("Thêm tiêu chuẩn thất bại"))
             })
@@ -144,7 +144,7 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
             <Typography variant='h6' gutterBottom >Tiêu chuẩn</Typography>
             <List>
                 <ListItem>
-                    <ListItemText style={{ width: '400px' }} primary={`${codeStandard} - ${name}`} />
+                    <ListItemText style={{ width: '400px' }} primary={`${ codeStandard } - ${ name }`} />
                     <TextField style={{ width: "100px" }} type="number" variant="outlined" autoFocus size="small" label="Điểm"
                         onChange={(e) => setPointStandard(parseInt(e.target.value))}
                     />
@@ -200,17 +200,17 @@ const ModalAddStandard = ({ open, handleClose, stt, idForm, codeStandard, name, 
                 <DragDropContext onDragEnd={handleOnDragEnd}>
                     <Droppable droppableId='criteria'>
                         {(provided) => (
-                            <List {...provided.droppableProps} ref={provided.innerRef} style={{ height: 300,  overflowY: 'auto' }}>
+                            <List {...provided.droppableProps} ref={provided.innerRef} style={{ height: 300, overflowY: 'auto' }}>
                                 {existCriteria.map((t, index) =>
                                     <Draggable key={t._id} draggableId={t.code} index={index} >
                                         {(provided, snapshot) => (
                                             (snapshot.isDragging) ?
                                                 ReactDOM.createPortal(<ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                    <ListItemText primary={`${index + 1}. ${t.name}`} />
+                                                    <ListItemText primary={`${ index + 1 }. ${ t.name }`} />
 
                                                 </ListItem>, portal)
                                                 : <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                    <ListItemText style={{ flexBasis: 0 }} primary={`${index + 1}. ${t.name}`} />
+                                                    <ListItemText style={{ flexBasis: 0 }} primary={`${ index + 1 }. ${ t.name }`} />
                                                     {(t.type === 'number' || t.type === 'detail') ? (
                                                         <>
                                                             <TextField style={{ width: "100px", marginRight: 10 }} type="number" variant="outlined" autoFocus size="small" label="Điểm"

@@ -105,13 +105,13 @@ export default function Selection() {
   const { id1 } = useParams();
   //token
   const token = localStorage.getItem('token');
-  const config = { headers: { "Authorization": `Bearer ${token}` } };
+  const config = { headers: { "Authorization": `Bearer ${ token }` } };
 
   const fetchSelection = () => {
-    axios.get(`/admin/criteria/${id1}/option`, config)
+    axios.get(`/admin/criteria/${ id1 }/option`, config)
       .then(res => {
         const selections = res.data.criteriaOptions;
-        console.log(selections)
+        // console.log(selections)
         setNameCriteria(res.data.criteria.name)
         setRows(res.data.criteriaOptions)
         // setIsLoading(false)
@@ -132,7 +132,7 @@ export default function Selection() {
   const deleteOptionWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/criteria/option/${id}/delete`, {}, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/criteria/option/${ id }/delete`, {}, { headers: { "Authorization": `Bearer ${ token }` } })
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -169,10 +169,10 @@ export default function Selection() {
     e.preventDefault()
     const body = { new_ocode: code, name, description, max_point: point }
     setLoading(true)
-    console.log(modal.id)
+    // console.log(modal.id)
 
     handleClose()
-    axios.post(`/admin/criteria/option/${id}/edit`, body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/criteria/option/${ id }/edit`, body, { headers: { "Authorization": `Bearer ${ token }` } })
       .then(res => {
         setRows(rows.map(r => r.code === id ? { ...r, code, name, description } : r))
         dispatch(showSuccessSnackbar('Cập nhật lựa chọn thành công'))
@@ -180,7 +180,6 @@ export default function Selection() {
       })
       .catch(err => {
         console.log(err)
-        console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã lựa chọn đã tồn tại'))
@@ -197,7 +196,7 @@ export default function Selection() {
 
   // Tạo lựa chọn
   const submitAddSelection = (e) => {
-    console.log(code, name, description, point);
+    // console.log(code, name, description, point);
     handleClose();
     setLoading(true)
     e.preventDefault()
@@ -207,16 +206,15 @@ export default function Selection() {
       max_point: point,
       description
     }
-    axios.post(`/admin/criteria/${id1}/addCriteriaOption`, body, config)
+    axios.post(`/admin/criteria/${ id1 }/addCriteriaOption`, body, config)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         setRows(row => [...row, { name, code, description, max_point: point }])
         dispatch(showSuccessSnackbar('Tạo lựa chọn thành công'))
         setLoading(false)
       })
       .catch(err => {
         console.log(err)
-        console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã lựa chọn đã tồn tại'))
@@ -246,7 +244,7 @@ export default function Selection() {
   let history = useHistory();
   let { url } = useRouteMatch();
   const redirectStorePage = () => {
-    history.push(`${url}/deleted`)
+    history.push(`${ url }/deleted`)
   }
 
   return (
@@ -334,7 +332,7 @@ export default function Selection() {
               </Modal>
             </div>
           </Paper>
-          <Link to={url.replace('/'+ id1, '')} component={Button} className={classes.btnback} variant="contained" style={{ float: 'right' }} ><KeyboardReturnIcon /></Link>
+          <Link to={url.replace('/' + id1, '')} component={Button} className={classes.btnback} variant="contained" style={{ float: 'right' }} ><KeyboardReturnIcon /></Link>
         </div>
       }
     </>

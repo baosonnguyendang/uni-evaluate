@@ -97,7 +97,7 @@ const CustomTableCell = ({ row, name }) => {
   return (
     <TableCell align="left" className={classes.tableCell}>
       {
-        name === 'name' && row['type'] == 'radio' ? (<Link to={`${url}/${row['code']}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
+        name === 'name' && row['type'] == 'radio' ? (<Link to={`${ url }/${ row['code'] }`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])
       }
     </TableCell>
   );
@@ -111,7 +111,7 @@ export default function Criteria() {
   const { id } = useParams()
   const [nameStandard, setNameStandard] = useState('')
   const fetchCriteriaOfStandard = () => {
-    axios.get(`admin/standard/${id}/criteria`)
+    axios.get(`admin/standard/${ id }/criteria`)
       .then(res => {
         setRows(res.data.criterions)
         setNameStandard(res.data.standard.name)
@@ -152,7 +152,7 @@ export default function Criteria() {
   const deleteCriteriaWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/criteria/${id}/delete`, {})
+    axios.post(`/admin/criteria/${ id }/delete`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -193,7 +193,7 @@ export default function Criteria() {
     const body = { new_ccode: code, name, description, type }
     setLoading(true)
     handleClose()
-    axios.post(`/admin/criteria/${id}/edit`, body)
+    axios.post(`/admin/criteria/${ id }/edit`, body)
       .then(res => {
         setRows(rows.map(r => r.code === id ? { ...r, code, name, description, type } : r))
         dispatch(showSuccessSnackbar('Cập nhật tiêu chí thành công'))
@@ -201,7 +201,6 @@ export default function Criteria() {
       })
       .catch(err => {
         console.log(err)
-        console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã tiêu chí đã tồn tại'))
@@ -216,7 +215,7 @@ export default function Criteria() {
 
   //sumbit form tao tieu chi
   const submitAddCriteria = (e) => {
-    console.log(code, name, description, type);
+    // console.log(code, name, description, type);
     e.preventDefault()
     setLoading(true)
     handleClose()
@@ -226,17 +225,16 @@ export default function Criteria() {
       description,
       type
     }
-    axios.post(`/admin/standard/${id}/criteria/add`, body)
+    axios.post(`/admin/standard/${ id }/criteria/add`, body)
       .then(res => {
         // chỗ này success thì fe tạo bảng
-        console.log(res.data);
+        // console.log(res.data);
         setRows(row => [...row, { name, code, description, type }])
         dispatch(showSuccessSnackbar('Tạo tiêu chí thành công'))
         setLoading(false)
       })
       .catch(err => {
         console.log(err)
-        console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã tiêu chí đã tồn tại'))
@@ -255,13 +253,13 @@ export default function Criteria() {
   const [description, setDescription] = React.useState('')
   const [type, setType] = React.useState('');
   const handleChangeType = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     setType(event.target.value);
   };
   let history = useHistory();
   let { url } = useRouteMatch();
   const redirectStorePage = () => {
-    history.push(`${url}/deleted`)
+    history.push(`${ url }/deleted`)
   }
   return (
     <>
@@ -350,7 +348,7 @@ export default function Criteria() {
                         <Typography variant='subtitle2' >Number: Đánh giá theo số lần </Typography>
                         <Typography variant='body2'>Detail: Kê khai và đánh giá theo số % đóng góp </Typography>
                       </>} placement="right-start">
-                          <HelpIcon fontSize='small' color='action' />
+                        <HelpIcon fontSize='small' color='action' />
                       </Tooltip>
                     </div>
                     <form onSubmit={modal.id ? ((e) => editCriteria(e, modal.id)) : submitAddCriteria}>
@@ -384,7 +382,7 @@ export default function Criteria() {
               </Modal>
             </div>
           </Paper>
-          <Link to='/admin/criterion' component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
+          <Link to='/admin/criterion' component={Button} className={classes.btnback} variant="contained" style={{ float: 'right' }} ><KeyboardReturnIcon /></Link>
         </div>
       )}
     </>

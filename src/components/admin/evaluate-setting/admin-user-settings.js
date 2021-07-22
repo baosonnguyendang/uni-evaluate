@@ -20,8 +20,8 @@ export default function UserSettings(props) {
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     setData(props.data)
-    console.log(props.data)
-    console.log(props.loading)
+    // console.log(props.data)
+    // console.log(props.loading)
   }, [props.data])
 
   const options = {
@@ -43,7 +43,7 @@ export default function UserSettings(props) {
       const body = {
         delete_users: bin
       }
-      axios.post(`/admin/form/${fcode}/${dcode}/removeFormUser`, body)
+      axios.post(`/admin/form/${ fcode }/${ dcode }/removeFormUser`, body)
         .then(res => {
           props.setUnitMember(temp)
           setLoading(false)
@@ -58,10 +58,10 @@ export default function UserSettings(props) {
   };
 
   const onDelete = (x) => {
-    console.log(x)
-    console.log(props.data.indexOf(x))
+    // console.log(x)
+    // console.log(props.data.indexOf(x))
     props.data.splice(props.data.indexOf(x), 1)
-    console.log(data.splice(data.indexOf(x), 1))
+    // console.log(data.splice(data.indexOf(x), 1))
     setData(data => data.splice(data.indexOf(x), 1))
   }
 

@@ -22,13 +22,13 @@ const Profile = () => {
   // info of user
   const [infoUser, setInfoUser] = useState({})
 
-  
+
   //fetch user info
   useEffect(() => {
     const fetchInfoUser = () => {
       axios.get('/user')
         .then(res => {
-          console.log(res.data)
+          // console.log(res.data)
           setInfoUser(res.data.user)
           setLoading(false)
         })
@@ -38,7 +38,7 @@ const Profile = () => {
         })
     }
     fetchInfoUser()
-  },[])
+  }, [])
   const onEdit = () => {
     setEditPassword(false)
     setEdit(true)
@@ -47,42 +47,42 @@ const Profile = () => {
     setEdit(false)
     setEditPassword(true)
   }
-  const updateUser = (lastname, firstname ,gender, birthday, phone ) => {
-    setInfoUser(state => ({...state, lastname, firstname ,gender, birthday, phone }))
+  const updateUser = (lastname, firstname, gender, birthday, phone) => {
+    setInfoUser(state => ({ ...state, lastname, firstname, gender, birthday, phone }))
   }
   return (
     <>
-      {loading ? <LinearProgress style={{position:"absolute", width:"100%" }} /> : 
-      <Grid container justify='center' style={{ margin: 'auto', marginTop: 30 }} direction="column" >
-      <Grid item >
-        <Avatar className={classes.avatar} alt='avatar' src='https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg' ></Avatar>
-      </Grid>
-      {!edit &&
-        <Grid item style={{ paddingTop: '30px', margin: 'auto' }} >
-          <Typography variant='h6' style={{ marginBottom: 15 }} >
-            {infoUser.lastname} {infoUser.firstname}
-          </Typography>
-          <Typography>
-            {infoUser.gender === 'Male' && 'Nam'}
-            {infoUser.gender === 'Female' && 'Nữ'}
-            {infoUser.gender === 'Other' && 'Khác'}
-          </Typography>
-          <Typography style={{ marginBottom: 25 }}>
-            {moment(infoUser.birthday).format('DD/MM/yyyy')}
-          </Typography>
-          <Typography>
-            {infoUser.staff_id}
-          </Typography>
+      {loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> :
+        <Grid container justify='center' style={{ margin: 'auto', marginTop: 30 }} direction="column" >
+          <Grid item >
+            <Avatar className={classes.avatar} alt='avatar' src='https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg' ></Avatar>
+          </Grid>
+          {!edit &&
+            <Grid item style={{ paddingTop: '30px', margin: 'auto' }} >
+              <Typography variant='h6' style={{ marginBottom: 15 }} >
+                {infoUser.lastname} {infoUser.firstname}
+              </Typography>
+              <Typography>
+                {infoUser.gender === 'Male' && 'Nam'}
+                {infoUser.gender === 'Female' && 'Nữ'}
+                {infoUser.gender === 'Other' && 'Khác'}
+              </Typography>
+              <Typography style={{ marginBottom: 25 }}>
+                {moment(infoUser.birthday).format('DD/MM/yyyy')}
+              </Typography>
+              <Typography>
+                {infoUser.staff_id}
+              </Typography>
 
-          <Typography>{infoUser.phone}</Typography>
-          <Typography>{infoUser.email}</Typography>
-          <Button style={{ marginTop: 30, marginRight: 20 }} variant="outlined" size="small" onClick={onEdit}>Chỉnh sửa</Button>
-          <Button style={{ marginTop: 30 }} variant="outlined" size="small" onClick={onEditPassword}>Đổi mật khẩu</Button>
+              <Typography>{infoUser.phone}</Typography>
+              <Typography>{infoUser.email}</Typography>
+              <Button style={{ marginTop: 30, marginRight: 20 }} variant="outlined" size="small" onClick={onEdit}>Chỉnh sửa</Button>
+              <Button style={{ marginTop: 30 }} variant="outlined" size="small" onClick={onEditPassword}>Đổi mật khẩu</Button>
+            </Grid>}
+          {edit && <EditUserForm setEdit={() => setEdit(false)} infoUser={infoUser} updateUser={updateUser} />}
+          {editPassword && <EditPassword setDisableEditPassword={() => setEditPassword(false)} />}
         </Grid>}
-      {edit && <EditUserForm setEdit={() => setEdit(false)} infoUser={infoUser} updateUser={updateUser} />}
-      {editPassword && <EditPassword setDisableEditPassword={() => setEditPassword(false)} />}
-    </Grid>}
-      
+
 
     </>
   )

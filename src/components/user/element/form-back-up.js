@@ -39,7 +39,7 @@ export default function FormEvaluation(props) {
     setLoading(true)
 
     //lấy Form
-    axios.get(`/form/${variable}/v2`)
+    axios.get(`/form/${ variable }/v2`)
       .then(res => {
         setData(res.data.formStandards)
         let temp = []
@@ -50,11 +50,11 @@ export default function FormEvaluation(props) {
           })
         })
         //lấy dữ liệu đã làm nếu Form đã điền trước đó
-        axios.get(`/form/${variable}/evaluation/get`)
+        axios.get(`/form/${ variable }/evaluation/get`)
           .then(res => {
             //console.log(temp)
             setLoading(false)
-            console.log(res.data.evaluateForms)
+            // console.log(res.data.evaluateForms)
             if (res.data.evaluateForms.length > 0) {
               res.data.evaluateForms[0].evaluateCriteria.map(criteria => {
                 temp.find(x => x.name == criteria.form_criteria.criteria_id.code).value = criteria.point
@@ -62,7 +62,7 @@ export default function FormEvaluation(props) {
             }
             setSent([...temp])
             setLuuTam([...temp])
-            console.log('a')
+            // console.log('a')
           })
           .catch(err => {
             console.log(err)
@@ -95,10 +95,10 @@ export default function FormEvaluation(props) {
   const handleCheck2 = (event) => {
     //console.log(event.target.value, event.target.name)
     let tam = []
-    console.log(event.target.name)
-    console.log(sent)
-    console.log(edited)
-    if (edited === false){
+    // console.log(event.target.name)
+    // console.log(sent)
+    // console.log(edited)
+    if (edited === false) {
       sent.map(x => {
         tam.push(x)
       })
@@ -122,13 +122,13 @@ export default function FormEvaluation(props) {
   }
 
   const handleCheckRadio2 = (event) => {
-    console.log(event.target.value, event.target.name)
+    // console.log(event.target.value, event.target.name)
     //compare(temp2)
     let tam = []
-    console.log(event.target.name)
-    console.log(sent)
-    console.log(edited)
-    if (edited === false){
+    // console.log(event.target.name)
+    // console.log(sent)
+    // console.log(edited)
+    if (edited === false) {
       sent.map(x => {
         tam.push(x)
       })
@@ -141,7 +141,7 @@ export default function FormEvaluation(props) {
     }
     tam.find(x => x.name + '_2' == event.target.name).value = parseInt(event.target.value)
     setSent2(tam)
-    console.log(tam)
+    // console.log(tam)
     compare(tam)
   }
 
@@ -151,7 +151,7 @@ export default function FormEvaluation(props) {
     switch (level) {
       case 1:
         let filter = sent.filter(y => y.value == null)
-        if (filter.length > 0){
+        if (filter.length > 0) {
           filter.map(x => {
             list.push(x.name)
           })
@@ -160,7 +160,7 @@ export default function FormEvaluation(props) {
         break;
       case 2:
         let filterr = sent2.filter(y => y.value == null)
-        if (filterr.length > 0){
+        if (filterr.length > 0) {
           filterr.map(x => {
             list.push(x.name)
           })
@@ -172,8 +172,8 @@ export default function FormEvaluation(props) {
     }
     if (list.length === 0) {
       let data = { toSend, level }
-      console.log(data)
-      axios.post(`/form/${variable}/evaluation/test`, data)
+      // console.log(data)
+      axios.post(`/form/${ variable }/evaluation/test`, data)
         .then(res => {
           setStatus(false)
           setDisableEdit(true)
@@ -204,10 +204,10 @@ export default function FormEvaluation(props) {
     }
     setLuuTam(sent)
     let data = { dataToSend, level }
-    console.log(data)
-    axios.post(`/form/${variable}/evaluation/test`, data)
+    // console.log(data)
+    axios.post(`/form/${ variable }/evaluation/test`, data)
       .then(res => {
-        console.log(res)
+        // console.log(res)
       })
       .catch(err => {
         console.log(err)
@@ -225,7 +225,7 @@ export default function FormEvaluation(props) {
     < >
       {status ? (
         <div>
-          { loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
+          {loading ? <LinearProgress style={{ position: "absolute", width: "100%" }} /> : (
             <Grid container xs={12} justify='center' style={{ margin: '30px 0px' }}>
               <TableContainer component={Paper} style={{ marginBottom: '30px' }}>
                 <Table className={classes.table} >

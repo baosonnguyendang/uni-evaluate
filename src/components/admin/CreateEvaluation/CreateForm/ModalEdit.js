@@ -63,23 +63,23 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
   const getFormCriteria = (idForm, codeStandard) => {
     return axios.get(`/admin/form/${ idForm }/standard/${ codeStandard }/getFormCriteria`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setExistCriteria(res.data.formCriteria.map(c => ({ ...c, ...c.criteria_id })))
         return res.data.formCriteria.map(c => ({ ...c, ...c.criteria_id }))
       })
       .catch(err => {
         setExistCriteria([])
-        console.log(err)
+        // console.log(err)
       })
   }
   const getCriteriaOfStandard = (codeStandard) => {
     return axios.get(`/admin/standard/${ codeStandard }/criteria/get`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         return res.data.criterions
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
       })
   }
   useEffect(() => {
@@ -119,14 +119,14 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
     setExistCriteria(existCriteria.filter((c, index) => index !== i))
   }
   const handleChangePoint = (e, i) => {
-    console.log(e.target.value)
+    // console.log(e.target.value)
 
     setExistCriteria(existCriteria.map((c, index) =>
       index === i ? { ...c, point: parseInt(e.target.value) } : c
     ))
   }
   const handleChangeBasePoint = (e, i) => {
-    console.log(e.target.value)
+    // console.log(e.target.value)
 
     setExistCriteria(existCriteria.map((c, index) =>
       index === i ? { ...c, base_point: parseInt(e.target.value) } : c
@@ -141,17 +141,17 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
   }
   const submitEditCriteria = () => {
     const data = filterCriteria(existCriteria)
-    console.log(data)
+    // console.log(data)
     setLoading(true)
     axios.post(`/admin/form/${ idForm }/standard/${ codeStandard }/editFormCriteria`, data)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setTemp({ existCriteria, availableCriteria })
         setLoading(false)
         dispatch(showSuccessSnackbar("Cập nhật tiêu chí thành công"))
       })
       .catch(error => {
-        console.log(error)
+        // console.log(error)
         setLoading(false)
         dispatch(showErrorSnackbar("Cập nhật tiêu chí thất bại"))
       })
@@ -177,7 +177,7 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
 
     axios.post(`/admin/form/${ idForm }/standard/${ codeStandard }/addSingleFormCriteria`, data)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         const newExistCriteria = [...existCriteria, { ...tempCriteria, point: pointNewCriteria, base_point: basePoint }]
         const newEsetAvailableCriteria = availableCriteria.filter(l => l.code !== tempCriteria.code)
         setExistCriteria(newExistCriteria)
@@ -189,12 +189,12 @@ const ModalEditStandard = ({ open, handleClose, idForm, codeStandard, name }) =>
         dispatch(showSuccessSnackbar("Thêm tiêu chí mới thành công"))
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
         setLoading(false)
         dispatch(showErrorSnackbar("Thêm tiêu chí mới thất bại"))
       })
   }
-  console.log(existCriteria)
+  // console.log(existCriteria)
   const body = (
     <div style={modalStyle} className={classes.paper} >
       <Loading open={loading} />

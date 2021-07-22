@@ -3,7 +3,6 @@ import { TextField, Grid, Button, Typography } from '@material-ui/core';
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { makeStyles } from '@material-ui/core';
-import Toast from '../../common/Snackbar'
 import Loading from '../../common/Loading'
 import { useDispatch } from 'react-redux'
 import { showSuccessSnackbar, showErrorSnackbar } from '../../../actions/notifyAction'
@@ -24,7 +23,7 @@ const EditUserForm = ({ setDisableEditPassword }) => {
     const submit = data => {
 
         if (data.oldpassword === data.newpassword) {
-            console.log(data.oldpasword === data.newpassword)
+            // console.log(data.oldpasword === data.newpassword)
             dispatch(showErrorSnackbar('Mật khẩu mới không được giống mật khẩu cũ'))
             setLoading(false)
             return

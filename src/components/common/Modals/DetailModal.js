@@ -13,9 +13,9 @@ function getModalStyle() {
     const left = 50;
 
     return {
-        top: `${top}%`,
-        left: `${left}%`,
-        transform: `translate(-${top}%, -${left}%)`,
+        top: `${ top }%`,
+        left: `${ left }%`,
+        transform: `translate(-${ top }%, -${ left }%)`,
     };
 }
 
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) =>
 );
 const Line = ({ name, index, value, description, onDelete, base_point, disableEdit, onChangeName, onChangeDescription, onChangePercent }) => {
     const classes = useStyles()
-    console.log(value * base_point / 100)
+    // console.log(value * base_point / 100)
     return (<div style={{ display: 'flex', alignItems: 'center', margin: '10px 0' }}>
         <TextField size="small" className={classes.name} type='text' variant="outlined" label="Tên" onChange={(e) => onChangeName(e, index)} disabled={disableEdit} defaultValue={name} />
         <TextField size="small" className={classes.inputpercent} type='number' required variant="outlined" label="Đóng góp" onChange={(e) => onChangePercent(e, index)} disabled={disableEdit} defaultValue={value ?? 0}
@@ -80,7 +80,7 @@ const DetailModal = () => {
         submit(filterData(data))
         handleClose()
     }
-    function compareTwoArray (arr1, arr2) {
+    function compareTwoArray(arr1, arr2) {
         return JSON.stringify(arr1) === JSON.stringify(arr2)
     }
     const dataStore = useSelector(state => state.modal.data)
@@ -98,19 +98,19 @@ const DetailModal = () => {
         document.getElementById("form-create-detail").reset();
     }
     const deleteItem = (index) => {
-        console.log(index)
+        // console.log(index)
         const temp = data.details.filter((v, i) => i !== index)
-        console.log(temp)
+        // console.log(temp)
         setData({ ...data, details: temp })
     }
     const filterData = (data) => {
-        if ( data.details.length === 0 ) return { point: 0, code: data.code, details: data.details }
+        if (data.details.length === 0) return { point: 0, code: data.code, details: data.details }
         if (!data.max_point) return { point: round(calculate(data.details, 'value', data.base_point)), code: data.code, details: data.details }
         return { point: data.max_point > calculate(data.details, 'value', data.base_point) ? round(calculate(data.details, 'value', data.base_point)) : data.max_point, code: data.code, details: data.details }
     }
 
     const onChangeName = (e, index) => {
-        console.log(data.details.map((d, i) => (i === index ? { ...d, name: e.target.value } : d)))
+        // console.log(data.details.map((d, i) => (i === index ? { ...d, name: e.target.value } : d)))
         setData({ ...data, details: data.details.map((d, i) => (i === index ? { ...d, name: e.target.value } : d)) })
     }
     const onChangeDescription = (e, index) => {
@@ -119,14 +119,14 @@ const DetailModal = () => {
     const onChangePercent = (e, index) => {
         setData({ ...data, details: data.details.map((d, i) => (i === index ? { ...d, value: e.target.value } : d)) })
     }
-    console.log(data)
+    // console.log(data)
     if (!data) return null
     const calculate = (data, attr, base_point) => {
-        console.log(data, attr)
-        console.log(data[0][attr])
+        // console.log(data, attr)
+        // console.log(data[0][attr])
         let temp = data.reduce((a, d) => a += Number(d[attr]), 0)
 
-        console.log({ temp: data.reduce((a, d) => a += Number(d[attr]), 0) })
+        // console.log({ temp: data.reduce((a, d) => a += Number(d[attr]), 0) })
         // data.reduce((a,d) => a+= parseInt(d[attr]), 0)
         return temp / 100 * base_point
     }
@@ -136,9 +136,9 @@ const DetailModal = () => {
                 <Typography variant='h5' >{data.name}</Typography>
 
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography gutterBottom variant='subtitle1' style={{ flexGrow: 1 }} >{`Mỗi lượt đóng góp tối đa ${data.base_point} điểm/lượt`}</Typography>
+                    <Typography gutterBottom variant='subtitle1' style={{ flexGrow: 1 }} >{`Mỗi lượt đóng góp tối đa ${ data.base_point } điểm/lượt`}</Typography>
                 </div>
-                <form onSubmit={addItem} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }} id ='form-create-detail'>
+                <form onSubmit={addItem} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }} id='form-create-detail'>
                     <TextField disabled={data.disableEdit} size="small" required className={classes.name} type='text' variant="outlined" label="Tên" onChange={(e) => setValue({ ...value, name: e.target.value })} />
                     <TextField disabled={data.disableEdit} size="small" required className={classes.inputpercent} type='number' variant="outlined" label="Đóng góp"
                         InputProps={{
@@ -173,21 +173,21 @@ const DetailModal = () => {
                         <div style={{ flexGrow: 1 }}>
                             <Tooltip title={
                                 <>
-                                <Typography variant='subtitle2'>Điểm đạt được bằng tổng điểm thành phần</Typography>
-                                <Typography variant='subtitle2'>Tổng điểm nhỏ hoặc bằng điểm tối đa</Typography>
+                                    <Typography variant='subtitle2'>Điểm đạt được bằng tổng điểm thành phần</Typography>
+                                    <Typography variant='subtitle2'>Tổng điểm nhỏ hoặc bằng điểm tối đa</Typography>
                                 </>
                             }>
-                                    <HelpIcon fontSize='small' color='action'/>
+                                <HelpIcon fontSize='small' color='action' />
                             </Tooltip>
-                    </div>
-                    <Button onClick={handleClose} variant="contained">Thoát</Button>
-                    &nbsp;  &nbsp;
-                    <Button type='submit' variant="contained" color="primary" disabled={ compareTwoArray(data.details,tempData) || data.disableEdit}>Xác nhận</Button>
+                        </div>
+                        <Button onClick={handleClose} variant="contained">Thoát</Button>
+                        &nbsp;  &nbsp;
+                        <Button type='submit' variant="contained" color="primary" disabled={compareTwoArray(data.details, tempData) || data.disableEdit}>Xác nhận</Button>
                     </div>
                 </form>
 
 
-        </div>
+            </div>
         </>
     )
 }

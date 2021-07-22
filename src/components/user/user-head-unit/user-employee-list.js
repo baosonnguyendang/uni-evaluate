@@ -40,10 +40,10 @@ export default function EmployeeList(props) {
   };
 
   useEffect(() => {
-    console.log(props.level)
-    axios.get(`/user/head/${id1}/${id2}/get`)
+    // console.log(props.level)
+    axios.get(`/user/head/${ id1 }/${ id2 }/get`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setInfo(res.data.formDepartment)
         let temp = []
         res.data.formUsers.map(user => {
@@ -67,7 +67,7 @@ export default function EmployeeList(props) {
           }
           temp.push(obj)
         })
-        console.log(temp)
+        // console.log(temp)
         setData(temp)
       })
       .catch(err => {
@@ -106,7 +106,7 @@ export default function EmployeeList(props) {
               <TableCell align="left">{row.unit}</TableCell>
               <TableCell align="center">{row.point.toString()}</TableCell>
               <TableCell align="center">{row.rating ? row.rating : ''}</TableCell>
-              <TableCell align="center" style={{ minWidth: '200px' }}> {((row.status > 2) || (row.status == 2 && props.level != 3)) && <Link to={`${url}/${row.id}`}>{((row.status == 2 && props.level != 3) || (props.level == 3 && row.point.some(x => x == ' --'))) ? 'Đánh giá GV/VC' : 'Kết quả đánh giá GV/VC'}</Link>}</TableCell>
+              <TableCell align="center" style={{ minWidth: '200px' }}> {((row.status > 2) || (row.status == 2 && props.level != 3)) && <Link to={`${ url }/${ row.id }`}>{((row.status == 2 && props.level != 3) || (props.level == 3 && row.point.some(x => x == ' --'))) ? 'Đánh giá GV/VC' : 'Kết quả đánh giá GV/VC'}</Link>}</TableCell>
             </TableRow>
           ))}
         </TableBody>

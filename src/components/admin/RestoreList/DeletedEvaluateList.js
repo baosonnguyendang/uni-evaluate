@@ -97,7 +97,7 @@ const DeletedEvaluateList = () => {
   const fetchDeletedStandard = () => {
     return axios.get('/admin/review/deleted')
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setRows(res.data.reviews)
       })
       .catch(e => {

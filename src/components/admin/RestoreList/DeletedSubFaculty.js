@@ -97,9 +97,9 @@ const DeletedSubFaculty = () => {
   let { url } = useRouteMatch();
 
   const fetchDeletedSubDept = (id) => {
-    return axios.get(`/admin/department/deleted/${id}/children`)
+    return axios.get(`/admin/department/deleted/${ id }/children`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setRows(res.data.departments)
       })
       .catch(e => {
@@ -124,7 +124,7 @@ const DeletedSubFaculty = () => {
   const restoreSubDeptWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/department/${id}/restore`, {})
+    axios.post(`/admin/department/${ id }/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.department_code !== id)
         setRows(newRows)
@@ -200,7 +200,7 @@ const DeletedSubFaculty = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
+      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{ float: 'right' }} ><KeyboardReturnIcon /></Link>
     </>
   )
 }

@@ -64,7 +64,7 @@ export default function FormEvaluation(props) {
   var variable = props.level === 1 ? id1 : id3
 
   useEffect(() => {
-    axios.get(`/user/review/${id}/head`)
+    axios.get(`/user/review/${ id }/head`)
       .then(res => {
         if (!res.data.formDepartment.some(x => x.form_id.code == id1 && x.department_id.department_code == 'HDDG')) {
           setDisableEdit3(true)
@@ -75,7 +75,7 @@ export default function FormEvaluation(props) {
       })
     //lấy Form
     const getForm = () => {
-      return axios.get(`/form/${variable}/v2?level=${props.level}`)
+      return axios.get(`/form/${ variable }/v2?level=${ props.level }`)
         .then(res => {
           setInfo({
             name: res.data.user.lastname + ' ' + res.data.user.firstname,
@@ -100,19 +100,18 @@ export default function FormEvaluation(props) {
             t3mp.push({ order: standard.standard_order, max: standard.standard_point ? standard.standard_point : null, list: list })
           })
           setMax(t3mp)
-          console.log(t)
+          // console.log(t)
           setInput(t)
           return temp
         })
         .catch(err => {
           console.log(err)
-          console.log( typeof err.response.status)
           if (err.response.status === 403)
-           history.push('/forbidden')
+            history.push('/forbidden')
         })
     }
     const getFormResult = () => {
-      return axios.get(`/form/${variable}/evaluation/get`)
+      return axios.get(`/form/${ variable }/evaluation/get`)
         .then(res => {
           return res
         })
@@ -598,7 +597,7 @@ export default function FormEvaluation(props) {
       let dataa = { dataToSend, level }
       // console.log(dataa)
       setLoading(true)
-      axios.post(`/form/${variable}/submitForm`, dataa)
+      axios.post(`/form/${ variable }/submitForm`, dataa)
         .then(res => {
           setStatus(false)
           dispatch(showSuccessSnackbar('Kết quả đánh giá đã lưu'))
@@ -662,7 +661,7 @@ export default function FormEvaluation(props) {
       setLoading(true)
       setDisabled(true)
       // console.log(dataa)
-      axios.post(`/form/${variable}/saveForm`, dataa)
+      axios.post(`/form/${ variable }/saveForm`, dataa)
         .then(res => {
           // console.log(res)
           dispatch(showSuccessSnackbar('Lưu tạm thành công'))
@@ -1088,7 +1087,7 @@ export default function FormEvaluation(props) {
                     <div style={{ marginBottom: '24px' }}>
                       {/* <Typography variant="h6">Tổng điểm tự đánh giá: {point}</Typography>
                       <Typography variant="h6">{props.level > 1 && `Tổng điểm trưởng Khoa đánh giá: ${point2}`}</Typography> */}
-                      <Typography variant="h6">{disableEdit3 && `Điểm đợt đánh giá: ${point3}`}</Typography>
+                      <Typography variant="h6">{disableEdit3 && `Điểm đợt đánh giá: ${ point3 }`}</Typography>
                       <Typography variant="h6">Xếp loại: {rating ? rating : 'Chưa có'}</Typography>
                     </div>
                     {

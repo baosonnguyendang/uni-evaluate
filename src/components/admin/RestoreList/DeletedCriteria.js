@@ -103,9 +103,9 @@ const DeletedCriteria = () => {
   // tên tiêu chuẩn
   const [nameStandard, setNameStandard] = useState(null)
   const fetchDeletedCriteriaOfStandard = (id) => {
-    return axios.get(`/admin/standard/${id}/criteria/deleted`)
+    return axios.get(`/admin/standard/${ id }/criteria/deleted`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setRows(res.data.criterions)
         setNameStandard(res.data.standard.name)
       })
@@ -132,7 +132,7 @@ const DeletedCriteria = () => {
   const restoreCriteriaWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/criteria/${id}/restore`, {})
+    axios.post(`/admin/criteria/${ id }/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -211,7 +211,7 @@ const DeletedCriteria = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
+      <Link to={url.replace("/deleted", '')} component={Button} className={classes.btnback} variant="contained" style={{ float: 'right' }} ><KeyboardReturnIcon /></Link>
     </>
   )
 }

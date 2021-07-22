@@ -16,15 +16,13 @@ import axios from "axios";
 export default function EvaluateSetting(props) {
   const name = props.name
   var { url } = useRouteMatch();
-  let { id } = useParams();
   const [loading, setLoading] = useState(true)
   //be to fe
   const [rows, setRows] = React.useState([])
-  const token = localStorage.getItem('token')
   const fetchFormType = () => {
-    axios.get('/admin/review/formtype', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('/admin/review/formtype')
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         setRows(res.data.formTypeList)
         setLoading(false)
         // setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", "), isEditMode: false })))
@@ -37,35 +35,35 @@ export default function EvaluateSetting(props) {
   }, [])
 
   return (<>
-    { loading ? <Skeleton /> : 
+    {loading ? <Skeleton /> :
       <div>
-      <Typography component="h1" variant="h5" color="inherit" noWrap>
-        Các nhóm tham gia đánh giá {name}
-      </Typography>
-      <Paper style={{ marginTop: '24px' }}>
-        <Table aria-label="caption table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Mã nhóm</TableCell>
-              <TableCell align="left">Thành phần</TableCell>
-              <TableCell align="left"></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => {
-              return (
-                <TableRow key={row._id}>
-                  <TableCell align="center"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/${row.code}`}>{row.code}</Link></TableCell>
-                  <TableCell align="left"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${url}/${row.code}`}>{row.name}</Link></TableCell>
-                  <TableCell align="left"><Link to={`${url}/${row.code}/results`}>Xem kết quả đánh giá</Link></TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </Paper>
-    </div>
+        <Typography component="h1" variant="h5" color="inherit" noWrap>
+          Các nhóm tham gia đánh giá {name}
+        </Typography>
+        <Paper style={{ marginTop: '24px' }}>
+          <Table aria-label="caption table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Mã nhóm</TableCell>
+                <TableCell align="left">Thành phần</TableCell>
+                <TableCell align="left"></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => {
+                return (
+                  <TableRow key={row._id}>
+                    <TableCell align="center"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${ url }/${ row.code }`}>{row.code}</Link></TableCell>
+                    <TableCell align="left"><Link style={{ color: 'black', textDecoration: 'none' }} to={`${ url }/${ row.code }`}>{row.name}</Link></TableCell>
+                    <TableCell align="left"><Link to={`${ url }/${ row.code }/results`}>Xem kết quả đánh giá</Link></TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </Paper>
+      </div>
     }
-    </>
+  </>
   )
 }

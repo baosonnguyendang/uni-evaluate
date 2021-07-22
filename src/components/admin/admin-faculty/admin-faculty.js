@@ -94,8 +94,8 @@ export default function Criterion() {
   const fetchDepartment = () => {
     axios.get('/admin/department/parent')
       .then(res => {
-        console.log(res.data.parents);
-        setRows(res.data.parents.map(dep => ({ ...dep, namemanager: (dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`), idmanager: dep?.manager?.staff_id, parent: dep?.parent?.name, isEditMode: false })))
+        // console.log(res.data.parents);
+        setRows(res.data.parents.map(dep => ({ ...dep, namemanager: (dep?.manager && `${ dep.manager.lastname } ${ dep?.manager?.firstname }`), idmanager: dep?.manager?.staff_id, parent: dep?.parent?.name, isEditMode: false })))
         setIsLoading(false)
       })
   }
@@ -107,7 +107,7 @@ export default function Criterion() {
   const CustomTableCell = ({ row, name, ...rest }) => {
     return (
       <TableCell align="left" className={classes.tableCell} {...rest}>
-        {name === 'name' ? (<Link to={`${url}/${row.department_code}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])}
+        {name === 'name' ? (<Link to={`${ url }/${ row.department_code }`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])}
       </TableCell>
     );
   };
@@ -123,7 +123,7 @@ export default function Criterion() {
   const deleteDeptWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/department/${id}/delete`, {})
+    axios.post(`/admin/department/${ id }/delete`, {})
       .then(res => {
         const newRows = rows.filter(row => row.department_code !== id)
         setRows(newRows)
@@ -131,7 +131,7 @@ export default function Criterion() {
         setLoading(false)
       })
       .catch(err => {
-        console.log(err.response.status)
+        // console.log(err.response.status)
         dispatch(showErrorSnackbar('Xoá đơn vị thất bại'))
         setLoading(false)
       })
@@ -154,7 +154,7 @@ export default function Criterion() {
   const handleOpen = () => {
     axios.get('admin/department/parent')
       .then(res => {
-        console.log(res.data.parents)
+        // console.log(res.data.parents)
         setUnits(res.data.parents)
         // setNewUnit(res.data.parents)
         // res.data.parents.map(x => {
@@ -163,7 +163,7 @@ export default function Criterion() {
 
       })
       .catch(e => {
-        console.log(e)
+        // console.log(e)
       })
     setOpenImport(false)
     setModal({ open: true, id: '' });
@@ -192,10 +192,10 @@ export default function Criterion() {
     e.preventDefault()
     const body = { new_dcode: id, name }
     setLoading(true)
-    console.log(modal.id)
+    // console.log(modal.id)
     setModal({ ...modal, open: false });
 
-    axios.post(`/admin/department/${dept_code}/edit`, body)
+    axios.post(`/admin/department/${ dept_code }/edit`, body)
       .then(res => {
         setRows(rows.map(r => r.department_code === dept_code ? { ...r, department_code: id, name } : r))
         dispatch(showSuccessSnackbar('Cập nhật đơn vị thành công'))
@@ -203,8 +203,8 @@ export default function Criterion() {
         handleClose()
       })
       .catch(err => {
-        console.log(err)
-        console.log(err.response)
+        // console.log(err)
+        // console.log(err.response)
         setModal({ ...modal, open: true });
         switch (err.response?.status) {
           case 409:
@@ -227,7 +227,7 @@ export default function Criterion() {
   const [headUnit, setHeadUnit] = React.useState('')
 
   const submitAddDepartment = (e) => {
-    console.log(id, name, headUnit, newUnit);
+    // console.log(id, name, headUnit, newUnit);
     e.preventDefault()
     setLoading(true)
     const body = {
@@ -236,28 +236,28 @@ export default function Criterion() {
       manager: headUnit,
       parent: newUnit
     }
-    console.log(body)
+    // console.log(body)
     setModal({ ...modal, open: false });
     axios.post('/admin/department/addDepartment', body)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         const temp = res.data.manager
         if (!newUnit) {
           if (temp === null) {
             setRows(rows => [...rows, { department_code: id, name, }])
           }
           else {
-            setRows(rows => [...rows, { department_code: id, name, idmanager: temp?.staff_id, namemanager: `${temp?.lastname} ${temp?.firstname}` }])
+            setRows(rows => [...rows, { department_code: id, name, idmanager: temp?.staff_id, namemanager: `${ temp?.lastname } ${ temp?.firstname }` }])
           }
         }
-        
+
         dispatch(showSuccessSnackbar('Tạo đơn vị thành công'))
         setLoading(false)
         handleClose();
       })
       .catch(err => {
-        console.log(err)
-        console.log(err.response)
+        // console.log(err)
+        // console.log(err.response)
         setModal({ ...modal, open: true });
         switch (err.response?.status) {
           case 409:
@@ -282,7 +282,7 @@ export default function Criterion() {
   let history = useHistory();
 
   const redirectStorePage = () => {
-    history.push(`${url}/deleted`)
+    history.push(`${ url }/deleted`)
   }
   // open import
   const [openImport, setOpenImport] = useState(false)
@@ -295,17 +295,17 @@ export default function Criterion() {
     setLoading(true)
     const formData = new FormData()
     formData.append("file", data)
-    console.log(formData)
+    // console.log(formData)
     setLoading(true)
     handleClose()
     axios.post("/admin/user/file/import", formData)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         dispatch(showSuccessSnackbar('Import excel người dùng thành công'))
         setLoading(false)
       })
       .catch(e => {
-        console.log(e)
+        // console.log(e)
         dispatch(showErrorSnackbar('Import excel người dùng thất bại'))
         setLoading(false)
       })
@@ -329,7 +329,7 @@ export default function Criterion() {
         setLoading(false)
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
         setLoading(false)
       })
   }

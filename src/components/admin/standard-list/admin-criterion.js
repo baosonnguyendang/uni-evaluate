@@ -93,7 +93,7 @@ export default function Criterion() {
   const fetchStandard = () => {
     return axios.get('admin/standard')
       .then(res => {
-        console.log(res.data.standards)
+        // console.log(res.data.standards)
         setRows(res.data.standards)
         setIsLoading(false)
       })
@@ -115,7 +115,7 @@ export default function Criterion() {
   const deleteStandardWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/standard/${id}/delete`, {})
+    axios.post(`/admin/standard/${ id }/delete`, {})
       .then(res => {
         const newRows = rows.filter(row => row.code !== id)
         setRows(newRows)
@@ -200,14 +200,14 @@ export default function Criterion() {
   }
   const editCriterion = (e, id) => {
     e.preventDefault()
-    console.log(modal.id)
-    console.log(id)
+    // console.log(modal.id)
+    // console.log(id)
 
     const body = { new_ccode: code, name, description }
     setLoading(true)
 
     handleClose()
-    axios.post(`/admin/standard/${id}/edit`, body)
+    axios.post(`/admin/standard/${ id }/edit`, body)
       .then(res => {
         setRows(rows.map(r => r.code === id ? { ...r, code, name, description } : r))
         dispatch(showSuccessSnackbar('Cập nhật tiêu chuẩn thành công'))
@@ -215,7 +215,6 @@ export default function Criterion() {
       })
       .catch(err => {
         console.log(err)
-        console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã tiêu chuẩn đã tồn tại'))
@@ -229,7 +228,7 @@ export default function Criterion() {
   }
   let history = useHistory();
   const redirectStorePage = () => {
-    history.push(`${url}/deleted`)
+    history.push(`${ url }/deleted`)
   }
   return (
     <>

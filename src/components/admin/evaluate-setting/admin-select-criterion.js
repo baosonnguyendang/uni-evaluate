@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import { BrowserRouter as Router, Switch, Route, Redirect, Link, NavLink } from "react-router-dom";
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -11,22 +10,18 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Backdrop from '@material-ui/core/Backdrop';
-import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
 import Checkbox from '@material-ui/core/Checkbox';
-import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Modal from '@material-ui/core/Modal';
-import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import { useRouteMatch } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -96,7 +91,7 @@ export default function SelectCriterion() {
   //fe to be
   const token = localStorage.getItem('token')
   const fetchCriterion = () => {
-    axios.get('admin/standard/criteria', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('admin/standard/criteria', { headers: { "Authorization": `Bearer ${ token }` } })
       .then(res => {
         res.data.standards.map(x => {
           setData(data => [...data, createData(x.name, x.code, x.criteria.map(y => { return (criteria(y.name, y.code)) }))])
@@ -111,7 +106,7 @@ export default function SelectCriterion() {
   const [openCriteria, setOpenCriteria] = React.useState(false);
   const handleCloseCriteria = () => {
     setOpenCriteria(false);
-    console.log(data.map(x => x.order))
+    // console.log(data.map(x => x.order))
   }
 
   //open modal
@@ -146,7 +141,7 @@ export default function SelectCriterion() {
   const submitOrder = e => {
     e.preventDefault()
     // data.find(x => x.id === id).order = order
-    console.log(new Set(compare).size !== compare.length)
+    // console.log(new Set(compare).size !== compare.length)
   }
 
   //chon don vi trong modal
@@ -155,7 +150,7 @@ export default function SelectCriterion() {
     setOrder(event.target.value);
     data.find(x => x.id === id).order = event.target.value
     setCompare(data.map(x => x.order).filter(y => y !== null))
-    console.log(data.map(x => x.order))
+    // console.log(data.map(x => x.order))
   };
 
   let bool = false
@@ -222,7 +217,7 @@ export default function SelectCriterion() {
               getOptionLabel={(data) => data.name}
               defaultValue={data.filter(x => x.check === true)}
               onChange={(event, value) => {
-                console.log(value)
+                // console.log(value)
                 data.map(criterion => criterion.check = false)
                 value.map(criterion => criterion.check = true)
               }}
@@ -283,9 +278,9 @@ export default function SelectCriterion() {
                           </Select>
                           <FormHelperText>{new Set(compare).size !== compare.length && 'Trùng STT với tiêu chuẩn khác, vui lòng kiểm tra lại'}</FormHelperText>
                         </FormControl>
-                        <TextField  error={point === ""} helperText={point === "" ? 'Empty field!' : ' '} onChange={e => setP(e.target.value)} type='number' id="point" label="Tổng điểm" variant="outlined" fullWidth />
-                          {/* <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu</Button> */}
-                        <Button style={{ marginLeft: '10px', marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Thoát</Button>                        
+                        <TextField error={point === ""} helperText={point === "" ? 'Empty field!' : ' '} onChange={e => setP(e.target.value)} type='number' id="point" label="Tổng điểm" variant="outlined" fullWidth />
+                        {/* <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary" >Lưu</Button> */}
+                        <Button style={{ marginLeft: '10px', marginTop: '10px' }} variant="contained" color="primary" onClick={handleCloseCriteria}>Thoát</Button>
                       </form>
                     </div>
                   )

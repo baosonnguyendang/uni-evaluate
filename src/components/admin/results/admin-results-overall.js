@@ -4,7 +4,7 @@ import AdminChart from './admin-results-chart'
 
 import axios from 'axios'
 
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useParams, } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 

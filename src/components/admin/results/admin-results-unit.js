@@ -42,7 +42,7 @@ const CustomTableCell = ({ row, name }) => {
   else {
     return (
       <TableCell>
-        {name === 'link' ? (row.already == true ? (<Link to={`${url}/` + row._id} >{row[name]}</Link>) : null) : (row[name])}
+        {name === 'link' ? (row.already == true ? (<Link to={`${ url }/` + row._id} >{row[name]}</Link>) : null) : (row[name])}
       </TableCell>
     )
   }
@@ -58,22 +58,22 @@ export default function Results(props) {
 
   //lấy mã form and then ds gv/vc thuộc đơn vị
   useEffect(() => {
-    axios.get(`/admin/review/${id}/formtype/${id1}/form/`)
+    axios.get(`/admin/review/${ id }/formtype/${ id1 }/form/`)
       .then(res => {
         if (res.data.form) {
           // setCode(res.data.form.code)
           code = res.data.form.code
 
-          axios.get(`/admin/form/${code}/${id2}/getFormUser`)
+          axios.get(`/admin/form/${ code }/${ id2 }/getFormUser`)
             .then(res => {
               let temp = []
-              console.log(res.data.formUser)
+              // console.log(res.data.formUser)
               res.data.formUser.map(x => {
                 temp.push(createData(x.user_id.lastname + ' ' + x.user_id.firstname, x.user_id.staff_id, x.user_id.department.length > 0 ? x.user_id.department[0].name : null, 'Chưa đánh giá', null))
               })
-              axios.get(`/admin/form/${code}/${id2}/formuser/get`)
+              axios.get(`/admin/form/${ code }/${ id2 }/formuser/get`)
                 .then(res => {
-                  console.log(res.data.formUsers)
+                  // console.log(res.data.formUsers)
                   res.data.formUsers.map(user => {
                     let pts = [' --', ' --', ' --']
                     if (user.evaluateForm) {
@@ -111,7 +111,7 @@ export default function Results(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  if (!rows) return <Loading open /> 
+  if (!rows) return <Loading open />
   return (
     <div>
       <Typography component="h1" variant="h5" color="inherit" noWrap>

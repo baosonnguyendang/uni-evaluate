@@ -48,9 +48,9 @@ export default function Classify(props) {
 
   //lấy phân loại từ be
   useEffect(() => {
-    axios.get(`/admin/form/${props.fcode}/formrating`)
+    axios.get(`/admin/form/${ props.fcode }/formrating`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         let t = []
         res.data.formRatings.map(rate => {
           t.push(createData(rate._id, rate.name, rate.min_point, rate.max_point))
@@ -77,7 +77,7 @@ export default function Classify(props) {
   }
   const handleCloseEdit = () => {
     setOpenEdit(false)
-    console.log(rows)
+    // console.log(rows)
   }
   const editOnChange = (id, event) => {
     let temp = [...info]
@@ -107,12 +107,12 @@ export default function Classify(props) {
       setError("Điểm sau không được nhỏ hơn điểm trước")
       return
     }
-    handleCloseEdit()        
+    handleCloseEdit()
     setLoading(true)
-    axios.post(`/admin/formrating/${info[3]}/edit`, { name: info[0], min_point: info[1], max_point: info[2] })
+    axios.post(`/admin/formrating/${ info[3] }/edit`, { name: info[0], min_point: info[1], max_point: info[2] })
       .then(res => {
         setRows([...temp])
-        setError("")        
+        setError("")
         dispatch(showSuccessSnackbar('Cập nhật xếp loại thành công'))
         setLoading(false)
       })
@@ -127,12 +127,12 @@ export default function Classify(props) {
   // xóa phân loại
   const del = (id) => {
     let temp = [...rows]
-    console.log(temp[id].id)
+    // console.log(temp[id].id)
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/formrating/${temp[id].id}/delete`, {})
+    axios.post(`/admin/formrating/${ temp[id].id }/delete`, {})
       .then(res => {
-        console.log(res)
+        // console.log(res)
         temp.splice(id, 1)
         setLoading(false)
         setRows(temp)
@@ -168,9 +168,9 @@ export default function Classify(props) {
     }
     setLoading(true)
     setOpen(false)
-    axios.post(`/admin/form/${props.fcode}/formrating`, { name: name, min_point: from, max_point: to })
+    axios.post(`/admin/form/${ props.fcode }/formrating`, { name: name, min_point: from, max_point: to })
       .then(res => {
-        console.log(res)
+        // console.log(res)
         let t = [...rows]
         t.push(createData(res.data.formRating._id, name, from, to))
         setRows(t)
@@ -213,9 +213,9 @@ export default function Classify(props) {
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell style={{width: '30%'}} align='left'>Phân loại</TableCell>
-                <TableCell style={{width: '25%'}} align="left">Từ</TableCell>
-                <TableCell style={{width: '25%'}} align="left">Đến</TableCell>
+                <TableCell style={{ width: '30%' }} align='left'>Phân loại</TableCell>
+                <TableCell style={{ width: '25%' }} align="left">Từ</TableCell>
+                <TableCell style={{ width: '25%' }} align="left">Đến</TableCell>
                 <TableCell align="left"></TableCell>
               </TableRow>
             </TableHead>
@@ -264,7 +264,7 @@ export default function Classify(props) {
                 <TextField className={classes.text} required onChange={e => setFrom(parseInt(e.target.value))} label="Từ" type='number' variant="outlined" />
                 <TextField className={classes.text} onChange={e => setTo(parseInt(e.target.value))} label="Đến" type='number' variant="outlined" />
               </div>
-                <Typography variant='body2' color='secondary'>{error}</Typography>
+              <Typography variant='body2' color='secondary'>{error}</Typography>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                 <Button onClick={handleClose} variant="contained" >Thoát</Button>
                 &nbsp;&nbsp;

@@ -63,9 +63,9 @@ export default function Import(props) {
   }
 
   useEffect(() => {
-    axios.get(`/admin/form/${props.fcode}/getFormDepartments`)
+    axios.get(`/admin/form/${ props.fcode }/getFormDepartments`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         let t = []
         res.data.formDepartments.map(unit => {
           t.push({ code: unit.department_id.department_code, name: unit.department_id.name })
@@ -76,9 +76,9 @@ export default function Import(props) {
       .catch(err => {
         console.log(err)
       })
-    axios.get(`/admin/form/${props.fcode}/getFormStandard`)
+    axios.get(`/admin/form/${ props.fcode }/getFormStandard`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         let temp = []
         res.data.formStandards.map(x => {
           temp.push({ code: x.standard_id.code, name: x.standard_id.name })
@@ -91,11 +91,11 @@ export default function Import(props) {
   }, [])
 
   useEffect(() => {
-    console.log(standardChosen)
+    // console.log(standardChosen)
     if (standardChosen) {
-      axios.get(`/admin/form/${props.fcode}/standard/${standardChosen.code}/getFormCriteria`)
+      axios.get(`/admin/form/${ props.fcode }/standard/${ standardChosen.code }/getFormCriteria`)
         .then(res => {
-          console.log(res.data)
+          // console.log(res.data)
           let t = []
           res.data.formCriteria.map(x => {
             t.push({ code: x.criteria_id.code, name: x.criteria_id.name })
@@ -117,7 +117,7 @@ export default function Import(props) {
       ccode: criteriaChosen.code
     }
     axios({
-      url: `/admin/file/form/${fcode}/evaluation/export`,
+      url: `/admin/file/form/${ fcode }/evaluation/export`,
       method: 'POST',
       data: body,
       responseType: 'blob', // important
@@ -126,7 +126,7 @@ export default function Import(props) {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `${body.dcode}-${body.ccode}.xlsx`); //or any other extension
+        link.setAttribute('download', `${ body.dcode }-${ body.ccode }.xlsx`); //or any other extension
         document.body.appendChild(link);
         setLoading(false)
         link.click();
@@ -178,9 +178,9 @@ export default function Import(props) {
     formData.append("dcode", body.dcode)
     formData.append("scode", body.scode)
     formData.append("ccode", body.ccode)
-    axios.post(`/admin/file/form/${fcode}/evaluation/import`, formData)
+    axios.post(`/admin/file/form/${ fcode }/evaluation/import`, formData)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         setLoading(false)
         dispatch(showSuccessSnackbar('Thêm điểm cho tiêu chí thành công'))
       })

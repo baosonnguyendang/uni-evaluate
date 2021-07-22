@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import axios from 'axios'
 
-import { LinearProgress, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, makeStyles, Paper, Grid, Radio, Button } from "@material-ui/core";
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, makeStyles, Paper, Grid } from "@material-ui/core";
 
 import { useParams } from 'react-router-dom'
 
@@ -35,9 +35,9 @@ export default function ResultsDetailed() {
   useEffect(() => {
     setLoading(true)
     const userForm = () => {
-      return axios.get(`/admin/userForm/${id3}/get`)
+      return axios.get(`/admin/userForm/${ id3 }/get`)
         .then(res => {
-          console.log(res.data)
+          // console.log(res.data)
           setInfo({
             name: res.data.user.lastname + ' ' + res.data.user.firstname,
             id: res.data.user.staff_id,
@@ -51,50 +51,50 @@ export default function ResultsDetailed() {
         })
     }
     const userFormResult = () => {
-      return axios.get(`/admin/userForm/${id3}/evaluation/get`)
-      .then(res => {
-        console.log(res.data)
-        return res
+      return axios.get(`/admin/userForm/${ id3 }/evaluation/get`)
+        .then(res => {
+          // console.log(res.data)
+          return res
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+    Promise.all([userForm(), userFormResult()])
+      .then(re => {
+        // console.log(re)
+        const res = re[1]
+        if (res.data.evaluateForms.length > 0) {
+          let total = []
+          res.data.evaluateForms.map(level => {
+            let arr = []
+            level.evaluateCriteria.map(criteria => {
+              arr.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point, details: criteria.details })
+            })
+            total.push(arr)
+          })
+          // console.log(total)
+          setPoint(res.data.evaluateForms[0].point)
+          if (total.length > 1) {
+            setPoint2(res.data.evaluateForms[1].point)
+          }
+          if (total.length > 2) {
+            setPoint3(res.data.evaluateForms[2].point)
+          }
+          setData(total.slice())
+        }
+        setLoading(false)
       })
       .catch(err => {
         console.log(err)
+        setLoading(false)
       })
-    }
 
-    Promise.all([userForm(),userFormResult()])
-    .then(re => {
-      console.log(re)
-      const res = re[1]
-      if (res.data.evaluateForms.length > 0) {
-        let total = []
-        res.data.evaluateForms.map(level => {
-          let arr = []
-          level.evaluateCriteria.map(criteria => {
-            arr.push({ name: criteria.form_criteria.criteria_id.code, value: criteria.point, details: criteria.details })
-          })
-          total.push(arr)
-        })
-        console.log(total)
-        setPoint(res.data.evaluateForms[0].point)
-        if (total.length > 1) {
-          setPoint2(res.data.evaluateForms[1].point)
-        }
-        if (total.length > 2) {
-          setPoint3(res.data.evaluateForms[2].point)
-        }
-        setData(total.slice())
-      }
-      setLoading(false)
-    })
-    .catch(err=>{
-      console.log(err)
-      setLoading(false)
-    })
-    
   }, [])
 
   const sendDetails = (criteria, level) => {
-    console.log(level)
+    // console.log(level)
     switch (level) {
       case 1:
         return (

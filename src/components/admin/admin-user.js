@@ -107,7 +107,7 @@ export default function ListUser() {
       .then(res => {
         setRows(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
         setFilterUser(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
-        console.log(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
+        // console.log(res.data.users.map(user => ({ ...user, department: user.department.map(dep => dep.name).join(", ") })))
         setIsLoading(false)
       })
       .catch(err => {
@@ -137,10 +137,10 @@ export default function ListUser() {
   const deleteUserWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/user/${id}/delete`, {})
+    axios.post(`/admin/user/${ id }/delete`, {})
       .then(res => {
         const newRows = rows.filter(row => row.staff_id !== id)
-        console.log(newRows)
+        // console.log(newRows)
         setRows(newRows)
         setFilterUser(newRows)
         dispatch(showSuccessSnackbar('Xoá người dùng thành công'))
@@ -211,10 +211,10 @@ export default function ListUser() {
     e.preventDefault()
     const body = { new_ucode: id, fname, lname, email, roles: role }
     setLoading(true)
-    console.log(modal.id)
+    // console.log(modal.id)
 
     handleClose()
-    axios.post(`/admin/user/${modal.id}/edit`, body)
+    axios.post(`/admin/user/${ modal.id }/edit`, body)
       .then(res => {
         setRows(rows.map(r => r.staff_id === modal.id ? { ...r, staff_id: id, firstname: fname, lastname: lname, roles: role, email } : r))
         setFilterUser(rows.map(r => r.staff_id === modal.id ? { ...r, staff_id: id, firstname: fname, lastname: lname, roles: role, email } : r))
@@ -223,7 +223,6 @@ export default function ListUser() {
       })
       .catch(err => {
         console.log(err)
-        console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã người dùng hoặc email đã tồn tại'))
@@ -250,7 +249,6 @@ export default function ListUser() {
       })
       .catch(err => {
         console.log(err)
-        console.log(err.response)
         switch (err.response?.status) {
           case 409:
             dispatch(showErrorSnackbar('Mã người dùng hoặc email đã tồn tại'))
@@ -278,7 +276,7 @@ export default function ListUser() {
     const temp = rows.filter(r => (r.firstname.toLowerCase().includes(value) ||
       r.lastname.toLowerCase().includes(value) || r.staff_id.toLowerCase().includes(value) || r.email.toLowerCase().includes(value)
     ))
-    console.log(temp)
+    // console.log(temp)
     setFilterUser(temp)
     setPage(0);
   }
@@ -292,12 +290,12 @@ export default function ListUser() {
   const submitExcel = (data) => {
     const formData = new FormData()
     formData.append("file", data)
-    console.log(formData)
+    // console.log(formData)
     setLoading(true)
     handleClose()
     axios.post("/admin/user/file/import", formData)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         dispatch(showSuccessSnackbar('Import excel người dùng thành công'))
         window.location.reload();
         setLoading(false)
@@ -335,7 +333,7 @@ export default function ListUser() {
   let history = useHistory();
   const { url } = useRouteMatch()
   const redirectStorePage = () => {
-    history.push(`${url}/deleted`)
+    history.push(`${ url }/deleted`)
   }
   return (<>
     {isLoading ? <Skeleton /> : (

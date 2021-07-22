@@ -17,9 +17,9 @@ export default function FormList() {
   const [headH, setHeadH] = useState(false)
 
   const fetchHeadForm = () => {
-    return axios.get(`/user/review/${id}/head`)
+    return axios.get(`/user/review/${ id }/head`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         // if (res.data.formDepartment.some(x => x.department_id.department_code == 'HDDG')) {
         //   setHeadH(true)
         // }
@@ -31,7 +31,7 @@ export default function FormList() {
             // }
             t.push({ unit: x.department_id.department_code, form: x.form_id.code })
           })
-          console.log(t)
+          // console.log(t)
           //setUnit(res.data.formDepartment[0].department_id.department_code)
           setUnit([...t])
         }
@@ -42,14 +42,14 @@ export default function FormList() {
   }
 
   const fetchForm = () => {
-    return axios.get(`/form/review/${id}/form`)
+    return axios.get(`/form/review/${ id }/form`)
       .then(res => {
         let temp = []
         let t3mp = []
         if (res.data.formUsers.some(x => x.department_form_id.level == 3)) {
           setHeadH(true)
         } // xem co nam trong hddg ko
-        console.log(res.data.formUsers)
+        // console.log(res.data.formUsers)
         res.data.formUsers.map(x => {
           let obj = { code: x.form_id.code, name: x.form_id.name, id: x.userForm._id, level: x.department_form_id.level, department: x.department_form_id.department_id.department_code }
           if (!temp.some(y => y.code == obj.code)) {
@@ -68,8 +68,8 @@ export default function FormList() {
           //   t3mp.push(obj)
           // }
         })
-        console.log(temp)
-        console.log(t3mp)
+        // console.log(temp)
+        // console.log(t3mp)
         setList([...temp])
         setListH([...t3mp])
       })
@@ -96,8 +96,8 @@ export default function FormList() {
           </Typography>
           {
             list.map(x => {
-              console.log(list)
-              console.log(unit)
+              // console.log(list)
+              // console.log(unit)
               return (
                 x.level < 3 ? (
                   <Card key={x.code} style={{ marginTop: '24px' }}>
@@ -111,20 +111,20 @@ export default function FormList() {
                     </CardContent>
                     <CardActions style={{ paddingLeft: '16px' }}>
                       <Button variant='contained' color='primary'>
-                        <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.id}`}>Đánh giá cá nhân</Link>
+                        <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${ url }/${ x.id }`}>Đánh giá cá nhân</Link>
                       </Button>
                       {unit.length > 0 && unit.some(y => y.unit == x.department) &&
                         <Button variant='contained' color='secondary'>
-                          <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${url}/${x.code}/${x.department}`}>Đánh giá với tư cách trưởng đơn vị</Link>
+                          <Link style={{ textDecoration: 'none', color: 'white' }} key={x.code} to={`${ url }/${ x.code }/${ x.department }`}>Đánh giá với tư cách trưởng đơn vị</Link>
                         </Button>}
                       {listH.length > 0 && listH.some(y => y.code == x.code) && headH &&
                         ((unit.some(y => y.unit == 'HDDG') && unit.some(z => z.form == x.code)) ? (
                           <Button variant='contained' color='default'>
-                            <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
+                            <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${ url }/${ x.code }/hddg`}>Đánh giá với tư cách HDDG</Link>
                           </Button>
                         ) : (
                           <Button variant='contained' color='default'>
-                            <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Xem với tư cách HDDG</Link>
+                            <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${ url }/${ x.code }/hddg`}>Xem với tư cách HDDG</Link>
                           </Button>
                         ))
                       }
@@ -144,11 +144,11 @@ export default function FormList() {
                     <CardActions style={{ paddingLeft: '16px' }}>
                       {(unit.some(y => y.unit == 'HDDG') && unit.some(z => z.form == x.code)) ? (
                         <Button variant='contained' color='default'>
-                          <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Đánh giá với tư cách HDDG</Link>
+                          <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${ url }/${ x.code }/hddg`}>Đánh giá với tư cách HDDG</Link>
                         </Button>
                       ) : (
                         <Button variant='contained' color='default'>
-                          <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${url}/${x.code}/hddg`}>Xem với tư cách HDDG</Link>
+                          <Link style={{ textDecoration: 'none', color: 'black' }} key={x.code} to={`${ url }/${ x.code }/hddg`}>Xem với tư cách HDDG</Link>
                         </Button>
                       )}
                     </CardActions>

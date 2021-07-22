@@ -5,7 +5,6 @@ import axios from 'axios';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
@@ -14,7 +13,6 @@ import Fade from '@material-ui/core/Fade';
 import TextField from '@material-ui/core/TextField'
 
 import { makeStyles, LinearProgress } from '@material-ui/core';
-import { useParams } from 'react-router';
 import Loading from '../../common/CircleLoading'
 
 const useStyles = makeStyles(theme => ({
@@ -57,7 +55,7 @@ export default function Drag(props) {
 
   // thêm tiêu chí vào tiêu chuẩn thuộc form
   const submitAddFormCriteria = () => {
-    console.log(chosen, itemsCriteria)
+    // console.log(chosen, itemsCriteria)
     const scode = chosen //mã tiêu chuẩn
     setDisabled(false)
     //request body
@@ -70,11 +68,11 @@ export default function Drag(props) {
         }
       }),
     }
-    axios.post(`/admin/form/${fcode}/standard/${scode}/addFormCriteria`, body, { headers: { "Authorization": `Bearer ${token}` } })
+    axios.post(`/admin/form/${ fcode }/standard/${ scode }/addFormCriteria`, body)
       .then(res => {
         let temp = [...items]
         temp.find(x => x.code == chosen).criteria = itemsCriteria
-        console.log(temp)
+        // console.log(temp)
         setItems(temp)
         handleCloseCriteria(); // tắt modal
       })
@@ -111,11 +109,11 @@ export default function Drag(props) {
     const handleOpen = (x) => {
       setChosen(x)
       setLoadingItem(true)
-      console.log(x)
+      // console.log(x)
       //setItemsCriteria(items.find(item => item.code == x).criteria) 
-      axios.get(`/admin/form/${fcode}/standard/${x}/getFormCriteria`, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.get(`/admin/form/${ fcode }/standard/${ x }/getFormCriteria`)
         .then(res => {
-          console.log(res.data.formCriteria)
+          // console.log(res.data.formCriteria)
           let temp = []
           res.data.formCriteria.map(x => {
             let obj = { 'code': x.criteria_id.code, 'score': parseInt(x.criteria_order), 'pts': x.point, 'title': x.criteria_id.name }
@@ -199,26 +197,25 @@ export default function Drag(props) {
   const [items, setItems] = useState([])
   const [itemsCriteria, setItemsCriteria] = useState([])
 
-  const token = localStorage.getItem('token')
   const fetchCriterion = () => {
-    axios.get('admin/standard/criteria', { headers: { "Authorization": `Bearer ${token}` } })
+    axios.get('admin/standard/criteria')
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         let temp = res.data.standards.map(x => createData(x))
-        axios.get(`/admin/form/${fcode}/getFormStandard`, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.get(`/admin/form/${ fcode }/getFormStandard`)
           .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             let temp2 = []
             res.data.formStandards.map(x => {
               let obj = { "title": x.standard_id.name, "score": x.standard_order, "code": x.standard_id.code, "pts": x.standard_point, "criteria": [] }
-              axios.get(`/admin/form/${fcode}/standard/${x.standard_id.code}/getFormCriteria`, { headers: { "Authorization": `Bearer ${token}` } })
+              axios.get(`/admin/form/${ fcode }/standard/${ x.standard_id.code }/getFormCriteria`)
                 .then(res => {
                   obj.criteria = res.data.formCriteria
                 })
               temp.find(x => x.code == obj.code).clicked = true
               temp2.push(obj)
             })
-            console.log(temp2)
+            // console.log(temp2)
             function dynamicSort(property) {
               var sortOrder = 1;
               if (property[0] === "-") {
@@ -254,7 +251,7 @@ export default function Drag(props) {
       fetchCriterion()
     }
     else {
-      console.log(items, luuTam)
+      // console.log(items, luuTam)
       if (items === luuTam) {
         setDisabled(true)
       }
@@ -295,7 +292,7 @@ export default function Drag(props) {
       itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriterion, "pts": 5, "criteria": [] })
     } else {
       itemsCopy.push({ "title": truncatedString, "score": itemsCopy.length + 1, "code": newCriteria, "pts": 5 })
-      console.log(itemsCopy)
+      // console.log(itemsCopy)
     }
 
     itemsCopy.sort((a, b) => {
@@ -307,7 +304,7 @@ export default function Drag(props) {
       setNewCriterion('')
     } else {
       setItemsCriteria(itemsCopy)
-      console.log(itemsCopy)
+      // console.log(itemsCopy)
       setNewCriteria('')
     }
   }
@@ -326,20 +323,20 @@ export default function Drag(props) {
 
   const removeItem = (index) => {
     var itemsCopy = openCriteria ? itemsCriteria.slice() : items.slice();
-    console.log(itemsCopy[index])
+    // console.log(itemsCopy[index])
     itemsCopy.splice(index, 1);
     itemsCopy.sort((a, b) => {
       return a.score - b.score;
-    });      
+    });
     itemsCopy.map(x => {
-      if (x.score >= itemsCopy[index].score){
+      if (x.score >= itemsCopy[index].score) {
         x.score--
       }
     })
     if (openCriteria) {
-      console.log(itemsCriteria)
+      // console.log(itemsCriteria)
       setItemsCriteria(itemsCopy)
-    } 
+    }
     else {
       setItems(itemsCopy)
       let temp = data.filter(x => x.clicked == true).map(y => y.code).filter(e => !itemsCopy.map(z => z.code).includes(e));
@@ -364,14 +361,14 @@ export default function Drag(props) {
     if (items.some(x => x.criteria.length == 0)) {
       alert('Có tiêu chuẩn chưa có tiêu chí, xem lại')
     }
-    console.log(items)
+    // console.log(items)
     if (new Set(items.map(x => x.score)).size !== items.map(x => x.score).length) {
       alert('Kiểm tra lại STT')
     }
     else {
-      axios.post(`/admin/form/${fcode}/addFormStandard`, body, { headers: { "Authorization": `Bearer ${token}` } })
+      axios.post(`/admin/form/${ fcode }/addFormStandard`, body)
         .then(res => {
-          console.log(items)
+          // console.log(items)
           setDisabled(true);
           setLuuTam(items)
         })
@@ -388,7 +385,7 @@ export default function Drag(props) {
 
   return (
     <div>
-      { loading ? <Loading /> : (
+      {loading ? <Loading /> : (
         <>
           {loadingItem && <LinearProgress style={{ position: "absolute", width: "100%" }} />}
           <FormControl variant="outlined" >

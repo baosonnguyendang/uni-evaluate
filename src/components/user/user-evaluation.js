@@ -21,13 +21,13 @@ export default function Evaluation() {
     setLoading(true)
     axios.get('/form/review')
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         let temp = []
         res.data.reviews.map(x => {
           let obj = { name: x.name, code: x.code, startDate: x.start_date, endDate: x.end_date, _id: x._id }
           temp.push(obj)
         })
-        console.log(temp)
+        // console.log(temp)
         setList(temp)
         setLoading(false)
       })

@@ -17,8 +17,6 @@ import { showSuccessSnackbar, showErrorSnackbar } from '../../../../actions/noti
 import HelpIcon from '@material-ui/icons/Help';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import { Fade, Modal, Backdrop } from '@material-ui/core'
-
 import PreviewModal from './PreviewModal'
 //fix out of drag
 let portal = document.createElement("div");
@@ -85,36 +83,36 @@ export default function ModifyForm({ fcode }) {
 
     return axios.get(`/admin/form/${ id }/getFormStandard`)
       .then(res => {
-        console.log(res.data)
-        console.log(res.data.formStandards.map(t => ({ ...t, ...t.standard_id })))
+        // console.log(res.data)
+        // console.log(res.data.formStandards.map(t => ({ ...t, ...t.standard_id })))
         setExistStandards(res.data.formStandards.map(t => ({ ...t, ...t.standard_id })))
         return res.data.formStandards.map(t => ({ ...t, ...t.standard_id }))
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
       })
   }
   const fetchAllStandard = () => {
     return axios.get(`/admin/standard`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         return res.data.standards
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
       })
   }
   useEffect(() => {
     Promise.all([fetchAllStandard(), fetchAllStandardOfForm()])
       .then(res => {
-        console.log(res)
+        // console.log(res)
         const listStandards = res[1].map(s => s.code)
         setStandards(res[0].filter(s => !listStandards.includes(s.code)))
         setTemp({ standards: res[0].filter(s => !listStandards.includes(s.code)), existStandards: res[1] })
         setLoading(false)
       })
   }, [])
-  console.log(existStandards)
+  // console.log(existStandards)
   const handleOnDragEnd = (result) => {
     if (!result.destination) return
     const items = Array.from(existStandards)
@@ -127,7 +125,7 @@ export default function ModifyForm({ fcode }) {
     setExistStandards(existStandards.filter((c, index) => index !== i))
   }
   const handleChangePoint = (e, i) => {
-    console.log(e.target.value)
+    // console.log(e.target.value)
     setExistStandards(existStandards.map((c, index) =>
       index === i ? { ...c, standard_point: parseInt(e.target.value) } : c
     ))
@@ -150,8 +148,8 @@ export default function ModifyForm({ fcode }) {
   const addStandard = (point) => {
     const existStandardsTemp = [...existStandards, { ...tempStandard, standard_point: point }]
     const standardstemp = standards.filter(s => s.code !== tempStandard.code)
-    console.log(existStandardsTemp)
-    console.log(standardstemp)
+    // console.log(existStandardsTemp)
+    // console.log(standardstemp)
     setExistStandards(existStandardsTemp)
     setStandards(standardstemp)
     setTemp({ standards: standardstemp, existStandards: existStandardsTemp })
@@ -169,11 +167,11 @@ export default function ModifyForm({ fcode }) {
       .then(res => {
         setLoading(false)
         dispatch(showSuccessSnackbar('Lưu thành công'))
-        console.log(res.data)
+        // console.log(res.data)
         setTemp({ standards, existStandards })
       })
       .catch(err => {
-        console.log(err)
+        // console.log(err)
         dispatch(showErrorSnackbar('Lưu thất bại'))
         setLoading(false)
       })

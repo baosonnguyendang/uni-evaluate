@@ -120,10 +120,10 @@ const DeletedUser = () => {
   const restoreUserWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/user/${id}/restore`, {})
+    axios.post(`/admin/user/${ id }/restore`, {})
       .then(res => {
         const newRows = rows.filter(row => row.staff_id !== id)
-        console.log(newRows)
+        // console.log(newRows)
         setRows(newRows)
         dispatch(showSuccessSnackbar('Khôi phục người dùng thành công'))
         setLoading(false)
@@ -172,7 +172,7 @@ const DeletedUser = () => {
           </TableHead>
           <TableBody>
             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
-              console.log(row)
+              // console.log(row)
               return (
                 <TableRow key={row._id}>
                   <CustomTableCell {...{ row, name: "staff_id", }} />
@@ -208,7 +208,7 @@ const DeletedUser = () => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <Link to="/admin/user" component={Button} className={classes.btnback} variant="contained" style={{float: 'right'}} ><KeyboardReturnIcon /></Link>
+      <Link to="/admin/user" component={Button} className={classes.btnback} variant="contained" style={{ float: 'right' }} ><KeyboardReturnIcon /></Link>
     </>
   )
 }

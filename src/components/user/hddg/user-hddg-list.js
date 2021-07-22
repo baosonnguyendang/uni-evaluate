@@ -4,8 +4,10 @@ import axios from 'axios';
 
 import { Link, useParams, useRouteMatch } from 'react-router-dom'
 
-import { Container, Paper, Typography, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, 
-  LinearProgress} from '@material-ui/core'
+import {
+  Container, Paper, Typography, Table, TableHead, TableBody, TableRow, TableCell, TableContainer,
+  LinearProgress
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -22,9 +24,9 @@ export default function CouncilUnitList() {
   const [units, setUnits] = useState(null)
 
   useEffect(() => {
-    axios.get(`/form/${id1}/formdepartments/get`)
+    axios.get(`/form/${ id1 }/formdepartments/get`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         let temp = []
         res.data.formDepartments.map(dep => {
           let obj = {
@@ -35,14 +37,14 @@ export default function CouncilUnitList() {
           }
           temp.push(obj)
         })
-        console.log(temp)
+        // console.log(temp)
         setUnits(temp)
       })
       .catch(err => {
         console.log(err)
       })
   }, [])
-  if (!units) return <LinearProgress style={{position:"absolute", width:"100%" }} /> 
+  if (!units) return <LinearProgress style={{ position: "absolute", width: "100%" }} />
   return (
     <Container>
       <Typography variant="h5" style={{ margin: '24px 0' }}>
@@ -68,7 +70,7 @@ export default function CouncilUnitList() {
                 <TableCell align="center">{row.code}</TableCell>
                 <TableCell align="left">{row.headName}</TableCell>
                 <TableCell align="center">{row.headCode}</TableCell>
-                <TableCell><Link to={`${url}/${row.code}`} >Đánh giá</Link></TableCell>
+                <TableCell><Link to={`${ url }/${ row.code }`} >Đánh giá</Link></TableCell>
               </TableRow>
             ))}
           </TableBody>

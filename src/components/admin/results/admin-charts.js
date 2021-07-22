@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import './styles.css'
 
@@ -6,12 +6,6 @@ import Chart from './charts'
 
 
 export default function Charts(props) {
-
-  // componentWillMount() {
-  //   this.getChartData()
-  // }
-
-
   return (
     <div>
       <div className="App">

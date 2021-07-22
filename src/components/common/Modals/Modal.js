@@ -17,7 +17,7 @@ const ModalCustom = () => {
   };
 
   const SwitchModal = ({ type }) => {
-    console.log(type)
+    // console.log(type)
     switch (type) {
       case 'TIMES_MODAL':
         return <TimesModal />

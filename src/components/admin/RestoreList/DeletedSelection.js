@@ -102,11 +102,11 @@ const DeletedSelection = () => {
   const { url } = useRouteMatch()
   // tên tiêu chuẩn
   const [nameCriteria, setNameCriteria] = useState(null)
-  console.log(id1)
+  // console.log(id1)
   const fetchDeletedSelectionaOfCriteria = (id) => {
     return axios.get(`/admin/criteria/${ id }/option/deleted`)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         setRows(res.data.criteriaOptions)
         setNameCriteria(res.data.criteria.name)
       })

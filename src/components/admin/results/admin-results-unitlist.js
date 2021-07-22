@@ -24,15 +24,14 @@ export default function ResultsUnit() {
   var { url } = useRouteMatch();
 
   const { id, id1 } = useParams()
-  const token = localStorage.getItem('token')
   const [units, setUnits] = useState(null) //ds đơn vị trong đợt đánh giá
 
   useEffect(() => {
-    axios.get(`/admin/review/${id}/formtype/${id1}/form/`)
+    axios.get(`/admin/review/${ id }/formtype/${ id1 }/form/`)
       .then(res => {
-        axios.get(`/admin/form/${res.data.form.code}/getFormDepartments`)
+        axios.get(`/admin/form/${ res.data.form.code }/getFormDepartments`)
           .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             let temp = res.data.formDepartments.map(y => y.department_id)
             setUnits(temp)
           })
@@ -62,7 +61,7 @@ export default function ResultsUnit() {
           <List >
             {units.filter(x => x.department_code != 'HDDG').map(unit => {
               return (
-                <ListItem style={{ color: 'black', textDecoration: 'none' }} button key={unit._id} component={"a"} href={`${url}/${unit.department_code}`}>
+                <ListItem style={{ color: 'black', textDecoration: 'none' }} button key={unit._id} component={"a"} href={`${ url }/${ unit.department_code }`}>
                   <ListItemText primary={unit.name} />
                 </ListItem>
               )
