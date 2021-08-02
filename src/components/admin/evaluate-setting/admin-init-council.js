@@ -104,7 +104,7 @@ export default function Council(props) {
     item = item.filter(x => x.id !== id)
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/form/${ props.fcode }/${ code }/removeFormUser`, { delete_users: [id] })
+    axios.post(`/admin/form/${props.fcode}/${code}/removeFormUser`, { delete_users: [id] })
       .then(res => {
         // console.log(item)
         setMember(item)
@@ -124,9 +124,9 @@ export default function Council(props) {
     // console.log(id)
     setLoading(true)
     handleClose()
-    axios.post(`/admin/form/${ props.fcode }/${ code }/addFormUser`, { ucode: id })
+    axios.post(`/admin/form/${props.fcode}/${code}/addFormUser`, { ucode: id })
       .then(res => {
-        axios.get(`admin/user/${ id }/get`)
+        axios.get(`admin/user/${id}/get`)
           .then(res => {
             setInfo(res.data.user.lastname + ' ' + res.data.user.firstname)
             let obj = { id: id, name: res.data.user.lastname + ' ' + res.data.user.firstname, role: null }
@@ -149,12 +149,19 @@ export default function Council(props) {
   }
 
   useEffect(() => {
-    axios.get(`/admin/department`)
+    axios.get(`/admin/departments/council/`)
       .then(res => {
-        let temp = [res.data.departments.find(x => x.department_code == 'HDDG')]
+        console.log(res.data)
+        let temp = res.data.departments
         setUnit([...temp])
       })
-    axios.get(`/admin/form/${ props.fcode }/checkCouncil`)
+    // axios.get(`/admin/department`)
+    //   .then(res => {
+    //     console.log(res.data)
+    //     let temp = [res.data.departments.find(x => x.department_code == 'HDDG')]
+    //     setUnit([...temp])
+    //   })
+    axios.get(`/admin/form/${props.fcode}/checkCouncil`)
       .then(res => {
         // console.log(res.data)
         setCode(res.data.formDepartment.department_id.department_code)
@@ -162,7 +169,7 @@ export default function Council(props) {
           setChose(true)
           setHead(res.data.formDepartment.head.staff_id)
           let h = res.data.formDepartment.head.staff_id
-          axios.get(`/admin/form/${ props.fcode }/${ res.data.formDepartment.department_id.department_code }/formuser/get`)
+          axios.get(`/admin/form/${props.fcode}/${res.data.formDepartment.department_id.department_code}/formuser/get`)
             .then(res => {
               let man = []
               // console.log(res.data)
@@ -211,7 +218,7 @@ export default function Council(props) {
     setLoading(true)
     let dcode = 'HDDG'
     handleCloseHead()
-    axios.post(`/admin/form/${ props.fcode }/${ dcode }/addHead`, { ucode: head })
+    axios.post(`/admin/form/${props.fcode}/${dcode}/addHead`, { ucode: head })
       .then(res => {
         member.map(x => x.role = null)
         member.find(x => x.id == head).role = 'Đại diện HĐĐG'
@@ -228,7 +235,7 @@ export default function Council(props) {
   const [display, setDisplay] = useState('')
 
   const getInfo = () => {
-    axios.get(`admin/user/${ id }/get`)
+    axios.get(`admin/user/${id}/get`)
       .then(res => {
         // console.log(res)
         setInfo(res.data.user.lastname + ' ' + res.data.user.firstname)
@@ -242,12 +249,12 @@ export default function Council(props) {
 
   //luc moi khoi tao, bam vao se hoan tat viec chon dvi hddg, lay toan bo user trong dvi do bo vao hddg
   const setHDDG = () => {
-    axios.post(`/admin/form/${ props.fcode }/${ council }/addcouncil`, {})
+    axios.post(`/admin/form/${props.fcode}/${council}/addcouncil`, {})
       .then(res => {
         // console.log(res.data)
         setCode(council)
         dispatch(showSuccessSnackbar('Thêm HĐĐG thành công'))
-        axios.get(`/admin/form/${ props.fcode }/${ council }/formuser/get`)
+        axios.get(`/admin/form/${props.fcode}/${council}/formuser/get`)
           .then(res => {
             let man = []
             res.data.formUsers.map(x => {
