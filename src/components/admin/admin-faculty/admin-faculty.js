@@ -485,10 +485,10 @@ export default function Criterion() {
                             </FormControl>}
                           {
                             <FormControl style={{ display: 'contents' }}>
-                              <FormLabel style={{ marginRight: 10 }}><b style={{ color: 'black' }}>Là HĐ Đánh giá:</b></FormLabel>
+                              <FormLabel style={{ marginRight: 10, verticalAlign: 'middle' }}><span style={{color: 'black'}}>Loại đơn vị:</span> </FormLabel>
                               <RadioGroup style={{ display: 'contents' }} row value={valueRadio} onChange={handleChangeRadio}>
-                                <FormControlLabel value='default' control={<Radio />} label="Không" />
-                                <FormControlLabel value='council' control={<Radio />} label="Có" />
+                                <FormControlLabel value='default' control={<Radio />} label="Mặc định" />
+                                <FormControlLabel value='council' control={<Radio />} label="Hội đồng" />
                               </RadioGroup>
                             </FormControl>
                           }
