@@ -27,6 +27,11 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
+
 import axios from 'axios'
 import Skeleton from '../../common/Skeleton'
 import Loading from '../../common/Loading'
@@ -94,8 +99,8 @@ export default function Criterion() {
   const fetchDepartment = () => {
     axios.get('/admin/department/parent')
       .then(res => {
-        // console.log(res.data.parents);
-        setRows(res.data.parents.map(dep => ({ ...dep, namemanager: (dep?.manager && `${ dep.manager.lastname } ${ dep?.manager?.firstname }`), idmanager: dep?.manager?.staff_id, parent: dep?.parent?.name, isEditMode: false })))
+        console.log(res.data.parents);
+        setRows(res.data.parents.map(dep => ({ ...dep, namemanager: (dep?.manager && `${dep.manager.lastname} ${dep?.manager?.firstname}`), idmanager: dep?.manager?.staff_id, parent: dep?.parent?.name, isEditMode: false })))
         setIsLoading(false)
       })
   }
@@ -107,7 +112,7 @@ export default function Criterion() {
   const CustomTableCell = ({ row, name, ...rest }) => {
     return (
       <TableCell align="left" className={classes.tableCell} {...rest}>
-        {name === 'name' ? (<Link to={`${ url }/${ row.department_code }`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])}
+        {name === 'name' ? (<Link to={`${url}/${row.department_code}`} style={{ color: 'black' }}>{row[name]}</Link>) : (row[name])}
       </TableCell>
     );
   };
@@ -123,7 +128,7 @@ export default function Criterion() {
   const deleteDeptWithAPI = (id) => {
     setLoading(true)
     closeDialog()
-    axios.post(`/admin/department/${ id }/delete`, {})
+    axios.post(`/admin/department/${id}/delete`, {})
       .then(res => {
         const newRows = rows.filter(row => row.department_code !== id)
         setRows(newRows)
@@ -131,7 +136,7 @@ export default function Criterion() {
         setLoading(false)
       })
       .catch(err => {
-        // console.log(err.response.status)
+        console.log(err.response.status)
         dispatch(showErrorSnackbar('Xoá đơn vị thất bại'))
         setLoading(false)
       })
@@ -154,7 +159,7 @@ export default function Criterion() {
   const handleOpen = () => {
     axios.get('admin/department/parent')
       .then(res => {
-        // console.log(res.data.parents)
+        console.log(res.data.parents)
         setUnits(res.data.parents)
         // setNewUnit(res.data.parents)
         // res.data.parents.map(x => {
@@ -163,7 +168,7 @@ export default function Criterion() {
 
       })
       .catch(e => {
-        // console.log(e)
+        console.log(e)
       })
     setOpenImport(false)
     setModal({ open: true, id: '' });
@@ -176,6 +181,7 @@ export default function Criterion() {
     setId('')
     setName('')
     setHeadUnit('')
+    setValueRadio('default')
   };
   const onEdit = id => {
     rows.forEach(u => {
@@ -183,6 +189,7 @@ export default function Criterion() {
         setId(id)
         setName(u.name)
         setHeadUnit(u.manager?.staff_id)
+        setValueRadio(u.type)
       }
     })
     setModal({ open: true, id })
@@ -190,21 +197,21 @@ export default function Criterion() {
   // edit submit dept
   const submitEditDept = (e, dept_code) => {
     e.preventDefault()
-    const body = { new_dcode: id, name }
+    const body = { new_dcode: id, name, type: valueRadio }
     setLoading(true)
-    // console.log(modal.id)
+    console.log(modal.id)
     setModal({ ...modal, open: false });
 
-    axios.post(`/admin/department/${ dept_code }/edit`, body)
+    axios.post(`/admin/department/${dept_code}/edit`, body)
       .then(res => {
-        setRows(rows.map(r => r.department_code === dept_code ? { ...r, department_code: id, name } : r))
+        setRows(rows.map(r => r.department_code === dept_code ? { ...r, department_code: id, name, type: valueRadio } : r))
         dispatch(showSuccessSnackbar('Cập nhật đơn vị thành công'))
         setLoading(false)
         handleClose()
       })
       .catch(err => {
-        // console.log(err)
-        // console.log(err.response)
+        console.log(err)
+        console.log(err.response)
         setModal({ ...modal, open: true });
         switch (err.response?.status) {
           case 409:
@@ -225,29 +232,30 @@ export default function Criterion() {
   const [id, setId] = React.useState('')
   const [name, setName] = React.useState('')
   const [headUnit, setHeadUnit] = React.useState('')
-
   const submitAddDepartment = (e) => {
-    // console.log(id, name, headUnit, newUnit);
+    console.log(id, name, headUnit, newUnit, valueRadio);
     e.preventDefault()
     setLoading(true)
     const body = {
       department_code: id,
       name,
       manager: headUnit,
-      parent: newUnit
+      parent: newUnit,
+      type: valueRadio,
     }
-    // console.log(body)
+    console.log(body)
     setModal({ ...modal, open: false });
     axios.post('/admin/department/addDepartment', body)
       .then(res => {
-        // console.log(res.data);
+        console.log(res.data);
+        setValueRadio('default')
         const temp = res.data.manager
         if (!newUnit) {
           if (temp === null) {
-            setRows(rows => [...rows, { department_code: id, name, }])
+            setRows(rows => [...rows, { department_code: id, name, type: valueRadio }])
           }
           else {
-            setRows(rows => [...rows, { department_code: id, name, idmanager: temp?.staff_id, namemanager: `${ temp?.lastname } ${ temp?.firstname }` }])
+            setRows(rows => [...rows, { department_code: id, name, idmanager: temp?.staff_id, namemanager: `${temp?.lastname} ${temp?.firstname}`, type: valueRadio }])
           }
         }
 
@@ -256,8 +264,8 @@ export default function Criterion() {
         handleClose();
       })
       .catch(err => {
-        // console.log(err)
-        // console.log(err.response)
+        console.log(err)
+        console.log(err.response)
         setModal({ ...modal, open: true });
         switch (err.response?.status) {
           case 409:
@@ -282,7 +290,7 @@ export default function Criterion() {
   let history = useHistory();
 
   const redirectStorePage = () => {
-    history.push(`${ url }/deleted`)
+    history.push(`${url}/deleted`)
   }
   // open import
   const [openImport, setOpenImport] = useState(false)
@@ -295,17 +303,17 @@ export default function Criterion() {
     setLoading(true)
     const formData = new FormData()
     formData.append("file", data)
-    // console.log(formData)
+    console.log(formData)
     setLoading(true)
     handleClose()
     axios.post("/admin/user/file/import", formData)
       .then(res => {
-        // console.log(res.data);
+        console.log(res.data);
         dispatch(showSuccessSnackbar('Import excel người dùng thành công'))
         setLoading(false)
       })
       .catch(e => {
-        // console.log(e)
+        console.log(e)
         dispatch(showErrorSnackbar('Import excel người dùng thất bại'))
         setLoading(false)
       })
@@ -329,10 +337,19 @@ export default function Criterion() {
         setLoading(false)
       })
       .catch(err => {
-        // console.log(err)
+        console.log(err)
         setLoading(false)
       })
   }
+
+  //coi phai hddg ko
+  const [valueRadio, setValueRadio] = React.useState('default');
+
+  const handleChangeRadio = (event) => {
+    console.log(event.target.value)
+    setValueRadio(event.target.value);
+  };
+
   return (
     <>
       {isLoading ? <Skeleton /> : (
@@ -466,6 +483,15 @@ export default function Criterion() {
                                 })}
                               </Select>
                             </FormControl>}
+                          {
+                            <FormControl style={{ display: 'contents' }}>
+                              <FormLabel style={{ marginRight: 10 }}><b style={{ color: 'black' }}>Là HĐ Đánh giá:</b></FormLabel>
+                              <RadioGroup style={{ display: 'contents' }} row value={valueRadio} onChange={handleChangeRadio}>
+                                <FormControlLabel value='default' control={<Radio />} label="Không" />
+                                <FormControlLabel value='council' control={<Radio />} label="Có" />
+                              </RadioGroup>
+                            </FormControl>
+                          }
                           <div style={{ textAlign: 'center', marginTop: '10px' }}>
                             <Button style={{ marginRight: '10px' }} type="submit" variant="contained" color="primary">{modal.id ? "Cập nhật" : 'Tạo'}</Button>
                             <Button style={{ marginLeft: '10px' }} onClick={handleClose} variant="contained" color="primary">Thoát</Button>
