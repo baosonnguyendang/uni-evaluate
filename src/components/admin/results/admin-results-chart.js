@@ -148,7 +148,7 @@ const AdminChart = ({ code }) => {
                 <Card className={classes.root}>
                     <CardContent>
                         <Typography align='center' variant='h2' color="textSecondary" gutterBottom>
-                            {point.length > 0 ? Math.max(...point) : '_'}
+                            {point.length > 0 ? Math.min(...point) : '_'}
                         </Typography>
                         <Typography align='center' variant="body2" component="p">
                             Điểm số thấp nhất trong biểu mẫu
